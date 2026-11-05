@@ -71,131 +71,132 @@ PM-C2-069;;RESET;1;SW2;;reset
 PM-C2-070;;10k;1;R23;Resistor_SMD:R_0805_2012Metric;CHIP_PU pull-up
 PM-C2-071;;100nF;1;C51;Capacitor_SMD:C_0805_2012Metric;reset RC
 PM-C2-072;;10k;1;R24;Resistor_SMD:R_0805_2012Metric;GPIO36 strap PU (joint download boot reachable)
-PM-C2-073;;UART0 TP;1;J4;Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical;UART0 testpoints/boot log
-PM-C2-074;;100k;1;R25;Resistor_SMD:R_0805_2012Metric;VBUS detect divider
-PM-C2-075;;100k;4;R26 R38 R63 R65;Resistor_SMD:R_0805_2012Metric;
-PM-C2-076;ESP32-C6-MINI-1 (DNP if ESP32-S3 build);ESP32-C6-MINI-1 (Wi-Fi6/BLE5.3);1;U31;;"Wi-Fi/BLE coprocessor; DNP if ESP32-S3 build; antenna keep-out >=15 mm"
-PM-C2-077;;10k;1;R27;Resistor_SMD:R_0805_2012Metric;C6 EN pull-up
-PM-C2-078;microSD socket (Hirose DM3AT);microSD (SDIO 4-bit);1;J5;Connector_Card:microSD_HC_Hirose_DM3AT-SF-PEJM5;SDMMC slot0, 4-bit
-PM-C2-079;;10k;5;R30 R31 R32 R33 R34;Resistor_SMD:R_0805_2012Metric;SDIO pull-up
-PM-C2-080;;10k;1;R35;Resistor_SMD:R_0805_2012Metric;card detect pull-up
-PM-C2-081;PCM5102A;PCM5102A;1;U32;Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm;I2S DAC 112 dB (24/96)
-PM-C2-082;;1uF/10V;1;C58;Capacitor_SMD:C_0805_2012Metric;charge-pump flying cap
-PM-C2-083;;1uF/10V;1;C59;Capacitor_SMD:CP_Elec_6.3x7.7;polarity + to AGND
-PM-C2-084;;10k;1;R36;Resistor_SMD:R_0805_2012Metric;unmute
-PM-C2-085;;100nF;1;C65;Capacitor_SMD:C_0805_2012Metric;mute RC: XSMT low at power-up
-PM-C2-086;;10uF/16V;1;C66;Capacitor_SMD:CP_Elec_6.3x7.7;AC coupling L
-PM-C2-087;;10uF/16V;1;C67;Capacitor_SMD:CP_Elec_6.3x7.7;AC coupling R
-PM-C2-088;;100k;1;R37;Resistor_SMD:R_0805_2012Metric;bias/DC path
-PM-C2-089;;TL072;1;U33;Package_DIP:DIP-8_W7.62mm;LINE/PHONES buffer L
-PM-C2-090;;100;1;R39;Resistor_SMD:R_0805_2012Metric;LINE OUT L (rear)
-PM-C2-091;;100;1;R40;Resistor_SMD:R_0805_2012Metric;LINE OUT R (rear)
-PM-C2-092;;100;1;R41;Resistor_SMD:R_0805_2012Metric;PHONES L
-PM-C2-093;;100;1;R42;Resistor_SMD:R_0805_2012Metric;PHONES R
-PM-C2-094;PCM1808PWR;PCM1808PWR;1;U34;Package_SO:TSSOP-14_4.4x5mm_P0.65mm;I2S ADC 24/96 (sampler/effector input)
-PM-C2-095;;10uF/10V;1;C72;Capacitor_SMD:CP_Elec_6.3x7.7;
-PM-C2-096;;10uF/10V;1;C74;Capacitor_SMD:CP_Elec_6.3x7.7;VCC 5 V analog
-PM-C2-097;;100nF;1;C76;Capacitor_SMD:C_0805_2012Metric;VDD 3.3 V digital
-PM-C2-098;;1k;1;R43;Resistor_SMD:R_0805_2012Metric;input protection
-PM-C2-099;;BAT54S;1;D8;Package_TO_SOT_SMD:SOT-23;clamp
-PM-C2-100;;1uF/16V;1;C78;Capacitor_SMD:C_0805_2012Metric;AC coupling to VINL
-PM-C2-101;;BAT54S;3;D9 D16 D17;Package_TO_SOT_SMD:SOT-23;
-PM-C2-102;;1uF/16V;1;C80;Capacitor_SMD:C_0805_2012Metric;
-PM-C2-103;MCP4728A0-E/UN;MCP4728A0-E/UN (0x60);1;U35;Package_SO:MSOP-10_3x3mm_P0.5mm;CV1..CV4 (bus), I2C 0x60
-PM-C2-104;MCP4728A1-E/UN;MCP4728A1-E/UN (0x61);1;U36;Package_SO:MSOP-10_3x3mm_P0.5mm;CV5/CV6 (panel jacks), I2C 0x61
-PM-C2-105;;TL074;1;U37;Package_DIP:DIP-14_W7.62mm;CV1 x4.9 buffer
-PM-C2-106;;39k;1;R45;Resistor_SMD:R_0805_2012Metric;Rf CV1
-PM-C2-107;;10k;1;R51;Resistor_SMD:R_0805_2012Metric;Rg CV1
-PM-C2-108;;1k;1;R57;Resistor_SMD:R_0805_2012Metric;output CV1
-PM-C2-109;;BAT54S;1;D10;Package_TO_SOT_SMD:SOT-23;CV1 protection
-PM-C2-110;;39k;1;R46;Resistor_SMD:R_0805_2012Metric;Rf CV2
-PM-C2-111;;10k;1;R52;Resistor_SMD:R_0805_2012Metric;Rg CV2
-PM-C2-112;;1k;1;R58;Resistor_SMD:R_0805_2012Metric;output CV2
-PM-C2-113;;BAT54S;1;D11;Package_TO_SOT_SMD:SOT-23;CV2 protection
-PM-C2-114;;39k;1;R47;Resistor_SMD:R_0805_2012Metric;Rf CV3
-PM-C2-115;;10k;1;R53;Resistor_SMD:R_0805_2012Metric;Rg CV3
-PM-C2-116;;1k;1;R59;Resistor_SMD:R_0805_2012Metric;output CV3
-PM-C2-117;;BAT54S;1;D12;Package_TO_SOT_SMD:SOT-23;CV3 protection
-PM-C2-118;;39k;1;R48;Resistor_SMD:R_0805_2012Metric;Rf CV4
-PM-C2-119;;10k;1;R54;Resistor_SMD:R_0805_2012Metric;Rg CV4
-PM-C2-120;;1k;1;R60;Resistor_SMD:R_0805_2012Metric;output CV4
-PM-C2-121;;BAT54S;1;D13;Package_TO_SOT_SMD:SOT-23;CV4 protection
-PM-C2-122;;TL074;1;U38;Package_DIP:DIP-14_W7.62mm;CV5 x4.9 buffer
-PM-C2-123;;39k;1;R49;Resistor_SMD:R_0805_2012Metric;Rf CV5
-PM-C2-124;;10k;1;R55;Resistor_SMD:R_0805_2012Metric;Rg CV5
-PM-C2-125;;1k;1;R61;Resistor_SMD:R_0805_2012Metric;output CV5 (panel)
-PM-C2-126;;BAT54S;1;D14;Package_TO_SOT_SMD:SOT-23;CV5 protection
-PM-C2-127;;39k;1;R50;Resistor_SMD:R_0805_2012Metric;Rf CV6
-PM-C2-128;;10k;1;R56;Resistor_SMD:R_0805_2012Metric;Rg CV6
-PM-C2-129;;1k;1;R62;Resistor_SMD:R_0805_2012Metric;output CV6 (panel)
-PM-C2-130;;BAT54S;1;D15;Package_TO_SOT_SMD:SOT-23;CV6 protection
-PM-C2-131;;TL074;1;U39;Package_DIP:DIP-14_W7.62mm;CV IN1 level shift
-PM-C2-132;;16.5k;2;R64 R66;Resistor_SMD:R_0805_2012Metric;gain 0.165
-PM-C2-133;;47k;1;R69;Resistor_SMD:R_0805_2012Metric;1.65 V
-PM-C2-134;;47k;2;R70 R76;Resistor_SMD:R_0805_2012Metric;
-PM-C2-135;MCP3208-CI/P;MCP3208;1;U40;Package_DIP:DIP-16_W7.62mm;8-ch 12-bit SPI ADC
-PM-C2-136;;600R@100MHz;1;FB6;Inductor_SMD:L_0805_2012Metric;ADC reference filter
-PM-C2-137;;1k;1;R73;Resistor_SMD:R_0805_2012Metric;expression pedal
-PM-C2-138;;1k;1;R74;Resistor_SMD:R_0805_2012Metric;reserved channel to AGND
-PM-C2-139;;100k;1;R75;Resistor_SMD:R_0805_2012Metric;battery divider
-PM-C2-140;;NTC 10k;1;TH2;Resistor_SMD:R_0805_2012Metric;pack temperature
-PM-C2-141;;2.2k;2;R78 R79;Resistor_SMD:R_0805_2012Metric;I2C pull-up
-PM-C2-142;24LC32A-I/P;24LC32A;1;U41;Package_DIP:DIP-8_W7.62mm;calibration EEPROM 0x57 (A2..A0=1)
-PM-C2-143;6N137;6N137;1;U42;Package_DIP:DIP-8_W7.62mm;MIDI IN optocoupler
-PM-C2-144;;220;2;R80 R83;Resistor_SMD:R_0805_2012Metric;
-PM-C2-145;;4.7k;1;R81;Resistor_SMD:R_0805_2012Metric;6N137 pull-up
-PM-C2-146;74HCT125;74HCT125;1;U43;Package_SO:SOIC-14_3.9x8.7mm_P1.27mm;MIDI OUT buffer (5 V)
-PM-C2-147;;33;1;R82;Resistor_SMD:R_0805_2012Metric;
-PM-C2-148;;2N7000;1;Q3;Package_TO_SOT_THT:TO-92_Inline;GATE1 open-drain
-PM-C2-149;;100k;2;R85 R88;Resistor_SMD:R_0805_2012Metric;gate pull-down
-PM-C2-150;;4.7k;1;R86;Resistor_SMD:R_0805_2012Metric;GATE1 pull-up
-PM-C2-151;;2N7000;1;Q4;Package_TO_SOT_THT:TO-92_Inline;GATE2 open-drain
-PM-C2-152;;4.7k;1;R89;Resistor_SMD:R_0805_2012Metric;GATE2 pull-up
-PM-C2-153;74HCT1G125;74HCT1G125;1;U44;Package_TO_SOT_SMD:SOT-353_SC-70-5;WS2812 level shifter 3.3->5 V
-PM-C2-154;;330;1;R90;Resistor_SMD:R_0805_2012Metric;series resistor
-PM-C2-155;;PicoMod analog bus IDC-26 PORT1;1;P1;Connector_IDC:IDC-Header_2x13_P2.54mm_Latch12.0mm_Vertical;bus: +-12V, CV1..4, GATE1/2, audio
-PM-C2-156;;PicoMod analog bus IDC-26 PORT2;1;P2;Connector_IDC:IDC-Header_2x13_P2.54mm_Latch12.0mm_Vertical;bus: +-12V, CV1..4, GATE1/2, audio
-PM-C2-157;;0.5A;1;F2;Fuse:Fuse_1206_3216Metric;port1 +12V
-PM-C2-158;;SS34;2;D18 D19;Diode_SMD:D_SMA;reverse protection
-PM-C2-159;;0.3A;1;F3;Fuse:Fuse_1206_3216Metric;port1 -12V
-PM-C2-160;;SMAJ15A;1;D20;Diode_SMD:D_SMA;TVS port1
-PM-C2-161;;10uF/25V;2;C105 C108;Capacitor_SMD:CP_Elec_6.3x7.7;
-PM-C2-162;;0.5A;1;F4;Fuse:Fuse_1206_3216Metric;port2 +12V
-PM-C2-163;;0.3A;1;F5;Fuse:Fuse_1206_3216Metric;port2 -12V
-PM-C2-164;;SMAJ15A;1;D23;Diode_SMD:D_SMA;TVS port2
-PM-C2-165;IDC-26;PANEL-2 J14 (IDC-26) control/analog;1;J14;Connector_IDC:IDC-Header_2x13_P2.54mm_Latch12.0mm_Vertical;I2C, encoders/matrix (via expanders), faders, CV, GATE, LED
-PM-C2-166;FFC-40 0.5mm;PANEL-2 J12 (FFC-40) LCD+I2C+INT+BL;1;J15;Connector_FFC-FPC:Hirose_FH12-40S-0.5SH_1x40-1MP_P0.50mm_Horizontal;25 signals: RGB565 + I2C + INT + BL_PWM + BL_ANODE/CATHODE
-PM-C2-167;IDC-16;J-DIG-EXP (IDC-16) smart-module digital;1;J16;Connector_IDC:IDC-Header_2x08_P2.54mm_Latch6.5mm_Vertical;TDM/I2S + SPI mailbox + I2C (R-22)
-PM-C2-168;;0R;1;R95;Resistor_SMD:R_0805_2012Metric;backlight LED return path
-PM-C2-169;;MIDI IN TRS-A;1;J6;;"off-board (rear/panel part); rear panel jack"
-PM-C2-170;;MIDI OUT TRS-A;1;J7;;"off-board (rear/panel part); rear panel jack"
-PM-C2-171;;LINE OUT L/R 3.5mm;1;J8;;"off-board (rear/panel part); rear panel jack"
-PM-C2-172;;PHONES 3.5mm;1;J9;;"off-board (rear/panel part); rear panel jack"
-PM-C2-173;;AUDIO IN L 3.5mm;1;J10;;"off-board (rear/panel part); rear panel jack"
-PM-C2-174;;AUDIO IN R 3.5mm;1;J11;;"off-board (rear/panel part); rear panel jack"
-PM-C2-175;;DC 12V 5.5/2.1;1;J12;;"off-board (rear/panel part); rear panel jack (from PWR-2)"
-PM-C2-176;;EXPRESSION TRS;1;J13;;"off-board (rear/panel part); rear panel jack"
-PM-C2-177;;Rear audio terminal block;1;TB1;TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1-12-3.81_1x12_P3.81mm_Horizontal;jacks -> CORE-2 rear
-PM-C2-178;;Rear MIDI/DC/EXPR terminal block;1;TB2;TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1-10-3.81_1x10_P3.81mm_Horizontal;
-PM-C2-179;;VBUS_CHG;1;TP1;;USB-C input
-PM-C2-180;;VSYS;1;TP2;;power-path output
-PM-C2-181;;12V;1;TP3;;+12 V bus rail
-PM-C2-182;;-12V;1;TP4;;-12 V bus rail
-PM-C2-183;;5V;1;TP5;;+5 V rail
-PM-C2-184;;3V3;1;TP6;;+3.3 V peripherals
-PM-C2-185;;3V3_MCU;1;TP7;;+3.3 V MCU/PSRAM
-PM-C2-186;;BATT_MON;1;TP8;;battery ADC
-PM-C2-187;;I2S_MCLK;1;TP9;;12.288 MHz
-PM-C2-188;;SD_CLK;1;TP10;;SDIO clock
-PM-C2-189;;USB_HS_DP;1;TP11;;USB D+
-PM-C2-190;;USB_HS_DM;1;TP12;;USB D-
-PM-C2-191;;AGND;1;TP13;;analog ground
-PM-C2-192;;DGND;1;TP14;;digital ground
-PM-C2-193;;PGND;1;TP15;;power ground
-PM-C2-194;;LED_DATA;1;TP16;;WS2812 data (after shifter)
-PM-C2-195;;CHIP_PU;1;TP17;;reset
-PM-C2-196;;BOOT;1;TP18;;boot strap GPIO35
-PM-C2-197;;3V3_C6;1;TP19;;Wi-Fi/BLE coprocessor rail
-PM-C2-198;;BL_20V;1;TP20;;backlight rail
-PM-C2-199;;C6_CS;1;TP21;;C6 SPI select
-PM-C2-200;;C6_RST;1;TP22;;C6 reset
+PM-C2-073;;10k;1;R91;Resistor_SMD:R_0805_2012Metric;PANEL_IRQ pull-up (4x MCP23017 INTA wire-OR on PANEL-2)
+PM-C2-074;;UART0 TP;1;J4;Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical;UART0 testpoints/boot log
+PM-C2-075;;100k;1;R25;Resistor_SMD:R_0805_2012Metric;VBUS detect divider
+PM-C2-076;;100k;4;R26 R38 R63 R65;Resistor_SMD:R_0805_2012Metric;
+PM-C2-077;ESP32-C6-MINI-1 (DNP if ESP32-S3 build);ESP32-C6-MINI-1 (Wi-Fi6/BLE5.3);1;U31;;"Wi-Fi/BLE coprocessor; DNP if ESP32-S3 build; antenna keep-out >=15 mm"
+PM-C2-078;;10k;1;R27;Resistor_SMD:R_0805_2012Metric;C6 EN pull-up
+PM-C2-079;microSD socket (Hirose DM3AT);microSD (SDIO 4-bit);1;J5;Connector_Card:microSD_HC_Hirose_DM3AT-SF-PEJM5;SDMMC slot0, 4-bit
+PM-C2-080;;10k;5;R30 R31 R32 R33 R34;Resistor_SMD:R_0805_2012Metric;SDIO pull-up
+PM-C2-081;;10k;1;R35;Resistor_SMD:R_0805_2012Metric;card detect pull-up
+PM-C2-082;PCM5102A;PCM5102A;1;U32;Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm;I2S DAC 112 dB (24/96)
+PM-C2-083;;1uF/10V;1;C58;Capacitor_SMD:C_0805_2012Metric;charge-pump flying cap
+PM-C2-084;;1uF/10V;1;C59;Capacitor_SMD:CP_Elec_6.3x7.7;polarity + to AGND
+PM-C2-085;;10k;1;R36;Resistor_SMD:R_0805_2012Metric;unmute
+PM-C2-086;;100nF;1;C65;Capacitor_SMD:C_0805_2012Metric;mute RC: XSMT low at power-up
+PM-C2-087;;10uF/16V;1;C66;Capacitor_SMD:CP_Elec_6.3x7.7;AC coupling L
+PM-C2-088;;10uF/16V;1;C67;Capacitor_SMD:CP_Elec_6.3x7.7;AC coupling R
+PM-C2-089;;100k;1;R37;Resistor_SMD:R_0805_2012Metric;bias/DC path
+PM-C2-090;;TL072;1;U33;Package_DIP:DIP-8_W7.62mm;LINE/PHONES buffer L
+PM-C2-091;;100;1;R39;Resistor_SMD:R_0805_2012Metric;LINE OUT L (rear)
+PM-C2-092;;100;1;R40;Resistor_SMD:R_0805_2012Metric;LINE OUT R (rear)
+PM-C2-093;;100;1;R41;Resistor_SMD:R_0805_2012Metric;PHONES L
+PM-C2-094;;100;1;R42;Resistor_SMD:R_0805_2012Metric;PHONES R
+PM-C2-095;PCM1808PWR;PCM1808PWR;1;U34;Package_SO:TSSOP-14_4.4x5mm_P0.65mm;I2S ADC 24/96 (sampler/effector input)
+PM-C2-096;;10uF/10V;1;C72;Capacitor_SMD:CP_Elec_6.3x7.7;
+PM-C2-097;;10uF/10V;1;C74;Capacitor_SMD:CP_Elec_6.3x7.7;VCC 5 V analog
+PM-C2-098;;100nF;1;C76;Capacitor_SMD:C_0805_2012Metric;VDD 3.3 V digital
+PM-C2-099;;1k;1;R43;Resistor_SMD:R_0805_2012Metric;input protection
+PM-C2-100;;BAT54S;1;D8;Package_TO_SOT_SMD:SOT-23;clamp
+PM-C2-101;;1uF/16V;1;C78;Capacitor_SMD:C_0805_2012Metric;AC coupling to VINL
+PM-C2-102;;BAT54S;3;D9 D16 D17;Package_TO_SOT_SMD:SOT-23;
+PM-C2-103;;1uF/16V;1;C80;Capacitor_SMD:C_0805_2012Metric;
+PM-C2-104;MCP4728A0-E/UN;MCP4728A0-E/UN (0x60);1;U35;Package_SO:MSOP-10_3x3mm_P0.5mm;CV1..CV4 (bus), I2C 0x60
+PM-C2-105;MCP4728A1-E/UN;MCP4728A1-E/UN (0x61);1;U36;Package_SO:MSOP-10_3x3mm_P0.5mm;CV5/CV6 (panel jacks), I2C 0x61
+PM-C2-106;;TL074;1;U37;Package_DIP:DIP-14_W7.62mm;CV1 x4.9 buffer
+PM-C2-107;;39k;1;R45;Resistor_SMD:R_0805_2012Metric;Rf CV1
+PM-C2-108;;10k;1;R51;Resistor_SMD:R_0805_2012Metric;Rg CV1
+PM-C2-109;;1k;1;R57;Resistor_SMD:R_0805_2012Metric;output CV1
+PM-C2-110;;BAT54S;1;D10;Package_TO_SOT_SMD:SOT-23;CV1 protection
+PM-C2-111;;39k;1;R46;Resistor_SMD:R_0805_2012Metric;Rf CV2
+PM-C2-112;;10k;1;R52;Resistor_SMD:R_0805_2012Metric;Rg CV2
+PM-C2-113;;1k;1;R58;Resistor_SMD:R_0805_2012Metric;output CV2
+PM-C2-114;;BAT54S;1;D11;Package_TO_SOT_SMD:SOT-23;CV2 protection
+PM-C2-115;;39k;1;R47;Resistor_SMD:R_0805_2012Metric;Rf CV3
+PM-C2-116;;10k;1;R53;Resistor_SMD:R_0805_2012Metric;Rg CV3
+PM-C2-117;;1k;1;R59;Resistor_SMD:R_0805_2012Metric;output CV3
+PM-C2-118;;BAT54S;1;D12;Package_TO_SOT_SMD:SOT-23;CV3 protection
+PM-C2-119;;39k;1;R48;Resistor_SMD:R_0805_2012Metric;Rf CV4
+PM-C2-120;;10k;1;R54;Resistor_SMD:R_0805_2012Metric;Rg CV4
+PM-C2-121;;1k;1;R60;Resistor_SMD:R_0805_2012Metric;output CV4
+PM-C2-122;;BAT54S;1;D13;Package_TO_SOT_SMD:SOT-23;CV4 protection
+PM-C2-123;;TL074;1;U38;Package_DIP:DIP-14_W7.62mm;CV5 x4.9 buffer
+PM-C2-124;;39k;1;R49;Resistor_SMD:R_0805_2012Metric;Rf CV5
+PM-C2-125;;10k;1;R55;Resistor_SMD:R_0805_2012Metric;Rg CV5
+PM-C2-126;;1k;1;R61;Resistor_SMD:R_0805_2012Metric;output CV5 (panel)
+PM-C2-127;;BAT54S;1;D14;Package_TO_SOT_SMD:SOT-23;CV5 protection
+PM-C2-128;;39k;1;R50;Resistor_SMD:R_0805_2012Metric;Rf CV6
+PM-C2-129;;10k;1;R56;Resistor_SMD:R_0805_2012Metric;Rg CV6
+PM-C2-130;;1k;1;R62;Resistor_SMD:R_0805_2012Metric;output CV6 (panel)
+PM-C2-131;;BAT54S;1;D15;Package_TO_SOT_SMD:SOT-23;CV6 protection
+PM-C2-132;;TL074;1;U39;Package_DIP:DIP-14_W7.62mm;CV IN1 level shift
+PM-C2-133;;16.5k;2;R64 R66;Resistor_SMD:R_0805_2012Metric;gain 0.165
+PM-C2-134;;47k;1;R69;Resistor_SMD:R_0805_2012Metric;1.65 V
+PM-C2-135;;47k;2;R70 R76;Resistor_SMD:R_0805_2012Metric;
+PM-C2-136;MCP3208-CI/P;MCP3208;1;U40;Package_DIP:DIP-16_W7.62mm;8-ch 12-bit SPI ADC
+PM-C2-137;;600R@100MHz;1;FB6;Inductor_SMD:L_0805_2012Metric;ADC reference filter
+PM-C2-138;;1k;1;R73;Resistor_SMD:R_0805_2012Metric;expression pedal
+PM-C2-139;;1k;1;R74;Resistor_SMD:R_0805_2012Metric;reserved channel to AGND
+PM-C2-140;;100k;1;R75;Resistor_SMD:R_0805_2012Metric;battery divider
+PM-C2-141;;NTC 10k;1;TH2;Resistor_SMD:R_0805_2012Metric;pack temperature
+PM-C2-142;;2.2k;2;R78 R79;Resistor_SMD:R_0805_2012Metric;I2C pull-up
+PM-C2-143;24LC32A-I/P;24LC32A;1;U41;Package_DIP:DIP-8_W7.62mm;calibration EEPROM 0x57 (A2..A0=1)
+PM-C2-144;6N137;6N137;1;U42;Package_DIP:DIP-8_W7.62mm;MIDI IN optocoupler
+PM-C2-145;;220;2;R80 R83;Resistor_SMD:R_0805_2012Metric;
+PM-C2-146;;4.7k;1;R81;Resistor_SMD:R_0805_2012Metric;6N137 pull-up
+PM-C2-147;74HCT125;74HCT125;1;U43;Package_SO:SOIC-14_3.9x8.7mm_P1.27mm;MIDI OUT buffer (5 V)
+PM-C2-148;;33;1;R82;Resistor_SMD:R_0805_2012Metric;
+PM-C2-149;;2N7000;1;Q3;Package_TO_SOT_THT:TO-92_Inline;GATE1 open-drain
+PM-C2-150;;100k;2;R85 R88;Resistor_SMD:R_0805_2012Metric;gate pull-down
+PM-C2-151;;4.7k;1;R86;Resistor_SMD:R_0805_2012Metric;GATE1 pull-up
+PM-C2-152;;2N7000;1;Q4;Package_TO_SOT_THT:TO-92_Inline;GATE2 open-drain
+PM-C2-153;;4.7k;1;R89;Resistor_SMD:R_0805_2012Metric;GATE2 pull-up
+PM-C2-154;74HCT1G125;74HCT1G125;1;U44;Package_TO_SOT_SMD:SOT-353_SC-70-5;WS2812 level shifter 3.3->5 V
+PM-C2-155;;330;1;R90;Resistor_SMD:R_0805_2012Metric;series resistor
+PM-C2-156;;PicoMod analog bus IDC-26 PORT1;1;P1;Connector_IDC:IDC-Header_2x13_P2.54mm_Latch12.0mm_Vertical;bus: +-12V, CV1..4, GATE1/2, audio
+PM-C2-157;;PicoMod analog bus IDC-26 PORT2;1;P2;Connector_IDC:IDC-Header_2x13_P2.54mm_Latch12.0mm_Vertical;bus: +-12V, CV1..4, GATE1/2, audio
+PM-C2-158;;0.5A;1;F2;Fuse:Fuse_1206_3216Metric;port1 +12V
+PM-C2-159;;SS34;2;D18 D19;Diode_SMD:D_SMA;reverse protection
+PM-C2-160;;0.3A;1;F3;Fuse:Fuse_1206_3216Metric;port1 -12V
+PM-C2-161;;SMAJ15A;1;D20;Diode_SMD:D_SMA;TVS port1
+PM-C2-162;;10uF/25V;2;C105 C108;Capacitor_SMD:CP_Elec_6.3x7.7;
+PM-C2-163;;0.5A;1;F4;Fuse:Fuse_1206_3216Metric;port2 +12V
+PM-C2-164;;0.3A;1;F5;Fuse:Fuse_1206_3216Metric;port2 -12V
+PM-C2-165;;SMAJ15A;1;D23;Diode_SMD:D_SMA;TVS port2
+PM-C2-166;IDC-26;PANEL-2 J14 (IDC-26) control/analog;1;J14;Connector_IDC:IDC-Header_2x13_P2.54mm_Latch12.0mm_Vertical;I2C, encoders/matrix (via expanders), faders, CV, GATE, LED
+PM-C2-167;FFC-40 0.5mm;PANEL-2 J12 (FFC-40) LCD+I2C+INT+BL;1;J15;Connector_FFC-FPC:Hirose_FH12-40S-0.5SH_1x40-1MP_P0.50mm_Horizontal;25 signals: RGB565 + I2C + INT + BL_PWM + BL_ANODE/CATHODE
+PM-C2-168;IDC-16;J-DIG-EXP (IDC-16) smart-module digital;1;J16;Connector_IDC:IDC-Header_2x08_P2.54mm_Latch6.5mm_Vertical;TDM/I2S + SPI mailbox + I2C (R-22)
+PM-C2-169;;0R;1;R95;Resistor_SMD:R_0805_2012Metric;backlight LED return path
+PM-C2-170;;MIDI IN TRS-A;1;J6;;"off-board (rear/panel part); rear panel jack"
+PM-C2-171;;MIDI OUT TRS-A;1;J7;;"off-board (rear/panel part); rear panel jack"
+PM-C2-172;;LINE OUT L/R 3.5mm;1;J8;;"off-board (rear/panel part); rear panel jack"
+PM-C2-173;;PHONES 3.5mm;1;J9;;"off-board (rear/panel part); rear panel jack"
+PM-C2-174;;AUDIO IN L 3.5mm;1;J10;;"off-board (rear/panel part); rear panel jack"
+PM-C2-175;;AUDIO IN R 3.5mm;1;J11;;"off-board (rear/panel part); rear panel jack"
+PM-C2-176;;DC 12V 5.5/2.1;1;J12;;"off-board (rear/panel part); rear panel jack (from PWR-2)"
+PM-C2-177;;EXPRESSION TRS;1;J13;;"off-board (rear/panel part); rear panel jack"
+PM-C2-178;;Rear audio terminal block;1;TB1;TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1-12-3.81_1x12_P3.81mm_Horizontal;jacks -> CORE-2 rear
+PM-C2-179;;Rear MIDI/DC/EXPR terminal block;1;TB2;TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1-10-3.81_1x10_P3.81mm_Horizontal;
+PM-C2-180;;VBUS_CHG;1;TP1;;USB-C input
+PM-C2-181;;VSYS;1;TP2;;power-path output
+PM-C2-182;;12V;1;TP3;;+12 V bus rail
+PM-C2-183;;-12V;1;TP4;;-12 V bus rail
+PM-C2-184;;5V;1;TP5;;+5 V rail
+PM-C2-185;;3V3;1;TP6;;+3.3 V peripherals
+PM-C2-186;;3V3_MCU;1;TP7;;+3.3 V MCU/PSRAM
+PM-C2-187;;BATT_MON;1;TP8;;battery ADC
+PM-C2-188;;I2S_MCLK;1;TP9;;12.288 MHz
+PM-C2-189;;SD_CLK;1;TP10;;SDIO clock
+PM-C2-190;;USB_HS_DP;1;TP11;;USB D+
+PM-C2-191;;USB_HS_DM;1;TP12;;USB D-
+PM-C2-192;;AGND;1;TP13;;analog ground
+PM-C2-193;;DGND;1;TP14;;digital ground
+PM-C2-194;;PGND;1;TP15;;power ground
+PM-C2-195;;LED_DATA;1;TP16;;WS2812 data (after shifter)
+PM-C2-196;;CHIP_PU;1;TP17;;reset
+PM-C2-197;;BOOT;1;TP18;;boot strap GPIO35
+PM-C2-198;;3V3_C6;1;TP19;;Wi-Fi/BLE coprocessor rail
+PM-C2-199;;BL_20V;1;TP20;;backlight rail
+PM-C2-200;;C6_CS;1;TP21;;C6 SPI select
+PM-C2-201;;C6_RST;1;TP22;;C6 reset
