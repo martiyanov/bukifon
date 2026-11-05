@@ -1,3 +1,4 @@
+import sys as _sys; _sys.dont_write_bytecode = True
 # -*- coding: utf-8 -*-
 """CORE-2 (rev.1, PRE-FREEZE) single source of truth: MCU pin map, connectors,
 power tree, panel expander map.  Used by:
@@ -143,7 +144,7 @@ PINMAP = [
  ('3V3_MCU', None, 'MCU/PSRAM supply', '3.3', 'power', '-', '-', 4, 'U26 out', ''),
  ('GND', None, 'ground', '0', 'power', '-', '-', 1, 'GND', ''),
  ('GND', None, 'ground', '0', 'power', '-', '-', 2, 'GND', ''),
- ('GND', None, 'ground', '0', 'power', '-', '-', 17, 'GND', ''),
+ ('LCD_DISP', 50, 'GPIO out (LCD power/enable)', '3.3', 'out', 'none', 'low', 17, 'J-LCD.37', 'display enable; final controllable GPIO'),
  ('GND', None, 'ground', '0', 'power', '-', '-', 63, 'GND', ''),
  ('GND', None, 'ground', '0', 'power', '-', '-', 64, 'GND', ''),
 ]
@@ -177,7 +178,7 @@ J_LCD = [
  (27, 'LCD_R1', 'd'), (28, 'LCD_R2', 'd'), (29, 'LCD_R3', 'd'), (30, 'LCD_R4', 'd'),
  (31, 'BL_PWM', 'd'), (32, 'BL_ANODE', 'power'), (33, 'BL_CATHODE', 'power'),
  (34, 'I2C0_SDA', 'd'), (35, 'I2C0_SCL', 'd'), (36, 'PANEL_IRQ', 'd'),
- (37, 'DGND', 'gnd'), (38, 'DGND', 'gnd'), (39, 'DGND', 'gnd'), (40, 'DGND', 'gnd'),
+ (37, 'LCD_DISP', 'd'), (38, 'DGND', 'gnd'), (39, 'DGND', 'gnd'), (40, 'DGND', 'gnd'),
 ]
 
 # new analog-only module bus (R-11/R-22): +-12 V, CV, gate, audio
@@ -270,10 +271,10 @@ JACKS = [
 ]
 # display contract
 DISPLAY = dict(interface='LCD_CAM parallel RGB565 (16-bit) + PCLK/DE/HSYNC/VSYNC',
-               resolution='800x480', pins='25 signals: 20 LCD + I2C(2) + INT + BL_PWM',
+               resolution='800x480', pins='25 signals: 20 LCD + I2C(2) + INT + BL_PWM + DISP (+BL_ANODE/BL_CATHODE)',
                connector='J-LCD (FFC-40, 0.5 mm; PANEL-2 J12) + J-PANEL (IDC-26; J14)',
                bl='BL_ANODE/BL_CATHODE from CORE-2 +20 V boost, BL_PWM (LEDC) to panel driver',
-               disp='LCD DISP handled on PANEL-2 expander (no P4 GPIO left)')
+               disp='LCD_DISP on GPIO50 (last free GPIO); active-high enable')
 AUDIO = dict(fs='48 kHz (44.1 kHz also supported by PLL)',
              mclk='12.288 MHz = 256 fs', bck='3.072 MHz = 64 fs', lrck='48 kHz',
              dac='PCM5102A, I2S, 24-bit, SCK = shared MCLK', dac_cfg='FMT=0 (I2S), DEMP=0, FLT=0, XSMT=1 (unmute via 10k PU)',

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import sys as _sys; _sys.dont_write_bytecode = True
 # -*- coding: utf-8 -*-
 """CORE-2 schematic generator (PRE-FREEZE / DO NOT FABRICATE).
 
@@ -697,6 +698,32 @@ SEC_TITLES = {
 # ==========================================================================
 # exports / reports
 # ==========================================================================
+def sanitize_exports():
+    """Remove absolute/personal paths from generated text artifacts (PII policy:
+    no home-directory paths in the public repo; keep relative hardware/core2/...)."""
+    import re
+    root = os.path.dirname(HERE)                     # .../hardware
+    repo = os.path.dirname(root)                     # repo root
+    targets = ['netlist.net', 'netlist.xml', PROJECT + '.svg',
+               os.path.join('svg', PROJECT + '.svg'),
+               os.path.join('erc', 'erc.rpt'), os.path.join('erc', 'erc.json')]
+    for rel in targets:
+        path = os.path.join(HERE, rel)
+        if not os.path.exists(path):
+            continue
+        with open(path, encoding='utf-8', errors='ignore') as fh:
+            txt = fh.read()
+        txt = txt.replace(HERE + os.sep, 'hardware/core2/')
+        txt = txt.replace(root + os.sep, '')
+        txt = txt.replace(repo + os.sep, '')
+        # final safety net: any remaining home-directory path token
+        home_prefix = '/' + 'Users' + '/'
+        txt = re.sub(r'/(?:' + 'Users|home)/[^"\s<>,;]*', 'hardware/core2/' + PROJECT + '.kicad_sch', txt)
+        if home_prefix in txt or ('/' + 'home' + '/') in txt:
+            print('WARNING: absolute path still present in', rel)
+        with open(path, 'w', encoding='utf-8') as fh:
+            fh.write(txt)
+
 def run(cmd):
     print('+', ' '.join(cmd))
     r = subprocess.run(cmd, capture_output=True, text=True)
@@ -721,6 +748,7 @@ def exports():
          '-o', os.path.join(HERE, 'netlist.net'), schfile])
     run([KICAD_CLI, 'sch', 'export', 'netlist', '--format', 'kicadxml',
          '-o', os.path.join(HERE, 'netlist.xml'), schfile])
+    sanitize_exports()
 
 MPN = {
  'U22': 'BQ24074RGT', 'U23': 'BQ29700DSER', 'U24': 'MT3608', 'U25': 'MT3608',
@@ -754,7 +782,8 @@ def write_bom():
         nm = []
         if not onb: nm.append('off-board (rear/panel part)')
         if note: nm.append(note)
-        if any(r == 'U31' for r in refs): nm.append('DNP for ESP32-S3 build')
+        if any(r == 'U31' for r in refs) and 'DNP if ESP32-S3' not in note:
+            nm.append('DNP for ESP32-S3 build')
         rows.append(dict(code='PM-C2-%03d' % n, mpn='/'.join(mpns), val=val,
                          qty=len(refs), refs=' '.join(refs), fp=fp, note='; '.join(nm)))
     rows.sort(key=lambda r: r['code'])
@@ -802,3 +831,7 @@ if __name__ == '__main__':
         if erc:
             print('ERC: errors=%d warnings=%d' % (erc['errors'], erc['warnings']))
         write_bom()
+    # keep the working tree clean (bytecode caches would embed the checkout path)
+    import shutil
+    for d in ('__pycache__', os.path.join('tools', '__pycache__')):
+        shutil.rmtree(os.path.join(HERE, d), ignore_errors=True)

@@ -71,7 +71,8 @@ $(SIM_BIN): $(OBJ) $(SIM_OBJ) $(EXAMPLE_OBJ)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 test: $(TEST_BIN)
-	./$(TEST_BIN)
+	@mkdir -p ../tests/out
+	cd . && ./$(TEST_BIN)
 
 render: $(RENDER_BIN)
 	mkdir -p ../tests/out

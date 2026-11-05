@@ -165,3 +165,138 @@ The `eight_voices.wav`, `note_a4.wav`, `fm_algo0..7.wav`, `ladder_res100.wav`,
 - `firmware/tests/{test_*.cpp, fft_analyze.py, run_tests.sh, REPORT.md}`
 - `firmware/tests/out/` — 13 WAV files, `test_log.txt`, `fft_metrics.json`
 - `firmware/tools/{gen_wavetables.cpp, gen_font.py, build_pico.sh}`
+
+---
+
+# v0.5 — host prototype + ESP32 skeleton + module API v0 (2026-11-05)
+
+This milestone follows the Lead's scope correction: the deliverable is an
+**integrated host prototype** (run + show), not a full ESP32 port.  All numbers
+below are from runs performed in this workspace; nothing is estimated unless
+marked.
+
+## Commands and results (actual runs)
+
+```bash
+make -C firmware/host test          # 112 tests, 0 failures
+firmware/tests/run_tests.sh         # RESULT: ALL HOST TESTS PASSED (exit 0)
+firmware/tests/run_sim_demo.sh      # DEMO OK (determinism + 4 PNG artefacts)
+
+PLATFORMIO_CORE_DIR=/tmp/piocore pio run -d firmware -e native   # SUCCESS
+PLATFORMIO_CORE_DIR=/tmp/piocore pio run -d firmware -e s3       # SUCCESS
+PLATFORMIO_CORE_DIR=/tmp/piocore pio run -d firmware/Bukifon     # SUCCESS (RP2040)
+```
+
+| Run | Result |
+|---|---|
+| Host unit tests | **112 passed, 0 failed** (was 67 before v0.5) |
+| Full host pipeline | **PASS** (build, 112 tests, WAV render, FFT checks) |
+| Host demo | **PASS**: 16 bars, 32.0 s, 1 536 000 frames, 1024 note-ons/offs, 32 p-lock events, audio peak 0.574, determinism PASS |
+| Event log | 2085 lines (`firmware/artifacts/sim/event_log.txt`), rerun byte-identical |
+| UI screenshots | 4 × 800×480 PNG in `firmware/artifacts/ui/` (main, sequencer, mixer, modules) |
+| Native PlatformIO env | **SUCCESS** (6.3 s), program 519 880 B, simulator runs and renders the same 4 screens |
+| ESP32-S3 env | **SUCCESS** (17.8 s), Flash **596 309 / 3 342 336 B (17.8 %)**, RAM **202 328 / 327 680 B (61.7 %)**; `firmware.bin` 600 992 B |
+| RP2040 prototype (`firmware/Bukifon`) | **SUCCESS** (7.4 s), Flash **395 888 / 1 044 480 B (37.9 %)**, RAM **230 028 / 262 144 B (87.7 %)**; UF2 816 128 B (RAM grew because the sequencer now reserves 8-track storage; ~32 KiB headroom left) |
+| ESP32-P4 env | **NOT BUILT** — official `platformio/espressif32` 8.0.0 (arduino-esp32 3.x) ships S3/C3/C6 but has no ESP32-P4 board/framework package. `env:p4` is prepared (commented) in `firmware/platformio.ini`; on a P4-capable platform (pioarduino / arduino-esp32 P4 preview) the same sources build unchanged. Report: tested on S3. |
+
+The earlier pre-v0.5 DSP numbers (A4 440.0000 Hz, aliasing −68.6 dB, 8 FM
+algorithms, ladder res=100 %, 8 voices) are unchanged and still pass in
+`run_tests.sh`.
+
+## Line coverage (gcov, real measurement)
+
+Built with `--coverage`, run all 112 tests, aggregated with
+`xcrun llvm-cov gcov` (Apple clang 21; generated wavetable/font tables excluded):
+
+**4347 / 5204 lines = 83.5 %** over 37 translation units.
+
+| Module | Coverage | Module | Coverage |
+|---|---|---|---|
+| dsp | 90.8 % | storage | 94.6 % |
+| ui | 90.5 % | usb | 99.0 % |
+| sim | 86.7 % | net | 91.0 % |
+| audio | 75.5 % | modules | 79.1 % |
+| io | 76.2 % | core | 78.8 % |
+
+Lowest-covered TUs are the intentionally thin wrappers (`modulation_defs`
+19.8 %, `midi_router` 39.4 %, `module_registry` 51.0 %) — they mostly contain
+name tables and pass-through code. Coverage artefacts were removed after
+measurement (not part of the deliverable).
+
+## Feature status table (requirement → status)
+
+| Функция | Статус | Evidence |
+|---|---|---|
+| Host simulator + единый слой событий (note/param/transport/encoder/mute/p-lock/pattern/tempo) | **готово** | `src/sim/*`, `test_event_log`, `test_simulator`; replay из файла, детерминизм |
+| UI shell 800×480 (status bar: BPM/PAT/status/mode; 4 дорожки; панель параметров; transport; подсказки энкодеров) | **готово** | `src/ui/ui800.cpp`, 4 PNG, `test_ui800`, `test_device_modes` |
+| UI не владеет состоянием (только snapshot + команды) | **готово** | `UiSnapshot` строится симулятором/устройством, `drawUi800()` — чистая функция |
+| Секвенсор 4×16 (архитектурно 8): BPM, play/stop, note trigger, mute, один p-lock | **готово** | `test_simulator` (transport/wrap/mute/p-lock), хранение 8 дорожек (`kMaxSeqTracks`) |
+| Save/load проекта с полем version + CRC | **готово** | `src/storage/project_io.*`, `test_project_io`: save→load→save byte-identical |
+| Module API v0 (10 функций) + 2 примера + бюджет/bypass | **готово (экспериментальный ABI)** | `include/bukifon_module.h`, `modules/examples/{gain_fx,lfo_module}.cpp`, `module_host_v0`, `test_module_v0` |
+| Lua-слой с лимитом инструкций | **заглушка** | `src/modules/lua_layer.*`, лимиты/статусы в тестах; интерпретатор не линкуется |
+| Режимы устройства Synth/Sampler/DAW-контроллер/USB-клавиатура без перезагрузки | **готово (host-тесты + индикатор)** | `core/device_mode.*`, `test_device_modes`; UI показывает `MODE SYN/DAW/KBD` |
+| USB composite: дескрипторы HID-клавиатура + MIDI + UAC2 + CDC | **каркас** | `src/usb/usb_descriptors.*` (байтовые дескрипторы проверены unit-тестами); TinyUSB glue — `TODO(hw)` |
+| USB HID 42-клавиши: раскладка, слои, макросы, 6KRO отчёт | **каркас** | `io/hid_keyboard.*`, `test_hid_daw` |
+| DAW-режим: 16 энкодеров × 4 банка CC, transport, 42 клавиши ноты/хоткеи | **каркас** | `io/daw_controller.*`, `test_hid_daw`; Mackie/HUI — заглушка (`mackieSupported()==false`) |
+| BLE-MIDI / BLE-HID (S3 NimBLE, P4 через ESP32-C6) | **заглушка** | `net/wireless.*` (API/state machine/статусы), радио не реализовано |
+| Wi-Fi AP + веб-страница + OTA | **заглушка** | `net/wireless.*` (web-страница-строка, OTA API возвращает NotImplemented) |
+| ESP32-S3 сборка | **готово (компилируется)** | см. размеры выше |
+| ESP32-P4 сборка | **не собрано** | платформа 8.0.0 не содержит P4; env:p4 подготовлен и закомментирован |
+
+## Module API v0 (EXPERIMENTAL, не стабильный)
+
+`firmware/include/bukifon_module.h`, `BUKIFON_MODULE_API_VERSION 0`:
+
+1. `descriptor()` — static metadata + parameter table
+2. `create()` — allocate instance (allocation allowed only here)
+3. `prepare(sample_rate)`
+4. `reset()`
+5. `process(in, out, frames)` — **frames ≤ 64**, real-time safe
+6. `set_param(id, value)`
+7. `state_size()`
+8. `save_state(out, capacity)`
+9. `load_state(data, size)`
+10. `destroy()`
+
+Limits enforced by the host: `MAX_FRAMES 64`, `MAX_STACK 8192 B`,
+`MAX_STATE 4096 B`, `MAX_PARAMS 16`, WCET budget **800 µs** per 64-frame call
+(≈60 % of a 1.33 ms deadline at 48 kHz), **2 budget overruns → module bypassed**
+(dry pass-through) until `clearBypass()`.  `process()` must not malloc/lock/do
+I/O; this is documented in the header and checked by review, not by the compiler.
+Examples: `GAIN FX` (drive/tone/mix, state save/load, asymmetric saturation) and
+`LFO MOD` (rate/shape/depth, control-rate output).  Tests: lifecycle, ABI
+rejection (7 invalid descriptors + 4 invalid tables), state roundtrip,
+deterministic budget injection/bypass, `frames>64` rejection.
+
+## What is simulated / not verified
+
+- Simulated: all hardware I/O (RP2040 panel/audio peripherals, ESP32 panel,
+  I2S codec, USB PHY/TinyUSB glue, BLE/Wi-Fi radios).  The UI framebuffer, USB
+  descriptor bytes, event scheduling and DSP are real computations.
+- Not verified: anything on physical P4/S3 hardware; P4 build impossible with
+  the installed platform; no radio/TinyUSB runtime; no 30 fps measurement on
+  glass; RP2040 RAM is at 87.7 % (v0.5 additions left ~32 KiB).
+- No git operations were performed during the commit-freeze window (files are
+  in the working tree, as requested).
+
+## P4 port risks
+
+1. **Toolchain/platform**: official PlatformIO espressif32 has no P4 target;
+   needs pioarduino/arduino-esp32 P4 preview, which is young — API churn.
+2. **Framebuffer RAM**: 800×480 RGB565 = 750 KiB; internal SRAM insufficient →
+   PSRAM required (the skeleton allocates via PSRAM when available, otherwise
+   fails gracefully).  P4 with 32 MB PSRAM is the target, S3 without PSRAM
+   cannot show the full UI.
+3. **Display bandwidth**: 30 fps × 750 KiB = 22.5 MB/s; needs RGB/DSI + DMA2D
+   (P4) or partial redraws (S3).  The UI shell is pure/snapshot-driven, which
+   makes dirty-rectangle rendering possible later.
+4. **USB composite**: HS UAC2 2-in/2-out + HID + MIDI + CDC needs TinyUSB
+   composite descriptors (builder exists) and a HS-capable PHY (P4); S3 is
+   Full-Speed (stereo UAC2 only).
+5. **BLE on P4** goes through an ESP32-C6 coprocessor (SDIO/UART) — extra
+   latency/link failure domain; interface is abstracted in `net/wireless.hpp`
+   (`bleViaCoprocessor`).
+6. **RAM/CPU**: engine today is tuned for the host; block-size/WCET measurements
+   on P4 are TODO(hw).  Lua is not linked yet; instruction budget exists.
+7. **RP2040 prototype** remains the only hardware-verified build path; its RAM
+   headroom (87.7 %) is the constraint to watch if more features are added.

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import sys as _sys; _sys.dont_write_bytecode = True
 # -*- coding: utf-8 -*-
 """CORE-2 pin/resource ownership checker.
 

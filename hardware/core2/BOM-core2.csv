@@ -74,7 +74,7 @@ PM-C2-072;;10k;1;R24;Resistor_SMD:R_0805_2012Metric;GPIO36 strap PU (joint downl
 PM-C2-073;;UART0 TP;1;J4;Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical;UART0 testpoints/boot log
 PM-C2-074;;100k;1;R25;Resistor_SMD:R_0805_2012Metric;VBUS detect divider
 PM-C2-075;;100k;4;R26 R38 R63 R65;Resistor_SMD:R_0805_2012Metric;
-PM-C2-076;ESP32-C6-MINI-1 (DNP if ESP32-S3 build);ESP32-C6-MINI-1 (Wi-Fi6/BLE5.3);1;U31;;"Wi-Fi/BLE coprocessor; DNP if ESP32-S3 build; antenna keep-out >=15 mm; DNP for ESP32-S3 build"
+PM-C2-076;ESP32-C6-MINI-1 (DNP if ESP32-S3 build);ESP32-C6-MINI-1 (Wi-Fi6/BLE5.3);1;U31;;"Wi-Fi/BLE coprocessor; DNP if ESP32-S3 build; antenna keep-out >=15 mm"
 PM-C2-077;;10k;1;R27;Resistor_SMD:R_0805_2012Metric;C6 EN pull-up
 PM-C2-078;microSD socket (Hirose DM3AT);microSD (SDIO 4-bit);1;J5;Connector_Card:microSD_HC_Hirose_DM3AT-SF-PEJM5;SDMMC slot0, 4-bit
 PM-C2-079;;10k;5;R30 R31 R32 R33 R34;Resistor_SMD:R_0805_2012Metric;SDIO pull-up

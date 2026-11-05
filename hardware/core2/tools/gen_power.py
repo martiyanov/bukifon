@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import sys as _sys; _sys.dont_write_bytecode = True
 # -*- coding: utf-8 -*-
 """Generate power-tree.md for CORE-2 (PRE-FREEZE). Numbers come from
 tools/board_def.py; formulas documented inline so they can be re-checked."""

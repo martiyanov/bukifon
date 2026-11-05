@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import sys as _sys; _sys.dont_write_bytecode = True
 # -*- coding: utf-8 -*-
 """Generate pinmap.csv (machine readable) and pinmap.md (human table) for CORE-2.
 PRE-FREEZE / DO NOT FABRICATE.  Source: tools/board_def.py"""
@@ -134,6 +135,12 @@ def write_md():
     A('')
     table('TB1/TB2', [(n, s) for _, s, n in B.TB_REAR], 'TB1/TB2 — задние джеки (MIDI, LINE/PHONES, DC, EXPRESSION)')
     A('\\* энкодеры и матрица клавиш считываются MCP23017 на PANEL-2; на CORE-2 идут только I2C + IRQ.')
+    A('')
+    A('> В таблицах разъёмов указаны *логические* цепи. На плате питания панели идут через')
+    A('> фильтры: `3V3 -> 3V3_PANEL`, `5V -> 5V_PANEL` (ферриты FB4/FB5), `BL_ANODE -> BL_20V`')
+    A('> (+20 В boost), `BL_CATHODE` — возврат LED-линейки (0R на PGND на CORE-2).')
+    A('> J13 IDC-16 (дека) находится на PANEL-2; на CORE-2 ему соответствуют J15 FFC-40 (J12)')
+    A('> и J14 IDC-26 (J14) — см. `interfaces.md` §7.')
     A('')
     A('## 8. Дисплей и аудио-контракт (кратко; полностью — `interfaces.md`)')
     A('')

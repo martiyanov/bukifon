@@ -15,14 +15,14 @@ SDMMC slot0 на падах GPIO39…GPIO48, LCD_CAM (parallel RGB 16 бит) и
 | Параметр | Значение |
 |---|---|
 | Всего GPIO у ESP32-P4 | 55 (GPIO0…GPIO54) |
-| Занято сигналами платы | **53** |
+| Занято сигналами платы | **54** |
 | Зарезервировано (USB FS/JTAG, strapping) | **1** |
-| Свободно | **1** (1.8 %) |
+| Свободно | **0** (0.0 %) |
 | Конфликтов GPIO | **0** (проверено `check_pinmap.py`) |
 | Конфликтов boot/strapping | **0** (GPIO35 = BOOT с 10k PU; GPIO36 = 10k PD; GPIO37/38 = UART0) |
 | Резерв GPIO | **фактически отсутствует** (1 свободный GPIO54) — расширение только по I2C/SPI |
 
-Свободные GPIO: GPIO50.
+Свободные GPIO: нет.
 
 **Резерв GPIO — отсутствует (1 из 55 = 1.8 %).** Это осознанное решение PRE-FREEZE:
 16 энкодеров и матрица 42 клавиш вынесены на 3× MCP23017 (I2C) на PANEL-2,
@@ -88,6 +88,7 @@ SDMMC slot0 на падах GPIO39…GPIO48, LCD_CAM (parallel RGB 16 бит) и
 | 51 | `C6_RST` | GPIO27 | GPIO out (C6 reset) | 3.3 | out | 10k PD | low | 13 | U-C6.EN | resets C6 at power-up; released by firmware |
 | 52 | `BOOT` | GPIO35 | boot strapping (GPIO35) | 3.3 | in (strap) | 10k PU + button to GND | high (SPI boot) | 8 | SW-BOOT | low at reset = joint download boot (USB HS / UART0) |
 | 53 | `VBUS_DET` | GPIO54 | GPIO in (VBUS detect) | 3.3 | in | 100k/100k divider | low | 14 | D1/R | USB-C attach detect (100k/100k + 100nF) |
+| 54 | `LCD_DISP` | GPIO50 | GPIO out (LCD power/enable) | 3.3 | out | none | low | 17 | J-LCD.37 | display enable; final controllable GPIO |
 
 ## 3. Выделенные и не-GPIO выводы модуля
 
@@ -100,7 +101,6 @@ SDMMC slot0 на падах GPIO39…GPIO48, LCD_CAM (parallel RGB 16 бит) и
 | `3V3_MCU` | — | MCU/PSRAM supply | 3.3 | power | - | 4 | U26 out |
 | `GND` | — | ground | 0 | power | - | 1 | GND |
 | `GND` | — | ground | 0 | power | - | 2 | GND |
-| `GND` | — | ground | 0 | power | - | 17 | GND |
 | `GND` | — | ground | 0 | power | - | 63 | GND |
 | `GND` | — | ground | 0 | power | - | 64 | GND |
 
@@ -169,7 +169,7 @@ I2C0 (GPIO21/22) — общая шина: 2× MCP4728 (0x60/0x61), 24C32 (0x57),
 | 14 | `VBUS_DET` |
 | 15 | `LED_GPIO` |
 | 16 | `BL_PWM` |
-| 17 | `GND` |
+| 17 | `LCD_DISP` |
 | 18 | `PANEL_IRQ` |
 | 19 | `GATE1_GPIO` |
 | 20 | `GATE2_GPIO` |
@@ -289,7 +289,7 @@ I2C0 (GPIO21/22) — общая шина: 2× MCP4728 (0x60/0x61), 24C32 (0x57),
 | 34 | `I2C0_SDA` |
 | 35 | `I2C0_SCL` |
 | 36 | `PANEL_IRQ` |
-| 37 | `DGND` |
+| 37 | `LCD_DISP` |
 | 38 | `DGND` |
 | 39 | `DGND` |
 | 40 | `DGND` |
@@ -387,16 +387,22 @@ I2C0 (GPIO21/22) — общая шина: 2× MCP4728 (0x60/0x61), 24C32 (0x57),
 
 \* энкодеры и матрица клавиш считываются MCP23017 на PANEL-2; на CORE-2 идут только I2C + IRQ.
 
+> В таблицах разъёмов указаны *логические* цепи. На плате питания панели идут через
+> фильтры: `3V3 -> 3V3_PANEL`, `5V -> 5V_PANEL` (ферриты FB4/FB5), `BL_ANODE -> BL_20V`
+> (+20 В boost), `BL_CATHODE` — возврат LED-линейки (0R на PGND на CORE-2).
+> J13 IDC-16 (дека) находится на PANEL-2; на CORE-2 ему соответствуют J15 FFC-40 (J12)
+> и J14 IDC-26 (J14) — см. `interfaces.md` §7.
+
 ## 8. Дисплей и аудио-контракт (кратко; полностью — `interfaces.md`)
 
 | Параметр | Значение |
 |---|---|
 | display.interface | LCD_CAM parallel RGB565 (16-bit) + PCLK/DE/HSYNC/VSYNC |
 | display.resolution | 800x480 |
-| display.pins | 25 signals: 20 LCD + I2C(2) + INT + BL_PWM |
+| display.pins | 25 signals: 20 LCD + I2C(2) + INT + BL_PWM + DISP (+BL_ANODE/BL_CATHODE) |
 | display.connector | J-LCD (FFC-40, 0.5 mm; PANEL-2 J12) + J-PANEL (IDC-26; J14) |
 | display.bl | BL_ANODE/BL_CATHODE from CORE-2 +20 V boost, BL_PWM (LEDC) to panel driver |
-| display.disp | LCD DISP handled on PANEL-2 expander (no P4 GPIO left) |
+| display.disp | LCD_DISP on GPIO50 (last free GPIO); active-high enable |
 | audio.fs | 48 kHz (44.1 kHz also supported by PLL) |
 | audio.mclk | 12.288 MHz = 256 fs |
 | audio.bck | 3.072 MHz = 64 fs |

@@ -1,7 +1,13 @@
 # Bukifon firmware
 
-Open firmware for **Bukifon** — a modular handheld synth/gamepad built on
-Raspberry Pi Pico (RP2040, 2 cores) with `arduino-pico`.
+Open firmware for **Bukifon** — a modular handheld synth/gamepad.
+
+v0.5 adds the **ESP32-P4/S3 path** (800×480 UI, device modes, USB/BLE/Wi-Fi
+frameworks) on top of the RP2040 prototype.  The verified, runnable artefact of
+this milestone is the **host prototype**: deterministic simulator + 800×480 UI
+screenshots + sequencer vertical slice + save/load + experimental Module API v0.
+The ESP32-S3 firmware skeleton compiles; ESP32-P4 is prepared but not buildable
+with the installed PlatformIO platform (see «Build status»).
 
 **License: GPL-3.0-or-later** (every source file carries an SPDX header).
 Specification: `spec/40-firmware.md`, `spec/10-panel-ui.md`, `spec/20-electronics.md`.
@@ -26,13 +32,57 @@ firmware/
                 cal, module table, hours), factory bank of 16 patches
   src/ui/       8-page encoder menu rendered through a portable ICanvas,
                "actual modulated value" display, generated 6x8 font
-  src/hal/      RP2040 drivers (headers, Arduino-only): i2s_pio, mcp4728,
-                mcp3208, hc165, mcp23017, ws2812, st7789, midi_uart, pinmap
-  Bukifon/      Arduino sketch: Bukifon.ino + platformio.ini + engine_unity.cpp
+  src/hal/      RP2040 drivers (i2s_pio, mcp4728, mcp3208, hc165, mcp23017,
+                ws2812, st7789, midi_uart, pinmap) + ESP32 HAL seam
+  src/sim/      deterministic host simulator + replayable event log
+  src/usb/      USB composite descriptor builder (HID + MIDI + UAC2 + CDC)
+  src/net/      BLE-MIDI/HID and Wi-Fi AP/web/OTA framework (stubs)
+  include/      bukifon_module.h — Module API v0 (EXPERIMENTAL, unstable)
+  modules/      two example modules implementing API v0 (gain FX, LFO)
+  app/          sim_main.cpp (host demo/screenshots), esp32_main.cpp (skeleton)
+  platformio.ini  ESP32-S3 + host(native) project (separate from RP2040)
+  engine_unity.cpp / sim_unity.cpp  PlatformIO unity translation units
+  Bukifon/      RP2040 Arduino sketch: Bukifon.ino + platformio.ini
   host/         native build (Makefile + CMakeLists.txt), WAV renderer
-  tests/        unit tests, FFT analysis, run_tests.sh, REPORT.md
-  tools/        wavetable/font generators, build_pico.sh
+  tests/        unit tests (112), FFT analysis, run_tests.sh, run_sim_demo.sh, REPORT.md
+  tools/        wavetable/font generators, ppm_to_png.py, build_pico.sh
+  artifacts/    generated 800x480 UI screenshots + demo logs (git-ignored)
 ```
+
+## v0.5 host prototype — what to run
+
+```bash
+make -C firmware/host test          # 112 unit tests
+firmware/tests/run_tests.sh         # build + tests + WAV render + FFT report
+firmware/tests/run_sim_demo.sh      # 16-bar demo, event-log determinism, 4 PNG
+```
+
+The demo builds the pattern, plays **16 bars** (32 s at 120 BPM), writes a
+deterministic event log and renders four 800×480 UI screens:
+
+![main](artifacts/ui/main.png)
+![sequencer](artifacts/ui/sequencer.png)
+
+Screens: [main](artifacts/ui/main.png) · [sequencer](artifacts/ui/sequencer.png) ·
+[mixer](artifacts/ui/mixer.png) · [modules](artifacts/ui/modules.png)
+(status bar with BPM/patch/status/mode, 4 track strips, parameter panel,
+transport row, encoder hints).  Measured: 1024 note-on/off events, 32 p-lock
+events, audio peak 0.574, two runs produce byte-identical logs.
+
+New in v0.5 (all host-tested):
+
+| Feature | Status |
+|---|---|
+| Device modes Synth / Sampler / DAW-controller / USB-keyboard, switching without reboot, UI indicator | ready (host-tested) |
+| USB composite descriptor builder: HID keyboard (42 keys, layers, macros) + MIDI + UAC2 + CDC | framework (descriptors unit-tested; TinyUSB glue TODO(hw)) |
+| DAW mode: 16 encoders × 4 CC banks, transport, keys as notes/hotkeys | framework (Mackie/HUI stub) |
+| BLE-MIDI / BLE-HID (S3 NimBLE, P4 via ESP32-C6), Wi-Fi AP/web/OTA | stubs with API + state machine + tests |
+| Module API v0 (`include/bukifon_module.h`, 10 functions, 2 examples, WCET budget + 2-overrun bypass), Lua layer stub | ready (EXPERIMENTAL ABI) |
+| Versioned save/load with CRC (patterns, mutes, p-locks, chain) | ready, deterministic test |
+| 800×480 snapshot-driven UI, PPM→PNG pipeline | ready |
+
+Module API v0 is **experimental and unstable** (see the header warning): v0.5 is
+a design probe for the P4 firmware, not an SDK promise.
 
 ## Host build and tests (fully verified)
 
@@ -45,7 +95,9 @@ firmware/tests/run_tests.sh         # full pipeline: build, tests, WAV render, F
 
 Latest measured results (see `tests/REPORT.md` and `tests/out/test_log.txt`):
 
-- **67 unit tests, 0 failures** (Apple clang 21, C++17, `-O2`)
+- **112 unit tests, 0 failures** (Apple clang 21, C++17, `-O2`)
+- line coverage **83.5 %** (4347/5204 lines, gcov, generated tables excluded)
+- host demo: 16 bars, 1024 note-ons, 32 p-locks, deterministic event log, 4 PNG screens
 - A4 = **440.0000 Hz** (error `-0.0000 %`, limit ±0.1 %)
 - aliasing (worst spurious in 60 Hz…20 kHz): **−68.6 dB** (limit −60 dB)
 - all **8 FM algorithms**: no subharmonics (−240 dB), worst non-harmonic −62.2 dB
@@ -84,13 +136,34 @@ export PLATFORMIO_CORE_DIR=/tmp/piocore
 | Параметр | Значение |
 |---|---|
 | Статус | **SUCCESS** (256 с, полный цикл с загрузкой core) |
-| Flash | 377 312 B / 1 044 480 B — **36.1 %** |
-| RAM | 210 012 B / 262 144 B — **80.1 %** |
-| Артефакты | `firmware/artifacts/bukifon-pico.uf2` (764 KiB), `.elf` |
-| Host-тесты | 67/67 после сборки (регрессий нет) |
+| Flash | 395 888 B / 1 044 480 B — **37.9 %** |
+| RAM | 230 028 B / 262 144 B — **87.7 %** |
+| Артефакты | `firmware/Bukifon/.pio/build/pico/firmware.uf2` (816 KiB), `.elf` |
+| Host-тесты | **112/112** после сборки (регрессий нет) |
 
-RAM 80 % — запас небольшой; при добавлении эффектов/модулей оптимизировать
-буферы (delay-линия, пресет-кэш) или перенести часть в PSRAM (RP2350).
+RAM 87.7 % — запас ~32 KiB; при добавлении эффектов/модулей оптимизировать
+буферы (delay-линия, пресет-кэш, 8-дорожечный секвенсор) или перенести часть в
+PSRAM (RP2350).
+
+## ESP32-P4 / S3 build (v0.5 skeleton)
+
+```bash
+export PLATFORMIO_CORE_DIR=/tmp/piocore    # sandbox: ~/.platformio is read-only
+pio run -d firmware -e native              # host build (simulator + screenshots)
+pio run -d firmware -e s3                  # ESP32-S3 skeleton
+# P4: not available in official espressif32 8.0.0 — see env:p4 notes below
+```
+
+| Target | Result |
+|---|---|
+| `native` | SUCCESS, program 519 880 B, same 4 screenshots rendered |
+| `s3` (ESP32-S3-DevKitC-1) | SUCCESS, Flash 596 309 / 3 342 336 B (17.8 %), RAM 202 328 / 327 680 B (61.7 %) |
+| `p4` | **not built**: PlatformIO espressif32 8.0.0 (arduino-esp32 3.x) has no ESP32-P4 board/framework. `env:p4` is prepared and commented in `firmware/platformio.ini`; on a P4-capable platform (pioarduino / arduino-esp32 P4 preview) the same sources build. |
+| RP2040 prototype `firmware/Bukifon` | SUCCESS (unchanged project, rebuild verified) |
+
+The S3/P4 sketch wires the portable engine + 800×480 UI + device modes +
+USB/BLE/Wi-Fi frameworks.  Hardware-specific parts are explicit `TODO(hw)`
+(`app/esp32_main.cpp`, `src/hal/esp32_hal.hpp`); see the status table above.
 
 ## Hardware map (updated contract)
 
@@ -131,3 +204,10 @@ MIDI, USB-MIDI (needs TinyUSB core option and the Adafruit TinyUSB library).
 - Parameter locks are limited to 8 per step in RAM; the editor and sequencer
   support them, but they are not serialised into the 512-byte patch.
 - `loadFactoryPatch()` resets active voices (used for sound locks/program change).
+- v0.5: TinyUSB composite glue, NimBLE, Wi-Fi AP/web/OTA are stubs; Module API v0
+  is experimental; Mackie/HUI is a stub.  ESP32-P4 cannot be built with the
+  installed PlatformIO platform (evidence and switch instructions in
+  `tests/REPORT.md`).
+- UI screenshots and demo logs live in `firmware/artifacts/` (git-ignored by the
+  repository policy for generated artefacts; reproducible with
+  `firmware/tests/run_sim_demo.sh`).

@@ -60,6 +60,6 @@ CHIP_PU;;reset (CHIP_PU);3.3;in;10k PU + 100nF;high;5;SW-RESET;power-on reset, R
 3V3_MCU;;MCU/PSRAM supply;3.3;power;-;-;4;U26 out;
 GND;;ground;0;power;-;-;1;GND;
 GND;;ground;0;power;-;-;2;GND;
-GND;;ground;0;power;-;-;17;GND;
+LCD_DISP;50;GPIO out (LCD power/enable);3.3;out;none;low;17;J-LCD.37;"display enable; final controllable GPIO"
 GND;;ground;0;power;-;-;63;GND;
 GND;;ground;0;power;-;-;64;GND;

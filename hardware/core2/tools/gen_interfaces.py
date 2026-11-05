@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import sys as _sys; _sys.dont_write_bytecode = True
 # -*- coding: utf-8 -*-
 """Generate interfaces.md for CORE-2 (PRE-FREEZE): audio, USB, CV, MIDI,
 module bus, digital expansion, panel, clocking/mute/reset contract."""
@@ -42,7 +43,7 @@ def md():
     w('На верхней панели (PANEL-2) остаются только 10 CV/GATE-джеков.')
     w('DEMP=0 (de-emphasis off), FLT=0 (normal latency), FMT=0 (I2S).')
     w('')
-    w('**PCM1808 (ADC):** %s; %s. Питание: %s.' % (a['adc'], a['adc_supply'], a['adc_supply']))
+    w('**PCM1808 (ADC):** %s; %s.' % (a['adc'], a['adc_supply']))
     w('Входы VINL/VINR: 1 uF AC-связь (внутренний 60 кОм -> HPF 2.7 Гц), опциональный')
     w('RC 1k/100pF на входе, защита BAT54S. MD0=MD1=0, FMT=0.')
     w('')
@@ -178,8 +179,8 @@ def md():
     w('| 16 энкодеров EC11 | 2× MCP23017 (I2C 0x20/0x21), A/B на GPA/GPB, INT -> PANEL_IRQ |')
     w('| Матрица 42 клавиш (6×7) | MCP23017 #3 (0x22): 7 колонок GPA0..6 (входы, 10к PU), 6 строк GPB0..5 (выходы), INT -> PANEL_IRQ |')
     w('| 2 фейдера 10к | аналог -> J-PANEL.13/15 -> MCP3208 CH2/CH3 (RC 1к/100нФ) |')
-    w('| 10 mini-jack | CV OUT1..4, CV IN1..2, GATE1..2, AUDIO IN L/R (см. §3/§4) |')
-    w('| Экран 5.0\" 800×480 | RGB565, 16 data + PCLK/DE/HSYNC/VSYNC (20 GPIO), BL (LEDC PWM), DISP |')
+    w('| 10 mini-jack | CV OUT 1..6, CV IN 1..2, GATE 1..2 (верхняя панель; см. §3/§4) |')
+    w('| Экран 5.0\" 800×480 | RGB565: 16 data + PCLK/DE/HSYNC/VSYNC (20 GPIO) + I2C(2) + INT + BL_PWM + DISP = **25 сигналов** (PANEL-2 J12 FFC-40) |')
     w('| LED-цепочка | LED_DATA 5 В (74HCT1G125 + 330 Ом), 74 LED (42 клавиши + 16 ручек + статус) |')
     w('| Питание панели | +5V (LED/логика), +3V3 (логика/экран), +20 V BL_ANODE, линии GND |')
     w('| Коннекторы PANEL-2 | J12 FFC-40 (LCD+I2C+INT+BL), J13 IDC-16 (дека, на панели), J14 IDC-26 (control/аналог); на CORE-2 — J-LCD (FFC-40) и J-PANEL (IDC-26) |')

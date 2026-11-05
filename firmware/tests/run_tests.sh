@@ -34,7 +34,7 @@ FAILED=0
   echo
 
   echo "=== 2. unit tests (build/bukifon_tests) ==="
-  "$ROOT/host/build/bukifon_tests"
+  ( cd "$ROOT/host" && ./build/bukifon_tests )
   TEST_RC=$?
   echo "unit test exit code: $TEST_RC"
   echo
