@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bukifon — open-source modular synthesizer and sampler, 3D-printed</title>
+<meta name="description" content="Bukifon is an open-source desktop synthesizer and sampler: 42 Lapka-42 keys, 16 encoders, 5″ display, 10 mini-jacks, 2 faders, 380×210×63 mm 3D-printed case. KiCad schematics, C++ firmware, community modules.">
+<meta name="keywords" content="Bukifon, open source synthesizer, open hardware, sampler, DIY synth, 3D printed synth, Lapka-42, Choc keyboard, RP2040, ESP32-P4, KiCad, MIDI, CV, modular synth, music hardware">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Bukifon project">
+<link rel="canonical" href="https://martiyanov.github.io/bukifon/en/">
+<link rel="alternate" hreflang="ru" href="https://martiyanov.github.io/bukifon/">
+<link rel="alternate" hreflang="en" href="https://martiyanov.github.io/bukifon/en/">
+<link rel="alternate" hreflang="x-default" href="https://martiyanov.github.io/bukifon/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Bukifon">
+<meta property="og:title" content="Bukifon — open-source synthesizer and sampler, 3D-printed">
+<meta property="og:description" content="A platform: Digitakt-class sampler + Syntakt-class synth + user modules. 380×210×63 mm, 42 keys, 16 encoders, 5″ display, 10 mini-jacks.">
+<meta property="og:url" content="https://martiyanov.github.io/bukifon/en/">
+<meta property="og:image" content="https://martiyanov.github.io/bukifon/assets/panel-ru.jpg">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="ru_RU">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Bukifon — open-source synthesizer and sampler">
+<meta name="twitter:description" content="42 Lapka-42 keys, 16 encoders, 5″ display, 10 mini-jacks, 3D-printed case. Open hardware and firmware.">
+<meta name="twitter:image" content="https://martiyanov.github.io/bukifon/assets/panel-ru.jpg">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎛️</text></svg>">
+<style>
+:root{--bg:#141414;--card:#1d1d1d;--fg:#eaeaea;--mut:#9a9a9a;--acc:#e8b047;--acc2:#7fb3d5}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Arial,sans-serif}
+a{color:var(--acc2)}
+.wrap{max-width:1060px;margin:0 auto;padding:0 20px}
+header{padding:56px 0 28px;border-bottom:1px solid #2a2a2a}
+h1{font-size:clamp(30px,5vw,46px);margin:0 0 8px;letter-spacing:.5px}
+.sub{color:var(--mut);font-size:clamp(16px,2.2vw,20px);margin:0 0 18px}
+.badge{display:inline-block;background:#232323;border:1px solid #333;border-radius:999px;padding:3px 12px;font-size:13px;color:var(--mut);margin:0 8px 8px 0}
+nav a{margin-right:18px;text-decoration:none;font-weight:600}
+section{padding:38px 0;border-bottom:1px solid #232323}
+h2{font-size:clamp(22px,3.2vw,30px);margin:0 0 14px}
+h3{font-size:19px;margin:22px 0 6px}
+p,li{color:#d6d6d6}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.card{background:var(--card);border:1px solid #2c2c2c;border-radius:14px;padding:18px}
+.card h3{margin-top:0}
+img{max-width:100%;border-radius:12px;border:1px solid #2c2c2c}
+table{width:100%;border-collapse:collapse;margin:12px 0}
+th,td{border-bottom:1px solid #2c2c2c;padding:8px 10px;text-align:left;font-size:15px}
+th{color:var(--acc)}
+code{background:#242424;padding:2px 6px;border-radius:6px;font-size:14px}
+footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
+.cta{display:inline-block;background:var(--acc);color:#1a1a1a;font-weight:700;padding:12px 22px;border-radius:10px;text-decoration:none;margin:6px 10px 6px 0}
+.cta.alt{background:#2a2a2a;color:var(--fg);border:1px solid #3a3a3a}
+.small{font-size:14px;color:var(--mut)}
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Bukifon",
+  "alternateName": "Букифон",
+  "operatingSystem": "Bare metal / RP2040, ESP32-P4 (planned)",
+  "applicationCategory": "MultimediaApplication",
+  "description": "Open-source desktop synthesizer and sampler platform: 42 Lapka-42 keys, 16 encoders, 5-inch display, 10 mini-jacks, 2 faders, 380x210x63 mm 3D-printed case; open KiCad schematics and C++ firmware, user modules.",
+  "url": "https://martiyanov.github.io/bukifon/en/",
+  "image": "https://martiyanov.github.io/bukifon/assets/panel-ru.jpg",
+  "license": "https://www.cern.ch/ohl",
+  "author": {"@type": "Organization", "name": "Bukifon project", "url": "https://github.com/martiyanov/bukifon"},
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+  "inLanguage": "en"
+}
+</script>
+</head>
+<body>
+<header><div class="wrap">
+  <nav><a href="#about">About</a><a href="#modes">Modes</a><a href="#hardware">Hardware</a><a href="#status">Status</a><a href="#docs">Docs</a><a href="../" hreflang="ru">Русский</a></nav>
+  <h1>Bukifon <span style="color:var(--mut);font-weight:400">/ Букифон</span></h1>
+  <p class="sub">An open-source desktop <strong>synthesizer + sampler + module platform</strong>. 3D-printed case, open KiCad schematics, open C++ firmware.</p>
+  <span class="badge">v0.4.0</span><span class="badge">CERN-OHL-S-2.0</span><span class="badge">GPL-3.0-or-later</span><span class="badge">380 × 210 × 63 mm</span>
+  <p style="margin-top:20px">
+    <a class="cta" href="https://github.com/martiyanov/bukifon">GitHub</a>
+    <a class="cta alt" href="https://github.com/martiyanov/bukifon/blob/main/docs/12-roadmap.md">Roadmap</a>
+    <a class="cta alt" href="https://github.com/martiyanov/bukifon/blob/main/renders/templates/bukifon_v04_panel_1to1.pdf">1:1 panel template (PDF)</a>
+  </p>
+</div></header>
+
+<main class="wrap">
+<section id="about">
+  <h2>About</h2>
+  <p><strong>Bukifon</strong> is a musical instrument platform built from accessible parts and printed on a
+  regular 3D printer. The idea is to combine three worlds in one enclosure: a <strong>sampler</strong> in the
+  spirit of Elektron Digitakt, a <strong>synthesizer</strong> in the spirit of Elektron Syntakt, and an
+  <strong>open platform</strong> where anyone can write their own modules — software (C++/Lua) and
+  analog (bus cartridges).</p>
+  <p>The project is fully open: KiCad schematics, C++ firmware, parametric mechanics (STL/3MF),
+  documentation and semantic-versioning rules. The name comes from “buki” (the second letter of the
+  Cyrillic alphabet) and Greek <em>φωνή</em> — “sound of letters”, “voice of signs”.</p>
+  <div class="grid">
+    <div class="card"><h3>Ergonomics</h3><p>Two Lapka-42 keyboard halves splayed outward (±18°) with thumb clusters facing the centre, and two 60 mm faders between them. Hands rest like on a console, not on a laptop.</p></div>
+    <div class="card"><h3>Sound</h3><p>4 parts, 8 voices, 4-operator FM, wavetable, ZDF filters, Moog-style ladder (AS3320), Polyvox character, 3D modulation matrix with 16 slots.</p></div>
+    <div class="card"><h3>Sequencer</h3><p>Elektron-style workflow: p-locks, trig conditions, microtiming, sound locks, macros and ctrl-all.</p></div>
+    <div class="card"><h3>Modules</h3><p>26-pin bus for analog cartridges (VCO, filters, PT2399), software modules through an SDK, and swappable input decks: 18 pads or 42 keys.</p></div>
+  </div>
+</section>
+
+<section id="modes">
+  <h2>Three modes, one enclosure</h2>
+  <table>
+    <tr><th>Mode</th><th>What it does</th></tr>
+    <tr><td><strong>Sampler</strong></td><td>8 tracks (mono/stereo pending benchmark), recording and import via USB-C/SD, slicing, granular, insert FX, p-locks. Digitakt class.</td></tr>
+    <tr><td><strong>Synth</strong></td><td>8-voice FM/wavetable, ZDF filters, analog modules on the bus. Syntakt class.</td></tr>
+    <tr><td><strong>Hybrid</strong></td><td>Samples as synthesis sources; shared sequencer and mod matrix across all modes.</td></tr>
+  </table>
+</section>
+
+<section id="hardware">
+  <h2>Hardware</h2>
+  <p><img src="../assets/panel-ru.jpg" alt="Bukifon panel 380×210 mm: 42 Lapka-42 keys, 16 encoders, 5-inch display, 10 mini-jacks, two faders" loading="lazy"></p>
+  <table>
+    <tr><th>Parameter</th><th>Value</th></tr>
+    <tr><td>Case</td><td>380 × 210 × 63 mm, PETG, support-free printing (panel splits into 193 + 190 mm with a dovetail)</td></tr>
+    <tr><td>Keyboard</td><td>2 × 21 = 42 Lapka-42 keys, Choc 18 × 17 mm, halves at ±18°</td></tr>
+    <tr><td>Encoders</td><td>16 × Ø14 mm, two 4 × 2 blocks</td></tr>
+    <tr><td>Display</td><td>5.0″ 800×480, cutout 108 × 64.8 mm, bezel-less</td></tr>
+    <tr><td>Connectors</td><td>10 × 3.5 mm mini-jacks on top, USB-C, MIDI TRS, CV/Gate</td></tr>
+    <tr><td>Audio</td><td>PCM5102A DAC + PCM1808 ADC (sampling input)</td></tr>
+    <tr><td>Power</td><td>1S2P 18650 / LiPo battery, USB-C charging</td></tr>
+    <tr><td>MCU</td><td>under evaluation: ESP32-P4 (32 MB PSRAM) favoured, STM32H743 control candidate; RP2040 is the prototype and CV coprocessor</td></tr>
+  </table>
+  <p><img src="../assets/case-iso.jpg" alt="Bukifon 3D case render: 16 knobs, display, faders, two keyboard halves" loading="lazy"></p>
+</section>
+
+<section id="status">
+  <h2>Status (v0.4.0)</h2>
+  <ul>
+    <li>✅ panel v0.4: 42 keys (exact geometry), 16 encoders, 5″ display, 10 jacks, 2 faders — zero overlaps;</li>
+    <li>✅ case v0.4: 380 × 210 × 63 mm, 6 parts, watertight, 83 cutouts, fitcheck — 0 conflicts;</li>
+    <li>✅ v1.0 schematics (ERC clean) and RP2040 firmware prototype (host tests 67/67);</li>
+    <li>🔄 MCU selection: first benchmark ESP32-P4 vs STM32H743 (DSP, PSRAM/SD, display, USB 8×8), then rev.1 boards;</li>
+    <li>🔄 next: audio core, sampler, module SDK, pilot run of 10–20 units, v1.0 release.</li>
+  </ul>
+  <p><img src="../assets/compare.jpg" alt="Approved concept versus v0.4 layout comparison" loading="lazy"></p>
+</section>
+
+<section id="docs">
+  <h2>Documents and files</h2>
+  <ul>
+    <li><a href="https://github.com/martiyanov/bukifon/blob/main/spec/90-requirements-registry.md">Requirements registry</a> — the single source of truth;</li>
+    <li><a href="https://github.com/martiyanov/bukifon/blob/main/docs/12-roadmap.md">Roadmap P0–P8</a> with numeric exit criteria;</li>
+    <li><a href="https://github.com/martiyanov/bukifon/blob/main/docs/11-esp32-feasibility.md">Feasibility on ESP32</a> — workload math and platform comparison;</li>
+    <li><a href="https://github.com/martiyanov/bukifon/blob/main/docs/04-consultation-gpt.md">GPT consultation</a> and <a href="https://github.com/martiyanov/bukifon/blob/main/docs/03-second-opinion-mcu.md">independent review</a>;</li>
+    <li><a href="https://github.com/martiyanov/bukifon/blob/main/spec/panel-spec-v0.4.json">Machine-readable panel spec (JSON)</a>;</li>
+    <li><a href="https://github.com/martiyanov/bukifon/blob/main/renders/templates/bukifon_v04_panel_1to1.pdf">1:1 panel template (PDF, 2 × A4)</a>;</li>
+    <li><a href="https://github.com/martiyanov/bukifon/blob/main/mechanical/stl_v04/">Case STL/3MF</a>.</li>
+  </ul>
+</section>
+</main>
+
+<footer><div class="wrap">
+  <p>Bukifon is an open project. Hardware and mechanics: CERN-OHL-S-2.0; firmware: GPL-3.0-or-later; documentation: CC BY-SA 4.0. Lapka-42 keyboard attribution — braindefender/lapka-42.</p>
+  <p class="small">Site: <a href="https://martiyanov.github.io/bukifon/">martiyanov.github.io/bukifon</a> · <a href="../" hreflang="ru">Русская версия</a></p>
+</div></footer>
+</body>
+</html>

@@ -1,6 +1,6 @@
 # Букифон (Bukifon) — открытая платформа: сэмплер + синтезатор + модули
 
-**Версия: 0.4.0** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
+**Версия: 0.5.0** · сайт: **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
 
 **Букифон** — настольный музыкальный инструмент-платформа, который собирается из
 доступных компонентов, печатается на 3D-принтере, расширяется модулями и полностью
@@ -29,6 +29,15 @@
 | **Схемы** | v1.0 (CORE-1, PANEL-1, деки, 5 аналоговых модулей, PWR-BATT-1), ERC 0 ошибок — под старую панель 315 × 145; rev.1 под v0.4 — после выбора MCU |
 | **Прошивка** | прототип на RP2040: DSP-движок, host-тесты 67/67, UF2 собирается; порт на выбранный MCU — этап P4 |
 | **Платформа** | идёт выбор: **ESP32-P4 (32 МБ PSRAM)** — фаворит, **STM32H743** — контрольный кандидат; сначала бенчмарк (P1) |
+
+## Сайт проекта
+
+- Русская страница: https://martiyanov.github.io/bukifon/
+- English page: https://martiyanov.github.io/bukifon/en/
+- Исходники сайта: [`docs/index.html`](docs/index.html), [`docs/en/index.html`](docs/en/index.html);
+  SEO: [`docs/sitemap.xml`](docs/sitemap.xml), [`docs/robots.txt`](docs/robots.txt), [`docs/llms.txt`](docs/llms.txt);
+  деплой: [`.github/workflows/pages.yml`](.github/workflows/pages.yml); метаданные репозитория —
+  [`docs/github-metadata.md`](docs/github-metadata.md).
 
 ## Ключевые документы
 

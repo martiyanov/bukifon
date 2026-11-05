@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+title: "Bukifon (Букифон) — open-source modular synthesizer and sampler platform"
+message: "If you use Bukifon hardware, firmware, or geometry, please cite this repository."
+type: software
+authors:
+  - name: "Bukifon project"
+    alias: martiyanov
+repository-artifact: "https://github.com/martiyanov/bukifon"
+repository-code: "https://github.com/martiyanov/bukifon"
+url: "https://martiyanov.github.io/bukifon/"
+license: CERN-OHL-S-2.0
+version: "0.5.0"
+date-released: "2025-11-05"
+keywords:
+  - synthesizer
+  - sampler
+  - open hardware
+  - 3d printing
+  - kicad
+  - rp2040
+  - esp32
+  - midi
+  - cv
+  - modular
+abstract: >
+  Bukifon is an open-source desktop synthesizer and sampler platform with a 3D-printed
+  380x210x63 mm enclosure, 42 Lapka-42 keys, 16 encoders, a 5-inch 800x480 display,
+  10 mini-jacks and two 60 mm faders. KiCad schematics (CERN-OHL-S-2.0), C++ firmware
+  (GPL-3.0-or-later), parametric mechanics and open module SDK.

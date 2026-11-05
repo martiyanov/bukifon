@@ -2,6 +2,19 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.5.0] — 2025-11-05 — «Сайт проекта RU/EN»
+
+### Добавлено
+- **GitHub Pages** сайт: `docs/index.html` (RU) и `docs/en/index.html` (EN) — описание проекта,
+  режимы, железо, статус, ссылки на документы и файлы; `docs/assets/` с оптимизированными изображениями.
+- SEO/индексация: `docs/sitemap.xml` (RU+EN, hreflang), `docs/robots.txt` (разрешены поисковые и
+  AI-краулеры), `docs/llms.txt`, JSON-LD `SoftwareApplication`, Open Graph/Twitter Card,
+  `docs/.nojekyll`.
+- Деплой: `.github/workflows/pages.yml` (GitHub Actions → Pages).
+- `CITATION.cff` для цитирования; `docs/github-metadata.md` — описание/темы репозитория и
+  включение Pages одной командой.
+- README: раздел «Сайт проекта», версия 0.5.0.
+
 ## [0.4.0] — 2025-11-05 — «Канон v0.4»
 
 ### Добавлено

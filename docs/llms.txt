@@ -1,0 +1,32 @@
+# Букифон / Bukifon
+
+> Открытая платформа настольного синтезатора и сэмплера: 42 клавиши Lapka-42, 16 энкодеров,
+> экран 5″ 800×480, 10 mini-jack, 2 фейдера, корпус 380×210×63 мм на 3D-принтере.
+> Открытые схемы KiCad (CERN-OHL-S-2.0), прошивка C++ (GPL-3.0-or-later), пользовательские модули.
+> English: open-source desktop synthesizer + sampler + module platform, 3D-printed case, open hardware.
+
+## Основное / Core
+
+- [README](https://github.com/martiyanov/bukifon/blob/main/README.md): обзор, состояние v0.4.0, компоновка, сборка.
+- [Реестр требований](https://github.com/martiyanov/bukifon/blob/main/spec/90-requirements-registry.md): единственный источник истины (R-xx, решения D-xx).
+- [Дорожная карта](https://github.com/martiyanov/bukifon/blob/main/docs/12-roadmap.md): P0–P8 с числовыми критериями выхода.
+- [CHANGELOG](https://github.com/martiyanov/bukifon/blob/main/CHANGELOG.md): версии по SemVer.
+
+## Технические документы / Technical docs
+
+- [Можно ли на ESP32](https://github.com/martiyanov/bukifon/blob/main/docs/11-esp32-feasibility.md): расчёт нагрузки, ESP32-P4 / S3 / STM32H743 / Teensy.
+- [Железо Elektron](https://github.com/martiyanov/bukifon/blob/main/docs/10-elektron-hardware.md): ColdFire, DSP56300, SHARC, FPGA.
+- [Второе мнение](https://github.com/martiyanov/bukifon/blob/main/docs/03-second-opinion-mcu.md) и [консультация GPT](https://github.com/martiyanov/bukifon/blob/main/docs/04-consultation-gpt.md).
+- [Контекст для агентов](https://github.com/martiyanov/bukifon/blob/main/docs/00-context-transfer.md).
+
+## Геометрия и файлы / Geometry and files
+
+- [Спека панели v0.4 (JSON)](https://github.com/martiyanov/bukifon/blob/main/spec/panel-spec-v0.4.json): координаты всех элементов в мм.
+- [Шаблон панели 1:1 (PDF)](https://github.com/martiyanov/bukifon/blob/main/renders/templates/bukifon_v04_panel_1to1.pdf).
+- [STL/3MF корпуса](https://github.com/martiyanov/bukifon/blob/main/mechanical/stl_v04/).
+- [Схемы KiCad](https://github.com/martiyanov/bukifon/tree/main/hardware).
+- [Прошивка](https://github.com/martiyanov/bukifon/tree/main/firmware).
+
+## Optional
+
+- [BOM](https://github.com/martiyanov/bukifon/blob/main/BOM.csv), [лицензии](https://github.com/martiyanov/bukifon/blob/main/NOTICE).
