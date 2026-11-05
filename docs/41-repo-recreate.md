@@ -10,7 +10,7 @@ Force-push историю уже переписал, но GitHub продолж�
 ## 1. Сохранить чистую историю (уже сделано)
 
 ```bash
-cd /Users/a123/Проекты/Синтезатор
+cd <repo>
 git bundle create dist/bukifon-clean-$(date +%Y%m%d).bundle --all
 tar -czf dist/bukifon-clean-$(date +%Y%m%d).tar.gz --exclude=.git --exclude=firmware/host/build* --exclude=firmware/bench/build* .
 ```
@@ -35,7 +35,7 @@ git grep -nE "/Users/[A-Za-z0-9._-]+/|AAG0t|8604502531" -- . | head
 3. Добавить remote и запушить чистую историю:
 
 ```bash
-cd /Users/a123/Проекты/Синтезатор
+cd <repo>
 git remote set-url origin git@github.com:martiyanov/bukifon.git   # SSH
 # или: git remote set-url origin https://github.com/martiyanov/bukifon.git
 git push -u origin main
