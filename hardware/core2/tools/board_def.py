@@ -215,6 +215,11 @@ TPS = [
  ('TP17', 'CHIP_PU', 'reset'), ('TP18', 'BOOT', 'boot strap GPIO35'),
  ('TP19', '3V3_C6', 'Wi-Fi/BLE coprocessor rail'), ('TP20', 'BL_20V', 'backlight rail'),
  ('TP21', 'C6_CS', 'C6 SPI select'), ('TP22', 'C6_RST', 'C6 reset'),
+ ('TP23', 'N12_EXT', '-12 V input from PWR-2 (rev.2)'),
+ ('TP24', '5V_EXT', '+5 V input from PWR-2 (rev.2)'),
+ ('TP25', '5V_LED', 'LED rail from PWR-2 (rev.2)'),
+ ('TP26', 'PWR_GOOD', 'PWR-2 supervisor (rev.2)'),
+ ('TP27', 'EN_RAILS', 'EN analog rails (rev.2)'),
 ]
 # rear-panel connectors: audio jacks on CORE-2 rear wall (lead change)
 TB_REAR = [

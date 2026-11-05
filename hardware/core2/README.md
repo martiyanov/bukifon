@@ -1,11 +1,11 @@
-# CORE-2 (rev.1) — исследовательская схема ядра на ESP32-P4
+# CORE-2 (rev.2) — исследовательская схема ядра на ESP32-P4
 
 > ## ⛔ PRE-FREEZE / DO NOT FABRICATE
 > **Схема не готова к заказу плат.** Нельзя отправлять в производство до:
 > 1) бенчмарка P1 (реальные токи/тепло/производительность ESP32-P4 + PSRAM),
 > 2) подписи требований `spec/90-requirements-registry.md` (design freeze),
 > 3) выбора физического MCU-модуля/адаптера под слот J-MCU.
-> Это исследовательская ревизия (rev.1) новой архитектуры, а не релиз.
+> Это исследовательская ревизия (rev.2) новой архитектуры, а не релиз.
 
 **MCU:** ESP32-P4NRW32 (ESP32-P4, 55 GPIO, 32 МБ PSRAM в корпусе, QFN104).
 **Сопроцессор радио:** ESP32-C6-MINI-1 (Wi-Fi 6 + BLE 5.3), связь с P4 по SPI
@@ -15,14 +15,14 @@
 
 ## 0a. rev.2 (документы) — синхронизация с PWR-2
 
-> **Схема `CORE-2.kicad_sch` пока rev.1** (ERC 0/0) — правки rev.2 перечислены в
-> [`rev2-plan.md`](rev2-plan.md) §10 и будут внесены в следующей итерации.
-> Решения: D-32…D-36, открытые: O-1…O-7 (см. `rev2-plan.md` §11).
+> **Схема `CORE-2.kicad_sch` — rev.2** (ERC 0 errors / 0 warnings): J17/J18, входы
+> N12_EXT/+5V_EXT, EN от MCP23017, re-pin J14/J15/J16 по PANEL-2, DNP-флаги.
+> Подробности — [`rev2-plan.md`](rev2-plan.md) §10. Решения: D-32…D-36, открытые: O-1…O-12.
 
 | Что | rev.2 |
 |---|---|
 | Питание | рельсы **±12 В / +5 В / 5V_LED** приходят с **PWR-2** (J17 = IDC-20, ответный PWR-2 J3); CORE-2 формирует только +3V3 / +3V3_C6 / +3V3_MCU / BL_20 В |
-| DNP | MT3608 #1 (+12 В, рекомендуется), MT3608 #2 (+5 В), MC34063 (−12 В), BMS+пакет (U23/Q1/Q2/J2/TH1), level shifter LED (U44/R90) — 39 позиций |
+| DNP | MT3608 #1 (+12 В), MT3608 #2 (+5 В), MC34063 (−12 В), BMS+пакет (U23/Q1/Q2/J2/TH1), level shifter LED (U44/R90), EXPRESSION/SPARE (R5/J13/R73/C99/R74/C100/TB2) — **46 позиций** (39 по D-34 + 7 по N-2) |
 | Новые входы | `12V_EXT` (существующий D2 SS34), **`N12_EXT`** (D19 SS34 + D20 SMAJ15A + C112/C113), `+5V_EXT` (C114/C115), `5V_LED`/`LED_RET` |
 | Разъёмы | **J17** IDC-20 (PWR-2 J3, пары PGND), **J18** IDC-12 (PWR-2 J4: BATT_MON, NTC, I2C, PWR_GOOD, 4× EN); при 3 А — альтернатива Micro-Fit 3.0 (O-5) |
 | EN | 4 EN PWR-2 ← **2 линии MCP23017 PANEL-2 0x23**: GPA7 = `EN_RAILS` (+12/−12/+5), GPB6 = `EN_LED5`; дефолт: рельсы ON, LED OFF (D-33) |
@@ -30,9 +30,15 @@
 | VSYS | пик 2.74 А @3.7 В (3.38 А @3.0) при 3 А power-path → прошивочный cap WS2812 0.55 А + профиль яркости, внешний 12 В для +12; O-2 |
 | PANEL-2 sync | J13.9/13 `5V`→`5V_LED`, J13.16 `GND`→`LED_RET`, J13.15 NC→`EN_RAILS` (0x23 GPA7), J14.25 NC→`EN_LED5` (0x23 GPB6); J14/J15/J16 re-pin по PANEL-2 канону (открытые N-2/N-3) |
 
-Артефакты rev.2-документации: [`rev2-plan.md`](rev2-plan.md), обновлены [`power-tree.md`](power-tree.md)
+Артефакты rev.2: [`rev2-plan.md`](rev2-plan.md), обновлены [`power-tree.md`](power-tree.md)
 (импортируемые рельсы, VSYS), [`interfaces.md`](interfaces.md) §0/§3a/§7, [`pinmap.md`](pinmap.md)
-(J17/J18, EN-карта), [`BOM-core2.csv`](BOM-core2.csv) (колонка rev.2: DNP/NEW).
+(J17/J18, EN-карта, rev.2 harness), [`BOM-core2.csv`](BOM-core2.csv) (колонка rev.2: DNP/NEW).
+
+**Открытые O-8…O-12 (решения для rev.2):** O-8 `PWR_GOOD`/`FUEL_ALRT` → свободные GPIO ESP32-C6
+(для S3 — опрос MAX17048 по I2C); O-9 CVIN3/4 → MCP3208 CH4/CH5 (U45 TL074), GATE_IN — на PANEL-2
+(MCP23017 0x23 GPB7), EXPRESSION убран; O-10 цифровое расширение TDM/I2S+SPI отложено до rev.3;
+O-11 J3 — IDC-20 для прототипа, Micro-Fit 3.0 для rev.2 (D-40); O-12 CV OUT 5/6 не выведены
+в PANEL-2 J14 (только CV OUT1-4) — тест-пэды/резерв до rev.3.
 
 ---
 
@@ -56,8 +62,8 @@
 
 | Файл | Что это |
 |---|---|
-| `CORE-2.kicad_sch` + `CORE-2.kicad_pro` | схема KiCad 10 rev.1 (S-expression, 1 лист A0); rev.2-правки — `rev2-plan.md` |
-| `rev2-plan.md` | план rev.1 → rev.2: DNP, входы ±12/+5, EN, J17/J18, +5 бюджет, PANEL-2 sync, открытые вопросы |
+| `CORE-2.kicad_sch` + `CORE-2.kicad_pro` | схема KiCad 10 **rev.2** (S-expression, 1 лист A0) |
+| `rev2-plan.md` | rev.1 → rev.2: DNP (46), входы ±12/+5, EN, J17/J18, +5 бюджет, PANEL-2 sync, O-8…O-12; §10 — что уже внесено в схему |
 | `picomod.kicad_sym`, `sym-lib-table` | проектная библиотека (ESP32-P4_MOD, ESP32-C6-MINI-1, PCM1808, MP1584_MOD, 74HCT125, 74HCT1G125, TP) |
 | `CORE-2.pdf`, `CORE-2.svg` | экспорт схемы (баннер PRE-FREEZE на первой странице) |
 | `erc/erc.rpt`, `erc/erc.json` | ERC-отчёт (`kicad-cli sch erc --severity-all`) |
@@ -102,7 +108,7 @@ VBUS-детект — GPIO54 через делитель 100к/100к.
 
 ## 4. ERC и проверки
 
-- `kicad-cli sch erc --severity-all`: **0 errors, 0 warnings** (`erc/erc.rpt`).
+- `kicad-cli sch erc --severity-all` (rev.2): **0 errors, 0 warnings** (`erc/erc.rpt`).
 - `python3 tools/check_pinmap.py`: **PASS**, 0 ошибок, 1 warning — «резерв GPIO
   отсутствует (0 %)» — объявлено осознанно.
 - `python3 tools/check_schematic.py`: **PASS**, 0 mismatches (все пины слотов и

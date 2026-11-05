@@ -1,6 +1,6 @@
 # CORE-2 — интерфейсные контракты (audio / USB / CV / MIDI / bus / PANEL-2)
 
-> **STATUS: PRE-FREEZE / DO NOT FABRICATE.** До бенчмарка P1 и подписи
+> **STATUS: PRE-FREEZE / DO NOT FABRICATE.** Схема — **rev.2** (ERC 0/0). До бенчмарка P1 и подписи
 > требований (spec/90) схема не заказывается. Числа — расчётные/даташитные;
 > смотреть вместе с [`pinmap.md`](pinmap.md), [`power-tree.md`](power-tree.md)
 > и **[`rev2-plan.md`](rev2-plan.md)** (rev.2: PWR-2, DNP, EN, J17/J18).
@@ -15,6 +15,12 @@
 | EN рельсов | 4 входа PWR-2 ← **2 линии MCP23017 PANEL-2 0x23** (GPA7 = EN_RAILS для +12/−12/+5; GPB6 = EN_LED5); дефолт: рельсы ON, LED OFF (D-33) |
 | Power-path | BQ24074 остаётся на CORE-2; VSYS → PWR-2; пик VSYS 2.74…3.38 А при 3 А — firmware cap LED 0.55 А + профиль (O-2) |
 | Монтаж | J17 (IDC-20, PWR-2 J3) + J18 (IDC-12, PWR-2 J4) — пары PGND; при 3 А — альтернатива Micro-Fit 3.0 (O-5) |
+| **Реализовано в rev.2** | J17/J18 + D19/D20 + C112-C115 + R92-R96 + R98/R105 + U45 (CV IN3/4) + TP23-TP27; DNP-флаги 46 позиций; J14/J15/J16 re-pin по PANEL-2 |
+| **O-8** | `PWR_GOOD`/`FUEL_ALRT` → свободные GPIO **ESP32-C6** (RPC esp-hosted); для S3 — опрос MAX17048 по I2C |
+| **O-9** | CVIN3/4 (PANEL-2) → MCP3208 CH4/CH5 через U45 TL074; GATE_IN — на PANEL-2 (MCP23017 0x23 GPB7); EXPRESSION убран |
+| **O-10** | цифровое расширение TDM/I2S+SPI (R-22) отложено до rev.3 |
+| **O-11** | J3: IDC-20 для прототипа (тест ≤100 мВ/≤30 °C), Micro-Fit 3.0 для rev.2 (D-40) |
+| **O-12** | CV OUT 5/6 (MCP4728 #2 CH A/B) в PANEL-2 J14 не выведены (только CV OUT1-4); тест-пэды/резерв до rev.3 |
 
 ## 1. Аудио: I2S-контракт
 
@@ -152,6 +158,11 @@ PWR-2 держит рельсы ON, LED OFF — совпадает с D-33. **Fa
 < 25 %, зафиксировано в O-2. Меры: прошивочный cap WS2812 0.55 А + профиль яркости
 (на батарее ≤30 %, автоснижение по PWR_GOOD), последовательное включение рельсов,
 внешний 12 В для +12-рельса (полный максимум +5 — только 2S/внешний 5 В, O-6).
+**Реализовано (rev.2):** J17/J18, D19 SS34 + D20 SMAJ15A + C112/C113 (N12_EXT), C114/C115
++FB7+C117 (+5V_EXT→+5V), R92/R93 (pull-up PWR_GOOD/FUEL_ALRT), R94/R95/R96 (EN_RAILS→
+EN_BUS12/EN_N12/EN_5V), R98 (LED_GPIO→LED_DATA bypass), R105 (LCD_DISP→3V3), U45 TL074 (CV IN3/4),
+TP23-TP27. Старые диоды порта 1 перенумерованы D28/D29 (конфликт ref с D19/D20).
+
 **PWR_GOOD / FUEL_ALRT** — open-drain, подтяжки 100k на CORE-2 (R92/R93); читать нечем
 на P4 (0 GPIO) → предложение: свободные GPIO ESP32-C6 (N-1).
 

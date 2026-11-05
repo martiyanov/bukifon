@@ -163,7 +163,7 @@ I2C0 (GPIO21/22) — общая шина: 2× MCP4728 (0x60/0x61), 24C32 (0x57),
 | MIDI IN | `MIDI_IN_T/R` | 6N137 + 220R (rear TRS-A, TB2.1/2) |
 | MIDI OUT | `MIDI_OUT_T/R` | 74HCT125 + 33R/220R (rear TRS-A, TB2.4/5) |
 | DC 12 V | `12V_EXT` | rear 5.5/2.1 mm, from PWR-2 / external PSU (TB2.7/8), diode-OR to +12V |
-| EXPRESSION | `EXPR` | rear 6.35/3.5 mm, 3V3->pot->tip; RC 1k/100nF -> MCP3208 CH4 (TB2.9/10) |
+| EXPRESSION (rev.2 removed) | `EXPR` | N-2: убрано — MCP3208 CH4/CH5 отданы CV IN3/4; опция — C6 ADC |
 
 ## 7. Разъёмы (полные таблицы)
 

@@ -2,7 +2,7 @@
 
 > **STATUS: PRE-FREEZE / DO NOT FABRICATE.** rev.2: рельсы ±12 В/+5 В/5V_LED приходят
 > с **PWR-2** (J17), CORE-2 формирует только локальные +3V3 / +3V3_C6 / +3V3_MCU / BL_20 V.
-> Схема CORE-2 — пока rev.1; DNP-список и правки — `rev2-plan.md`. Числа расчётные.
+> **Схема CORE-2 — rev.2** (ERC 0/0); DNP-список (46) и изменения — `rev2-plan.md`. Числа расчётные.
 
 ## 1. Топология rev.2
 
@@ -100,7 +100,7 @@ BQ24074 power-path рассчитан на ≈3 А. Меры: **прошивоч
 | `5V_LED` / `LED_RET` | ключ Q7 + F5 2.5 А на PWR-2; на CORE-2 только 100 нФ у разъёма |
 | USB-C | USBLC6-2SC6, F1 1.5 A, BQ24074 ILIM |
 
-DNP rev.2 (см. `rev2-plan.md` §3): MT3608 #1/#2, MC34063, BMS (39 позиций). Остаются:
+DNP rev.2 (см. `rev2-plan.md` §3): MT3608 #1/#2, MC34063, BMS, EXPRESSION/SPARE (46 позиций). Остаются:
 MT3608 #3 (BL), MP1584, AP2112K ×2, BQ24074, USB/ESD.
 
 ## 7. Тестпоинты rev.2

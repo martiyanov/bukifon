@@ -533,8 +533,8 @@ for p in range(2):
 add('F2', ('Device','Polyfuse'), '0.5A', {'1':'12V_B','2':'12V_P1'}, FP['PF'], 'port1 +12V', R)
 add('D18', ('Diode','SS34'), 'SS34', {'1':'12V_P1','2':'12V_B'}, FP['DIODE'], 'reverse protection', R)
 add('F3', ('Device','Polyfuse'), '0.3A', {'1':'-12V_B','2':'N12V_P1'}, FP['PF'], 'port1 -12V', R)
-add('D19', ('Diode','SS34'), 'SS34', {'1':'-12V_B','2':'N12V_P1'}, FP['DIODE'], 'reverse protection', R)
-add('D20', ('Diode','SMAJ15A'), 'SMAJ15A', {'1':'12V_P1','2':'PGND'}, FP['DIODE'], 'TVS port1', R)
+add('D28', ('Diode','SS34'), 'SS34', {'1':'-12V_B','2':'N12V_P1'}, FP['DIODE'], 'reverse protection (was D19; renumbered rev.2)', R)
+add('D29', ('Diode','SMAJ15A'), 'SMAJ15A', {'1':'12V_P1','2':'PGND'}, FP['DIODE'], 'TVS port1 (was D20; renumbered rev.2)', R)
 add('C104', ('Device','C'), '100nF/50V', {'1':'12V_P1','2':'PGND'}, FP['C'], '', R)
 add('C105', ('Device','C_Polarized'), '10uF/25V', {'1':'12V_P1','2':'PGND'}, FP['CP'], '', R)
 add('C106', ('Device','C'), '100nF/50V', {'1':'N12V_P1','2':'PGND'}, FP['C'], '', R)
@@ -875,6 +875,21 @@ def write_bom():
             rr['note'] = (rr['note'] + '; ' if rr['note'] else '') + 'DNP rev.2: ' + '; '.join(reasons)
             split_rows.append(rr)
     rows = split_rows
+    # split groups further into "existing" vs "new in rev.2" rows
+    rows2 = []
+    for r in rows:
+        if r.get('rev2') == 'DNP':
+            rows2.append(r); continue
+        refs = r['refs'].split()
+        new = [x for x in refs if x in B.REV2_NEW_REFS]
+        keep = [x for x in refs if x not in B.REV2_NEW_REFS]
+        if keep:
+            rr = dict(r); rr['refs'] = ' '.join(keep); rr['qty'] = len(keep)
+            rows2.append(rr)
+        if new:
+            rr = dict(r); rr['refs'] = ' '.join(new); rr['qty'] = len(new); rr['rev2'] = 'NEW'
+            rows2.append(rr)
+    rows = rows2
     present = {x for r in rows for x in r['refs'].split()}
     for i, n in enumerate(B.REV2_NEW):
         if n['ref'] in present:

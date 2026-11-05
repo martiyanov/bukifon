@@ -1,8 +1,8 @@
 # CORE-2 rev.2 — план изменений относительно rev.1
 
 > **STATUS: PRE-FREEZE / DO NOT FABRICATE.** Документ синхронизирует CORE-2 с PWR-2
-> (решения **D-32…D-36**, открытые вопросы **O-1…O-7**). Схема `CORE-2.kicad_sch`
-> пока остаётся rev.1 (ERC 0/0); точный список правок для rev.2 — §10. Платы не заказывать.
+> (решения **D-32…D-36**, открытые вопросы **O-1…O-11**). **Схема `CORE-2.kicad_sch` —
+> rev.2** (ERC 0 errors / 0 warnings); что именно внесено — §10. Платы не заказывать.
 
 Основание: `hardware/power2/` (PWR-2, ERC 0/0), `hardware/power2/interfaces.md`,
 `hardware/power2/power-tree-pwr2.md`, `spec/90-requirements-registry.md` §D-32…D-36/O-1…O-7.
@@ -37,7 +37,7 @@
 | 14 | PANEL-2 harness | J14 смешанный control/analog, J16 digital-exp | **J14/J15/J16 → канон PANEL-2** (J14 analog field, J13 digital/power, J12 LCD), см. §9 | D-18/D-22 |
 | 15 | LED_DATA | 74HCT1G125 на CORE-2 (U44 + R90) | **U44/R90 DNP**: level shifter на PANEL-2; CORE-2 отдаёт 3.3 В | PANEL-2 iface §6 |
 
-## 3. DNP-список rev.2 (D-34)
+## 3. DNP-список rev.2 (46 позиций: 39 по D-34 + 7 по N-2)
 
 | Группа | Позиции | Причина | Статус |
 |---|---|---|---|
@@ -45,7 +45,9 @@
 | MC34063 (−12 В) | U28, R16, C27, L3, D6, R17,R18, C28-C30 | два источника на −12 недопустимы; −12 с PWR-2 | DNP (обязательно) |
 | BMS + пакет | U23, Q1, Q2, R7, C8, J2, TH1 | BMS/NTC/пакет на PWR-2 | DNP (обязательно) |
 | MT3608 #1 (+12 В) | U24, L1, D4, R10,R11, C9-C12, R12 | PWR-2 даёт +12; два boost на одном узле конкурируют по ОС | DNP (рекомендуется; populate для стенда) |
-| LED level shifter | U44, R90 | 74HCT1G125 стоит на PANEL-2 | DNP (при rev.2 harness) |
+| LED level shifter | U44, R90 | 74HCT1G125 стоит на PANEL-2 | DNP (rev.2) |
+| N-2: EXPRESSION/SPARE + локальный TS | R5, J13, R73, C99, R74, C100 | CH4/CH5 отданы CV IN3/4; GATE_IN читается на PANEL-2; NTC с PWR-2 | DNP (N-2) |
+| N-2: задний TB2 | TB2 | EXPRESSION убран; DC/MIDI — через PWR-2/PANEL-2 harness | DNP (N-2) |
 
 **Остаётся в rev.2:** MT3608 #3 (BL +20 В), MP1584 → +3V3_MCU, AP2112K ×2 (+3V3/+3V3_C6),
 BQ24074 + USB-C/ESD/CC, ферриты и защита входов ±12/+5, PANEL-2/PWR-2 разъёмы.
@@ -98,6 +100,8 @@ BQ24074 + USB-C/ESD/CC, ферриты и защита входов ±12/+5, PAN
 | `5V_LED` | PWR-2 J3 17 | — (защита/ключ на PWR-2: F5 2.5 А, Q7) | цепочка WS2812 (74 LED) |
 | `LED_RET` | PANEL-2 J13.16 (rev.2) | — | J3.18 → Q7 PWR-2 |
 
+В rev.2 добавлены: **D19** SS34 (N12_EXT→−12 В), **D20** SMAJ15A, C112-C115; старые
+диоды защиты порта 1 перенумерованы в **D28/D29** (конфликт ref D19/D20).
 Падения: PWR-2 D7/D8 по 0.45 В → +11.7 В/−11.55 В на CORE-2; на CORE-2 D2/D19 добавляют
 ещё ≈0.45 В только при питании от **внешнего** БП; от PWR-2 источники идут через D7/D8 на PWR-2.
 
@@ -147,7 +151,7 @@ J14.25 (NC) → `EN_LED5` ← 0x23 GPB6; J13.9/13 (+5V) → `5V_LED`; J13.16 (GN
 
 | Pin | Цепь | Pin | Цепь |
 |---|---|---|---|
-| 1 | `BATT_MON` | 2 | `NTC_PACK` |
+| 1 | `BATT_MON_RAW` | 2 | `NTC_PACK` |
 | 3 | `I2C0_SDA` | 4 | `I2C0_SCL` |
 | 5 | `FUEL_ALRT` | 6 | `PWR_GOOD` |
 | 7 | `EN_BUS12` | 8 | `EN_N12` |
@@ -195,18 +199,21 @@ BQ24074 power-path ≈3 А. **Меры (обязательны в прошивк
 - LED_DATA 3.3 В напрямую (U44/R90 DNP), level shifter — на PANEL-2.
 - I2C/INT уже совместимы: подтяжки 2.2k и 10k на CORE-2, 4 адреса 0x20–0x23 — просто шина.
 
-## 10. Что меняется в схеме CORE-2 (для следующей итерации)
+## 10. Что сделано в схеме CORE-2 rev.2 (выполнено)
 
-Схема `CORE-2.kicad_sch` **пока rev.1** (ERC 0/0); rev.2-правки ниже ещё не внесены.
+`CORE-2.kicad_sch` обновлён до rev.2, ERC **0 errors / 0 warnings**.
 
-**Добавить:** `J17` (IDC-20), `J18` (IDC-12), `D19` SS34, `D20` SMAJ15A, `C112` 100 мкФ/25 В,
-`C113` 100 нФ, `C114` 100 мкФ/10 В, `C115` 100 нФ, `R92` 100k (PWR_GOOD),
-`R93` 100k (FUEL_ALRT), `R94/R95/R96` 0R (EN_RAILS → J18.7/8/10).
-**Пометить DNP:** см. §3 (39 позиций из `board_def.REV2_DNP`).
-**Новые цепи:** `N12_EXT`, `+5V_EXT`, `5V_LED`, `LED_RET`, `EN_RAILS`, `EN_LED5`,
-`FUEL_ALRT`, `PWR_GOOD`, `NTC_PACK`; `BATT_MON` теперь с J18.1 (не с локального пакета).
-**Перепиновать:** J14/J15/J16 по PANEL-2 canon (§9); BQ24074 `BAT` → J17.3/4; `TS` → NTC_PACK;
-+12 В: `12V_EXT`→D2→+12; −12 В: `N12_EXT`→D19→−12; +5 В: `+5V_EXT`→+5 (после DNP #2).
+**Добавлено:** J17 (IDC-20), J18 (IDC-12), D19 SS34, D20 SMAJ15A, C112-C115, C116 (5V_LED),
+C117 (+5V bulk), FB7 (5V_EXT→+5V), R92/R93 (100k pull-up PWR_GOOD/FUEL_ALRT),
+R94/R95/R96 0R (EN_RAILS → EN_BUS12/EN_N12/EN_5V), R98 0R (LED_GPIO→LED_DATA bypass),
+R105 0R (LCD_DISP→3V3), U45 TL074 + R99-R104/C118/C119/D24/D25 (CV IN3/4 → MCP3208 CH4/5),
+TP23-TP27 (N12_EXT/5V_EXT/5V_LED/PWR_GOOD/EN_RAILS).
+**DNP:** 46 позиций (§3), в т.ч. MT3608 #1/#2, MC34063, BMS/пакет, U44/R90, EXPRESSION/SPARE.
+**Renumber:** старые диоды порта 1 D19/D20 → **D28/D29** (конфликт имён с новыми).
+**Перепиновано:** J14/J15/J16 по PANEL-2 canon (§9); BQ24074 `BAT`→J17.3/4; `TS`→NTC_PACK;
+`BATT_MON`→R75 от J18.1; +12 В: `12V_EXT`→D2→+12; −12 В: `N12_EXT`→D19→−12; +5 В: `5V_EXT`→FB7→+5.
+**Новые цепи:** N12_EXT, 5V_EXT, 5V_LED, LED_RET, EN_RAILS/EN_BUS12/EN_N12/EN_5V/EN_LED5,
+FUEL_ALRT, PWR_GOOD, BATT_MON_RAW, NTC_PACK, CVIN3/4_ADC.
 
 ## 11. Открытые вопросы (O-1…O-7 + новые)
 
@@ -214,15 +221,16 @@ BQ24074 power-path ≈3 А. **Меры (обязательны в прошивк
 |---|---|---|
 | O-1 | +5 В 1.0→1.6 А | **закрыт рекомендацией (b)**: бюджет 1.6 А, MP1584 остаётся на +5; (a) — после 2S/стенда |
 | O-2 | VSYS 3 А vs пик | прошивочный cap LED 0.55 А + профиль + последовательное включение; 2S — O-6 |
-| O-3 | DNP-список | зафиксирован §3 (39 позиций), требует подписи Lead |
+| O-3 | DNP-список | зафиксирован §3 (**46 позиций**: 39 по D-34 + 7 по N-2), требует подписи Lead |
 | O-4 | 4 EN при 0 GPIO | **закрыт**: 2 линии MCP23017 0x23 GPA7/GPB6 (§6) + fallback дефолт-ON |
 | O-5 | J3 на 3 А | критерий падения ≤100 мВ/нагрев ≤30 °C; иначе Micro-Fit 3.0 (§7) |
 | O-6 | 1S2P vs 2S | после стенда PWR-2; при 2S — вариант (a) и полная мощность |
 | O-7 | Символы TPS61088/MAX17048 | draft — сверить с datasheet до трассировки (зона PWR-2) |
-| N-1 | `PWR_GOOD`/`FUEL_ALRT` читать нечем (0 GPIO P4) | предложение: свободные GPIO **ESP32-C6** (esp-hosted RPC); для S3-сборки — опрос MAX17048 по I2C вместо ALRT |
-| N-2 | CVIN3/4 + GATE_IN_CLEAN (PANEL-2) | CVIN3/4 → MCP3208 CH4/CH5, EXPRESSION убрать/на C6; GATE_IN → MCP23017 0x23 GPB7 на PANEL-2 |
-| N-3 | Цифровое расширение R-22 (TDM/I2S+SPI mailbox) | в rev.2 не помещается на J16 (занят PANEL-2); отдельный разъём/следующая ревизия |
-| N-4 | J3 3 А через IDC vs Micro-Fit | решение после стенда O-5, до разводки |
+| **O-8** | `PWR_GOOD`/`FUEL_ALRT` читать нечем (0 GPIO P4) | **решение:** свободные GPIO **ESP32-C6** (RPC esp-hosted); для S3-сборки — опрос MAX17048 по I2C (ALRT не используется) |
+| **O-9** | CVIN3/4 + GATE_IN_CLEAN (PANEL-2) | **решение:** CVIN3/4 реализованы (U45 TL074, MCP3208 CH4/CH5); GATE_IN — на PANEL-2 через MCP23017 0x23 GPB7; EXPRESSION убран (DNP) |
+| **O-10** | Цифровое расширение R-22 (TDM/I2S+SPI mailbox) | **отложено до rev.3**: J16 занят PANEL-2 J13; нужен отдельный разъём |
+| **O-11** | J3 3 А через IDC vs Micro-Fit | **решение:** IDC-20 для прототипа (тест ≤100 мВ/≤30 °C), **Micro-Fit 3.0 для rev.2** (D-40) |
+| **O-12** | CV OUT 5/6 (MCP4728 #2 CH A/B) в rev.2 harness не выведены | PANEL-2 J14 имеет только CV OUT1-4; CV5/6 оставлены на тест-пэдах/в резерв — решение в rev.3 (или 2 задних джека) |
 
 ## 12. Что нельзя заказывать до P1-бенчмарка
 
