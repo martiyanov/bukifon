@@ -99,58 +99,66 @@ def ordered_left():
     return sorted(L.LAPKA42_LEFT, key=lambda t: (round(t[1] / 17.0), t[0]))
 
 
-def layout_sheet():
-    pdf_path = os.path.join(OUT, "lapka42_layout_1to1.pdf")
-    keys_left = ordered_left()
-    x0, y0, x1, y1 = _bbox(keys_left)
+def _one_half_page(pdf, keys_left, half, bbox):
+    x0, y0, x1, y1 = bbox
     bw, bh = x1 - x0, y1 - y0
 
+    fig = plt.figure(figsize=(A4W / 25.4, A4H / 25.4))
+    ax = fig.add_axes([0, 0, 1, 1])
+    ax.set_xlim(0, A4W)
+    ax.set_ylim(A4H, 0)
+    ax.set_aspect("equal")
+    ax.axis("off")
+    ax.add_patch(mp.Rectangle((6, 6), A4W - 12, A4H - 12, fc="white", ec="#ddd", lw=0.5))
+
+    title = ("Букифон · эталон Lapka-42 1:1 · ЛЕВАЯ половина (21 клавиша)"
+             if half == "left" else
+             "Букифон · эталон Lapka-42 1:1 · ПРАВАЯ половина (зеркало)")
+    ax.text(A4W / 2, 9, title, ha="center", fontsize=12, fontweight="bold")
+    ax.text(A4W / 2, 16, "Печать A4 100%. Номера соответствуют листу для вырезания.",
+            ha="center", fontsize=6.4, color="#555")
+
+    ox = (A4W - bw) / 2
+    oy = 26 + (A4H - 40 - bh) / 2
+    n = 1
+    for (x, y, rot) in keys_left:
+        px = ox + (x - x0) if half == "left" else ox + (bw - (x - x0))
+        py = oy + (y - y0)
+        # matplotlib: ось Y инвертирована -> знак поворота обратный.
+        # Позиции клавиш — ровно как в KiCad Lapka-42, без изменений.
+        a = -rot if half == "left" else rot
+        ax.add_patch(mp.Rectangle((px - CAP_W / 2, py - CAP_H / 2), CAP_W, CAP_H,
+                                  angle=a, rotation_point="center",
+                                  fc="#eef3f9", ec="#111", lw=0.8))
+        ax.text(px, py, str(n), ha="center", va="center", fontsize=6)
+        n += 1
+
+    if half == "left":
+        ax.annotate("", xy=(A4W * 0.34, A4H - 40), xytext=(A4W * 0.16, A4H - 12),
+                    arrowprops=dict(arrowstyle="-|>", color="#b03", lw=1.4))
+        ax.text(A4W * 0.18, A4H - 10, "левая кисть подходит отсюда (слева-снизу)",
+                ha="left", va="bottom", fontsize=7.5, color="#b03")
+    else:
+        ax.annotate("", xy=(A4W * 0.66, A4H - 40), xytext=(A4W * 0.84, A4H - 12),
+                    arrowprops=dict(arrowstyle="-|>", color="#03b", lw=1.4))
+        ax.text(A4W * 0.82, A4H - 10, "правая кисть подходит отсюда (справа-снизу)",
+                ha="right", va="bottom", fontsize=7.5, color="#03b")
+    scale_bar(ax, 14, A4H - 12)
+    pdf.savefig(fig)
+    plt.close(fig)
+
+
+def layout_sheet():
+    keys_left = ordered_left()
+    bbox = _bbox(keys_left)
+    pdf_path = os.path.join(OUT, "lapka42_layout_1to1.pdf")
     with PdfPages(pdf_path) as pdf:
         for half in ("left", "right"):
-            fig = plt.figure(figsize=(A4W / 25.4, A4H / 25.4))
-            ax = fig.add_axes([0, 0, 1, 1])
-            ax.set_xlim(0, A4W)
-            ax.set_ylim(A4H, 0)
-            ax.set_aspect("equal")
-            ax.axis("off")
-            ax.add_patch(mp.Rectangle((6, 6), A4W - 12, A4H - 12, fc="white", ec="#ddd", lw=0.5))
-
-            title = ("Букифон · эталон Lapka-42 1:1 · ЛЕВАЯ половина (21 клавиша)"
-                     if half == "left" else
-                     "Букифон · эталон Lapka-42 1:1 · ПРАВАЯ половина (зеркало)")
-            ax.text(A4W / 2, 9, title, ha="center", fontsize=12, fontweight="bold")
-            ax.text(A4W / 2, 16, "Печать A4 100%. Номера соответствуют листу для вырезания.",
-                    ha="center", fontsize=6.4, color="#555")
-
-            ox = (A4W - bw) / 2
-            oy = 26 + (A4H - 40 - bh) / 2
-            n = 1
-            for (x, y, rot) in keys_left:
-                px = ox + (x - x0) if half == "left" else ox + (bw - (x - x0))
-                py = oy + (y - y0)
-                # matplotlib: ось Y инвертирована, поэтому знак поворота берём обратным.
-                # Координаты (позиции) клавиш — ровно как в KiCad Lapka-42, без изменений.
-                a = -rot if half == "left" else rot
-                ax.add_patch(mp.Rectangle((px - CAP_W / 2, py - CAP_H / 2), CAP_W, CAP_H,
-                                          angle=a, rotation_point="center",
-                                          fc="#eef3f9", ec="#111", lw=0.8))
-                ax.text(px, py, str(n), ha="center", va="center", fontsize=6)
-                n += 1
-
-            if half == "left":
-                # кисть подходит из левого нижнего угла, пальцы — вверх-вправо
-                ax.annotate("", xy=(A4W * 0.34, A4H - 40), xytext=(A4W * 0.16, A4H - 12),
-                            arrowprops=dict(arrowstyle="-|>", color="#b03", lw=1.4))
-                ax.text(A4W * 0.18, A4H - 10, "левая кисть подходит отсюда (слева-снизу)",
-                        ha="left", va="bottom", fontsize=7.5, color="#b03")
-            else:
-                ax.annotate("", xy=(A4W * 0.66, A4H - 40), xytext=(A4W * 0.84, A4H - 12),
-                            arrowprops=dict(arrowstyle="-|>", color="#03b", lw=1.4))
-                ax.text(A4W * 0.82, A4H - 10, "правая кисть подходит отсюда (справа-снизу)",
-                        ha="right", va="bottom", fontsize=7.5, color="#03b")
-            scale_bar(ax, 14, A4H - 12)
-            pdf.savefig(fig)
-            plt.close(fig)
+            _one_half_page(pdf, keys_left, half, bbox)
+    for half in ("left", "right"):
+        out = os.path.join(OUT, f"lapka42_layout_{half}_1to1.pdf")
+        with PdfPages(out) as pdf:
+            _one_half_page(pdf, keys_left, half, bbox)
     return pdf_path
 
 
