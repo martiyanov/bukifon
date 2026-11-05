@@ -787,13 +787,43 @@ def write_bom():
             nm.append('DNP for ESP32-S3 build')
         rows.append(dict(code='PM-C2-%03d' % n, mpn='/'.join(mpns), val=val,
                          qty=len(refs), refs=' '.join(refs), fp=fp, note='; '.join(nm)))
+    # rev.2 delta: split each group into populate / DNP; add new rev.2 parts
+    dnp = B.REV2_DNP
+
+    def _reason(x):
+        v = dnp[x].strip()
+        for pref in ('DNP rev.2:', 'DNP rev.2'):
+            if v.startswith(pref):
+                v = v[len(pref):].lstrip(': ')
+                break
+        return v.strip()
+
+    split_rows = []
+    for r in rows:
+        refs = r['refs'].split()
+        dnp_refs = [x for x in refs if x in dnp]
+        keep = [x for x in refs if x not in dnp]
+        base = dict(r)
+        if keep:
+            rr = dict(base); rr['refs'] = ' '.join(keep); rr['qty'] = len(keep); rr['rev2'] = ''
+            split_rows.append(rr)
+        if dnp_refs:
+            rr = dict(base); rr['refs'] = ' '.join(dnp_refs); rr['qty'] = len(dnp_refs); rr['rev2'] = 'DNP'
+            reasons = sorted({_reason(x) for x in dnp_refs})
+            rr['note'] = (rr['note'] + '; ' if rr['note'] else '') + 'DNP rev.2: ' + '; '.join(reasons)
+            split_rows.append(rr)
+    rows = split_rows
+    for i, n in enumerate(B.REV2_NEW):
+        rows.append(dict(code='PM-C2-R2-%02d' % (i+1), mpn='', val=n['val'], qty=1,
+                         refs=n['ref'], fp=n['fp'], note=n['note'], rev2='NEW'))
     rows.sort(key=lambda r: r['code'])
     with open(os.path.join(HERE, 'BOM-core2.csv'), 'w', newline='', encoding='utf-8') as fh:
         w = csv.writer(fh, delimiter=';')
-        w.writerow(['Артикул', 'MPN (draft)', 'Номинал/Тип', 'Кол-во', 'Позиции', 'Корпус', 'Примечание'])
+        w.writerow(['Артикул', 'MPN (draft)', 'Номинал/Тип', 'Кол-во', 'Позиции', 'Корпус', 'rev.2', 'Примечание'])
         for r in rows:
-            w.writerow([r['code'], r['mpn'], r['val'], r['qty'], r['refs'], r['fp'], r['note']])
-    print('BOM rows:', len(rows))
+            w.writerow([r['code'], r['mpn'], r['val'], r['qty'], r['refs'], r['fp'],
+                        r.get('rev2', ''), r['note']])
+    print('BOM rows:', len(rows), '(rev.2: DNP/partial + NEW delta)')
     return rows
 
 def parse_erc():
