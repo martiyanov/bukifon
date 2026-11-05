@@ -630,7 +630,7 @@ add('C120', ('Device','C'), '100nF', {'1':'12V','2':'AGND'}, FP['C'], '', V)
 add('C121', ('Device','C'), '100nF', {'1':'-12V','2':'AGND'}, FP['C'], '', V)
 
 for i, (tp, net, why) in enumerate(B.TPS):
-    add(tp, ('Connector','TestPoint'), net, {'1': net}, '', why, 'TP', on_board=True)
+    add(tp, ('Connector','TestPoint'), net, {'1': net}, 'TestPoint:TestPoint_Pad_D1.5mm', why, 'TP', on_board=True)
 FLAGS = ['VBUS_CHG', 'VBUS_F', 'BATT_N', 'PGND', '12V', '-12V', '5V', 'VREF33', '3V3_MCU', 'DGND', 'AGND']
 
 # ==========================================================================

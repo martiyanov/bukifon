@@ -210,17 +210,20 @@ def build_body(v):
 
 # ---------------------------------------------------------------------------
 def build_battery_lid():
-    """Крышка батарейного отсека C: 86 × 86 × 2.5, 4 × M3 с потаем."""
+    """Крышка батарейного отсека C: 86 × 86 × 2.5, 4 × M3, цековка снизу."""
     w = d = 86.0
-    poly = _rrect(-w / 2, w / 2, -d / 2, d / 2, 3.0)
     holes = [(295.0 - 332.0, 57.0 - 94.0), (369.0 - 332.0, 57.0 - 94.0),
              (295.0 - 332.0, 131.0 - 94.0), (369.0 - 332.0, 131.0 - 94.0)]
+    poly = _rrect(-w / 2, w / 2, -d / 2, d / 2, 3.0)
     for (hx, hy) in holes:
-        poly = poly.difference(sbox(hx - 1.65, hy - 1.65, hx + 1.65, hy + 1.65))
+        circ = __import__("shapely.geometry", fromlist=["Point"]).Point(hx, hy).buffer(1.65, 24)
+        poly = poly.difference(circ)
     m = C.ext(poly, 0.0, 2.5)
     cuts = []
     for (hx, hy) in holes:
-        cuts.append(C.cone_frustum(1.65, 3.3, -0.1, 1.65, hx, hy, 24))
+        # цековка Ø6.6 × 1.3 снизу + сквозное Ø3.3
+        cuts.append(C.cyl_z(3.3, -0.1, 1.3, hx, hy, 24))
+        cuts.append(C.cyl_z(1.65, 1.2, 2.6, hx, hy, 24))
     return C.DIFF(m, cuts)
 
 
@@ -304,14 +307,21 @@ def export_variant(v, stl_dir, parts):
 
 
 def copy_shared(stl_dir):
-    """Панель (v0.4 JSON), ножки, колпачок — копии без изменений."""
+    """Панель (v0.4 JSON), ножки, колпачок — копии без изменений.
+
+    Источники по приоритету: mechanical/stl_v04 → mechanical/stl_v05_B →
+    archive/v0.4/mechanical/stl_v04 (после архивации версий).
+    """
+    src_dirs = [STL_V04,
+                os.path.join(ROOT, "mechanical", "stl_v05_B"),
+                os.path.join(ROOT, "archive", "v0.4", "mechanical", "stl_v04")]
     for part in ("panel_L", "panel_R", "foot", "keycap_v17"):
         for ext in (".stl", ".3mf"):
-            try:
-                shutil.copy2(os.path.join(STL_V04, part + ext),
-                             os.path.join(stl_dir, part + ext))
-            except FileNotFoundError:
-                pass
+            for src in src_dirs:
+                srcf = os.path.join(src, part + ext)
+                if os.path.exists(srcf):
+                    shutil.copy2(srcf, os.path.join(stl_dir, part + ext))
+                    break
 
 
 def main():
@@ -319,7 +329,9 @@ def main():
     print("=" * 78)
     print("Букифон v0.5 — 3 варианта корпуса (A flat / B 8° / C 12° + battery)")
     print("=" * 78)
-    for name in ("B",):          # в этой итерации — только клин 8° (scope)
+    import sys as _sys
+    names = [a for a in _sys.argv[1:] if a in ("A", "B", "C")] or ["B"]
+    for name in names:
         v = P.variant(name)
         stl_dir = os.path.join(ROOT, "mechanical", f"stl_v05_{name}")
         os.makedirs(stl_dir, exist_ok=True)
@@ -330,7 +342,8 @@ def main():
         parts = build_body(v)
         if v["battery"] == "bay":
             lid = build_battery_lid()
-            lid.apply_translation([332.0, 94.0, 0.0])
+            # крышка закрывает отсек СНИЗУ (z −2.5…0), впотай под дном
+            lid.apply_translation([332.0, 94.0, -2.5])
             parts["battery_lid"] = lid
         if v["stand"]:
             parts["stand"] = build_stand()
@@ -370,8 +383,12 @@ def main():
         _3mf(trimesh.util.concatenate(placed),
              os.path.join(stl_dir, f"bukifon_v05_{name}_assembly.3mf"))
         try:
-            import fitcheck_v05
-            fitcheck_v05.run(name, meta, inst, parts)
+            if name == "C":
+                import fitcheck_v05_C
+                fitcheck_v05_C.run(name, meta, inst, parts)
+            else:
+                import fitcheck_v05
+                fitcheck_v05.run(name, meta, inst, parts)
         except Exception:  # noqa: BLE001
             import traceback
             traceback.print_exc()

@@ -34,6 +34,7 @@ BENCH_OBJ   := $(patsubst $(BENCH_DIR)/%.cpp,$(BUILD)/bench_obj/%.o,$(BENCH_FILE
 
 TEST_BIN   := $(BUILD)/bukifon_tests
 RENDER_BIN := $(BUILD)/bukifon_render
+FACTORY_BIN := $(BUILD)/bukifon_factory
 SIM_BIN    := $(BUILD)/bukifon_sim
 
 .PHONY: all test render sim demo clean
@@ -69,6 +70,18 @@ $(BUILD)/bench_obj/%.o: $(BENCH_DIR)/%.cpp
 $(TEST_BIN): $(OBJ) $(TEST_OBJ) $(EXAMPLE_OBJ) $(BENCH_OBJ)
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+$(BUILD)/factory_main.o: ../app/factory_main.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+$(FACTORY_BIN): $(OBJ) $(BUILD)/factory_main.o
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
+factory: $(FACTORY_BIN)
+	@mkdir -p ../tests/out
+	./$(FACTORY_BIN) --json --out ../tests/out/factory_report.json
 
 $(RENDER_BIN): $(OBJ) $(RENDER_OBJ) $(EXAMPLE_OBJ)
 	@mkdir -p $(dir $@)

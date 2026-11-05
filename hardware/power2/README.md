@@ -81,7 +81,10 @@ freeze-пакет — [`docs/schema/pwr2.md`](../../docs/schema/pwr2.md).
 | `picomod2.kicad_sym`, `sym-lib-table` | проектная библиотека (TPS61088, MAX17048 — draft pinout) |
 | `gen_pwr2_sch.py` | генератор схемы + ERC + PDF/SVG/netlist + BOM |
 | `tools/kicad_sch.py` | писатель `.kicad_sch` (копия `hardware/core2/tools/`, автор hw-core) |
+| `dfm.md` | DFM/testability: TP1–TP9 + J4-пады, self-test 8, DFM 3 А/J3, чек-лист 15 |
+| `bench-macet.md` | карта стенда-макета (gate до PCB): M1–M11, B-метки, быстрый чек-лист |
 | `../../docs/schema/pwr2.md` | freeze-пакет: рельсы, топология ±12 В, земля/тепло, перечень стендовых измерений |
+| `../../docs/44-pwr-bench.md` | **процедура стенда до PCB**: состав/бюджет $80–150, 13 измерений T1–T13 с критериями |
 
 ## 4. Как перегенерировать и проверить
 

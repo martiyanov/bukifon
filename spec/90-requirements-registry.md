@@ -132,6 +132,12 @@ firmware/README). Этот файл фиксирует актуальные тр
 | D-70 | 06.11 | TP28–TP30 (LED_RET, I2S_BCK, I2S_LRCK) добавить пады в следующей правке схемы CORE-2 | CORE-2 DFM |
 | D-71 | 06.11 | MAX17048 0x36, EN-полярность по PWR-2 interfaces — утверждено; FPC-40 RGB pinout фиксируется вместе с MPN дисплея до PCB | CORE-2/PANEL-2 DFM |
 | D-72 | 06.11 | DSI — опция rev.3; первый SKU — **RGB565 FPC-40** дисплей | docs/36, D-58 |
+| D-73 | 06.11 | Дисплей первого SKU: **RGB565 поверх RGB888 FPC-40** (20 линий: 16 data + PCLK + DE + HS/VS); DE-only (18) — только после подтверждения datasheet и стенда | docs/47 |
+| D-74 | 06.11 | Основной кандидат панели — **MIDAS MDT0500D5ISC-RGB** (2 образца до freeze), резерв Topway/BuyDisplay; RGB565 подключать на старшие биты RGB888, младшие — GND | docs/47 |
+| D-75 | 06.11 | DSI — только rev.3.1 (Topway LMT050FNCFWA после получения controller/lane/init), не в первой PCB | docs/47 |
+| D-76 | 06.11 | PWR-стенд: **EVM-платы** (TPS61088EVM-677, LMR33630ADDAEVM в IBB, TPS63802EVM, BQ24074EVM, BQ29700EVM, MAX17048 EVKIT/breakout), сверлёные платы, **breadboard запрещён** | docs/44 |
+| D-77 | 06.11 | Fallback H743 — **отдельная плата CORE-2-H743** с общим outline/разъёмами/FFC, не dual-MCU плата; мезонин-подход как запас | rev3-plan |
+| D-78 | 06.11 | Вычисления — на домашний ПК через Tailscale (рендеры Blender/сборки); SSH пока не настроен | docs/48 |
 
 ## 6a. Открытые вопросы (не закрывать без измерений)
 

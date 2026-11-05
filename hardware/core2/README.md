@@ -66,7 +66,8 @@ O-11 J3 — IDC-20 для прототипа, Micro-Fit 3.0 для rev.2 (D-40);
 | Файл | Что это |
 |---|---|
 | `CORE-2.kicad_sch` + `CORE-2.kicad_pro` | схема KiCad 10 **rev.2** (S-expression, 1 лист A0) |
-| `dfm.md` | DFM/testability P4: TP1–TP30, self-test 20, серийник (24C32), recovery, DFM 6 слоёв, чек-лист 20 |
+| `rev3-plan.md` | план rev.2 → rev.3 (P4-first/RGB565/DSI), keep/drop/change, **fallback H743**, что ждёт P1 |
+| `dfm.md` | DFM/testability P4: TP1–TP30 (все в схеме), self-test 20, серийник (24C32), recovery, DFM 6 слоёв, чек-лист 20 |
 | `rev2-plan.md` | rev.1 → rev.2: DNP (46), входы ±12/+5, EN, J17/J18, +5 бюджет, PANEL-2 sync, O-8…O-12; §10 — что уже внесено в схему |
 | `picomod.kicad_sym`, `sym-lib-table` | проектная библиотека (ESP32-P4_MOD, ESP32-C6-MINI-1, PCM1808, MP1584_MOD, 74HCT125, 74HCT1G125, TP) |
 | `CORE-2.pdf`, `CORE-2.svg` | экспорт схемы (баннер PRE-FREEZE на первой странице) |

@@ -136,6 +136,41 @@ EN_LED5 — «active-high enable», по умолчанию OFF. При high-Z (
 инициализации) PWR-2 pull-up держит рельсы ON — соответствует D-33. Fallback без
 правки PANEL-2: EN не разводить (дефолт PWR-2), LED включать джампером JP1.
 
+### Test points (TP1–TP30)
+
+| TP | Цепь | Назначение |
+|---|---|---|
+| TP1 | `VBUS_CHG` | USB-C input |
+| TP2 | `VSYS` | power-path output |
+| TP3 | `12V` | +12 V bus rail |
+| TP4 | `-12V` | -12 V bus rail |
+| TP5 | `5V` | +5 V rail |
+| TP6 | `3V3` | +3.3 V peripherals |
+| TP7 | `3V3_MCU` | +3.3 V MCU/PSRAM |
+| TP8 | `BATT_MON` | battery ADC |
+| TP9 | `I2S_MCLK` | 12.288 MHz |
+| TP10 | `SD_CLK` | SDIO clock |
+| TP11 | `USB_HS_DP` | USB D+ |
+| TP12 | `USB_HS_DM` | USB D- |
+| TP13 | `AGND` | analog ground |
+| TP14 | `DGND` | digital ground |
+| TP15 | `PGND` | power ground |
+| TP16 | `LED_DATA` | WS2812 data (after shifter) |
+| TP17 | `CHIP_PU` | reset |
+| TP18 | `BOOT` | boot strap GPIO35 |
+| TP19 | `3V3_C6` | Wi-Fi/BLE coprocessor rail |
+| TP20 | `BL_20V` | backlight rail |
+| TP21 | `C6_CS` | C6 SPI select |
+| TP22 | `C6_RST` | C6 reset |
+| TP23 | `N12_EXT` | -12 V input from PWR-2 (rev.2) |
+| TP24 | `5V_EXT` | +5 V input from PWR-2 (rev.2) |
+| TP25 | `5V_LED` | LED rail from PWR-2 (rev.2) |
+| TP26 | `PWR_GOOD` | PWR-2 supervisor (rev.2) |
+| TP27 | `EN_RAILS` | EN analog rails (rev.2) |
+| TP28 | `LED_RET` | LED return to PWR-2 Q7 (rev.3 DFM) |
+| TP29 | `I2S_BCK` | audio bit clock (rev.3 DFM) |
+| TP30 | `I2S_LRCK` | audio word clock (rev.3 DFM) |
+
 I2C0 (GPIO21/22) — общая шина: 2× MCP4728 (0x60/0x61), 24C32 (0x57), MAX17048 (0x36, PWR-2),
 4× MCP23017 (0x20/0x21/0x22/0x23): 48 линий энкодеров (16× A/B/push) + 13 линий матрицы 6×7 = 61; 3 линии резерв. Наружу — только SDA/SCL/INT (wire-OR INTA). Подтяжки I2C 2.2 к и INT 10 к — на CORE-2; ёмкость шины ≤ 200 pF.
 

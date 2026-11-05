@@ -162,5 +162,5 @@ def instances(v):
                      "pos": [0, 0, 0], "rot": [0, 0, 0]})
     if v["stand"]:
         inst.append({"name": "stand", "file": "stand.stl",
-                     "pos": [0, 0, 0], "rot": [0, 0, 0], "stowed": True})
+                     "pos": [0, -260, 0], "rot": [0, 0, 0], "stowed": True})
     return inst

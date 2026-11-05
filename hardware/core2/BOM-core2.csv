@@ -213,30 +213,33 @@ PM-C2-196;;0R;1;R96;Resistor_SMD:R_0805_2012Metric;NEW;rev.2: EN_RAILS -> EN_5V 
 PM-C2-197;;0R;1;R98;Resistor_SMD:R_0805_2012Metric;NEW;"rev.2: bypass LED level shifter (U44/R90 DNP); 3.3 V to PANEL-2"
 PM-C2-198;;0R;1;R105;Resistor_SMD:R_0805_2012Metric;NEW;rev.2: display always enabled (PANEL-2 J12 has no DISP pin)
 PM-C2-199;;TL074;1;U45;Package_DIP:DIP-14_W7.62mm;NEW;CV IN3 level shift
-PM-C2-200;;VBUS_CHG;1;TP1;;;USB-C input
-PM-C2-201;;VSYS;1;TP2;;;power-path output
-PM-C2-202;;12V;1;TP3;;;+12 V bus rail
-PM-C2-203;;-12V;1;TP4;;;-12 V bus rail
-PM-C2-204;;5V;1;TP5;;;+5 V rail
-PM-C2-205;;3V3;1;TP6;;;+3.3 V peripherals
-PM-C2-206;;3V3_MCU;1;TP7;;;+3.3 V MCU/PSRAM
-PM-C2-207;;BATT_MON;1;TP8;;;battery ADC
-PM-C2-208;;I2S_MCLK;1;TP9;;;12.288 MHz
-PM-C2-209;;SD_CLK;1;TP10;;;SDIO clock
-PM-C2-210;;USB_HS_DP;1;TP11;;;USB D+
-PM-C2-211;;USB_HS_DM;1;TP12;;;USB D-
-PM-C2-212;;AGND;1;TP13;;;analog ground
-PM-C2-213;;DGND;1;TP14;;;digital ground
-PM-C2-214;;PGND;1;TP15;;;power ground
-PM-C2-215;;LED_DATA;1;TP16;;;WS2812 data (after shifter)
-PM-C2-216;;CHIP_PU;1;TP17;;;reset
-PM-C2-217;;BOOT;1;TP18;;;boot strap GPIO35
-PM-C2-218;;3V3_C6;1;TP19;;;Wi-Fi/BLE coprocessor rail
-PM-C2-219;;BL_20V;1;TP20;;;backlight rail
-PM-C2-220;;C6_CS;1;TP21;;;C6 SPI select
-PM-C2-221;;C6_RST;1;TP22;;;C6 reset
-PM-C2-222;;N12_EXT;1;TP23;;;-12 V input from PWR-2 (rev.2)
-PM-C2-223;;5V_EXT;1;TP24;;;+5 V input from PWR-2 (rev.2)
-PM-C2-224;;5V_LED;1;TP25;;;LED rail from PWR-2 (rev.2)
-PM-C2-225;;PWR_GOOD;1;TP26;;;PWR-2 supervisor (rev.2)
-PM-C2-226;;EN_RAILS;1;TP27;;;EN analog rails (rev.2)
+PM-C2-200;;VBUS_CHG;1;TP1;TestPoint:TestPoint_Pad_D1.5mm;;USB-C input
+PM-C2-201;;VSYS;1;TP2;TestPoint:TestPoint_Pad_D1.5mm;;power-path output
+PM-C2-202;;12V;1;TP3;TestPoint:TestPoint_Pad_D1.5mm;;+12 V bus rail
+PM-C2-203;;-12V;1;TP4;TestPoint:TestPoint_Pad_D1.5mm;;-12 V bus rail
+PM-C2-204;;5V;1;TP5;TestPoint:TestPoint_Pad_D1.5mm;;+5 V rail
+PM-C2-205;;3V3;1;TP6;TestPoint:TestPoint_Pad_D1.5mm;;+3.3 V peripherals
+PM-C2-206;;3V3_MCU;1;TP7;TestPoint:TestPoint_Pad_D1.5mm;;+3.3 V MCU/PSRAM
+PM-C2-207;;BATT_MON;1;TP8;TestPoint:TestPoint_Pad_D1.5mm;;battery ADC
+PM-C2-208;;I2S_MCLK;1;TP9;TestPoint:TestPoint_Pad_D1.5mm;;12.288 MHz
+PM-C2-209;;SD_CLK;1;TP10;TestPoint:TestPoint_Pad_D1.5mm;;SDIO clock
+PM-C2-210;;USB_HS_DP;1;TP11;TestPoint:TestPoint_Pad_D1.5mm;;USB D+
+PM-C2-211;;USB_HS_DM;1;TP12;TestPoint:TestPoint_Pad_D1.5mm;;USB D-
+PM-C2-212;;AGND;1;TP13;TestPoint:TestPoint_Pad_D1.5mm;;analog ground
+PM-C2-213;;DGND;1;TP14;TestPoint:TestPoint_Pad_D1.5mm;;digital ground
+PM-C2-214;;PGND;1;TP15;TestPoint:TestPoint_Pad_D1.5mm;;power ground
+PM-C2-215;;LED_DATA;1;TP16;TestPoint:TestPoint_Pad_D1.5mm;;WS2812 data (after shifter)
+PM-C2-216;;CHIP_PU;1;TP17;TestPoint:TestPoint_Pad_D1.5mm;;reset
+PM-C2-217;;BOOT;1;TP18;TestPoint:TestPoint_Pad_D1.5mm;;boot strap GPIO35
+PM-C2-218;;3V3_C6;1;TP19;TestPoint:TestPoint_Pad_D1.5mm;;Wi-Fi/BLE coprocessor rail
+PM-C2-219;;BL_20V;1;TP20;TestPoint:TestPoint_Pad_D1.5mm;;backlight rail
+PM-C2-220;;C6_CS;1;TP21;TestPoint:TestPoint_Pad_D1.5mm;;C6 SPI select
+PM-C2-221;;C6_RST;1;TP22;TestPoint:TestPoint_Pad_D1.5mm;;C6 reset
+PM-C2-222;;N12_EXT;1;TP23;TestPoint:TestPoint_Pad_D1.5mm;;-12 V input from PWR-2 (rev.2)
+PM-C2-223;;5V_EXT;1;TP24;TestPoint:TestPoint_Pad_D1.5mm;;+5 V input from PWR-2 (rev.2)
+PM-C2-224;;5V_LED;1;TP25;TestPoint:TestPoint_Pad_D1.5mm;;LED rail from PWR-2 (rev.2)
+PM-C2-225;;PWR_GOOD;1;TP26;TestPoint:TestPoint_Pad_D1.5mm;;PWR-2 supervisor (rev.2)
+PM-C2-226;;EN_RAILS;1;TP27;TestPoint:TestPoint_Pad_D1.5mm;;EN analog rails (rev.2)
+PM-C2-227;;LED_RET;1;TP28;TestPoint:TestPoint_Pad_D1.5mm;;LED return to PWR-2 Q7 (rev.3 DFM)
+PM-C2-228;;I2S_BCK;1;TP29;TestPoint:TestPoint_Pad_D1.5mm;;audio bit clock (rev.3 DFM)
+PM-C2-229;;I2S_LRCK;1;TP30;TestPoint:TestPoint_Pad_D1.5mm;;audio word clock (rev.3 DFM)

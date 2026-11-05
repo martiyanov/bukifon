@@ -220,6 +220,9 @@ TPS = [
  ('TP25', '5V_LED', 'LED rail from PWR-2 (rev.2)'),
  ('TP26', 'PWR_GOOD', 'PWR-2 supervisor (rev.2)'),
  ('TP27', 'EN_RAILS', 'EN analog rails (rev.2)'),
+ ('TP28', 'LED_RET', 'LED return to PWR-2 Q7 (rev.3 DFM)'),
+ ('TP29', 'I2S_BCK', 'audio bit clock (rev.3 DFM)'),
+ ('TP30', 'I2S_LRCK', 'audio word clock (rev.3 DFM)'),
 ]
 # rear-panel connectors: audio jacks on CORE-2 rear wall (lead change)
 TB_REAR = [

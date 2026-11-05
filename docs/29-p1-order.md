@@ -28,6 +28,8 @@ workload: [docs/05](05-benchmark-workload.md), howto: [docs/05a](05a-benchmark-h
 | 11 | **ESP32-S3-DevKitC-1** (N16R8: 16 МБ flash, 8 МБ PSRAM) | Espressif store/LCSC | 10–13 |
 | 12 | **TFT 5.0″ 800×480 IPS RGB, FPC-40** + переходная плата | Waveshare/LCSC/AliExpress (фиксировать MPN!) | 12–18 |
 | 13 | microSD-модуль (SPI/SDIO) + карта 32 ГБ | любой | 6–10 |
+| 13a | **TFT 5.0″ 800×480 RGB, FPC-40, ST7262** — TFT-H050A1SVIST4R40 (HotLCD) ×2; резерв: NHD-5.0-800480AF-ASXP ×1 (Newhaven), EJ050NA-01G ×1 (50-pin, Innolux) | HotLCD/AliExpress/LCSC; Newhaven/DigiKey; Ali | 60–120 |
+| 13b | FPC-40 шлейфы/адаптер (same/opposite side) + ответный разъём Hirose FH12-40S | Ali/LCSC | 8–15 |
 | 14 | Логический анализатор 8–16 каналов | AliExpress | 10–20 |
 | 15 | INA219/INA226 токовый датчик | LCSC | 2–4 |
 
@@ -37,7 +39,7 @@ workload: [docs/05](05-benchmark-workload.md), howto: [docs/05a](05a-benchmark-h
 
 1. Сначала **1–4 + 5–6** (ядро стенда) — можно тестировать host-бенч на железе.
 2. Потом **7–8** (питание/нагрузка) — для P2 и питания PWR-2.
-3. Дисплей (12) — **после фиксации MPN** (O-15: FPC-40 pinout) и решения RGB vs DSI.
+3. Дисплей (13a/13b) — **MPN зафиксирован** (O-15/O-19: TFT-H050A1SVIST4R40, 40-pin ST7262, 2–3 образца; резерв NHD/EJ; DSI — опция rev.3). Заказать сразу после 1–4.
 4. S3 (11) — параллельно, для «народной» CORE-S3.
 
 ## 4. Что проверить сразу после распаковки
