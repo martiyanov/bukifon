@@ -1,6 +1,6 @@
 # Букифон (Bukifon) — открытая платформа: сэмплер + синтезатор + модули
 
-**Версия: 0.5.0** · сайт: **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
+**Версия: 0.5.1** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
 
 **Букифон** — настольный музыкальный инструмент-платформа, который собирается из
 доступных компонентов, печатается на 3D-принтере, расширяется модулями и полностью
@@ -32,8 +32,8 @@
 
 ## Сайт проекта
 
-- Русская страница: https://martiyanov.github.io/bukifon/
-- English page: https://martiyanov.github.io/bukifon/en/
+- Русская страница (live): https://martiyanov.github.io/bukifon/
+- English page (live): https://martiyanov.github.io/bukifon/en/
 - Исходники сайта: [`docs/index.html`](docs/index.html), [`docs/en/index.html`](docs/en/index.html);
   SEO: [`docs/sitemap.xml`](docs/sitemap.xml), [`docs/robots.txt`](docs/robots.txt), [`docs/llms.txt`](docs/llms.txt);
   деплой: [`.github/workflows/pages.yml`](.github/workflows/pages.yml); метаданные репозитория —

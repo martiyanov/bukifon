@@ -4,17 +4,23 @@
 Файлы сайта: `docs/index.html`, `docs/en/index.html`, `docs/assets/`, `docs/sitemap.xml`,
 `docs/robots.txt`, `docs/llms.txt`, `docs/.nojekyll`. Деплой — `.github/workflows/pages.yml`.
 
-## 1. Включить Pages (один раз)
+## 1. Pages: как включено сейчас
 
-Settings → Pages → **Source: GitHub Actions**. Либо через API (нужен токен `gh`):
+Сайт **уже живой**: https://martiyanov.github.io/bukifon/ (RU) и https://martiyanov.github.io/bukifon/en/.
+GitHub автоматически включил Pages при пуше ветки **`gh-pages`** (в ней лежит собранный сайт:
+`index.html`, `en/`, `assets/`, `sitemap.xml`, `robots.txt`, `llms.txt`, `.nojekyll`).
 
-```bash
-gh api -X POST repos/martiyanov/bukifon/pages -f build_type=workflow
-gh api -X PUT  repos/martiyanov/bukifon/pages -f build_type=workflow
-```
+**Источник Pages сейчас: ветка `gh-pages`, папка `/`.** Это рабочий вариант — ничего менять не нужно.
 
-После первого пуша в `main` workflow `Deploy site to GitHub Pages` соберёт сайт.
-Проверить: `gh run list --workflow pages.yml`.
+Два способа обновлять сайт:
+1. **Через `gh-pages`** (сейчас): после правок в `docs/` выполнить
+   `bash tools/publish_site.sh` — скрипт пересобирает `gh-pages` из `docs/` и пушит.
+2. **Через GitHub Actions** ([`.github/workflows/pages.yml`](../.github/workflows/pages.yml)):
+   переключить Settings → Pages → Source: **GitHub Actions**; после этого сайт будет
+   собираться из `docs/` при каждом пуше в `main`. Через API:
+   ```bash
+   gh api -X PUT repos/martiyanov/bukifon/pages -f build_type=workflow
+   ```
 
 ## 2. Описание и темы репозитория (About)
 
