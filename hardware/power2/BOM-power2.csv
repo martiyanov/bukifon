@@ -1,0 +1,121 @@
+Артикул;MPN;Номинал;Кол-во;Позиции;Корпус;Примечание
+PM-PWR2-001;;PACK 3P;1;J1;TerminalBlock_4Ucon_1x03_P3.50mm_Vertical;батарейный отсек: 1=B+, 2=B-, 3=NTC (термистор на банке)
+PM-PWR2-002;;18650 3.6V 3.5Ah;1;BT1;BatteryHolder_Keystone_1042_1x18650;"банка 1/2 (параллель); холдер в батарейном отсеке, не на плате"
+PM-PWR2-003;;18650 3.6V 3.5Ah;1;BT2;BatteryHolder_Keystone_1042_1x18650;"банка 2/2 (параллель); ХОЛДЕРЫ С КЛЮЧОМ от переполюсовки"
+PM-PWR2-004;;5 A;1;F1;Fuse_1206_3216Metric;предохранитель пакета 4-5 А (по ТЗ): защита от КЗ и от переполюсовки одной банки
+PM-PWR2-005;;AO3401A P-FET;1;Q1;SOT-23;защита от переполюсовки пакета: затвор на B-, при обратной банке закрыт
+PM-PWR2-006;;100k;1;R1;R_0603_1608Metric;подтяжка затвора Q1 (OFF при обрыве)
+PM-PWR2-007;SMBJ5.0A;SMBJ5.0A;1;D1;D_SMA;TVS на пакете (ESD/импульсы при hot-plug)
+PM-PWR2-008;;NTC 10k B3950;1;TH1;— (вне платы);термистор на банке: -> TS BQ24074 (CORE-2) и -> CH7 (TEMP_MON)
+PM-PWR2-009;;100R;1;R2;R_0603_1608Metric;RC-фильтр BAT BQ297xy
+PM-PWR2-010;;100n;1;C1;C_0805_2012Metric;RC-фильтр BAT BQ297xy
+PM-PWR2-011;;1k;1;R3;R_0603_1608Metric;токовый сенс BQ297xy (V-) к P-
+PM-PWR2-012;BQ29700DSER (1S, OVP 4.275 В);BQ297xy;1;U1;SOT-23-6;BMS 1S: OVP 4.25-4.30 В, UVP 2.35-2.50 В, OCP/SCP (внешние NMOS)
+PM-PWR2-013;AO3400A (N-FET 30 В);AO3400A;1;Q2;SOT-23;разрядный ключ BMS (общий исток с Q3)
+PM-PWR2-014;AO3400A (N-FET 30 В);AO3400A;1;Q3;SOT-23;зарядный ключ BMS (общий исток с Q2)
+PM-PWR2-015;;100k;1;R4;R_0603_1608Metric;gate-source Q2
+PM-PWR2-016;;100k;1;R5;R_0603_1608Metric;gate-source Q3
+PM-PWR2-017;;AO3401A P-FET;1;Q4;SOT-23;back-to-back P-FET 1/2 (reverse blocking, 11 мОм-класс)
+PM-PWR2-018;;AO3401A P-FET;1;Q5;SOT-23;back-to-back P-FET 2/2
+PM-PWR2-019;;100k;1;R6;R_0603_1608Metric;подтяжка затворов (OFF)
+PM-PWR2-020;MMBT3904;MMBT3904;1;Q6;SOT-23;драйвер высокого плеча: ON = затворы к PGND
+PM-PWR2-021;;10k;1;R7;R_0603_1608Metric;база Q6
+PM-PWR2-022;;100k;1;R8;R_0603_1608Metric;база Q6 -> PGND (OFF по умолчанию)
+PM-PWR2-023;;100k;1;R9;R_0603_1608Metric;MASTER_SW -> PGND (обрыв = OFF)
+PM-PWR2-024;;100n;1;C2;C_0805_2012Metric;сглаживание затвора (turn-on/off)
+PM-PWR2-025;;SW panel;1;J2;PinHeader_1x02_P2.54mm_Vertical;вывод на панельный тумблер питания (параллельно SW1)
+PM-PWR2-026;;POWER OFF/ON;1;SW1;— (вне платы);местный слайдер питания (запасной/для макета)
+PM-PWR2-027;SMBJ5.0A;SMBJ5.0A;1;D2;D_SMA;TVS после load switch
+PM-PWR2-028;;22uF;1;C3;C_1210_3225Metric;вход всех преобразователей
+PM-PWR2-029;MAX17048G+T (TDFN-8);MAX17048;1;U2;SOT-23-6;"fuel gauge 1S, I2C 0x36, +-7.5 мВ, без шунта; VDD = Kelvin на банку"
+PM-PWR2-030;;10R;1;R10;R_0603_1608Metric;Kelvin-питание/сенс банки для гейджа (ток ~25 мкА)
+PM-PWR2-031;;1uF;1;C4;C_0805_2012Metric;VDD гейджа
+PM-PWR2-032;;100n;1;C5;C_0805_2012Metric;VDD гейджа ВЧ
+PM-PWR2-033;;22R;1;R11;R_0603_1608Metric;серия I2C SDA (защита/развязка от длинного кабеля)
+PM-PWR2-034;;22R;1;R12;R_0603_1608Metric;серия I2C SCL
+PM-PWR2-035;;1k;1;R13;R_0603_1608Metric;резервный аналоговый контроль: сырой VBAT -> делитель CH6 на CORE-2
+PM-PWR2-036;TPS61088RHLR (QFN-20);TPS61088;1;U3;QFN-20-1EP_3x3mm_P0.4mm_EP1.8x1.8mm;sync boost 10-A ключ: +12.15 В / 330 мА (запас 4x по току)
+PM-PWR2-037;;10uH / 4A;1;L1;L_Bourns-SRN6045;индуктор +12 В (Isat >= 4 А)
+PM-PWR2-038;;22uF;1;C6;C_1210_3225Metric;вход +12 В
+PM-PWR2-039;;22uF;1;C7;C_1210_3225Metric;вход +12 В
+PM-PWR2-040;;100n;1;C8;C_0805_2012Metric;вход +12 В ВЧ
+PM-PWR2-041;;100k;1;R14;R_0603_1608Metric;ОС: Vout = 1.204*(1+100k/11k) = 12.15 В
+PM-PWR2-042;;11k;1;R15;R_0603_1608Metric;низ ОС +12 В
+PM-PWR2-043;;100n;1;C9;C_0805_2012Metric;soft-start +12 В
+PM-PWR2-044;;100k;1;R16;R_0603_1608Metric;EN по умолчанию ON (CORE-2 может тянуть вниз для секвенирования)
+PM-PWR2-045;;4.7uH;1;L2;L_Bourns-SRN6045;pi-фильтр +12 В: L
+PM-PWR2-046;;47uF/25V;1;C10;CP_Elec_6.3x7.7;pi-фильтр +12 В: C1
+PM-PWR2-047;;47uF/25V;1;C11;CP_Elec_6.3x7.7;pi-фильтр +12 В: C2
+PM-PWR2-048;;100n;1;C12;C_0805_2012Metric;pi-фильтр +12 В: HF
+PM-PWR2-049;;0.5 A;1;F2;Fuse_1206_3216Metric;полифьюз шины +12 В (шина модулей <= 300 мА)
+PM-PWR2-050;SMAJ15A;SMAJ15A;1;D3;D_SMA;TVS шины +12 В
+PM-PWR2-051;;4.7k;1;R17;R_0603_1608Metric;разрядный резистор +12 В
+PM-PWR2-052;;100n;1;C13;C_0805_2012Metric;ВЧ на шине +12 В
+PM-PWR2-053;LMR33630ADDA (SOIC-8 PowerPAD, 36 В);LMR33630;1;U4;SOIC-8_3.9x4.9mm_P1.27mm;синхронный buck в инвертирующем IBB: GND МС = -12 В, VIN = VSYS+12 В = 15.7 В
+PM-PWR2-054;;22uH / 2A;1;L3;L_Bourns-SRN6045;IBB: индуктор SW -> PGND (выход buck = системная земля)
+PM-PWR2-055;;100n;1;C14;C_0805_2012Metric;bootstrap -12 В
+PM-PWR2-056;;1uF;1;C15;C_0805_2012Metric;VCC МС (внутр. LDO) -> GND МС
+PM-PWR2-057;;22uF/25V;1;C16;C_1210_3225Metric;вход IBB: 15.7 В (25 В керамика!)
+PM-PWR2-058;;100n;1;C17;C_0805_2012Metric;вход IBB ВЧ
+PM-PWR2-059;;22uF/25V;1;C18;C_1210_3225Metric;выход IBB 1
+PM-PWR2-060;;22uF/25V;1;C19;C_1210_3225Metric;выход IBB 2
+PM-PWR2-061;;110k;1;R19;R_0603_1608Metric;ОС IBB: Vout = 1.0*(1+110k/10k) = 12.0 В
+PM-PWR2-062;;10k;1;R20;R_0603_1608Metric;низ ОС -12 В
+PM-PWR2-063;PC817C (DIP-4);PC817;1;U5;DIP-8_W7.62mm;оптопара: уровень EN из домена PGND в домен -12 В
+PM-PWR2-064;;1k;1;R21;R_0603_1608Metric;ток LED оптопары ~2.6 мА
+PM-PWR2-065;;100k;1;R22;R_0603_1608Metric;EN по умолчанию ON (CORE-2 тянет вниз для OFF)
+PM-PWR2-066;;100k;1;R23;R_0603_1608Metric;EN -> GND МС (OFF)
+PM-PWR2-067;;100n;1;C20;C_0805_2012Metric;фильтр EN -12 В
+PM-PWR2-068;;10uH;1;L4;L_Bourns-SRN6045;pi-фильтр -12 В: L
+PM-PWR2-069;;47uF/25V;1;C21;CP_Elec_6.3x7.7;pi-фильтр -12 В: C1
+PM-PWR2-070;;47uF/25V;1;C22;CP_Elec_6.3x7.7;pi-фильтр -12 В: C2
+PM-PWR2-071;;100n;1;C23;C_0805_2012Metric;pi-фильтр -12 В: HF
+PM-PWR2-072;;0.3 A;1;F3;Fuse_1206_3216Metric;"полифьюз -12 В (шина <= 95 мА; 25%+ запас)"
+PM-PWR2-073;SMAJ15A;SMAJ15A;1;D4;D_SMA;TVS -12 В
+PM-PWR2-074;;4.7k;1;R24;R_0603_1608Metric;разрядный резистор -12 В
+PM-PWR2-075;;100n;1;C24;C_0805_2012Metric;ВЧ на -12 В
+PM-PWR2-076;TPS61088RHLR (QFN-20);TPS61088;1;U6;QFN-20-1EP_3x3mm_P0.4mm_EP1.8x1.8mm;sync boost: +5.10 В / 1.0 А (аудио, MIDI, логика, вход BL)
+PM-PWR2-077;;10uH / 4A;1;L5;L_Bourns-SRN6045;индуктор +5 В
+PM-PWR2-078;;22uF;1;C25;C_1210_3225Metric;вход +5 В
+PM-PWR2-079;;22uF;1;C26;C_1210_3225Metric;вход +5 В
+PM-PWR2-080;;100n;1;C27;C_0805_2012Metric;вход +5 В ВЧ
+PM-PWR2-081;;100k;1;R25;R_0603_1608Metric;ОС: Vout = 1.204*(1+100k/30.9k) = 5.10 В
+PM-PWR2-082;;30.9k;1;R26;R_0603_1608Metric;низ ОС +5 В
+PM-PWR2-083;;100n;1;C28;C_0805_2012Metric;soft-start +5 В
+PM-PWR2-084;;100k;1;R27;R_0603_1608Metric;EN +5 В = ON
+PM-PWR2-085;;4.7uH;1;L6;L_Bourns-SRN6045;pi-фильтр +5 В: L
+PM-PWR2-086;;47uF;1;C29;CP_Elec_6.3x7.7;pi-фильтр +5 В: C1
+PM-PWR2-087;;47uF;1;C30;CP_Elec_6.3x7.7;pi-фильтр +5 В: C2
+PM-PWR2-088;;100n;1;C31;C_0805_2012Metric;pi-фильтр +5 В: HF
+PM-PWR2-089;;2 A;1;F4;Fuse_1206_3216Metric;полифьюз +5 В (логика/аудио/BL)
+PM-PWR2-090;SMBJ5.0A;SMBJ5.0A;1;D5;D_SMA;TVS +5 В
+PM-PWR2-091;;1k;1;R28;R_0603_1608Metric;разрядный резистор +5 В
+PM-PWR2-092;;100n;1;C32;C_0805_2012Metric;ВЧ на +5 В
+PM-PWR2-093;;AO3401A P-FET;1;Q7;SOT-23;ключ LED-ветки: WS2812 питаются только при EN_LED5 (brightness cap снизу)
+PM-PWR2-094;;100k;1;R29;R_0603_1608Metric;подтяжка затвора (OFF)
+PM-PWR2-095;MMBT3904;MMBT3904;1;Q8;SOT-23;драйвер ключа LED
+PM-PWR2-096;;10k;1;R30;R_0603_1608Metric;база Q8
+PM-PWR2-097;;100k;1;R31;R_0603_1608Metric;OFF по умолчанию
+PM-PWR2-098;;2.5 A;1;F5;Fuse_1206_3216Metric;полифьюз LED-шины (74 WS2812, прошивочный cap)
+PM-PWR2-099;;47uF;1;C33;CP_Elec_6.3x7.7;буфер LED-импульсов
+PM-PWR2-100;;100n;1;C34;C_0805_2012Metric;HF LED-шины
+PM-PWR2-101;SMBJ5.0A;SMBJ5.0A;1;D6;D_SMA;TVS LED-шины
+PM-PWR2-102;;1k;1;R32;R_0603_1608Metric;разрядный резистор LED
+PM-PWR2-103;MCP130-300DI/TO (3.00 В);MCP130-300;1;U7;SOT-23;супервизор 3.00 В: PWR_GOOD = open-drain, LOW = VSYS ниже нормы
+PM-PWR2-104;;100R;1;R33;R_0603_1608Metric;серия EN +12 В
+PM-PWR2-105;;100n;1;C35;C_0805_2012Metric;RC/EMI на EN +12 В
+PM-PWR2-106;;100R;1;R34;R_0603_1608Metric;серия EN -12 В
+PM-PWR2-107;;100n;1;C36;C_0805_2012Metric;RC/EMI на EN -12 В
+PM-PWR2-108;;100R;1;R35;R_0603_1608Metric;серия EN LED
+PM-PWR2-109;;100n;1;C37;C_0805_2012Metric;RC/EMI на EN LED
+PM-PWR2-110;;J-PWR (IDC-20);1;J3;IDC-Header_2x10_P2.54mm_Vertical;"PWR-2 <-> CORE-2: питание (пары) + возвраты; +12/-12/+5/5V_LED"
+PM-PWR2-111;;J-CTRL (IDC-12);1;J4;IDC-Header_2x06_P2.54mm_Vertical;PWR-2 <-> CORE-2: сенс/гейдж/статус/EN (MASTER_SW -> CORE-2 для секвенирования)
+PM-PWR2-112;;BATT_CELL_P;1;TP1;TestPoint_Pad_D1.5mm;напряжение банок
+PM-PWR2-113;;VBAT;1;TP2;TestPoint_Pad_D1.5mm;выход BMS (P+)
+PM-PWR2-114;;VSYS_SW;1;TP3;TestPoint_Pad_D1.5mm;вход преобразователей
+PM-PWR2-115;;12V_BUS;1;TP4;TestPoint_Pad_D1.5mm;шина +12 В
+PM-PWR2-116;;N12_BUS;1;TP5;TestPoint_Pad_D1.5mm;шина -12 В
+PM-PWR2-117;;5V_BUS;1;TP6;TestPoint_Pad_D1.5mm;шина +5 В
+PM-PWR2-118;;5V_LED;1;TP7;TestPoint_Pad_D1.5mm;LED-шина
+PM-PWR2-119;;PWR_GOOD;1;TP8;TestPoint_Pad_D1.5mm;статус питания
+PM-PWR2-120;;PGND;1;TP9;TestPoint_Pad_D1.5mm;силовая земля для измерений

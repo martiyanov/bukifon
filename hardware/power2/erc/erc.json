@@ -1,0 +1,295 @@
+{
+    "$schema": "https://schemas.kicad.org/erc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-11-05T21:27:57",
+    "ignored_checks": [
+        {
+            "description": "Global label only appears once in the schematic",
+            "key": "single_global_label"
+        },
+        {
+            "description": "Four connection points are joined together",
+            "key": "four_way_junction"
+        },
+        {
+            "description": "SPICE model issue",
+            "key": "simulation_model_issue"
+        },
+        {
+            "description": "Assigned footprint doesn't match footprint filters",
+            "key": "footprint_filter"
+        }
+    ],
+    "included_severities": [
+        "error",
+        "warning",
+        "exclusion"
+    ],
+    "kicad_version": "10.0.4",
+    "sheets": [
+        {
+            "path": "/",
+            "uuid_path": "/1ebfadb1-a7cd-43cd-bc63-8a264490f360",
+            "violations": [
+                {
+                    "description": "Вывод типа Выход питания соединён с выводом типа Выход питания",
+                    "items": [
+                        {
+                            "description": "Symbol U3 Вывод 10 [VOUT, Выход питания, Линия]",
+                            "pos": {
+                                "x": 4.4323,
+                                "y": 1.6764
+                            },
+                            "uuid": "52f6474f-bf1d-4e17-a8be-46d71997e197"
+                        },
+                        {
+                            "description": "Symbol U3 Вывод 11 [VOUT, Выход питания, Линия]",
+                            "pos": {
+                                "x": 4.4323,
+                                "y": 1.7018
+                            },
+                            "uuid": "4d1ddea5-2d59-4c06-9cee-269e8940a917"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_to_pin"
+                },
+                {
+                    "description": "Вывод типа Выход питания соединён с выводом типа Выход питания",
+                    "items": [
+                        {
+                            "description": "Symbol U6 Вывод 10 [VOUT, Выход питания, Линия]",
+                            "pos": {
+                                "x": 8.1788,
+                                "y": 0.7493
+                            },
+                            "uuid": "8b4f6233-a4cf-4fee-83a4-f4dbffc9c272"
+                        },
+                        {
+                            "description": "Symbol U6 Вывод 11 [VOUT, Выход питания, Линия]",
+                            "pos": {
+                                "x": 8.1788,
+                                "y": 0.7747
+                            },
+                            "uuid": "e04f0a87-425f-4ba7-9821-2cb5ba573be4"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_to_pin"
+                },
+                {
+                    "description": "Вывод типа Выход питания соединён с выводом типа Выход питания",
+                    "items": [
+                        {
+                            "description": "Symbol #FLG13 Вывод 1 [Выход питания, Линия]",
+                            "pos": {
+                                "x": 8.2677,
+                                "y": 6.096
+                            },
+                            "uuid": "f2ac360b-8f84-42c2-bb67-fbd1fd13c99e"
+                        },
+                        {
+                            "description": "Symbol U3 Вывод 11 [VOUT, Выход питания, Линия]",
+                            "pos": {
+                                "x": 4.4323,
+                                "y": 1.7018
+                            },
+                            "uuid": "4d1ddea5-2d59-4c06-9cee-269e8940a917"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_to_pin"
+                },
+                {
+                    "description": "Вывод типа Выход питания соединён с выводом типа Выход питания",
+                    "items": [
+                        {
+                            "description": "Symbol #FLG15 Вывод 1 [Выход питания, Линия]",
+                            "pos": {
+                                "x": 8.7884,
+                                "y": 6.096
+                            },
+                            "uuid": "9fa8e91c-6ed9-479a-a8a8-4ac02fa21eea"
+                        },
+                        {
+                            "description": "Symbol U6 Вывод 11 [VOUT, Выход питания, Линия]",
+                            "pos": {
+                                "x": 8.1788,
+                                "y": 0.7747
+                            },
+                            "uuid": "e04f0a87-425f-4ba7-9821-2cb5ba573be4"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_to_pin"
+                },
+                {
+                    "description": "Текущая конфигурация не содержит библиотеку символов 'picomod2'",
+                    "items": [
+                        {
+                            "description": "Символ U2 [MAX17048]",
+                            "pos": {
+                                "x": 4.3053,
+                                "y": 0.7747
+                            },
+                            "uuid": "e6693bc5-16ac-4742-a8a4-0d678bf91140"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "lib_symbol_issues"
+                },
+                {
+                    "description": "Посадочное место 'QFN-20-1EP_3x3mm_P0.4mm_EP1.8x1.8mm' не найдено в библиотеке 'Package_DFN_QFN'.",
+                    "items": [
+                        {
+                            "description": "Символ U3 [TPS61088]",
+                            "pos": {
+                                "x": 4.3053,
+                                "y": 1.7018
+                            },
+                            "uuid": "6cc8588b-95b8-423e-89c5-536c04a9d233"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "Текущая конфигурация не содержит библиотеку символов 'picomod2'",
+                    "items": [
+                        {
+                            "description": "Символ U3 [TPS61088]",
+                            "pos": {
+                                "x": 4.3053,
+                                "y": 1.7018
+                            },
+                            "uuid": "6cc8588b-95b8-423e-89c5-536c04a9d233"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "lib_symbol_issues"
+                },
+                {
+                    "description": "Посадочное место 'L_Bourns-SRN6045' не найдено в библиотеке 'Inductor_SMD'.",
+                    "items": [
+                        {
+                            "description": "Символ L4 [L]",
+                            "pos": {
+                                "x": 4.3053,
+                                "y": 4.2799
+                            },
+                            "uuid": "1cdead8e-69c9-4122-800a-eb0142f9a966"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "Посадочное место 'L_Bourns-SRN6045' не найдено в библиотеке 'Inductor_SMD'.",
+                    "items": [
+                        {
+                            "description": "Символ L1 [L]",
+                            "pos": {
+                                "x": 4.9149,
+                                "y": 1.7018
+                            },
+                            "uuid": "808ca2e3-6ca9-46f4-b3f4-3d4576d8f212"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "Посадочное место 'L_Bourns-SRN6045' не найдено в библиотеке 'Inductor_SMD'.",
+                    "items": [
+                        {
+                            "description": "Символ L3 [L]",
+                            "pos": {
+                                "x": 4.9149,
+                                "y": 3.2893
+                            },
+                            "uuid": "a1ca4430-ad79-4c84-affc-ac0ac01d85a7"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "Посадочное место 'L_Bourns-SRN6045' не найдено в библиотеке 'Inductor_SMD'.",
+                    "items": [
+                        {
+                            "description": "Символ L2 [L]",
+                            "pos": {
+                                "x": 6.7437,
+                                "y": 2.032
+                            },
+                            "uuid": "84b5911e-b662-4a1f-afee-c631fd25e42d"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "Посадочное место 'QFN-20-1EP_3x3mm_P0.4mm_EP1.8x1.8mm' не найдено в библиотеке 'Package_DFN_QFN'.",
+                    "items": [
+                        {
+                            "description": "Символ U6 [TPS61088]",
+                            "pos": {
+                                "x": 8.0518,
+                                "y": 0.7747
+                            },
+                            "uuid": "2d63e746-ee08-46ca-8090-0dfd3ed1e2d4"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "Текущая конфигурация не содержит библиотеку символов 'picomod2'",
+                    "items": [
+                        {
+                            "description": "Символ U6 [TPS61088]",
+                            "pos": {
+                                "x": 8.0518,
+                                "y": 0.7747
+                            },
+                            "uuid": "2d63e746-ee08-46ca-8090-0dfd3ed1e2d4"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "lib_symbol_issues"
+                },
+                {
+                    "description": "Посадочное место 'L_Bourns-SRN6045' не найдено в библиотеке 'Inductor_SMD'.",
+                    "items": [
+                        {
+                            "description": "Символ L5 [L]",
+                            "pos": {
+                                "x": 8.6614,
+                                "y": 0.7747
+                            },
+                            "uuid": "9fb200e1-2ed0-4b20-93b3-c15640e65bc9"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "Посадочное место 'L_Bourns-SRN6045' не найдено в библиотеке 'Inductor_SMD'.",
+                    "items": [
+                        {
+                            "description": "Символ L6 [L]",
+                            "pos": {
+                                "x": 10.4902,
+                                "y": 1.1049
+                            },
+                            "uuid": "8eec0f39-8e99-47df-9e71-06c88e0991d4"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                }
+            ]
+        }
+    ],
+    "source": "PWR-2.kicad_sch"
+}

@@ -73,7 +73,7 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
 </head>
 <body>
 <header><div class="wrap">
-  <nav><a href="#about">О проекте</a><a href="#modes">Режимы</a><a href="#hardware">Железо</a><a href="#status">Статус</a><a href="#modules">Модули</a><a href="#docs">Документы</a><a href="en/" hreflang="en">English</a></nav>
+  <nav><a href="#about">О проекте</a><a href="#modes">Режимы</a><a href="#hardware">Железо</a><a href="#status">Статус</a><a href="#bench">Бенчмарк</a><a href="#modules">Модули</a><a href="#docs">Документы</a><a href="en/" hreflang="en">English</a></nav>
   <h1>Букифон <span style="color:var(--mut);font-weight:400">/ Bukifon</span></h1>
   <p class="sub">Открытый настольный <strong>синтезатор + сэмплер + платформа модулей</strong>. 3D-печатный корпус, открытые схемы KiCad, открытая прошивка C++.<br><strong>Народный инструмент:</strong> комплект от <strong>≤ $200</strong> (S3) до <strong>≤ $400</strong> (полный с P4 и картриджами).</p>
   <span class="badge">v0.6.2</span><span class="badge">CERN-OHL-S-2.0</span><span class="badge">GPL-3.0-or-later</span><span class="badge">клин 8° · 380×210×61.5</span><span class="badge">Wi-Fi + BT</span><span class="badge">USB HID + MIDI + UAC2</span>
@@ -150,6 +150,15 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
     <li>🔄 дальше: аудиоядро, сэмплер, SDK модулей, пилот 10–20 шт, релиз v1.0.</li>
   </ul>
   <p><img src="assets/compare.jpg" alt="Сравнение утверждённого концепта и раскладки v0.4" loading="lazy"></p>
+</section>
+
+<section id="bench">
+  <h2>Бенчмарк (P1)</h2>
+  <p>Workload заморожен и измеряется переносимым харнессом: 8 голосов 4-оп FM + 8 granular-дорожек, PSRAM-поток, UI 800×480, USB UAC2 8×8. Критерий — <strong>max block ≤ 650 µs</strong> при дедлайне 1.333 мс и 24-часовой soak.</p>
+  <p>Host-прогон: worst audio <strong>218 µs</strong> (16.4 % дедлайна), все 7 сценариев PASS, 0 аллокаций в audio-path. Дальше — те же сценарии на ESP32-P4 и STM32H743 (devkit): только они дают вердикт по MCU.</p>
+  <p><a href="https://github.com/martiyanov/bukifon/blob/main/docs/05-benchmark-workload.md">Workload freeze</a> ·
+     <a href="https://github.com/martiyanov/bukifon/blob/main/docs/05a-benchmark-howto.md">How to run</a> ·
+     <a href="https://github.com/martiyanov/bukifon/tree/main/firmware/bench">firmware/bench</a></p>
 </section>
 
 <section id="modules">

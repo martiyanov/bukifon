@@ -73,7 +73,7 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
 </head>
 <body>
 <header><div class="wrap">
-  <nav><a href="#about">About</a><a href="#modes">Modes</a><a href="#hardware">Hardware</a><a href="#status">Status</a><a href="#modules">Modules</a><a href="#docs">Docs</a><a href="../" hreflang="ru">Русский</a></nav>
+  <nav><a href="#about">About</a><a href="#modes">Modes</a><a href="#hardware">Hardware</a><a href="#status">Status</a><a href="#bench">Benchmark</a><a href="#modules">Modules</a><a href="#docs">Docs</a><a href="../" hreflang="ru">Русский</a></nav>
   <h1>Bukifon <span style="color:var(--mut);font-weight:400">/ Букифон</span></h1>
   <p class="sub">An open-source desktop <strong>synthesizer + sampler + module platform</strong>. 3D-printed case, open KiCad schematics, open C++ firmware.<br><strong>A people's instrument:</strong> kits from <strong>≤ $200</strong> (S3) to <strong>≤ $400</strong> (full P4 + cartridges).</p>
   <span class="badge">v0.6.2</span><span class="badge">CERN-OHL-S-2.0</span><span class="badge">GPL-3.0-or-later</span><span class="badge">8° wedge · 380×210×61.5</span><span class="badge">Wi-Fi + BT</span><span class="badge">USB HID + MIDI + UAC2</span>
@@ -150,6 +150,15 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
     <li>🔄 next: audio core, sampler, module SDK, pilot run of 10–20 units, v1.0 release.</li>
   </ul>
   <p><img src="../assets/compare.jpg" alt="Approved concept versus v0.4 layout comparison" loading="lazy"></p>
+</section>
+
+<section id="bench">
+  <h2>Benchmark (P1)</h2>
+  <p>The workload is frozen and measured by a portable harness: 8 voices of 4-op FM + 8 granular tracks, PSRAM streaming, 800×480 UI, USB UAC2 8×8. The criterion is <strong>max block ≤ 650 µs</strong> against a 1.333 ms deadline with a 24-hour soak.</p>
+  <p>Host run: worst audio <strong>218 µs</strong> (16.4 % of the deadline), all 7 scenarios PASS, zero allocations in the audio path. Next — the same scenarios on ESP32-P4 and STM32H743 devkits: only they decide the MCU.</p>
+  <p><a href="https://github.com/martiyanov/bukifon/blob/main/docs/05-benchmark-workload.md">Workload freeze</a> ·
+     <a href="https://github.com/martiyanov/bukifon/blob/main/docs/05a-benchmark-howto.md">How to run</a> ·
+     <a href="https://github.com/martiyanov/bukifon/tree/main/firmware/bench">firmware/bench</a></p>
 </section>
 
 <section id="modules">
