@@ -127,6 +127,11 @@ firmware/README). Этот файл фиксирует актуальные тр
 | D-65 | 06.11 | Recovery: ROM USB download (BOOT+RESET), UART-пады, dual OTA + factory image, safe mode, rollback после 3 неудач | docs/42 |
 | D-66 | 06.11 | Stackup: CORE/PWR — 4 слоя, PANEL-2 — 4 слоя (2 только после route-review); bow/twist ≤0.75 % | docs/42 |
 | D-67 | 06.11 | EOL: **2–2.5 мин** авто+оператор, полный цикл 6–8 мин/устройство; first-pass yield ≥80 % на 5 прототипах; founders beta = 3 инженерных + 2 валидационных | docs/42 |
+| D-68 | 06.11 | P4 recovery: **UART0 + BOOT обязательны**, JTAG 10-pin — DNP-пады для bring-up; ROM UART download как аварийный путь | CORE-2 DFM |
+| D-69 | 06.11 | 24C32 карта: SN/ревизии/калибровки по offset-карте DFM + дубль во flash factory_data; QR/SN на корпусе | CORE-2 DFM |
+| D-70 | 06.11 | TP28–TP30 (LED_RET, I2S_BCK, I2S_LRCK) добавить пады в следующей правке схемы CORE-2 | CORE-2 DFM |
+| D-71 | 06.11 | MAX17048 0x36, EN-полярность по PWR-2 interfaces — утверждено; FPC-40 RGB pinout фиксируется вместе с MPN дисплея до PCB | CORE-2/PANEL-2 DFM |
+| D-72 | 06.11 | DSI — опция rev.3; первый SKU — **RGB565 FPC-40** дисплей | docs/36, D-58 |
 
 ## 6a. Открытые вопросы (не закрывать без измерений)
 
