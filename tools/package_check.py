@@ -155,7 +155,8 @@ except Exception as exc:  # pragma: no cover
 
 # ---- panel layout -----------------------------------------------------------
 for f in ["renders/panel_layout.png", "renders/panel_layout_keys.png",
-          "renders/variantB_panel.png"]:
+          "renders/variantB_panel.png", "renders/v1_2_head.png",
+          "renders/v1_2_deck_lapka.png", "renders/v1_2_deck_pads.png"]:
     check_file(f)
 
 # ---- report ----------------------------------------------------------------
