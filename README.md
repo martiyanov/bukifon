@@ -55,6 +55,17 @@ BLE HID, передача проектов). То есть Букифон — е
 | [docs/04-consultation-gpt.md](docs/04-consultation-gpt.md) | консультация GPT/Codex (gpt-5.6) по MCU и архитектуре |
 | [docs/00-context-transfer.md](docs/00-context-transfer.md) | контекст проекта для передачи другим агентам |
 | [PULL_REQUEST.md](PULL_REQUEST.md) | описание MR v0.4 |
+| [docs/20-analog-projects.md](docs/20-analog-projects.md) | разведка аналогов (Deluge, M8, Polyend, Daisy, PreenFM, Norns…) |
+| [docs/21-ergonomics.md](docs/21-ergonomics.md) | эргономика: клин 8°, 32/61.5 мм, экран 35° |
+| [docs/22-night-plan.md](docs/22-night-plan.md) | ночной план и scope freeze |
+| [docs/23-nightly-report.md](docs/23-nightly-report.md) | отчёт ночи: что готово/симулируется/нельзя заказывать |
+| [docs/24-module-sdk.md](docs/24-module-sdk.md) | SDK модулей: Module API v0, упаковка, ограничения |
+| [docs/25-power-architecture.md](docs/25-power-architecture.md) | питание: ±12 В, BQ24074, MAX17048, земля, стенд до PCB |
+| [docs/05-benchmark-workload.md](docs/05-benchmark-workload.md) | workload freeze P1 и критерии |
+| [docs/05a-benchmark-howto.md](docs/05a-benchmark-howto.md) | как запустить бенчмарк на S3/P4/H743 |
+| [modules/](modules/) | каталог модулей: шаблон, примеры gain_fx и LFO |
+| [firmware/bench/](firmware/bench/) | харнесс P1 (fm/granular/mix/psram/ui/usb, JSON/CSV) |
+| [SECURITY.md](SECURITY.md) | политика безопасности и приватности |
 
 ## Компоновка панели v0.4
 
