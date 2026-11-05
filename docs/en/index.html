@@ -73,7 +73,7 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
 </head>
 <body>
 <header><div class="wrap">
-  <nav><a href="#about">About</a><a href="#modes">Modes</a><a href="#hardware">Hardware</a><a href="#status">Status</a><a href="#docs">Docs</a><a href="../" hreflang="ru">Русский</a></nav>
+  <nav><a href="#about">About</a><a href="#modes">Modes</a><a href="#hardware">Hardware</a><a href="#status">Status</a><a href="#modules">Modules</a><a href="#docs">Docs</a><a href="../" hreflang="ru">Русский</a></nav>
   <h1>Bukifon <span style="color:var(--mut);font-weight:400">/ Букифон</span></h1>
   <p class="sub">An open-source desktop <strong>synthesizer + sampler + module platform</strong>. 3D-printed case, open KiCad schematics, open C++ firmware.<br><strong>A people's instrument:</strong> kits from <strong>≤ $200</strong> (S3) to <strong>≤ $400</strong> (full P4 + cartridges).</p>
   <span class="badge">v0.6.2</span><span class="badge">CERN-OHL-S-2.0</span><span class="badge">GPL-3.0-or-later</span><span class="badge">8° wedge · 380×210×61.5</span><span class="badge">Wi-Fi + BT</span><span class="badge">USB HID + MIDI + UAC2</span>
@@ -150,6 +150,20 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
     <li>🔄 next: audio core, sampler, module SDK, pilot run of 10–20 units, v1.0 release.</li>
   </ul>
   <p><img src="../assets/compare.jpg" alt="Approved concept versus v0.4 layout comparison" loading="lazy"></p>
+</section>
+
+<section id="modules">
+  <h2>Modules &amp; SDK</h2>
+  <p>Bukifon is a platform: anyone can write their own module. Three extension kinds:</p>
+  <div class="grid">
+    <div class="card"><h3>Audio-rate (C++)</h3><p>Oscillators, effects, filters inside the audio callback. Module API v0: 10 functions, stack/state/time limits, WCET budget and automatic bypass on overload.</p></div>
+    <div class="card"><h3>Control-rate (Lua)</h3><p>Modulators, macros, sequencer logic — sandboxed with instruction/memory limits.</p></div>
+    <div class="card"><h3>Analog cartridge</h3><p>AS3340 VCO, LM13700/AS3320 filters, PT2399 — on the 26-pin bus, printable enclosure.</p></div>
+  </div>
+  <p><a href="https://github.com/martiyanov/bukifon/blob/main/docs/24-module-sdk.md">SDK: Module API v0</a> ·
+     <a href="https://github.com/martiyanov/bukifon/tree/main/modules">module catalog</a> ·
+     <a href="https://github.com/martiyanov/bukifon/blob/main/tools/validate_module.py">validator</a> ·
+     examples: <code>gain_fx</code> (C++), <code>lfo_module</code> (Lua)</p>
 </section>
 
 <section id="docs">

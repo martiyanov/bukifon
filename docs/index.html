@@ -73,7 +73,7 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
 </head>
 <body>
 <header><div class="wrap">
-  <nav><a href="#about">О проекте</a><a href="#modes">Режимы</a><a href="#hardware">Железо</a><a href="#status">Статус</a><a href="#docs">Документы</a><a href="en/" hreflang="en">English</a></nav>
+  <nav><a href="#about">О проекте</a><a href="#modes">Режимы</a><a href="#hardware">Железо</a><a href="#status">Статус</a><a href="#modules">Модули</a><a href="#docs">Документы</a><a href="en/" hreflang="en">English</a></nav>
   <h1>Букифон <span style="color:var(--mut);font-weight:400">/ Bukifon</span></h1>
   <p class="sub">Открытый настольный <strong>синтезатор + сэмплер + платформа модулей</strong>. 3D-печатный корпус, открытые схемы KiCad, открытая прошивка C++.<br><strong>Народный инструмент:</strong> комплект от <strong>≤ $200</strong> (S3) до <strong>≤ $400</strong> (полный с P4 и картриджами).</p>
   <span class="badge">v0.6.2</span><span class="badge">CERN-OHL-S-2.0</span><span class="badge">GPL-3.0-or-later</span><span class="badge">клин 8° · 380×210×61.5</span><span class="badge">Wi-Fi + BT</span><span class="badge">USB HID + MIDI + UAC2</span>
@@ -150,6 +150,20 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
     <li>🔄 дальше: аудиоядро, сэмплер, SDK модулей, пилот 10–20 шт, релиз v1.0.</li>
   </ul>
   <p><img src="assets/compare.jpg" alt="Сравнение утверждённого концепта и раскладки v0.4" loading="lazy"></p>
+</section>
+
+<section id="modules">
+  <h2>Модули и SDK</h2>
+  <p>Букифон — платформа: свои модули может писать каждый. Три вида расширений:</p>
+  <div class="grid">
+    <div class="card"><h3>Audio-rate (C++)</h3><p>Генераторы, эффекты, фильтры внутри аудио-колбэка. Module API v0: 10 функций, лимиты стека/состояния/времени, WCET-бюджет и автоматический bypass при перегрузке.</p></div>
+    <div class="card"><h3>Control-rate (Lua)</h3><p>Модуляторы, макросы, секвенсорные логики — безопасно, с лимитом инструкций и памяти.</p></div>
+    <div class="card"><h3>Аналоговый картридж</h3><p>VCO AS3340, фильтры LM13700/AS3320, PT2399 — на шине 26-pin, печатаемый корпус.</p></div>
+  </div>
+  <p><a href="https://github.com/martiyanov/bukifon/blob/main/docs/24-module-sdk.md">SDK: Module API v0</a> ·
+     <a href="https://github.com/martiyanov/bukifon/tree/main/modules">каталог модулей</a> ·
+     <a href="https://github.com/martiyanov/bukifon/blob/main/tools/validate_module.py">валидатор</a> ·
+     примеры: <code>gain_fx</code> (C++), <code>lfo_module</code> (Lua)</p>
 </section>
 
 <section id="docs">
