@@ -2,6 +2,27 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.9.0] — 2025-11-06 — «CORE-S3 и лёгкий корпус»
+
+### Добавлено
+- **CORE-S3 rev.0** (`hardware/cores3/`): ESP32-S3-WROOM-1-N16R8, USB FS
+  (HID+MIDI+CDC+стерео UAC2), 1-bit SDMMC, **SPI-дисплей 800×480**, TPS63000 placeholder
+  (цель TPS63802), канон PANEL-2/PWR-2; **ERC 0/0**, 27/31 GPIO занято, PRE-FREEZE;
+  сравнение CORE-2 vs CORE-S3, endpoint-бюджет USB, devkit-план 2–3 дня.
+- **Корпус v0.5-B-light**: **230 г / 11.1 ч** вместо 277 г / 18.3 ч (−17 % массы,
+  −39 % времени) при сохранении жёсткости: стенки 2.0/дно 1.8, 3 периметра + локальные
+  рёбра, панели-оболочки; 6 STL watertight, fitcheck 32/0.
+- **P1: точный список заказа** `docs/29` (P4 EV, NUCLEO-H743ZI2, S3-N16R8, PCM5102A/1808,
+  дисплей, SD, БП/нагрузка; бюджет $110–320) и **запрос на purge** `docs/30` с SHA
+  старых PII-объектов для GitHub Support.
+- **CORE-S3 ограничения** `docs/31`: почему RGB565 не влезает на N16R8 (31 линия),
+  USB endpoint ceiling, один framebuffer + dirty rects, профиль S3-base в бенчмарке.
+- Решения D-46…D-52; O-12 (DISP) — в D-51/D-52.
+
+### Изменено
+- Профиль бенчмарка: S3 — полноценный третий профиль (4 МиБ pool + FB, 1-bit SD,
+  ≥15 fps full / ≥30 partial), а не «reference only» (D-46).
+
 ## [0.8.1] — 2025-11-06 — «Rev.2 плат»
 
 ### Добавлено

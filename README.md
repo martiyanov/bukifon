@@ -1,6 +1,6 @@
 # Букифон (Bukifon) — открытая платформа: сэмплер + синтезатор + модули
 
-**Версия: 0.8.1** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
+**Версия: 0.9.0** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
 
 **Букифон** — настольный музыкальный инструмент-платформа, который собирается из
 доступных компонентов, печатается на 3D-принтере, расширяется модулями и полностью
@@ -32,12 +32,14 @@ BLE HID, передача проектов). То есть Букифон — е
 аналоговый картридж на шине 26-pin или сменная панельная дека (18 пэдов / 42 клавиши).
 Подробнее — [spec/00-vision.md §12](spec/00-vision.md).
 
-## Текущее состояние (v0.8.1)
+## Текущее состояние (v0.9.0)
 
 | Блок | Состояние |
 |---|---|
 | **Панель v0.4** | 380 × 210 × 3 мм: 42 клавиши Lapka-42 (точная геометрия, ±18°), 16 энкодеров Ø14, экран 5.0″ 800×480 без рамки, 10 mini-jack, 2 фейдера 60 мм; пересечений 0 |
 | **Корпус v0.5-B** | **клин 8°**: 380 × 210 × 61.5 мм (перед 32 / зад 61.5), 6 деталей watertight, печать без поддержек 279 г / 18.3 ч, fitcheck 32/0, профиль 1:1 для картонной проверки |
+| **CORE-S3 rev.0** | «народная» плата: ESP32-S3-N16R8, USB FS стерео UAC2, 1-bit SD, **SPI-дисплей** (RGB565 не влезает: 31 доступная линия), TPS63000 placeholder; **ERC 0/0**, GPIO 27/31 занято; PRE-FREEZE |
+| **Корпус B-light** | **230 г / 11.1 ч** (−17 % массы, −39 % времени): стенки 2.0/дно 1.8, 3 периметра + локальные рёбра, панели-оболочки; 6 STL watertight, fitcheck 32/0 |
 | **CORE-2 rev.2** | схема внесена: J17/J18, входы 12V_EXT/N12_EXT/+5V_EXT/5V_LED, EN-развязки, CV IN3/4 на MCP3208, re-pin J14/J15/J16, DNP 46; **ERC 0/0**, pinmap PASS |
 | **PANEL-2 rev.2** | J13/J14 (5V_LED, LED_RET, EN_RAILS, EN_LED5), re-pin по канону, GATE_IN на MCP23017 0x23, LED_DATA 3.3 В + shifter; **ERC 0 err/6 warn**, verify 1290/0 |
 | **PWR-2 rev.1** | батарея 1S2P + BMS BQ297 + **MAX17048** + рельсы шины: +12 В 330 мА (TPS61088), −12 В 95 мА (LMR33630 IBB), +5 В 1.6 А, +5V_LED; master load-switch, EN рельсов, питание только от BQ24074 OUT/VSYS; ERC **0/0**, PRE-FREEZE |
@@ -72,6 +74,9 @@ BLE HID, передача проектов). То есть Букифон — е
 | [docs/26-p1-bench-kit.md](docs/26-p1-bench-kit.md) | P1-стенд: закупка, схема, протокол измерений, таблица решения MCU |
 | [docs/27-costdown.md](docs/27-costdown.md) | cost-down, product BOM, первый SKU S3-kit $199, батарея, дефицит |
 | [docs/28-paper-kit.md](docs/28-paper-kit.md) | бумажный макет 1:1 за 30 минут: 7 проверок эргономики |
+| [docs/29-p1-order.md](docs/29-p1-order.md) | точный список заказа P1-стенда (что, где, сколько) |
+| [docs/30-security-purge.md](docs/30-security-purge.md) | запрос на purge старых PII-объектов GitHub (SHA) |
+| [docs/31-core-s3-constraints.md](docs/31-core-s3-constraints.md) | CORE-S3: GPIO 31, 1-bit SD, USB endpoint ceiling, RGB+1FB, TPS63802 |
 | [docs/05-benchmark-workload.md](docs/05-benchmark-workload.md) | workload freeze P1 и критерии |
 | [docs/05a-benchmark-howto.md](docs/05a-benchmark-howto.md) | как запустить бенчмарк на S3/P4/H743 |
 | [modules/](modules/) | каталог модулей: шаблон, примеры gain_fx и LFO |
