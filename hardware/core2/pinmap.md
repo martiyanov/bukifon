@@ -80,8 +80,8 @@ SDMMC slot0 на падах GPIO39…GPIO48, LCD_CAM (parallel RGB 16 бит) и
 | 43 | `BL_PWM` | GPIO49 | LEDC PWM | 3.3 | out | none | low | 16 | J-LCD.31 | backlight PWM -> panel BL driver |
 | 44 | `LED_GPIO` | GPIO48 | RMT TX (WS2812) | 3.3 -> 5 V | out | none | low | 15 | U-1G125.A | level shifter + 330R -> J-PANEL.11 LED_DATA |
 | 45 | `PANEL_IRQ` | GPIO51 | GPIO in | 3.3 | in | 10k PU | high | 18 | J-PANEL.9 / J-LCD.36 | MCP23017 INTA (open drain) |
-| 46 | `GATE1` | GPIO52 | GPIO out (2N7000) | 5.0 (open drain) | out | none | low | 19 | J-PANEL.25 / BUS | 0/5 V gate, 4.7k PU to +5V_BUS |
-| 47 | `GATE2` | GPIO53 | GPIO out (2N7000) | 5.0 (open drain) | out | none | low | 20 | J-PANEL.26 / BUS | 0/5 V gate |
+| 46 | `GATE1_GPIO` | GPIO52 | GPIO out (2N7000) | 5.0 (open drain) | out | none | low | 19 | J-PANEL.25 / BUS | 0/5 V gate, 4.7k PU to +5V_BUS |
+| 47 | `GATE2_GPIO` | GPIO53 | GPIO out (2N7000) | 5.0 (open drain) | out | none | low | 20 | J-PANEL.26 / BUS | 0/5 V gate |
 | 48 | `C6_CS` | GPIO26 | GP-SPI2 CS1 | 3.3 | out | 10k PU | high | 10 | U-C6.SPI_CS | C6 select (shared SPI2) |
 | 49 | `C6_HS` | GPIO24 | GPIO (handshake) | 3.3 | bidir | 10k PU | high | 11 | U-C6.HANDSHAKE | esp-hosted SPI handshake |
 | 50 | `C6_DR` | GPIO25 | GPIO (data ready IRQ) | 3.3 | in | 10k PU | high | 12 | U-C6.DATA_READY | GPIO25 has USB_PU strap at reset (kept high) |
@@ -171,8 +171,8 @@ I2C0 (GPIO21/22) — общая шина: 2× MCP4728 (0x60/0x61), 24C32 (0x57),
 | 16 | `BL_PWM` |
 | 17 | `GND` |
 | 18 | `PANEL_IRQ` |
-| 19 | `GATE1` |
-| 20 | `GATE2` |
+| 19 | `GATE1_GPIO` |
+| 20 | `GATE2_GPIO` |
 | 21 | `UART0_TX` |
 | 22 | `UART0_RX` |
 | 23 | `SD_D0` |

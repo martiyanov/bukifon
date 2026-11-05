@@ -192,7 +192,7 @@ PM-C2-190;;USB_HS_DM;1;TP12;;USB D-
 PM-C2-191;;AGND;1;TP13;;analog ground
 PM-C2-192;;DGND;1;TP14;;digital ground
 PM-C2-193;;PGND;1;TP15;;power ground
-PM-C2-194;;SPARE_IO54;1;TP16;;free GPIO54
+PM-C2-194;;LED_DATA;1;TP16;;WS2812 data (after shifter)
 PM-C2-195;;CHIP_PU;1;TP17;;reset
 PM-C2-196;;BOOT;1;TP18;;boot strap GPIO35
 PM-C2-197;;3V3_C6;1;TP19;;Wi-Fi/BLE coprocessor rail

@@ -12,6 +12,9 @@
 #include "ui/canvas.hpp"
 
 namespace bukifon {
+namespace ui {
+class Framebuffer800;
+}  // namespace ui
 namespace hal {
 
 class Esp32Hal {

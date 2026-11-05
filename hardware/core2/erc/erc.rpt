@@ -1,22 +1,9 @@
-ERC report (2026-11-05T21:07:53, Encoding UTF8)
+ERC report (2026-11-05T21:09:02, Encoding UTF8)
 Report includes: Errors, Warnings, Exclusions
 
 ***** Sheet /
-[isolated_pin_label]: Label connected to only one pin
-    ; warning
-    @(438.15 mm, 426.72 mm): Метка 'GATE1_GPIO'
-[pin_to_pin]: Вывод типа Трехстабильный соединён с выводом типа Выход
-    ; warning
-    @(552.45 mm, 267.97 mm): Symbol U31 Вывод 6 [SPI_MISO, Трехстабильный, Линия]
-    @(1093.47 mm, 661.67 mm): Symbol U40 Вывод 12 [Dout, Выход, Линия]
-[isolated_pin_label]: Label connected to only one pin
-    ; warning
-    @(628.65 mm, 726.44 mm): Метка 'SPARE_IO54'
-[isolated_pin_label]: Label connected to only one pin
-    ; warning
-    @(692.15 mm, 426.72 mm): Метка 'GATE2_GPIO'
 
- ** ERC messages: 4  Errors 0  Warnings 4
+ ** ERC messages: 0  Errors 0  Warnings 0
 
  ** Ignored checks:
     - Global label only appears once in the schematic

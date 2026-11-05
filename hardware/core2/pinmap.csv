@@ -44,8 +44,8 @@ LCD_R4;47;LCD_CAM data R4;3.3;out;none;low;62;J-LCD.30;
 BL_PWM;49;LEDC PWM;3.3;out;none;low;16;J-LCD.31;backlight PWM -> panel BL driver
 LED_GPIO;48;RMT TX (WS2812);3.3 -> 5 V;out;none;low;15;U-1G125.A;level shifter + 330R -> J-PANEL.11 LED_DATA
 PANEL_IRQ;51;GPIO in;3.3;in;10k PU;high;18;J-PANEL.9 / J-LCD.36;MCP23017 INTA (open drain)
-GATE1;52;GPIO out (2N7000);5.0 (open drain);out;none;low;19;J-PANEL.25 / BUS;0/5 V gate, 4.7k PU to +5V_BUS
-GATE2;53;GPIO out (2N7000);5.0 (open drain);out;none;low;20;J-PANEL.26 / BUS;0/5 V gate
+GATE1_GPIO;52;GPIO out (2N7000);5.0 (open drain);out;none;low;19;J-PANEL.25 / BUS;0/5 V gate, 4.7k PU to +5V_BUS
+GATE2_GPIO;53;GPIO out (2N7000);5.0 (open drain);out;none;low;20;J-PANEL.26 / BUS;0/5 V gate
 C6_CS;26;GP-SPI2 CS1;3.3;out;10k PU;high;10;U-C6.SPI_CS;C6 select (shared SPI2)
 C6_HS;24;GPIO (handshake);3.3;bidir;10k PU;high;11;U-C6.HANDSHAKE;esp-hosted SPI handshake
 C6_DR;25;GPIO (data ready IRQ);3.3;in;10k PU;high;12;U-C6.DATA_READY;GPIO25 has USB_PU strap at reset (kept high)

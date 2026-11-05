@@ -133,7 +133,7 @@ def build_custom_lib():
          ('3', 'EN', -12.7, 5.08, 0, 2.54, 'input'),
          ('4', 'SPI_SCK', -12.7, 2.54, 0, 2.54, 'input'),
          ('5', 'SPI_MOSI', -12.7, 0, 0, 2.54, 'input'),
-         ('6', 'SPI_MISO', -12.7, -2.54, 0, 2.54, 'tri_state'),
+         ('6', 'SPI_MISO', -12.7, -2.54, 0, 2.54, 'passive'),
          ('7', 'SPI_CS', -12.7, -5.08, 0, 2.54, 'input'),
          ('8', 'HANDSHAKE', 12.7, 2.54, 180, 2.54, 'bidirectional'),
          ('9', 'DATA_READY', 12.7, 0, 180, 2.54, 'bidirectional'),

@@ -8,6 +8,7 @@
 //
 // Host equivalent: firmware/app/sim_main.cpp (deterministic simulator).
 #include <Arduino.h>
+#include <stdio.h>
 
 #include "audio/engine.hpp"
 #include "core/device_mode.hpp"
@@ -41,8 +42,8 @@ void buildSnapshot(ui::UiSnapshot* snapshot) {
   ui::uiSnapshotDemo(snapshot, ui::Screen::Main);
   snapshot->bpm = g_engine.globals().v[Bpm];
   snapshot->playing = g_playing;
-  std::snprintf(snapshot->status, sizeof(snapshot->status), "%s", g_playing ? "PLAY" : "STOP");
-  std::snprintf(snapshot->deviceMode, sizeof(snapshot->deviceMode), "%s",
+  snprintf(snapshot->status, sizeof(snapshot->status), "%s", g_playing ? "PLAY" : "STOP");
+  snprintf(snapshot->deviceMode, sizeof(snapshot->deviceMode), "%s",
                 deviceModeShortName(g_modes.mode()));
   snapshot->activeVoices = g_engine.activeVoices();
   snapshot->masterLevel = g_engine.lastTelemetry().peak;
@@ -52,7 +53,7 @@ void buildSnapshot(ui::UiSnapshot* snapshot) {
     snapshot->tracks[t].cutoff = g_engine.modulatedPartParams(t).v[Cutoff];
     snapshot->tracks[t].pan = g_engine.modulatedPartParams(t).v[PartPan];
   }
-  std::snprintf(snapshot->footer, sizeof(snapshot->footer),
+  snprintf(snapshot->footer, sizeof(snapshot->footer),
                 "MODE %s | USB:%s BLE:%s Wi-Fi:%s | host-demo is the tested path",
                 deviceModeName(g_modes.mode()), g_wireless.usbReady() ? "READY" : "STUB",
                 g_wireless.bleReady() ? "READY" : "STUB", g_wireless.wifiReady() ? "READY" : "STUB");

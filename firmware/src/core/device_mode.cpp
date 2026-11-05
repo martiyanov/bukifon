@@ -34,7 +34,7 @@ void DeviceModeManager::init(DeviceMode initial) {
 }
 
 bool DeviceModeManager::setMode(DeviceMode mode) {
-  if (static_cast<int>(mode) < 0 || static_cast<int>(mode) >= static_cast<int>(DeviceMode::kNumModes)) {
+  if (static_cast<unsigned>(mode) >= static_cast<unsigned>(DeviceMode::kNumModes)) {
     return false;
   }
   ++switches_;

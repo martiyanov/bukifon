@@ -124,8 +124,8 @@ PINMAP = [
  # --- panel LED chain + IRQ + gates ---
  ('LED_GPIO', 48, 'RMT TX (WS2812)', '3.3 -> 5 V', 'out', 'none', 'low', 15, 'U-1G125.A', 'level shifter + 330R -> J-PANEL.11 LED_DATA'),
  ('PANEL_IRQ', 51, 'GPIO in', '3.3', 'in', '10k PU', 'high', 18, 'J-PANEL.9 / J-LCD.36', 'MCP23017 INTA (open drain)'),
- ('GATE1', 52, 'GPIO out (2N7000)', '5.0 (open drain)', 'out', 'none', 'low', 19, 'J-PANEL.25 / BUS', '0/5 V gate, 4.7k PU to +5V_BUS'),
- ('GATE2', 53, 'GPIO out (2N7000)', '5.0 (open drain)', 'out', 'none', 'low', 20, 'J-PANEL.26 / BUS', '0/5 V gate'),
+ ('GATE1_GPIO', 52, 'GPIO out (2N7000)', '5.0 (open drain)', 'out', 'none', 'low', 19, 'J-PANEL.25 / BUS', '0/5 V gate, 4.7k PU to +5V_BUS'),
+ ('GATE2_GPIO', 53, 'GPIO out (2N7000)', '5.0 (open drain)', 'out', 'none', 'low', 20, 'J-PANEL.26 / BUS', '0/5 V gate'),
  # --- ESP32-C6 coprocessor host link (Wi-Fi/BLE; SPI esp-hosted) ---
  ('C6_CS', 26, 'GP-SPI2 CS1', '3.3', 'out', '10k PU', 'high', 10, 'U-C6.SPI_CS', 'C6 select (shared SPI2)'),
  ('C6_HS', 24, 'GPIO (handshake)', '3.3', 'bidir', '10k PU', 'high', 11, 'U-C6.HANDSHAKE', 'esp-hosted SPI handshake'),
@@ -210,7 +210,7 @@ TPS = [
  ('TP9', 'I2S_MCLK', '12.288 MHz'), ('TP10', 'SD_CLK', 'SDIO clock'),
  ('TP11', 'USB_HS_DP', 'USB D+'), ('TP12', 'USB_HS_DM', 'USB D-'),
  ('TP13', 'AGND', 'analog ground'), ('TP14', 'DGND', 'digital ground'),
- ('TP15', 'PGND', 'power ground'), ('TP16', 'SPARE_IO54', 'free GPIO54'),
+ ('TP15', 'PGND', 'power ground'), ('TP16', 'LED_DATA', 'WS2812 data (after shifter)'),
  ('TP17', 'CHIP_PU', 'reset'), ('TP18', 'BOOT', 'boot strap GPIO35'),
  ('TP19', '3V3_C6', 'Wi-Fi/BLE coprocessor rail'), ('TP20', 'BL_20V', 'backlight rail'),
  ('TP21', 'C6_CS', 'C6 SPI select'), ('TP22', 'C6_RST', 'C6 reset'),
