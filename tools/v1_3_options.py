@@ -112,7 +112,7 @@ def draw_panel_base(ax):
         ax.text(x, y1 + 7, f"SL{i+1}", fontsize=5.4, ha="center", color="#555")
 
 
-def draw_keys(ax, keys, thumbs, label):
+def draw_keys(ax, keys, thumbs, label, flip=False):
     """Левая половина как есть, правая — зеркало относительно центра панели."""
     hw, hh = L.KEYCAP_W / 2, L.KEYCAP_H / 2
     if not keys:
@@ -129,8 +129,9 @@ def draw_keys(ax, keys, thumbs, label):
         for sign in (1, -1):
             px = dx + x if sign == 1 else W - (dx + x)
             py = dy + y
+            a = (-rot if flip else rot) if sign == 1 else (rot if flip else -rot)
             ax.add_patch(mp.Rectangle((px - hw, py - hh), L.KEYCAP_W, L.KEYCAP_H,
-                                      angle=rot if sign == 1 else -rot, rotation_point="center",
+                                      angle=a, rotation_point="center",
                                       fc="#cfe3f7" if sign == 1 else "#d8e6f5",
                                       ec="#4a6b8a", lw=0.7, zorder=7))
             ax.text(px, py, str(n), fontsize=3.2, ha="center", va="center", color="#24384a", zorder=8)
@@ -138,10 +139,10 @@ def draw_keys(ax, keys, thumbs, label):
     ax.text(W / 2, H - 3, label, ha="center", va="bottom", fontsize=6.2, color="#777")
 
 
-def render(code, spec):
+def render(code, spec, flip=False):
     fig, ax = plt.subplots(figsize=(13.0, 6.4), dpi=170)
     draw_panel_base(ax)
-    draw_keys(ax, spec["keys"], spec["thumbs"], spec["name"])
+    draw_keys(ax, spec["keys"], spec["thumbs"], spec["name"], flip=flip)
     ax.set_title(f"Букифон · панель 315×145 · нижняя зона: {spec['name']}", fontsize=10.5, pad=8)
     fig.tight_layout()
     out = os.path.join(ROOT, "renders", f"v1_3_option_{code}.png")
@@ -152,6 +153,11 @@ def render(code, spec):
 
 def main():
     outs = [render(code, spec) for code, spec in VARIANTS.items()]
+    # «разворот наружу» (исправленное направление splay): левая половина -rot, правая +rot
+    outs.append(render("B_outward", dict(VARIANTS["B"], name="домашний ряд + тамбы · разворот наружу (исправленный splay)"),
+                       flip=True))
+    outs.append(render("C_outward", dict(VARIANTS["C"], name="домашний + нижний ряд · разворот наружу (исправленный splay)"),
+                       flip=True))
     for o in outs:
         print("saved:", o)
     return 0
