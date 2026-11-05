@@ -34,7 +34,7 @@ BL_20 V — boost MT3608 #3 для линейки подсветки LCD (19–2
 | +12V | 12.0 В | VSYS | MT3608 boost #1 (2 A switch) | 520 | 330 | 36 % | bus ports 2 x 60 mA<br>audio op-amps (TL074/TL072) 30 mA<br>MC34063 -12 V converter input ~120 mA |
 | -12V | -12.0 В | +12V | MC34063 inverting (250 mA) | 250 | 95 | 62 % | bus ports 2 x 40 mA<br>op-amp V- 15 mA |
 | +5V | 5.1 В | VSYS | MT3608 boost #2 (2 A switch) | 1800 | 1000 | 44 % | WS2812 chain 74 LED: 550 mA (firmware cap)<br>PCM1808 VCC / audio 30 mA<br>MIDI 10 mA<br>panel 5 V logic 20 mA<br>3V3 LDOs input 90 mA<br>BL boost #3 input ~80 mA<br>C6 LDO input 60 mA |
-| +3V3 | 3.3 В | +5V | AP2112K-3.3 (600 mA LDO) | 450 | 150 | 67 % | LCD logic 60 mA<br>MCP23017 x3 3 mA<br>MCP4728 x2 2 mA<br>MCP3208 1 mA<br>24C32 1 mA<br>PCM5102A 20 mA<br>PCM1808 VDD 15 mA<br>74HCT1G125 / misc 10 mA<br>panel sensors 20 mA |
+| +3V3 | 3.3 В | +5V | AP2112K-3.3 (600 mA LDO) | 450 | 150 | 67 % | LCD logic 60 mA<br>MCP23017 x4 4 mA<br>MCP4728 x2 2 mA<br>MCP3208 1 mA<br>24C32 1 mA<br>PCM5102A 20 mA<br>PCM1808 VDD 15 mA<br>74HCT1G125 / misc 10 mA<br>panel sensors 20 mA |
 | +3V3_C6 | 3.3 В | +5V | AP2112K-3.3 dedicated LDO (600 mA) | 450 | 250 | 44 % | ESP32-C6-MINI-1 Wi-Fi/BLE peak 240 mA<br>module/IO 10 mA |
 | +3V3_MCU | 3.3 В | +5V | MP1584 buck module (3 A) | 2400 | 700 | 71 % | ESP32-P4 module + PSRAM 600 mA (peak)<br>MCU decoupling/IO 100 mA |
 | BL_20V | 20.0 В | +5V | MT3608 boost #3 (2 A switch) | 100 | 30 | 70 % | LCD backlight LED string 20-25 mA |

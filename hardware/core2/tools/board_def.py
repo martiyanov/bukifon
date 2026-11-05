@@ -47,7 +47,7 @@ RAILS = [
       margin=44, note='LED brightness hard-capped in firmware + 2.5 A polyfuse'),
  dict(name='+3V3', kind='rail', nominal=3.3, source='+5V',
       converter='AP2112K-3.3 (600 mA LDO)', cap_mA=450, budget_mA=150,
-      loads=['LCD logic 60 mA', 'MCP23017 x3 3 mA', 'MCP4728 x2 2 mA',
+      loads=['LCD logic 60 mA', 'MCP23017 x4 4 mA', 'MCP4728 x2 2 mA',
              'MCP3208 1 mA', '24C32 1 mA', 'PCM5102A 20 mA', 'PCM1808 VDD 15 mA',
              '74HCT1G125 / misc 10 mA', 'panel sensors 20 mA'], margin=67,
       note='LDO output 600 mA; 450 mA allocated for margin >=25 %'),
@@ -87,7 +87,7 @@ PINMAP = [
  ('I2S_DAC_DIN', 18, 'I2S0 SD out', '3.3', 'out', 'none', 'low', 33, 'U9.DIN', 'to PCM5102A'),
  ('I2S_ADC_DOUT', 19, 'I2S0 SD in', '3.3', 'in', 'none', 'high', 34, 'U10.DOUT', 'from PCM1808'),
  # --- I2C0 ---
- ('I2C0_SDA', 21, 'I2C0 SDA', '3.3', 'bidir', '2.2k PU', 'high', 35, 'J-PANEL.5 / J-LCD.34 / U4/U5/U11/U12', 'MCP4728 x2, 24C32, MCP23017 x3'),
+ ('I2C0_SDA', 21, 'I2C0 SDA', '3.3', 'bidir', '2.2k PU', 'high', 35, 'J-PANEL.5 / J-LCD.34 / U4/U5/U11/U12', 'MCP4728 x2, 24C32, MCP23017 x4 (0x20..0x23)'),
  ('I2C0_SCL', 22, 'I2C0 SCL', '3.3', 'out', '2.2k PU', 'high', 36, 'J-PANEL.7 / J-LCD.35 / U4/U5/U11/U12', '400 kHz'),
  # --- SPI2: MCP3208 (CS0) + ESP32-C6 host link (CS1) ---
  ('SPI2_SCK', 6, 'GP-SPI2 SCK', '3.3', 'out', 'none', 'low', 37, 'U6.CLK / U-C6.SCK', 'shared bus, per-device CS'),
@@ -228,15 +228,22 @@ TB_REAR = [
 
 # PANEL-2 expanders (on the panel board; documented here for the wiring table)
 MCP23017 = [
- dict(addr='0x20', ref='U-P1', role='ENC1..ENC8 (A/B)',
+ dict(addr='0x20', ref='U-P1', role='ENC1..ENC8 A/B (16 lines)',
       pins=['GPA0..GPA7 = ENC1_A..ENC8_A', 'GPB0..GPB7 = ENC1_B..ENC8_B', 'INTA -> PANEL_IRQ']),
- dict(addr='0x21', ref='U-P2', role='ENC9..ENC16 (A/B)',
-      pins=['GPA0..GPA7 = ENC9_A..ENC16_A', 'GPB0..GPB7 = ENC9_B..ENC16_B', 'INTB -> PANEL_IRQ']),
- dict(addr='0x22', ref='U-P3', role='42-key matrix 6 rows x 7 cols',
+ dict(addr='0x21', ref='U-P2', role='ENC9..ENC16 A/B (16 lines)',
+      pins=['GPA0..GPA7 = ENC9_A..ENC16_A', 'GPB0..GPB7 = ENC9_B..ENC16_B', 'INTA -> PANEL_IRQ']),
+ dict(addr='0x22', ref='U-P3', role='16 encoder push buttons (16 lines)',
+      pins=['GPA0..GPA7 = ENC1_PUSH..ENC8_PUSH', 'GPB0..GPB7 = ENC9_PUSH..ENC16_PUSH',
+            'INTA -> PANEL_IRQ']),
+ dict(addr='0x23', ref='U-P4', role='42-key matrix 6 rows x 7 cols (13 lines, 3 spare)',
       pins=['GPA0..GPA6 = COL0..COL6 (inputs, 10k PU)',
             'GPB0..GPB5 = ROW0..ROW5 (outputs, scan)',
             'INTA -> PANEL_IRQ (key press)']),
 ]
+# PANEL-2 totals (verified with panel netlist): 4x MCP23017 = 64 I/O,
+# 48 encoder lines (16 x A/B/push) + 13 matrix lines = 61 used, 3 spare.
+# All four INT outputs are open-drain and wire-OR on PANEL-2 into one PANEL_IRQ
+# line; pull-up 10k to +3V3 is on CORE-2 (R91), I2C pull-ups 2.2k are on CORE-2 (R78/R79).
 FADERS = [('FADER1','FADER1','1k + 100nF -> MCP3208 CH2'), ('FADER2','FADER2','1k + 100nF -> MCP3208 CH3')]
 MCP3208 = [
  ('CH0','CVIN1_ADC','CV IN 1 (panel jack; 100k/16.5k + 1.65 V offset)'),

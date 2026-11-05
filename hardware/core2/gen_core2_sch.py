@@ -325,6 +325,7 @@ add('SW2', ('Switch','SW_Push'), 'RESET', {'1':'CHIP_PU','2':'DGND'}, FP['BTN'],
 add('R23', ('Device','R'), '10k', {'1':'3V3_MCU','2':'CHIP_PU'}, FP['R'], 'CHIP_PU pull-up', M)
 add('C51', ('Device','C'), '100nF', {'1':'CHIP_PU','2':'DGND'}, FP['C'], 'reset RC', M)
 add('R24', ('Device','R'), '10k', {'1':'STRAP36','2':'3V3_MCU'}, FP['R'], 'GPIO36 strap PU (joint download boot reachable)', M)
+add('R91', ('Device','R'), '10k', {'1':'3V3','2':'PANEL_IRQ'}, FP['R'], 'PANEL_IRQ pull-up (4x MCP23017 INTA wire-OR on PANEL-2)', M)
 add('J4', ('Connector_Generic','Conn_01x03'), 'UART0 TP', {'1':'DGND','2':'UART0_TX','3':'UART0_RX'}, FP['HDR3'], 'UART0 testpoints/boot log', M)
 add('R25', ('Device','R'), '100k', {'1':'VBUS_CHG','2':'VBUS_DET'}, FP['R'], 'VBUS detect divider', M)
 add('R26', ('Device','R'), '100k', {'1':'VBUS_DET','2':'DGND'}, FP['R'], '', M)

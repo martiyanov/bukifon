@@ -25,11 +25,11 @@ SDMMC slot0 на падах GPIO39…GPIO48, LCD_CAM (parallel RGB 16 бит) и
 Свободные GPIO: нет.
 
 **Резерв GPIO — отсутствует (1 из 55 = 1.8 %).** Это осознанное решение PRE-FREEZE:
-16 энкодеров и матрица 42 клавиш вынесены на 3× MCP23017 (I2C) на PANEL-2,
+16 энкодеров и матрица 42 клавиш вынесены на 4× MCP23017 (I2C) на PANEL-2,
 а цифровое расширение модулей — на отдельный J-DIG-EXP (TDM/I2S + SPI mailbox, R-22).
 Если потребуется ещё GPIO — только ревизия с расширителем (MCP23S17 по SPI) или
 перенос части функций на PANEL-2; в v1.0-rc места нет.
-Расширение (энкодеры, матрица клавиш) — не на GPIO, а по I2C (3× MCP23017 на PANEL-2, адреса 0x20/0x21/0x22) — см. §5.
+Расширение (энкодеры, матрица клавиш) — не на GPIO, а по I2C (4× MCP23017 на PANEL-2, адреса 0x20/0x21/0x22/0x23, 48 линий энкодеров + 13 матрицы = 61) — см. §5.
 
 ## 2. Занятые GPIO
 
@@ -47,7 +47,7 @@ SDMMC slot0 на падах GPIO39…GPIO48, LCD_CAM (parallel RGB 16 бит) и
 | 10 | `I2S_LRCK` | GPIO17 | I2S0 WS/LRCK out | 3.3 | out | none | low | 32 | U9.LRCK / U10.LRCK | 48 kHz |
 | 11 | `I2S_DAC_DIN` | GPIO18 | I2S0 SD out | 3.3 | out | none | low | 33 | U9.DIN | to PCM5102A |
 | 12 | `I2S_ADC_DOUT` | GPIO19 | I2S0 SD in | 3.3 | in | none | high | 34 | U10.DOUT | from PCM1808 |
-| 13 | `I2C0_SDA` | GPIO21 | I2C0 SDA | 3.3 | bidir | 2.2k PU | high | 35 | J-PANEL.5 / J-LCD.34 / U4/U5/U11/U12 | MCP4728 x2, 24C32, MCP23017 x3 |
+| 13 | `I2C0_SDA` | GPIO21 | I2C0 SDA | 3.3 | bidir | 2.2k PU | high | 35 | J-PANEL.5 / J-LCD.34 / U4/U5/U11/U12 | MCP4728 x2, 24C32, MCP23017 x4 (0x20..0x23) |
 | 14 | `I2C0_SCL` | GPIO22 | I2C0 SCL | 3.3 | out | 2.2k PU | high | 36 | J-PANEL.7 / J-LCD.35 / U4/U5/U11/U12 | 400 kHz |
 | 15 | `SPI2_SCK` | GPIO6 | GP-SPI2 SCK | 3.3 | out | none | low | 37 | U6.CLK / U-C6.SCK | shared bus, per-device CS |
 | 16 | `SPI2_MOSI` | GPIO7 | GP-SPI2 MOSI | 3.3 | out | none | low | 38 | U6.DIN / U-C6.MOSI |  |
@@ -114,12 +114,13 @@ SDMMC slot0 на падах GPIO39…GPIO48, LCD_CAM (parallel RGB 16 бит) и
 
 | Адрес | Позиция | Функция | Распиновка |
 |---|---|---|---|
-| 0x20 | U-P1 | ENC1..ENC8 (A/B) | GPA0..GPA7 = ENC1_A..ENC8_A<br>GPB0..GPB7 = ENC1_B..ENC8_B<br>INTA -> PANEL_IRQ |
-| 0x21 | U-P2 | ENC9..ENC16 (A/B) | GPA0..GPA7 = ENC9_A..ENC16_A<br>GPB0..GPB7 = ENC9_B..ENC16_B<br>INTB -> PANEL_IRQ |
-| 0x22 | U-P3 | 42-key matrix 6 rows x 7 cols | GPA0..GPA6 = COL0..COL6 (inputs, 10k PU)<br>GPB0..GPB5 = ROW0..ROW5 (outputs, scan)<br>INTA -> PANEL_IRQ (key press) |
+| 0x20 | U-P1 | ENC1..ENC8 A/B (16 lines) | GPA0..GPA7 = ENC1_A..ENC8_A<br>GPB0..GPB7 = ENC1_B..ENC8_B<br>INTA -> PANEL_IRQ |
+| 0x21 | U-P2 | ENC9..ENC16 A/B (16 lines) | GPA0..GPA7 = ENC9_A..ENC16_A<br>GPB0..GPB7 = ENC9_B..ENC16_B<br>INTA -> PANEL_IRQ |
+| 0x22 | U-P3 | 16 encoder push buttons (16 lines) | GPA0..GPA7 = ENC1_PUSH..ENC8_PUSH<br>GPB0..GPB7 = ENC9_PUSH..ENC16_PUSH<br>INTA -> PANEL_IRQ |
+| 0x23 | U-P4 | 42-key matrix 6 rows x 7 cols (13 lines, 3 spare) | GPA0..GPA6 = COL0..COL6 (inputs, 10k PU)<br>GPB0..GPB5 = ROW0..ROW5 (outputs, scan)<br>INTA -> PANEL_IRQ (key press) |
 
 I2C0 (GPIO21/22) — общая шина: 2× MCP4728 (0x60/0x61), 24C32 (0x57),
-3× MCP23017 (0x20/0x21/0x22). Суммарная ёмкость шины ≤ 200 pF, подтяжки 2.2 к.
+4× MCP23017 (0x20/0x21/0x22/0x23): 48 линий энкодеров (16× A/B/push) + 13 линий матрицы 6×7 = 61; 3 линии резерв. Наружу — только SDA/SCL/INT (wire-OR INTA). Подтяжки I2C 2.2 к и INT 10 к — на CORE-2; ёмкость шины ≤ 200 pF.
 
 ## 6. Фейдеры и джеки
 

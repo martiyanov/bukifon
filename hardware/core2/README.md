@@ -27,7 +27,7 @@
 | **CV** | 2× MCP4728 (0x60/0x61, LDAC=GND) + 6× TL074 ×4.9 (+1к/BAT54S) → CV OUT 1…6; CV IN 1/2: 100к/16.5к + сдвиг 1.65 В; MCP3208 CH0…7 (CV IN ×2, фейдеры ×2, EXPRESSION, резерв, BATT_MON, TEMP_MON) |
 | **MIDI** | TRS-A IN (6N137 + 220R) / OUT (74HCT125 + 33R/220R), 5 В логика |
 | **Шина** | 2× IDC-26 аналоговая (R-11/R-22): ±12 В, CV1…4, GATE1/2, AUDIO IN/OUT L/R; на каждый порт polyfuse + SS34 + TVS; отдельный J-DIG-EXP (IDC-16) для TDM/I2S + SPI mailbox + I2C |
-| **PANEL-2** | J14 IDC-26 (I2C, фейдеры, CV/GATE, LED_DATA) + J15 FFC-40 (RGB565 800×480: 20 + I2C(2) + INT + BL_PWM + BL_ANODE/CATHODE = 25 сигналов). 10 верхних джеков: CV OUT 1…6 + CV IN 1/2 + GATE 1/2 |
+| **PANEL-2** | 4× MCP23017 (0x20…0x23, 61 линия) → 3 сигнала SDA/SCL/INT; J14 IDC-26 (I2C, фейдеры, CV/GATE, LED_DATA) + J15 FFC-40 (RGB565 800×480: 20 + I2C(2) + INT + BL_PWM + BL_ANODE/CATHODE = 25 сигналов). 10 верхних джеков: CV OUT 1…6 + CV IN 1/2 + GATE 1/2 |
 | **Задняя панель** | 5 × 3.5 мм аудиоджеков (LINE L/R, PHONES, AUDIO IN L/R), MIDI TRS in/out, DC 12 V, EXPRESSION, USB-C |
 
 ## 2. Файлы
@@ -60,14 +60,16 @@
 | Свободно | **0** — 0 % |
 | Конфликтов GPIO | **0** (`check_pinmap.py` → PASS) |
 | Конфликтов соединений | **0** (`check_schematic.py` → 0 mismatches) |
-| Резерв GPIO | **отсутствует**; расширение — I2C MCP23017 ×3 на PANEL-2 (энкодеры, матрица 42 клавиш) и J-DIG-EXP |
+| Резерв GPIO | **отсутствует**; расширение — I2C MCP23017 ×4 на PANEL-2 (энкодеры, матрица 42 клавиш) и J-DIG-EXP |
 
 Распределение по функциям: LCD RGB565+синхро — 20; SDIO — 6 (+CD); I2S — 5;
 I2C0 — 2; SPI2 — 4 (+CS C6); MIDI — 2; C6-хост — 4; UART0 TP — 2; CV/GATE — 2;
 LED_DATA — 1; BL_PWM — 1; LCD_DISP — 1; PANEL_IRQ — 1; BOOT — 1; VBUS_DET — 1; USB HS — 0 GPIO
 (выделенные pin49/50).
-Энкодеры (16) и матрица (6×7) **не занимают GPIO P4** — 3× MCP23017 на PANEL-2
-(0x20/0x21/0x22, I2C0), см. `pinmap.md` §5.
+Энкодеры (16: A/B + push = 48 линий) и матрица 42 клавиш (6×7 = 13 линий) **не занимают
+GPIO P4** — PANEL-2 ставит **4× MCP23017 (0x20, 0x21, 0x22, 0x23)**, всего 61 линия;
+на CORE-2 идут только 3 сигнала I2C0 (SDA/SCL) + INT (open-drain wire-OR, 10k PU R91
+на CORE-2). Подтяжки I2C 2.2k — R78/R79 на CORE-2. См. `pinmap.md` §5.
 
 **P4 ↔ ESP32-C6:** GPIO26 = C6_CS, GPIO24 = C6_HS, GPIO25 = C6_DR, GPIO27 = C6_RST;
 данные — по общей SPI2 (GPIO6/7/8, CS0 = MCP3208, CS1 = C6). SDIO не используется:

@@ -98,7 +98,7 @@ def main():
                 (len(used_only), len(RES), len(free), pct))
     if pct < 10.0:
         WARN.append('NO GPIO RESERVE: only %d free GPIO (%.1f %%) — expansion via I2C '
-                    'MCP23017 (3 pcs on PANEL-2) / SPI mailbox; declared explicitly.' % (len(free), pct))
+                    'MCP23017 (4 pcs on PANEL-2) / SPI mailbox; declared explicitly.' % (len(free), pct))
     # print
     print('CORE-2 pinmap check (PRE-FREEZE / DO NOT FABRICATE)')
     for i in INFO: print('  INFO :', i)
