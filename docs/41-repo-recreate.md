@@ -19,7 +19,7 @@ tar -czf dist/bukifon-clean-$(date +%Y%m%d).tar.gz --exclude=.git --exclude=firm
 
 ```bash
 git log --all --oneline -- refs/attach refs/datasheets refs/sketch4-panel.jpg
-git grep -nE "/Users/[A-Za-z0-9._-]+/|AAG0t|8604502531" -- . | head
+git grep -nE "/Users/[A-Za-z0-9._-]+/" -- . | head   # плюс проверка токенов: tools/security_scan.sh
 ```
 
 ## 2. Удалить репозиторий на GitHub
