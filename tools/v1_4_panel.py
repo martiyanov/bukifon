@@ -39,10 +39,10 @@ KNOBS_L = [(x, y) for x in KNOB_COLS for y in KNOB_ROWS]
 KNOBS_R = [(PW - x, y) for x, y in KNOBS_L]
 KNOB_LABELS = ["ABCD", "EFGH"]
 
-SCREEN = dict(x=133.1, y=16.0, w=73.8, h=51.0)
-JACKS_TOP = [(120.0 + i * 11.0, 7.0) for i in range(9)]
-JACKS_BOT = [(142.0 + i * 13.0, y) for y in (78.0, 92.0) for i in range(6)]
-SPEAKERS = [(122.0, 85.0), (218.0, 85.0)]
+SCREEN = dict(x=116.0, y=11.5, w=108.0, h=64.8)   # 5.0" 800×480, без полей
+JACKS_TOP = [(120.0 + i * 11.0, 7.0) for i in range(10)]
+JACKS_BOT = []
+SPEAKERS = []
 SPK_D = 16.0
 
 # --- фейдеры ---------------------------------------------------------------
@@ -50,7 +50,10 @@ FADERS = [(158.0, 104.0, 168.0), (182.0, 104.0, 168.0)]   # x, y0, y1 (ход 45
 FADER_SLOT_W = 8.0
 
 # --- клавиатуры -------------------------------------------------------------
-KEY_TOP = 97.0
+# Наклон половин как на фото заказчика (замер по фото: левый блок ~5°, правый ~5–15°;
+# выбран 5°, чтобы две половины + 2 фейдера уложились в 340 мм).
+KEY_TILT_DEG = 5.0
+KEY_TOP = 83.0
 CAP_W, CAP_H = L.KEYCAP_W, L.KEYCAP_H
 _hw, _hh = CAP_W / 2, CAP_H / 2
 
@@ -75,12 +78,28 @@ HALF_H = _KB[3] - _KB[1]
 print(f"half bbox: {HALF_W:.2f} × {HALF_H:.2f} мм; panel {PW}×{PH}")
 
 
+def _rotate_about(px, py, cx, cy, deg):
+    a = math.radians(deg)
+    ca, sa = math.cos(a), math.sin(a)
+    dx, dy = px - cx, py - cy
+    return cx + ca * dx - sa * dy, cy + sa * dx + ca * dy
+
+
 def key_positions():
+    """2 × 21 клавиш, каждая половина наклонена наружу на KEY_TILT_DEG."""
     out = []
+    cx = HALF_W / 2.0
+    cy = HALF_H / 2.0
     for (x, y, rot) in L.LAPKA42_LEFT:
-        out.append((KEY_DX + x, KEY_DY + y, -rot))               # левая: ось Y инверт.
+        px, py = KEY_DX + x, KEY_DY + y
+        # ось Y графика инвертирована: чтобы верхний край «поднимался» к центру,
+        # вращаем в data-координатах на -TILT для левой половины
+        qx, qy = _rotate_about(px, py, cx, cy, -KEY_TILT_DEG)
+        out.append((qx, qy, -rot - KEY_TILT_DEG))
     for (x, y, rot) in L.LAPKA42_LEFT:
-        out.append((PW - KEY_DX - x, KEY_DY + y, rot))           # правая: зеркало
+        px, py = PW - KEY_DX - x, KEY_DY + y
+        qx, qy = _rotate_about(px, py, PW - cx, cy, KEY_TILT_DEG)
+        out.append((qx, qy, rot + KEY_TILT_DEG))
     return out
 
 
@@ -106,16 +125,15 @@ def draw_panel(ax, dx, dy, detail=True):
         ax.text(dx + x, dy + y + KNOB_D / 2 + 1.0, KNOB_LABELS[row][ci],
                 ha="center", va="top", fontsize=4.2, color="#555", zorder=6)
 
-    # экран
+    # экран: вырез = активная область, без полей
     ax.add_patch(mp.FancyBboxPatch((dx + SCREEN["x"], dy + SCREEN["y"]), SCREEN["w"], SCREEN["h"],
-                                   boxstyle="round,pad=0,rounding_size=1.5",
-                                   fc="#1b1b1b", ec="#555", lw=1.0, zorder=4))
-    act_w, act_h = 56.5, 28.2
-    ax.add_patch(mp.Rectangle((dx + SCREEN["x"] + (SCREEN["w"] - act_w) / 2,
-                               dy + SCREEN["y"] + (SCREEN["h"] - act_h) / 2), act_w, act_h,
-                              fc="#0d1a0d", ec="#7a7", lw=0.5, zorder=5))
+                                   boxstyle="round,pad=0,rounding_size=1.0",
+                                   fc="#111a11", ec="#333", lw=0.8, zorder=4))
     if detail:
         ax.text(dx + 8, dy + 3, "БУКИФОН", fontsize=6.5, color="#b9b9b0", va="top", zorder=4)
+        ax.text(dx + SCREEN["x"] + SCREEN["w"] / 2, dy + SCREEN["y"] + SCREEN["h"] / 2,
+                "экран 5.0″ 800×480\n(вырез 108 × 64.8, без полей)",
+                ha="center", va="center", fontsize=5.2, color="#6d8f6d", zorder=5)
 
     # мини-джеки
     for (x, y) in JACKS_TOP:
@@ -124,12 +142,11 @@ def draw_panel(ax, dx, dy, detail=True):
     for (x, y) in JACKS_BOT:
         ax.add_patch(mp.Circle((dx + x, dy + y), 3.0, fc="#e9e9e4", ec="#333", lw=0.7, zorder=4))
         ax.add_patch(mp.Circle((dx + x, dy + y), 1.0, fc="#555", ec="none", zorder=5))
-    ax.text(dx + PW / 2, dy + 12.2, "9 × mini-jack 3.5 мм над экраном", ha="center",
-            va="top", fontsize=4.0, color="#888", zorder=6)
-    ax.text(dx + PW / 2, dy + 69.5, "12 × mini-jack 3.5 мм под экраном (2 ряда)",
-            ha="center", va="top", fontsize=4.0, color="#888", zorder=6)
+    ax.text(dx + 228.0, dy + 7.0, "10 × mini-jack 3.5 мм", ha="left", va="center",
+            fontsize=4.2, color="#888", zorder=6)
 
-    # динамики
+
+    # динамики (по просьбе заказчика отключены: SPEAKERS = [])
     for i, (x, y) in enumerate(SPEAKERS):
         ax.add_patch(mp.Circle((dx + x, dy + y), SPK_D / 2, fc="#dcdcdc", ec="#333", lw=0.8, zorder=4))
         ax.add_patch(mp.Circle((dx + x, dy + y), 2.2, fc="#9a9a9a", ec="#666", lw=0.4, zorder=5))
@@ -228,7 +245,7 @@ def full_preview():
     ax.axis("off")
     draw_panel(ax, 0, 0)
     ax.set_title("Букифон v1.4 · панель 340 × 185 мм (габарит Octatrack) · 16 ручек, "
-                 "9 + 12 mini-jack, 2 фейдера, 2 × 21 клавиши", fontsize=10, pad=8)
+                 "экран 5\" без полей, 10 mini-jack, 2 фейдера, 2 × 21 клавиши", fontsize=10, pad=8)
     ax.annotate("", xy=(0, PH + 4), xytext=(PW, PH + 4),
                 arrowprops=dict(arrowstyle="<->", color="#666", lw=0.7))
     ax.text(PW / 2, PH + 5, "340 мм", ha="center", va="top", fontsize=6.5, color="#666")
