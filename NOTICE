@@ -22,3 +22,10 @@ Analog module references:
 If you build and distribute hardware from these files, keep the CERN-OHL-S-2.0
 requirements: publish the complete source (schematics, PCB, BOM, mechanical
 files) under the same license, including your modifications.
+
+
+Раскладка клавиатурной деки (v1.2):
+  * Геометрия 42 клавиш (splay, Choc 18×17) импортирована из открытого проекта
+    Lapka-42, автор braindefender — https://github.com/braindefender/lapka-42.
+    Использованы только числовые координаты свитчей; исходный проект и его
+    лицензия — см. upstream. Атрибуция обязательна при публикации.
