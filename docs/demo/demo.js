@@ -35,7 +35,7 @@ const EXT_MIN=[1,0,1,1,0,0,50,0], EXT_MAX=[16,127,127,16,127,127,75,1];
 const JACKS = ["CV OUT 1","CV OUT 2","CV OUT 3","CV OUT 4","CV IN 1","CV IN 2","GATE OUT","GATE IN","CLK OUT","CLK IN"];
 const CC_BASE = [[74,71,73,91,73,75,76,72],[20,21,22,23,24,25,26,27],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0]];
 
-const state = { mode:0, page:0, theme:"night", faderMode:"TRACK", selParts:new Set([0]), modOn:true, seed:7, extSel:0, extStep:0, extTracks:[], extClock:false, bpm:120, playing:false, step:0, selPart:0, volume:0.7, delayMix:0.25, cables:new Set(), parts:[], capture:false, pads:[], recording:false, recStarted:0 };
+const state = { mode:0, page:0, theme:"night", faderMode:"TRACK", selParts:new Set([0]), modOn:true, seed:7, extSel:0, extStep:0, extTracks:[], extClock:false, mic:{on:false,gain:1,level:0,beat:false}, bpm:120, playing:false, step:0, selPart:0, volume:0.7, delayMix:0.25, cables:new Set(), parts:[], capture:false, pads:[], recording:false, recStarted:0 };
 function defaultPart(i) {
   return {
     name: PART_NAMES[i], active: i < 2, mute:false, level: 0.85, sceneX: 0,
@@ -130,6 +130,43 @@ function killVoice(v, rel=null){
 }
 function noteOff(midi){ voices.filter(v=>v.midi===midi&&!v.dead).forEach(v=>killVoice(v)); }
 function allNotesOff(){ voices.forEach(v=>killVoice(v)); }
+
+/* ---------- микрофон: уровень, запись, битбокс ---------- */
+let micStream=null, micAnalyser=null, micData=null, beatTimer=null, beatHits=[];
+async function micToggle(){
+  if(state.mic.on){ micStop(); flashMsg("MIC OFF"); return; }
+  try{
+    micStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
+    audioInit();
+    const src=AC.createMediaStreamSource(micStream);
+    const g=AC.createGain(); g.gain.value=state.mic.gain;
+    micAnalyser=AC.createAnalyser(); micAnalyser.fftSize=1024; micData=new Uint8Array(micAnalyser.fftSize);
+    src.connect(g); g.connect(micAnalyser); // НЕ в destination — без обратной связи
+    state.mic.on=true; $("btnMic").classList.add("on");
+    flashMsg("MIC ON (монитор выключен)"); renderContextBar();
+  }catch(e){ flashMsg("MIC: нет доступа/устройства"); }
+}
+function micStop(){ if(micStream){ micStream.getTracks().forEach(t=>t.stop()); micStream=null; } micAnalyser=null; state.mic.on=false; state.mic.level=0; $("btnMic").classList.remove("on"); renderContextBar(); }
+function micLevel(){ if(!micAnalyser) return 0; micAnalyser.getByteTimeDomainData(micData); let s=0; for(let i=0;i<micData.length;i++){const v=(micData[i]-128)/128; s+=v*v;} return Math.sqrt(s/micData.length); }
+async function beatboxToSteps(){
+  if(!state.mic.on){ await micToggle(); if(!state.mic.on) return; }
+  if(state.mic.beat){ return; }
+  state.mic.beat=true; beatHits=[]; $("btnBeatbox").classList.add("on"); flashMsg("BEATBOX: стучите 4 секунды…");
+  const t0=performance.now(); let last=0, prev=0, prevPrev=0;
+  beatTimer=setInterval(()=>{
+    const lvl=micLevel(); const now=performance.now(); const t=(now-t0)/1000;
+    const onset = lvl>0.06 && lvl>prev*1.6 && now-last>110;
+    if(onset){ beatHits.push({t, vel:Math.min(1,lvl*3)}); last=now; }
+    prevPrev=prev; prev=lvl;
+    if(t>=4){ clearInterval(beatTimer); beatTimer=null; state.mic.beat=false; $("btnBeatbox").classList.remove("on");
+      // заполнить шаги выбранной партии по найденным ударам (квантизация 1/16)
+      const part=state.parts[state.selPart]; part.steps.forEach(st=>{ st.on=false; st.accent=false; });
+      let n=0;
+      beatHits.slice(0,16).forEach(h=>{ const step=Math.min(15,Math.floor((h.t/4)*16)); part.steps[step].on=true; if(h.vel>0.5){part.steps[step].accent=true;} n++; });
+      paintKnobs(); save(); flashMsg(`BEATBOX → ${n} шагов (PART ${state.selPart+1})`);
+    }
+  },20);
+}
 
 /* ---------- запись выхода (ресемплинг) ---------- */
 function toggleRec(){ audioInit(); if (AC.state==="suspended") AC.resume(); if(state.recording){ finishRec(); } else { recChunks=[]; state.recording=true; state.recStarted=AC.currentTime; flashMsg("REC ●"); } }
@@ -481,6 +518,7 @@ function renderContextBar(){
     {t:`FADERS <b>${state.faderMode}</b> (F1 ${f[0]}, F2 ${f[1]})`},
     {t:`THEME <b>${T.name}</b>`},
     {t:`REC ${state.recording?"●":"○"}`, rec:state.recording},
+    {t:`MIC ${state.mic.on?"ON":"OFF"} ${state.mic.on?("· "+Math.round(state.mic.level*100)):""}`, w:state.mic.on},
     {t:`UNSAVED`, w:true},
   ];
   el.innerHTML=chips.map(c=>`<span class="chip${c.w?" warn":""}${c.rec?" rec":""}">${c.t}</span>`).join("");
@@ -544,7 +582,8 @@ function drawStatusBar(){
   ctx.fillStyle=T.muted; ctx.font="600 11px Inter"; ctx.fillText("MASTER",14,466);
   ctx.fillStyle=T.line; ctx.fillRect(70,456,220,10);
   ctx.fillStyle=T.green; ctx.fillRect(70,456,220*clamp(lvl,0,1),10);
-  ctx.fillStyle=T.muted; ctx.font="600 11px Inter"; ctx.fillText(`FADERS: ${state.faderMode} · SHIFT+ФЕЙДЕР = ГРОМКОСТЬ · SPACE = PLAY · Ctrl+Z = UNDO`,306,466);
+  ctx.fillStyle=T.muted; ctx.font="600 11px Inter"; ctx.fillText(`FADERS: ${state.faderMode} · SPACE = PLAY · Ctrl+Z = UNDO`,306,466);
+  if(state.mic.on){ state.mic.level=micLevel(); const w=70, x=W-90, y=458; ctx.fillStyle=T.line; ctx.fillRect(x,y,w,8); ctx.fillStyle=state.mic.beat?T.orange:T.accent; ctx.fillRect(x,y,w*clamp(state.mic.level*3,0,1),8); ctx.fillStyle=T.muted; ctx.font="600 9px Inter"; ctx.fillText("MIC",x+2,y-2); }
 }
 function drawSynth(){
   // 4 партии × 16 шагов (компактно), затем 16 параметров зеркально ручкам панели:
@@ -755,6 +794,9 @@ function bindUI(){
   $("btnStop").addEventListener("click",()=>stopSeq());
   const share=$("btnShare"); if(share) share.addEventListener("click",copyShareLink);
   const recBtn=$("btnRec"); if(recBtn) recBtn.addEventListener("click",toggleRec);
+  const micBtn=$("btnMic"); if(micBtn) micBtn.addEventListener("click",micToggle);
+  const bbBtn=$("btnBeatbox"); if(bbBtn) bbBtn.addEventListener("click",beatboxToSteps);
+  const mg=$("micGain"); if(mg) mg.addEventListener("input",(e)=>{ state.mic.gain=+e.target.value/100; });
   const home=$("btnHome"); if(home) home.addEventListener("click",goHome);
   const undoBtn=$("btnUndo"); if(undoBtn) undoBtn.addEventListener("click",undo);
   buildPageChips(); syncPageChips(); renderContextBar();
