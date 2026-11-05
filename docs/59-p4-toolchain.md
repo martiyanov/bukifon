@@ -1,9 +1,9 @@
 # 59. P4 toolchain: ESP-IDF scaffold (PlatformIO cannot target ESP32-P4)
 
-**Status:** ESP-IDF project scaffold `firmware/idf_p4/` is ready to build on a
-machine with **ESP-IDF 5.5+**.  In this development environment the IDF
-toolchain is **not installed/verified** (attempt recorded in §7); no build
-success is claimed here.  Host firmware tests are unchanged (216/216).
+**Status:** сборка **проверена 06.11.2025** на домашнем ПК `pole`:
+**ESP-IDF v5.5**, target `esp32p4`, `idf.py set-target esp32p4 && idf.py build`
+→ **SUCCESS**, `bukifon_p4.bin` **250 240 B** (83 % app-раздела свободно), см. §8.
+Host-тесты прошивки: **248/248**. PlatformIO P4 по-прежнему не поддерживает (§1).
 
 Related: [P1 measurement stand](56-p1-measurements.md), [CORE-2 pin map](../hardware/core2/pinmap.md),
 [factory self-test](46-factory-test.md), [RC definition](36-rc-definition.md).
