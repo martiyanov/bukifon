@@ -113,8 +113,8 @@ TEST(UiThemePhosphorValuesMatchDocs62) {
 }
 
 TEST(UiThemeCreamValuesMatchDocs62) {
-  const uint32_t expected[12] = {0xe8e2d4, 0xdcd4c4, 0xf2ede2, 0xb9ae9a, 0x2a241c, 0x6e6253,
-                                 0xc8452c, 0x4f8a3d, 0xd97724, 0x3d6e8f, 0xb0301f, 0x8a5a9e};
+  const uint32_t expected[12] = {0xe8e2d4, 0xdcd4c4, 0xf2ede2, 0xb9ae9a, 0x2a241c, 0x5f5548,
+                                 0xa8321f, 0x3f6f2e, 0x9a4a10, 0x3d6e8f, 0x9c2a1a, 0x8a5a9e};
   for (int token = 0; token < 12; ++token) {
     CHECK(bukifon_ui_theme_rgb(BUKIFON_UI_THEME_CREAM, token) == expected[token]);
   }

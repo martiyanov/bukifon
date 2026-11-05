@@ -869,3 +869,36 @@ Pillow) installed in `/tmp/msvenv`; no system packages assumed.
 2. LED/WS2812 palette mapped to docs/62 tokens.
 3. Hardware pickup/undo gestures and 16-encoder/42-key mapping.
 4. P4 device run (toolchain docs/59) for real-time GEN/UI verification.
+
+---
+
+# Round 13 — UI philosophy/readability: 16 encoders mirror + docs/69 scale (2026-11-06)
+
+- **16-cell encoder mirror** in `ui800.cpp`: 2 rows × 8 cells; left 4 columns are
+  page parameters (А–З), right 4 are fixed macros (И–П:
+  CUT/RES/ATK/REL/DLY/DRV/CRSH/MST); cell label `А · CUTOFF`, value 18 px,
+  slider bar; mapping/API `uiEncoderCellIndex()`/`uiEncoderCellPrefix()`.
+  (The 6×8 ASCII font transliterates Cyrillic labels for display.)
+- **docs/69 typography roles**: `UiTextRole` Caption 12 px, Value 18 px,
+  Critical 24 px (BPM/STEP/REC), Title 26 px; all `ui800.cpp` text renders
+  through `drawTextRole` — source test rejects `drawText`/`drawTextScaled(...,1)`
+  calls, so no text <12 px remains in the 800×480 renderer.
+- **Context line** `PART · SELECTED · PAGE · FADERS · REC · UNSAVED` is built by
+  `uiBuildContextLine()` and always drawn in the header; state fields
+  `partLabel/selectedLabel/faderMode/transportRecord/unsaved`.
+- **HOME** button in the footer + `uiHandleHome()` returns to MAIN in one
+  gesture; page tabs are 12 px (5 tabs: MAIN/SEQ/MIX/MOD/GEN).
+- **Cream palette** updated: accent `#a8321f`, green `#3f6f2e`, orange
+  `#9a4a10`, muted `#5f5548`, red `#9c2a1a`; WCAG contrast for
+  text/muted/accent/green/orange ≥4.5:1 (measured 5.18–11.89).
+  Note: `docs/62` currently still lists red `#b0301f`; sync pending.
+- **Tests**: **263/263 PASS** (248 pre-existing untouched; +15 readability:
+  scale heights, no-small-text source scan, encoder mapping, 16 cells,
+  context line in all modes + REC/UNSAVED, HOME handler/render, Cream contrast
+  and values, 4-theme rendering, selected encoder highlight, five tabs,
+  critical header/context rendering).  `run_tests.sh` → ALL HOST TESTS PASSED.
+- **Screenshots** regenerated (9 PNG): `artifacts/ui/synth.png` shows the
+  16-cell layout with 12/18/24/26 px type; `gen.png` 5th tab; others updated.
+- **Docs**: `docs/66-ux-implementation.md` §6 maps docs/68/69 philosophy to
+  implementation/tests; known TODO: LED palette, NVS theme/preset persistence,
+  1:1 print readability and real P4 screen.

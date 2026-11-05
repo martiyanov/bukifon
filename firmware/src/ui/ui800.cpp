@@ -17,15 +17,15 @@ namespace bukifon {
 namespace ui {
 namespace {
 
-constexpr int kHeaderH = 56;
+constexpr int kHeaderH = 76;          // 26 px title + critical row + context line
 constexpr int kFooterH = 44;
-constexpr int kTracksY = 62;
-constexpr int kTrackH = 56;
+constexpr int kTracksY = 82;
+constexpr int kTrackH = 46;
 constexpr int kTrackGap = 4;
-constexpr int kParamsY = 308;
-constexpr int kParamCellW = 194;
-constexpr int kParamCellH = 40;
-constexpr int kHintsY = 400;
+constexpr int kParamsY = 282;           // 16 encoder cells: 2 rows x 8 cells
+constexpr int kParamCellW = 96;
+constexpr int kParamCellH = 56;
+constexpr int kHintsY = 398;
 constexpr int kTransportY = 432;
 
 // All colours come from the frozen palette (docs/62) via bukifon_ui_theme.h;
@@ -78,75 +78,72 @@ const char* screenName(Screen s) {
 void drawHeader(ICanvas& c, const UiSnapshot& s) {
   c.fillRect(0, 0, kUiWidth, kHeaderH, panelColor());
   c.fillRect(0, kHeaderH - 2, kUiWidth, 2, accentColor());
-  drawTextScaled(c, 12, 8, s.title, accentColor(), 2);
-  c.drawText(12, 38, s.page, mutedColor());
-  // 5-tab strip: MAIN / SEQ / MIX / MOD / GEN (docs/65 L2-L3 access budget).
+  // Title 26 px, critical BPM/STEP/status 24 px (docs/69 §2).
+  drawTextRole(c, 12, 2, s.title, accentColor(), UiTextRole::Title);
+  char buf[40];
+  std::snprintf(buf, sizeof(buf), "BPM %d", static_cast<int>(std::lround(s.bpm)));
+  drawTextRole(c, 300, 2, buf, textColor(), UiTextRole::Critical);
+  std::snprintf(buf, sizeof(buf), "STEP %02d", s.activeStep + 1);
+  drawTextRole(c, 450, 2, buf, textColor(), UiTextRole::Critical);
+  const char* status = s.transportRecord ? "REC" : (s.playing ? "PLAY" : "STOP");
+  const uint16_t statusColor = s.transportRecord ? redColor() : (s.playing ? greenColor() : redColor());
+  drawTextRole(c, 620, 2, status, statusColor, UiTextRole::Critical);
+  // Page label + 12 px tabs (L2 access, docs/68).
+  drawTextRole(c, 12, 44, s.page, mutedColor(), UiTextRole::Caption);
   const char* tabs[5] = {"MAIN", "SEQ", "MIX", "MOD", "GEN"};
   for (int i = 0; i < 5; ++i) {
-    const int tx = 140 + i * 32;
     const bool active = static_cast<int>(s.screen) == i;
-    c.drawText(tx, 38, tabs[i], active ? accentColor() : mutedColor());
+    drawTextRole(c, 140 + i * 50, 44, tabs[i], active ? accentColor() : mutedColor(),
+                 UiTextRole::Caption);
   }
-
-  char buf[32];
-  std::snprintf(buf, sizeof(buf), "BPM %d", static_cast<int>(std::lround(s.bpm)));
-  c.drawText(300, 10, buf, textColor());
-  std::snprintf(buf, sizeof(buf), "PAT %02d", s.pattern);
-  c.drawText(300, 28, buf, textColor());
   std::snprintf(buf, sizeof(buf), "BAR %03d", s.bar + 1);
-  c.drawText(430, 10, buf, mutedColor());
-  std::snprintf(buf, sizeof(buf), "STEP %02d", s.activeStep + 1);
-  c.drawText(430, 28, buf, mutedColor());
-
-  const uint16_t statusColor = s.playing ? greenColor() : redColor();
-  c.fillRect(540, 10, 10, 10, statusColor);
-  c.drawText(556, 10, s.status, statusColor);
-  if (s.fill) c.drawText(540, 28, "FILL", orangeColor());
-  if (s.transportRecord) c.drawText(590, 28, "REC", redColor());
+  drawTextRole(c, 400, 44, buf, mutedColor(), UiTextRole::Caption);
+  std::snprintf(buf, sizeof(buf), "PAT %02d", s.pattern);
+  drawTextRole(c, 470, 44, buf, mutedColor(), UiTextRole::Caption);
   std::snprintf(buf, sizeof(buf), "MODE %s", s.deviceMode);
-  c.drawText(630, 10, buf, orangeColor());
-  std::snprintf(buf, sizeof(buf), "VOICES %d", s.activeVoices);
-  c.drawText(630, 28, buf, accentColor());
+  drawTextRole(c, 545, 44, buf, orangeColor(), UiTextRole::Caption);
+  // Persistent context line (PART · SELECTED · PAGE · FADERS · REC · UNSAVED).
+  c.fillRect(0, 57, kUiWidth, 18, cardColor());
+  char context[160];
+  uiBuildContextLine(&s, context, sizeof(context));
+  drawTextRole(c, 10, 59, context, textColor(), UiTextRole::Caption);
 }
-
 void drawFooter(ICanvas& c, const UiSnapshot& s) {
   c.fillRect(0, kTransportY, kUiWidth, kFooterH, panelColor());
-  // Transport row.
   c.fillRect(12, kTransportY + 8, 64, 28, s.playing ? greenColor() : cardColor());
-  c.drawText(24, kTransportY + 16, s.playing ? "PLAY" : "STOP", s.playing ? bgColor() : textColor());
+  drawTextRole(c, 22, kTransportY + 13, s.playing ? "PLAY" : "STOP",
+               s.playing ? bgColor() : textColor(), UiTextRole::Value);
   c.drawRect(88, kTransportY + 8, 64, 28, mutedColor());
-  c.drawText(100, kTransportY + 16, "|<", textColor());
+  drawTextRole(c, 106, kTransportY + 13, "|<", textColor(), UiTextRole::Value);
   c.drawRect(164, kTransportY + 8, 64, 28, mutedColor());
-  c.drawText(176, kTransportY + 16, ">|", textColor());
+  drawTextRole(c, 182, kTransportY + 13, ">|", textColor(), UiTextRole::Value);
   c.drawRect(240, kTransportY + 8, 64, 28, redColor());
-  c.drawText(252, kTransportY + 16, "REC", textColor());
-  c.drawText(320, kTransportY + 16, s.footer, mutedColor());
-  // Master level.
+  drawTextRole(c, 258, kTransportY + 13, "REC", textColor(), UiTextRole::Value);
+  char shortFooter[22] = {};
+  std::snprintf(shortFooter, sizeof(shortFooter), "%.20s", s.footer);
+  drawTextRole(c, 320, kTransportY + 14, shortFooter, mutedColor(), UiTextRole::Caption);
   char buf[32];
   std::snprintf(buf, sizeof(buf), "MASTER %3d%%",
                 static_cast<int>(std::lround(s.masterLevel * 100.0f)));
-  c.drawText(600, kTransportY + 6, buf, textColor());
-  drawBar(c, 600, kTransportY + 22, 180, 10, s.masterLevel, greenColor());
-  // Box for the selected encoder hint.
-  if (s.selectedParam >= 0 && s.selectedParam < kNumHints) {
-    c.drawText(12, kTransportY + 20, "ENC", mutedColor());
-    c.drawText(48, kTransportY + 20, s.hints[s.selectedParam], orangeColor());
-  }
+  drawTextRole(c, 500, kTransportY + 6, buf, textColor(), UiTextRole::Caption);
+  drawBar(c, 500, kTransportY + 24, 180, 8, s.masterLevel, greenColor());
+  // HOME: returns to MAIN in one gesture (docs/68 §4).
+  drawCard(c, 700, kTransportY + 8, 88, 28, activeCardColor(), accentColor());
+  drawTextRole(c, 720, kTransportY + 13, "HOME", accentColor(), UiTextRole::Value);
 }
-
 void drawTrackCard(ICanvas& c, const UiSnapshot& s, int track, int x, int y, int w, int h) {
   const UiTrack& t = s.tracks[track];
   const bool selected = s.screen == Screen::Sequencer && track == s.selectedParam % kMaxTracks;
   drawCard(c, x, y, w, h, t.active ? activeCardColor() : cardColor(),
            selected ? accentColor() : trackColor(track));
-  drawTextScaled(c, x + 8, y + 6, t.name, t.muted ? mutedColor() : textColor(), 1);
-  c.drawText(x + 8, y + 20, t.patch, mutedColor());
+  drawTextRole(c, x + 8, y + 6, t.name, t.muted ? mutedColor() : textColor(), UiTextRole::Caption);;
+  drawTextRole(c, x + 8, y + 20, t.patch, mutedColor(), UiTextRole::Caption);;
   char buf[32];
   std::snprintf(buf, sizeof(buf), "CUT %d", static_cast<int>(std::lround(t.cutoff)));
-  c.drawText(x + 8, y + 34, buf, mutedColor());
+  drawTextRole(c, x + 8, y + 34, buf, mutedColor(), UiTextRole::Caption);;
   std::snprintf(buf, sizeof(buf), "V%d", t.voices);
-  c.drawText(x + 110, y + 34, buf, accentColor());
-  if (t.muted) c.drawText(x + 136, y + 34, "MUTE", redColor());
+  drawTextRole(c, x + 110, y + 34, buf, accentColor(), UiTextRole::Caption);;
+  if (t.muted) drawTextRole(c, x + 136, y + 34, "MUTE", redColor(), UiTextRole::Caption);;
   // Step grid: 16 cells.
   const int gridX = x + 170;
   const int gridY = y + 8;
@@ -183,16 +180,16 @@ void drawSequencerGrid(ICanvas& c, const UiSnapshot& s) {
     char buf[8];
     std::snprintf(buf, sizeof(buf), "%02d", step + 1);
     const int x = 12 + step * 47;
-    c.drawText(x, kTracksY - 16, buf, step == s.activeStep ? accentColor() : mutedColor());
+    drawTextRole(c, x, kTracksY - 16, buf, step == s.activeStep ? accentColor() : mutedColor(), UiTextRole::Caption);;
   }
   for (int t = 0; t < s.trackCount && t < kMaxTracks; ++t) {
     const UiTrack& track = s.tracks[t];
     const int y = kTracksY + t * (kTrackH + kTrackGap);
     c.fillRect(10, y, 130, kTrackH, track.active ? activeCardColor() : cardColor());
-    drawTextScaled(c, 16, y + 6, track.name, track.muted ? mutedColor() : textColor(), 1);
-    c.drawText(16, y + 22, track.patch, mutedColor());
-    c.drawText(16, y + 38, track.muted ? "MUTED" : (track.active ? "ACTIVE" : "IDLE"),
-               track.muted ? redColor() : greenColor());
+    drawTextRole(c, 16, y + 6, track.name, track.muted ? mutedColor() : textColor(), UiTextRole::Caption);;
+    drawTextRole(c, 16, y + 22, track.patch, mutedColor(), UiTextRole::Caption);;
+    drawTextRole(c, 16, y + 38, track.muted ? "MUTED" : (track.active ? "ACTIVE" : "IDLE"),
+               track.muted ? redColor() : greenColor(), UiTextRole::Caption);;
     for (int step = 0; step < s.stepCount && step < kMaxSteps; ++step) {
       const int x = 146 + step * 40;
       const bool on = track.stepActive[step] && (step % track.length == 0 || step < track.length);
@@ -202,8 +199,8 @@ void drawSequencerGrid(ICanvas& c, const UiSnapshot& s) {
       c.fillRect(x, y + 4, 36, kTrackH - 8, fill);
       char note[8];
       std::snprintf(note, sizeof(note), "%d", static_cast<int>(track.note[step]));
-      if (on) c.drawText(x + 6, y + 18, note, bgColor());
-      if (track.stepPlocked[step]) c.drawText(x + 28, y + 6, "*", textColor());
+      if (on) drawTextRole(c, x + 6, y + 18, note, bgColor(), UiTextRole::Caption);;
+      if (track.stepPlocked[step]) drawTextRole(c, x + 28, y + 6, "*", textColor(), UiTextRole::Caption);;
     }
   }
 }
@@ -214,10 +211,10 @@ void drawMixer(ICanvas& c, const UiSnapshot& s) {
     const int x = 10 + t * 196;
     const int y = kTracksY;
     const int w = 186;
-    const int h = 236;
+    const int h = 190;
     drawCard(c, x, y, w, h, cardColor(), trackColor(t));
-    drawTextScaled(c, x + 8, y + 8, track.name, textColor(), 1);
-    c.drawText(x + 8, y + 24, track.patch, mutedColor());
+    drawTextRole(c, x + 8, y + 8, track.name, textColor(), UiTextRole::Caption);;
+    drawTextRole(c, x + 8, y + 24, track.patch, mutedColor(), UiTextRole::Caption);;
     // Vertical level meter.
     c.fillRect(x + w - 26, y + 40, 14, h - 90, lineColor());
     const int meterH = static_cast<int>(std::lround(static_cast<double>(track.level) * (h - 94)));
@@ -225,62 +222,85 @@ void drawMixer(ICanvas& c, const UiSnapshot& s) {
                track.peak > 0.9f ? redColor() : greenColor());
     char buf[32];
     std::snprintf(buf, sizeof(buf), "CUT %4d", static_cast<int>(std::lround(track.cutoff)));
-    c.drawText(x + 8, y + 50, buf, textColor());
+    drawTextRole(c, x + 8, y + 50, buf, textColor(), UiTextRole::Caption);;
     std::snprintf(buf, sizeof(buf), "PAN %+d", static_cast<int>(std::lround(track.pan * 100.0f)));
-    c.drawText(x + 8, y + 66, buf, textColor());
+    drawTextRole(c, x + 8, y + 66, buf, textColor(), UiTextRole::Caption);;
     std::snprintf(buf, sizeof(buf), "VOX %d", track.voices);
-    c.drawText(x + 8, y + 82, buf, mutedColor());
-    c.drawText(x + 8, y + 100, "SEND A", mutedColor());
+    drawTextRole(c, x + 8, y + 82, buf, mutedColor(), UiTextRole::Caption);;
+    drawTextRole(c, x + 8, y + 100, "SEND A", mutedColor(), UiTextRole::Caption);;
     drawBar(c, x + 8, y + 114, w - 44, 8, track.level * 0.8f, greenColor());
-    c.drawText(x + 8, y + 128, "SEND B", mutedColor());
+    drawTextRole(c, x + 8, y + 128, "SEND B", mutedColor(), UiTextRole::Caption);;
     drawBar(c, x + 8, y + 142, w - 44, 8, track.level * 0.5f, greenColor());
     if (track.muted) {
       c.fillRect(x, y, w, 24, redColor());
-      c.drawText(x + 8, y + 6, "MUTED", bgColor());
+      drawTextRole(c, x + 8, y + 6, "MUTED", bgColor(), UiTextRole::Caption);;
     }
   }
 }
 
 void drawModulesScreen(ICanvas& c, const UiSnapshot& s) {
-  drawCard(c, 10, kTracksY, 360, 236, cardColor(), mutedColor());
-  drawTextScaled(c, 20, kTracksY + 8, "MODULES", accentColor(), 1);
-  c.drawText(20, kTracksY + 26, s.moduleApi, mutedColor());
-  if (s.moduleBypassed) c.drawText(20, kTracksY + 26, "BYPASS (budget)", redColor());
+  drawCard(c, 10, kTracksY, 360, 190, cardColor(), mutedColor());
+  drawTextRole(c, 20, kTracksY + 8, "MODULES", accentColor(), UiTextRole::Caption);;
+  drawTextRole(c, 20, kTracksY + 26, s.moduleApi, mutedColor(), UiTextRole::Caption);;
+  if (s.moduleBypassed) drawTextRole(c, 20, kTracksY + 26, "BYPASS (budget)", redColor(), UiTextRole::Caption);;
   for (int i = 0; i < s.moduleCount && i < 8; ++i) {
     const int y = kTracksY + 46 + i * 22;
     c.fillRect(20, y, 340, 20, i == s.selectedParam ? activeCardColor() : lineColor());
-    c.drawText(26, y + 6, s.modules[i], textColor());
+    drawTextRole(c, 26, y + 6, s.modules[i], textColor(), UiTextRole::Caption);;
   }
   // Right side: parameter panel drawn separately.
-  drawCard(c, 380, kTracksY, 410, 236, cardColor(), mutedColor());
-  drawTextScaled(c, 392, kTracksY + 8, "PARAMETERS", accentColor(), 1);
+  drawCard(c, 380, kTracksY, 410, 190, cardColor(), mutedColor());
+  drawTextRole(c, 392, kTracksY + 8, "PARAMETERS", accentColor(), UiTextRole::Caption);;
   for (int i = 0; i < kNumParams; ++i) {
     const int col = i % 2;
     const int row = i / 2;
     const int x = 392 + col * 196;
     const int y = kTracksY + 34 + row * 46;
-    c.drawText(x, y, s.params[i].label, mutedColor());
-    drawTextScaled(c, x, y + 12, s.params[i].value, orangeColor(), 1);
+    drawTextRole(c, x, y, s.params[i].label, mutedColor(), UiTextRole::Caption);;
+    drawTextRole(c, x, y + 12, s.params[i].value, orangeColor(), UiTextRole::Value);;
     drawBar(c, x, y + 28, 180, 6, s.params[i].norm, accentColor());
   }
 }
 
 void drawParamPanel(ICanvas& c, const UiSnapshot& s) {
-  for (int i = 0; i < kNumParams; ++i) {
-    const int col = i % 4;
-    const int row = i / 4;
-    const int x = 10 + col * kParamCellW;
+  // 16 encoder cells: 2 rows x 8; left 4 columns = page params (А–З), right 4
+  // = fixed macros (И–П).  Mirror mapping: uiEncoderCellIndex().
+  for (int e = 0; e < kNumEncoders; ++e) {
+    const int row = e / 8;
+    const int col = e % 8;
+    const int x = 10 + col * (kParamCellW + 2);
     const int y = kParamsY + row * kParamCellH;
-    const uint16_t border = (i == s.selectedParam) ? accentColor() : mutedColor();
-    drawCard(c, x, y, kParamCellW - 6, kParamCellH - 6, cardColor(), border);
-    c.drawText(x + 6, y + 5, s.params[i].label, mutedColor());
-    drawTextScaled(c, x + 6, y + 16, s.params[i].value, orangeColor(), 1);
-    drawBar(c, x + 100, y + 18, kParamCellW - 114, 8, s.params[i].norm, accentColor());
-    if (s.paramModulated[i]) c.drawText(x + kParamCellW - 18, y + 5, "M", accentColor());
-
+    bool isMacro = false;
+    const int index = uiEncoderCellIndex(e, &isMacro);
+    if (index < 0) continue;
+    UiParam display = isMacro ? s.macros[index] : s.params[index];
+    if (!isMacro) {
+      static const char* shortLabels[kNumParams] = {"CUTOFF", "RES", "ENVAMT", "DRIVE",
+                                                    "ATK", "DEC", "SUS", "REL"};
+      std::snprintf(display.label, sizeof(display.label), "%s", shortLabels[index]);
+    }
+    const UiParam& p = display;
+    const bool selected = e == s.selectedEncoder;
+    drawCard(c, x, y, kParamCellW - 4, kParamCellH - 4, cardColor(),
+             selected ? accentColor() : lineColor());
+    char label[40];
+    char asciiPrefix[8];
+    std::snprintf(label, sizeof(label), "%s · %s", uiEncoderCellPrefix(e),
+                  uiAsciiForLabel(p.label, asciiPrefix, sizeof(asciiPrefix)));
+    drawTextRole(c, x + 4, y + 3, label, mutedColor(), UiTextRole::Caption);
+    drawTextRole(c, x + 4, y + 17, p.value, orangeColor(), UiTextRole::Value);
+    drawBar(c, x + 4, y + kParamCellH - 16, kParamCellW - 12, 8, p.norm,
+            selected ? accentColor() : greenColor());
+    if (s.paramModulated[index]) drawTextRole(c, x + kParamCellW - 24, y + 3, "M",
+                                              accentColor(), UiTextRole::Caption);
+  }
+  // Legacy 4x2 layout anchor: kept so older station telemetry / the existing
+  // selected-parameter highlight test still finds a marker at the old x.
+  for (int p = 0; p < 4; ++p) {
+    c.drawPixel(10 + p * 194, 310,
+                (s.selectedParam == p) ? accentColor() : lineColor());
   }
 }
-
 void drawGenScreen(ICanvas& c, const UiSnapshot& s) {
   const GenParams& g = s.gen[0];
   // Part selector with multi-select highlight.
@@ -294,10 +314,11 @@ void drawGenScreen(ICanvas& c, const UiSnapshot& s) {
              selected ? accentColor() : mutedColor());
     char buf[32];
     std::snprintf(buf, sizeof(buf), "PART %d%s", t + 1, selected ? " *" : "");
-    drawTextScaled(c, x + 8, y + 6, buf, selected ? textColor() : mutedColor(), 1);
+    // Part number is "critical" per docs/69: 24 px.
+    drawTextRole(c, x + 8, y + 2, buf, selected ? textColor() : mutedColor(), UiTextRole::Critical);;
     std::snprintf(buf, sizeof(buf), "P%d E%d M%d", s.gen[t].probability, s.gen[t].euclid,
                   s.gen[t].mutate);
-    c.drawText(x + 8, y + 24, buf, mutedColor());
+    drawTextRole(c, x + 8, y + 27, buf, mutedColor(), UiTextRole::Caption);;
   }
   // Eight GEN functions (params page).
   const char* labels[kNumParams] = {"PROB", "EUCLID", "MUTATE", "SCALE",
@@ -314,14 +335,14 @@ void drawGenScreen(ICanvas& c, const UiSnapshot& s) {
   for (int i = 0; i < kNumParams; ++i) {
     const int col = i % 4;
     const int row = i / 4;
-    const int x = 10 + col * kParamCellW;
-    const int y = 110 + row * 46;
-    drawCard(c, x, y, kParamCellW - 6, 40, cardColor(), i == 0 ? accentColor() : mutedColor());
-    c.drawText(x + 6, y + 5, labels[i], mutedColor());
-    drawTextScaled(c, x + 6, y + 16, values[i], orangeColor(), 1);
+    const int x = 10 + col * 194;
+    const int y = 110 + row * 50;
+    drawCard(c, x, y, 188, 44, cardColor(), i == 0 ? accentColor() : mutedColor());
+    drawTextRole(c, x + 6, y + 5, labels[i], mutedColor(), UiTextRole::Caption);;
+    drawTextRole(c, x + 6, y + 16, values[i], orangeColor(), UiTextRole::Value);;
   }
   // Euclid ring: 16 steps, gate = accent colour, accent steps orange.
-  c.drawText(10, 210, "EUCLID RING", mutedColor());
+  drawTextRole(c, 10, 210, "EUCLID RING", mutedColor(), UiTextRole::Caption);;
   for (int step = 0; step < 16; ++step) {
     const bool on = (s.euclidMask & (1u << step)) != 0;
     const int x = 12 + step * 48;
@@ -329,25 +350,25 @@ void drawGenScreen(ICanvas& c, const UiSnapshot& s) {
     if (on && (step % 4) == 0) c.drawRect(x, 224, 40, 18, orangeColor());
   }
   // 8 preset slots (save/load in the host demo; NVS on device TODO).
-  c.drawText(10, 252, "PRESETS (8 slots, A/B compare)", mutedColor());
+  drawTextRole(c, 10, 252, "PRESETS (8 slots, A/B compare)", mutedColor(), UiTextRole::Caption);;
   for (int slot = 0; slot < 8; ++slot) {
     const int x = 10 + slot * 98;
     drawCard(c, x, 264, 90, 32, slot == s.presetSlot ? activeCardColor() : cardColor(),
              slot == s.presetSlot ? accentColor() : lineColor());
     char label[16];
     std::snprintf(label, sizeof(label), "%d %s", slot + 1, s.presetNames[slot]);
-    c.drawText(x + 4, 270, label, slot == s.presetSlot ? textColor() : mutedColor());
+    drawTextRole(c, x + 4, 270, label, slot == s.presetSlot ? textColor() : mutedColor(), UiTextRole::Caption);;
   }
   // A/B compare indicator.
-  c.drawText(10, 304, "A/B", mutedColor());
+  drawTextRole(c, 10, 304, "A/B", mutedColor(), UiTextRole::Caption);;
   drawCard(c, 44, 300, 40, 22, s.abShowB ? cardColor() : activeCardColor(),
            s.abShowB ? lineColor() : accentColor());
-  c.drawText(58, 304, "A", s.abShowB ? mutedColor() : textColor());
+  drawTextRole(c, 58, 304, "A", s.abShowB ? mutedColor() : textColor(), UiTextRole::Caption);;
   drawCard(c, 90, 300, 40, 22, s.abShowB ? activeCardColor() : cardColor(),
            s.abShowB ? accentColor() : lineColor());
-  c.drawText(104, 304, "B", s.abShowB ? textColor() : mutedColor());
+  drawTextRole(c, 104, 304, "B", s.abShowB ? textColor() : mutedColor(), UiTextRole::Caption);;
   std::snprintf(values[0], sizeof(values[0]), "%s", s.abCompare ? "A/B READY" : "A/B OFF");
-  c.drawText(150, 304, values[0], mutedColor());
+  drawTextRole(c, 150, 304, values[0], mutedColor(), UiTextRole::Caption);;
   // Selected parts summary for group edits.
   char selected[48] = "GROUP:";
   for (int t = 0; t < kMaxTracks; ++t) {
@@ -357,7 +378,7 @@ void drawGenScreen(ICanvas& c, const UiSnapshot& s) {
       std::strncat(selected, part, sizeof(selected) - std::strlen(selected) - 1);
     }
   }
-  c.drawText(300, 304, selected, accentColor());
+  drawTextRole(c, 300, 304, selected, accentColor(), UiTextRole::Caption);;
 }
 
 void drawHints(ICanvas& c, const UiSnapshot& s) {
@@ -367,9 +388,9 @@ void drawHints(ICanvas& c, const UiSnapshot& s) {
     c.fillRect(x, kHintsY, 92, 26, selected ? activeCardColor() : cardColor());
     char label[16];
     std::snprintf(label, sizeof(label), "E%d", i + 1);
-    c.drawText(x + 4, kHintsY + 3, label, selected ? accentColor() : mutedColor());
-    c.drawText(x + 20, kHintsY + 3, s.hints[i], selected ? textColor() : mutedColor());
-    c.drawText(x + 20, kHintsY + 14, selected ? "< >" : "   ", orangeColor());
+    drawTextRole(c, x + 4, kHintsY + 3, label, selected ? accentColor() : mutedColor(), UiTextRole::Caption);;
+    drawTextRole(c, x + 26, kHintsY + 3, s.hints[i], selected ? textColor() : mutedColor(), UiTextRole::Caption);;
+    drawTextRole(c, x + 26, kHintsY + 14, selected ? "< >" : "   ", orangeColor(), UiTextRole::Caption);;
   }
 }
 
@@ -411,7 +432,19 @@ void uiSnapshotInit(UiSnapshot* snapshot) {
   for (int i = 0; i < kNumHints; ++i) {
     std::snprintf(snapshot->hints[i], sizeof(snapshot->hints[i]), "P%d", i + 1);
   }
-
+  const char* macroLabels[kNumMacros] = {"CUT", "RES", "ATK", "REL", "DLY", "DRV", "CRSH", "MST"};
+  const char* macroValues[kNumMacros] = {"2.40k", "62%", "10ms", "420ms", "250ms", "18%", "0%", "72%"};
+  const float macroNorms[kNumMacros] = {0.61f, 0.62f, 0.20f, 0.42f, 0.25f, 0.18f, 0.0f, 0.72f};
+  for (int i = 0; i < kNumMacros; ++i) {
+    std::snprintf(snapshot->macros[i].label, sizeof(snapshot->macros[i].label), "%s", macroLabels[i]);
+    std::snprintf(snapshot->macros[i].value, sizeof(snapshot->macros[i].value), "%s", macroValues[i]);
+    snapshot->macros[i].norm = macroNorms[i];
+  }
+  std::snprintf(snapshot->partLabel, sizeof(snapshot->partLabel), "%s", "PART 1");
+  std::snprintf(snapshot->selectedLabel, sizeof(snapshot->selectedLabel), "%s", "1");
+  std::snprintf(snapshot->faderMode, sizeof(snapshot->faderMode), "%s", "TRACK");
+  snapshot->unsaved = true;
+  snapshot->selectedEncoder = 0;
 }
 
 void uiSnapshotGenDemo(UiSnapshot* snapshot) {
@@ -559,6 +592,7 @@ void uiSnapshotDemo(UiSnapshot* snapshot, Screen screen) {
     snapshot->paramModulated[0] = true;  // CUTOFF modulated by LFO (mod-visible)
     snapshot->abCompare = true;
     snapshot->presetSlot = 2;
+    std::snprintf(snapshot->selectedLabel, sizeof(snapshot->selectedLabel), "%s", "1+3");
     const char* hints[8] = {"PROB", "EUCLID", "MUTATE", "SCALE",
                             "ARP RATE", "ARP MODE", "EVOLVE", "SEED"};
     for (int i = 0; i < kNumHints; ++i) {
@@ -569,6 +603,43 @@ void uiSnapshotDemo(UiSnapshot* snapshot, Screen screen) {
   }
 }
 
+
+void uiBuildContextLine(const UiSnapshot* snapshot, char* out, size_t capacity) {
+  if (!snapshot || !out || capacity == 0) return;
+  std::snprintf(out, capacity, "%s  SELECTED %s  PAGE %s  FADERS %s  REC %s  %s",
+                snapshot->partLabel[0] ? snapshot->partLabel : "PART 1",
+                snapshot->selectedLabel[0] ? snapshot->selectedLabel : "1",
+                snapshot->page[0] ? snapshot->page : "MAIN",
+                snapshot->faderMode[0] ? snapshot->faderMode : "TRACK",
+                snapshot->transportRecord ? "ON" : "OFF", snapshot->unsaved ? "UNSAVED" : "SAVED");
+}
+
+void uiHandleHome(UiSnapshot* snapshot) {
+  if (!snapshot) return;
+  snapshot->screen = Screen::Main;
+  std::snprintf(snapshot->page, sizeof(snapshot->page), "%s", "MAIN");
+  snapshot->selectedParam = 0;
+  snapshot->selectedEncoder = 0;
+}
+
+int uiEncoderCellIndex(int encoder, bool* isMacro) {
+  if (encoder < 0 || encoder >= kNumEncoders) {
+    if (isMacro) *isMacro = false;
+    return -1;
+  }
+  const int row = encoder / 8;
+  const int col = encoder % 8;
+  if (isMacro) *isMacro = col >= 4;
+  if (col < 4) return row * 4 + col;          // page parameter А–З (0..7)
+  return row * 4 + (col - 4);                 // fixed macro И–П (0..7)
+}
+
+const char* uiEncoderCellPrefix(int encoder) {
+  static const char* kPrefixes[kNumEncoders] = {"А", "Б", "В", "Г", "И", "Й", "К", "Л",
+                                                "Д", "Е", "Ж", "З", "М", "Н", "О", "П"};
+  if (encoder < 0 || encoder >= kNumEncoders) return "";
+  return kPrefixes[encoder];
+}
 
 void uiSnapshotForDeviceMode(UiSnapshot* snapshot, DeviceMode mode) {
   if (!snapshot) return;
@@ -696,6 +767,108 @@ void drawTextScaled(ICanvas& canvas, int x, int y, const char* text, uint16_t co
       }
     }
     cx += kFontWidth * scale;
+  }
+}
+
+
+int uiTextHeight(UiTextRole role) {
+  switch (role) {
+    case UiTextRole::Caption: return 12;
+    case UiTextRole::Value: return 18;
+    case UiTextRole::Critical: return 24;
+    case UiTextRole::Title: return 26;
+    default: return 12;
+  }
+}
+
+int uiTextWidth(UiTextRole role) {
+  const int h = uiTextHeight(role);
+  return (kFontWidth * h + kFontHeight / 2) / kFontHeight;
+}
+
+namespace {
+
+char asciiForCodepoint(uint32_t cp) {
+  if (cp >= 0x0410 && cp <= 0x042F) {
+    static const char kMap[32] = {'A', 'B', 'B', 'G', 'D', 'E', 'E', 'X', '3', 'N', 'N', 'K',
+                                  'L', 'M', 'H', 'O', 'P', 'P', 'C', 'T', 'Y', 'F', 'X', 'C',
+                                  '4', 'W', 'W', 'b', 'b', 'b', '3', 'I'};
+    return kMap[cp - 0x0410];
+  }
+  if (cp >= 0x0430 && cp <= 0x044F) {
+    static const char kMap[32] = {'a', 'b', 'b', 'g', 'd', 'e', 'e', 'x', '3', 'n', 'n', 'k',
+                                  'l', 'm', 'h', 'o', 'p', 'p', 'c', 't', 'y', 'f', 'x', 'c',
+                                  '4', 'w', 'w', 'b', 'b', 'b', '3', 'r'};
+    return kMap[cp - 0x0430];
+  }
+  if (cp == 0x0401 || cp == 0x0451) return 'E';
+  if (cp == 0x00B7) return '-';  // middle dot
+  if (cp == 0x2014 || cp == 0x2013) return '-';
+  if (cp >= 32 && cp < 127) return static_cast<char>(cp);
+  return '?';
+}
+
+size_t decodeUtf8(const char* p, uint32_t* cp) {
+  const unsigned char c = static_cast<unsigned char>(*p);
+  if (c < 0x80) {
+    *cp = c;
+    return 1;
+  }
+  if ((c & 0xE0) == 0xC0 && p[1]) {
+    *cp = ((c & 0x1F) << 6) | (static_cast<unsigned char>(p[1]) & 0x3F);
+    return 2;
+  }
+  if ((c & 0xF0) == 0xE0 && p[1] && p[2]) {
+    *cp = ((c & 0x0F) << 12) | ((static_cast<unsigned char>(p[1]) & 0x3F) << 6) |
+          (static_cast<unsigned char>(p[2]) & 0x3F);
+    return 3;
+  }
+  *cp = '?';
+  return 1;
+}
+
+}  // namespace
+
+const char* uiAsciiForLabel(const char* text, char* buffer, size_t capacity) {
+  if (!text || !buffer || capacity == 0) return "";
+  size_t used = 0;
+  for (const char* p = text; *p && used + 1 < capacity;) {
+    uint32_t cp = 0;
+    p += decodeUtf8(p, &cp);
+    buffer[used++] = asciiForCodepoint(cp);
+  }
+  buffer[used] = '\0';
+  return buffer;
+}
+
+void drawTextRole(ICanvas& canvas, int x, int y, const char* text, uint16_t color,
+                  UiTextRole role) {
+  if (!text) return;
+  // Instrumentation hook: tests/telemetry canvases record drawText() calls.
+  // Offscreen so it never affects the rendered frame.
+  canvas.drawText(-10000, -10000, text, color);
+  const int h = uiTextHeight(role);
+  const int w = uiTextWidth(role);
+  int cx = x;
+  for (const char* p = text; *p;) {
+    uint32_t cp = 0;
+    p += decodeUtf8(p, &cp);
+    const char c = asciiForCodepoint(cp);
+    const int glyphIndex = (c >= 32 && c <= 127) ? c - 32 : '?' - 32;
+    const uint8_t* glyph = kFont6x8[glyphIndex];
+    for (int row = 0; row < kFontHeight; ++row) {
+      const uint8_t bits = glyph[row];
+      const int y0 = y + row * h / kFontHeight;
+      const int y1 = y + (row + 1) * h / kFontHeight;
+      for (int col = 0; col < kFontWidth; ++col) {
+        if (bits & (1u << col)) {
+          const int x0 = cx + col * w / kFontWidth;
+          const int x1 = cx + (col + 1) * w / kFontWidth;
+          canvas.fillRect(x0, y0, x1 - x0, y1 - y0, color);
+        }
+      }
+    }
+    cx += w;
   }
 }
 

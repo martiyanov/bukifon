@@ -44,7 +44,7 @@ firmware/
   engine_unity.cpp / sim_unity.cpp  PlatformIO unity translation units
   Bukifon/      RP2040 Arduino sketch: Bukifon.ino + platformio.ini
   host/         native build (Makefile + CMakeLists.txt), WAV renderer
-  tests/        unit tests (248), FFT analysis, run_tests.sh, run_sim_demo.sh, REPORT.md
+  tests/        unit tests (263), FFT analysis, run_tests.sh, run_sim_demo.sh, REPORT.md
   tools/        wavetable/font generators, ppm_to_png.py, build_pico.sh
   artifacts/    generated 800x480 UI screenshots + demo logs (git-ignored)
 ```
@@ -52,7 +52,7 @@ firmware/
 ## v0.5 host prototype — what to run
 
 ```bash
-make -C firmware/host test          # 248 unit tests
+make -C firmware/host test          # 263 unit tests
 firmware/tests/run_tests.sh         # build + tests + WAV render + FFT report
 firmware/tests/run_sim_demo.sh      # 16-bar demo, event-log determinism, 4 PNG
 ```
@@ -95,7 +95,7 @@ firmware/tests/run_tests.sh         # full pipeline: build, tests, WAV render, F
 
 Latest measured results (see `tests/REPORT.md` and `tests/out/test_log.txt`):
 
-- **248 unit tests, 0 failures** (Apple clang 21, C++17, `-O2`)
+- **263 unit tests, 0 failures** (Apple clang 21, C++17, `-O2`)
 - line coverage **83.5 %** (4347/5204 lines, gcov, generated tables excluded)
 - host demo: 16 bars, 1024 note-ons, 32 p-locks, deterministic event log, 4 PNG screens
 - A4 = **440.0000 Hz** (error `-0.0000 %`, limit ±0.1 %)
@@ -144,6 +144,17 @@ export PLATFORMIO_CORE_DIR=/tmp/piocore
 RAM 87.7 % — запас ~32 KiB; при добавлении эффектов/модулей оптимизировать
 буферы (delay-линия, пресет-кэш, 8-дорожечный секвенсор) или перенести часть в
 PSRAM (RP2350).
+
+## Round 13 — UI readability (docs/68/69)
+
+- **16 encoder cells** (2×8): left 4 columns page params А–З, right 4 macros
+  И–П (CUT/RES/ATK/REL/DLY/DRV/CRSH/MST), label `А · CUTOFF`, 18 px value,
+  slider; mirror mapping API.
+- **Typography roles** from docs/69: Caption 12 px, Value 18 px, Critical
+  24 px (BPM/STEP/REC), Title 26 px; no text <12 px in ui800.
+- **Context line** PART·SELECTED·PAGE·FADERS·REC·UNSAVED always visible;
+  HOME returns to MAIN; 12 px page tabs; Cream palette AA-contrast updated.
+- Screenshots: `artifacts/ui/synth.png`, `gen.png` (9 PNG total).
 
 ## Round 11 — GEN functions + GEN page + presets
 

@@ -16,7 +16,7 @@
 | green | `#38c172` | `#7fbf5f` | `#38c172` | `#3f6f2e` |
 | orange | `#f6993f` | `#f08a24` | `#c9d96b` | `#9a4a10` |
 | blue | `#4aa3ff` | `#5fa8d3` | `#6fd3c0` | `#3d6e8f` |
-| red | `#ff5c5c` | `#e5544b` | `#ff6b5c` | `#b0301f` |
+| red | `#ff5c5c` | `#e5544b` | `#ff6b5c` | `#9c2a1a` |
 | purple | `#b07cff` | `#c9a0dc` | `#9ccf7a` | `#8a5a9e` |
 
 ## Правила

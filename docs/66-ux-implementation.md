@@ -83,3 +83,27 @@ firmware/host/build/bukifon_sim --theme Cream --preset /tmp/gen.bin
 GEN page: `firmware/artifacts/ui/gen.png`; snapshot fields are the contract
 between engine/demo/UI (`UiSnapshot::gen`, `paramModulated`, `genPartSelected`,
 `abCompare`, `presetNames`).
+
+---
+
+## 6. Философия и читаемость (docs/68/69 → реализация, раунд 13)
+
+Реализовано в прошивке и host-демо:
+
+| Паттерн docs/68/69 | Реализация | Тест |
+|---|---|---|
+| **Зеркальная карта 16 ручек ↔ 16 ячеек** | `ui800`: 2 строки × 8 ячеек; левые 4 колонки — параметры страницы (А–З), правые 4 — макросы И–П (CUT/RES/ATK/REL/DLY/DRV/CRSH/MST); подпись `А · CUTOFF`, значение 18 px, бегунок; mapping `uiEncoderCellIndex()` | `UiEncoderMirrorMapping`, `UiSnapshotSixteenCells`, `UiSelectedEncoderHighlight` |
+| **Шкала docs/69** | `UiTextRole`: Caption 12 px, Value 18 px, Critical 24 px (BPM/STEP/REC/партия), Title 26 px; в `ui800.cpp` нет `drawText`/6×8-вызовов — только роли | `UiTextScaleHeights`, `UiTextNoSmallTextInRenderer`, `UiCriticalHeaderText` |
+| **Контекст-строка** | `uiBuildContextLine()`: `PART · SELECTED · PAGE · FADERS · REC · UNSAVED`, рисуется в шапке всегда | `UiContextLineAllModes`, `UiContextLineRecAndUnsaved`, `UiContextLineRendered` |
+| **HOME (один жест)** | кнопка HOME в футере + `uiHandleHome()` → MAIN | `UiHomeHandler`, `UiHomeRendered` |
+| **Табы 12 px** | 5 табов MAIN/SEQ/MIX/MOD/GEN в шапке | `UiFiveTabsRendered` |
+| **Cream AA-контраст** | Cream: accent `#a8321f`, green `#3f6f2e`, orange `#9a4a10`, muted `#5f5548`, red `#9c2a1a`; text/muted/accent/green/orange ≥4.5:1 к bg | `UiCreamContrast`, `UiCreamValuesMatchSpec` |
+| **4 темы** | токены docs/62 во всех экранах | `UiFourThemesSixteenCellsRender`, существующие theme-тесты |
+
+Скриншоты: `firmware/artifacts/ui/synth.png` (SYNTH, 16 ячеек) и
+`gen.png` (5-я вкладка), остальные 7 перегенерированы.  Внимание: red Cream
+в этом раунде задан `#9c2a1a` (по запросу), в `docs/62` файл пока содержит
+`#b0301f` — значения нужно синхронизировать при следующем обновлении docs/62.
+
+Осталось (TODO(hw)): реальная палитра LED/WS2812, NVS-хранение темы/пресетов,
+проверка читаемости на 1:1 печати с 40/50/60 см и на реальном P4-экране.

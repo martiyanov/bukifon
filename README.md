@@ -1,6 +1,6 @@
 # Букифон (Bukifon) — открытая платформа: сэмплер + синтезатор + модули
 
-**Версия: 0.20.0** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
+**Версия: 0.20.1** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
 
 **Букифон** — настольный музыкальный инструмент-платформа, который собирается из
 доступных компонентов, печатается на 3D-принтере, расширяется модулями и полностью
@@ -32,7 +32,7 @@ BLE HID, передача проектов). То есть Букифон — е
 аналоговый картридж на шине 26-pin или сменная панельная дека (18 пэдов / 42 клавиши).
 Подробнее — [spec/00-vision.md §12](spec/00-vision.md).
 
-## Текущее состояние (v0.20.0)
+## Текущее состояние (v0.20.1)
 
 | Блок | Состояние |
 |---|---|
@@ -60,6 +60,7 @@ BLE HID, передача проектов). То есть Букифон — е
 | **Factory test** | 14 тестов, CLI `factory --json`, loopback-плаг, EOL 2–2.5 мин (`docs/46`); **183/183 тестов** |
 | **Product BOM P4 (первый SKU)** | `BOM-p4.csv` + `docs/33/40`: COGS **$219/$194/$176** на 1/10/25; **P4 Standard $299** (gross 35 % на 10), Full Bundle $399; S3 lite — второй профиль ($199/$175/$157) |
 | **Сборка** | `renders/templates/bukifon_assembly_map_1to1.pdf` (4 стр: слои, панель 1:1, крепёж/шлейфы), `docs/34`, `docs/35` print-first, 3D exploded |
+| **UI = философия** | 16 ячеек зеркально ручкам, шкала 12/18/24–28 px, контекст-строка, HOME; Cream AA; **263/263 тестов** (`docs/66/68/69`) |
 | **GEN/UX в прошивке** | PROB/EUCLID/MUTATE/SCALE/ARP/EVOLVE/SEED (детерминированно), 5-я вкладка GEN, 8 пресетов с CRC32, A/B, мультивыбор, mod-visible «M»; **248/248 тестов** (`docs/66`) |
 | **Прошивка v0.7** | **160/160 тестов**; S3 HAL сборка SUCCESS; spike `spike_s3` SUCCESS; **P1 P4-профиль** PASS (RGB/DSI 52 fps, HS UAC2 8×8, max block 320 µs); UI 4 режимов; Module API v0.1 |
 | **CORE-2 rev.2 (основная плата)** | ESP32-P4 + ESP32-C6, 32 МБ PSRAM, USB HS, RGB565/DSI, ERC 0/0; DFM/DFT: 30 TP, 20 self-test, recovery, 6 слоёв — PRE-FREEZE |

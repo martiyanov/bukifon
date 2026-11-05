@@ -6,6 +6,7 @@
 // control loop.  Screens: MAIN, SEQUENCER, MIXER, MODULES.
 #pragma once
 
+#include <cstddef>
 #include <cstdint>
 
 #include "core/device_mode.hpp"
@@ -28,8 +29,26 @@ constexpr int kUiWidth = 800;
 constexpr int kUiHeight = 480;
 constexpr int kMaxTracks = 4;   // display/transport rows (architecture allows 8)
 constexpr int kMaxSteps = 16;
-constexpr int kNumParams = 8;   // parameter panel rows/encoders
+constexpr int kNumParams = 8;   // page parameters (left half, А–З)
+constexpr int kNumMacros = 8;   // fixed macros (right half, И–П)
+constexpr int kNumEncoders = 16;  // mirror of the panel encoders
 constexpr int kNumHints = 8;
+
+// Typography scale from docs/69 (pixels of glyph height).  Nothing smaller than
+// Caption is allowed in the 800x480 renderer.
+enum class UiTextRole : uint8_t {
+  Caption = 0,  // 12 px — parameter/team/tab labels (minimum)
+  Value,        // 18 px — main parameter/macro values
+  Critical,     // 24 px — BPM, STEP, REC, part number, mode
+  Title         // 26 px — screen title
+};
+int uiTextHeight(UiTextRole role);
+int uiTextWidth(UiTextRole role);
+void drawTextRole(ICanvas& canvas, int x, int y, const char* text, uint16_t color,
+                  UiTextRole role);
+// Latin transliteration of Cyrillic labels (the 6x8 font is ASCII only):
+// "А · CUTOFF" renders as "A · CUTOFF" while snapshots keep the real labels.
+const char* uiAsciiForLabel(const char* text, char* buffer, size_t capacity);
 
 struct UiTrack {
   char name[10] = "PART";
@@ -70,8 +89,15 @@ struct UiSnapshot {
   int stepCount = kMaxSteps;
   UiTrack tracks[kMaxTracks];
   UiParam params[kNumParams];
+  UiParam macros[kNumMacros];
   char hints[kNumHints][12] = {};
-  int selectedParam = 0;
+  int selectedParam = 0;   // page parameter 0..7
+  int selectedEncoder = 0; // 0..15 (mirror of the physical encoder)
+  // Persistent context line (docs/68 §2): PART · SELECTED · PAGE · FADERS · REC · UNSAVED.
+  char partLabel[8] = "PART 1";
+  char selectedLabel[16] = "1";
+  char faderMode[10] = "TRACK";
+  bool unsaved = false;
   int moduleCount = 0;
   char modules[8][24] = {};
   char moduleApi[24] = "API v0";
@@ -101,6 +127,17 @@ void uiSnapshotDemo(UiSnapshot* snapshot, Screen screen);
 void uiSnapshotForDeviceMode(UiSnapshot* snapshot, DeviceMode mode);
 // GEN page demo content (5th tab) + presets/A-B/multi-select/mod markers.
 void uiSnapshotGenDemo(UiSnapshot* snapshot);
+
+// UX helpers (docs/68/69):
+// Build the always-visible context line (PART · SELECTED · PAGE · FADERS · REC · UNSAVED).
+void uiBuildContextLine(const UiSnapshot* snapshot, char* out, size_t capacity);
+// HOME one-gesture return to MAIN (docs/68 §4).
+void uiHandleHome(UiSnapshot* snapshot);
+// Mirror mapping: encoder 0..15 -> page parameter or macro cell.
+// col<4 are page parameters (returned index 0..7, isMacro=false),
+// col>=4 are macros (returned index 0..7, isMacro=true).
+int uiEncoderCellIndex(int encoder, bool* isMacro);
+const char* uiEncoderCellPrefix(int encoder);  // "А".."П" (Cyrillic, transliterated when drawn)
 void uiSnapshotInit(UiSnapshot* snapshot);
 
 void drawUi800(ICanvas& canvas, const UiSnapshot& snapshot);
