@@ -1,0 +1,174 @@
+module;qty;value;footprint;refs;note
+MOD-ENSEMBLE-1;1;100R;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R15;AUD_OUT series
+MOD-ENSEMBLE-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R14;AUD_OUT return
+MOD-ENSEMBLE-1;2;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R1_e R2_e;LFO mod
+MOD-ENSEMBLE-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R1;LFO rate
+MOD-ENSEMBLE-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R12;bypass pull-down
+MOD-ENSEMBLE-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R2;comparator hysteresis
+MOD-ENSEMBLE-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R4;dry input
+MOD-ENSEMBLE-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R7;mixer feedback
+MOD-ENSEMBLE-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R3;rate into integrator
+MOD-ENSEMBLE-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R5;wet 1
+MOD-ENSEMBLE-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R6;wet 2
+MOD-ENSEMBLE-1;1;100k rate;Potentiometer_THT:Potentiometer_Alpha_RD901F-40-00D_Single_Vertical;RV1;Ensemble rate
+MOD-ENSEMBLE-1;2;100n;Capacitor_THT:CP_Radial_D6.3mm_P2.50mm;C10 C9;Rail decoupling
+MOD-ENSEMBLE-1;4;100n;Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm;C1_c C1_d C2_c C2_d;CC cap
+MOD-ENSEMBLE-1;2;100n;Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm;C1_e C2_e;LPF1 cap
+MOD-ENSEMBLE-1;2;100n;Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm;C1_a C2_a;REF cap
+MOD-ENSEMBLE-1;2;100p;Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm;C1_b C2_b;clock cap
+MOD-ENSEMBLE-1;2;10k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R1_b R2_b;LPF1 -> LPF2
+MOD-ENSEMBLE-1;2;10k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R1_c R2_c;LPF2 feedback
+MOD-ENSEMBLE-1;1;10k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R11;bypass control
+MOD-ENSEMBLE-1;2;10k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R1_d R2_d;delay CV
+MOD-ENSEMBLE-1;1;10k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R8;formant R1
+MOD-ENSEMBLE-1;1;10k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R9;formant R2
+MOD-ENSEMBLE-1;1;10k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R10;formant bias
+MOD-ENSEMBLE-1;3;10k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R13 R1_a R2_a;input series
+MOD-ENSEMBLE-1;2;10k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R1_h R2_h;op1 bias
+MOD-ENSEMBLE-1;2;10k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R1_g R2_g;op2 buffer
+MOD-ENSEMBLE-1;2;10k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R1_f R2_f;output series
+MOD-ENSEMBLE-1;1;10n;Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm;C2;formant C1
+MOD-ENSEMBLE-1;1;10n;Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm;C3;formant C2
+MOD-ENSEMBLE-1;1;10uF;Capacitor_THT:CP_Radial_D6.3mm_P2.50mm;C6;AUD_OUT coupling
+MOD-ENSEMBLE-1;2;10uF;Capacitor_THT:CP_Radial_D6.3mm_P2.50mm;C7 C8;Rail decoupling
+MOD-ENSEMBLE-1;1;10uF;Capacitor_THT:CP_Radial_D6.3mm_P2.50mm;C4;input AC coupling
+MOD-ENSEMBLE-1;1;10uF;Capacitor_THT:CP_Radial_D6.3mm_P2.50mm;C5;line 2 coupling
+MOD-ENSEMBLE-1;1;1uF;Capacitor_THT:CP_Radial_D6.3mm_P2.50mm;C1;LFO timing
+MOD-ENSEMBLE-1;1;24C02;Package_DIP:DIP-8_W7.62mm;U5;Module descriptor, kind=8, addr 0x50+port
+MOD-ENSEMBLE-1;1;CD4053;Package_DIP:DIP-16_W7.62mm;U4;Bypass analogue switch (only section A used)
+MOD-ENSEMBLE-1;1;PT2399;Package_DIP:DIP-16_W7.62mm;U1;Delay line 1 (BBD replacement)
+MOD-ENSEMBLE-1;1;PT2399;Package_DIP:DIP-16_W7.62mm;U2;Delay line 2 (BBD replacement)
+MOD-ENSEMBLE-1;1;Bukifon Bus 26 pin;Connector_IDC:IDC-Header_2x13_P2.54mm_Vertical;J1;Bukifon Bus IDC-26 (2x13)
+MOD-ENSEMBLE-1;1;TL074;Package_DIP:DIP-14_W7.62mm;U3;LFO integrator
+MOD-ENSEMBLE-1;3;addr;Diode_SMD:D_SOD-323;JP1 JP2 JP3;EEPROM address strap
+MOD-FILTER-1;1;100R;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R15;AUD_OUT series
+MOD-FILTER-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R14;AUD_OUT DC return
+MOD-FILTER-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R9;CV1 input
+MOD-FILTER-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R1;audio input resistor
+MOD-FILTER-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R11;cutoff pot to summer
+MOD-FILTER-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R7;resonance CV
+MOD-FILTER-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R2;stage 1 feedback
+MOD-FILTER-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R17;stage 2 feedback
+MOD-FILTER-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R5;stage 2: LP input
+MOD-FILTER-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R4;stage 2: X1 input
+MOD-FILTER-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R10;summing feedback
+MOD-FILTER-1;1;100k cutoff;Potentiometer_THT:Potentiometer_Alpha_RD901F-40-00D_Single_Vertical;RV2;Panel cutoff
+MOD-FILTER-1;4;100n;Capacitor_THT:CP_Radial_D6.3mm_P2.50mm;C10 C7 C8 C9;Rail decoupling
+MOD-FILTER-1;1;100p;Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm;C3;expo servo stability
+MOD-FILTER-1;1;100p;Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm;C11;resonance RC
+MOD-FILTER-1;1;10k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R3;BP into stage 1 (resonance)
+MOD-FILTER-1;1;10k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R6;resonance min
+MOD-FILTER-1;2;10uF;Capacitor_THT:CP_Radial_D6.3mm_P2.50mm;C5 C6;Rail decoupling
+MOD-FILTER-1;1;10uF;Capacitor_THT:CP_Radial_D6.3mm_P2.50mm;C4;output AC coupling
+MOD-FILTER-1;1;1M resonance;Potentiometer_THT:Potentiometer_Alpha_RD901F-40-00D_Single_Vertical;RV1;Panel resonance
+MOD-FILTER-1;1;1k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R16;AUD_IN series
+MOD-FILTER-1;1;1k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R18;expo 1V/oct divider top
+MOD-FILTER-1;1;1k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R12;expo tail
+MOD-FILTER-1;2;1n C0G;Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm;C1 C2;integrator cap
+MOD-FILTER-1;1;24C02;Package_DIP:DIP-8_W7.62mm;U4;Module descriptor EEPROM 0x50+port
+MOD-FILTER-1;1;470k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R13;expo reference current 10.6 uA
+MOD-FILTER-1;1;56k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R19;expo 1V/oct divider bottom
+MOD-FILTER-1;1;BAT54S;Diode_SMD:D_SOD-323;D1;AUD_IN clamp
+MOD-FILTER-1;1;BC847BS;Package_TO_SOT_SMD:SOT-23;Q3;IABC current mirror (diode side)
+MOD-FILTER-1;1;BC847BS;Package_TO_SOT_SMD:SOT-23;Q2;expo pair Q1 (servo, base at GND)
+MOD-FILTER-1;1;LM13700;Package_DIP:DIP-16_W7.62mm;U1;OTA A: integrator 1 (HP -> BP)
+MOD-FILTER-1;1;LP/BP/HP;;SW1;Response selector
+MOD-FILTER-1;1;Bukifon Bus 26 pin;Connector_IDC:IDC-Header_2x13_P2.54mm_Vertical;J1;Bukifon Bus IDC-26 (2x13)
+MOD-FILTER-1;1;TL072;Package_DIP:DIP-8_W7.62mm;U3;CV summing amplifier
+MOD-FILTER-1;1;TL074;Package_DIP:DIP-14_W7.62mm;U2;Integrator 1
+MOD-FILTER-1;3;addr;Diode_SMD:D_SOD-323;JP1 JP2 JP3;EEPROM address strap
+MOD-LADDER-1;1;100R;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R13;output series
+MOD-LADDER-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R14;AUD_OUT DC return
+MOD-LADDER-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R3;CV1 cutoff input
+MOD-LADDER-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R12;HP + input divider
+MOD-LADDER-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R11;HP LP4 input
+MOD-LADDER-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R9;HP difference
+MOD-LADDER-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R10;HP feedback
+MOD-LADDER-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R6;VCFI input resistor
+MOD-LADDER-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R4;cutoff feedback
+MOD-LADDER-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R6b;cutoff inverter feedback
+MOD-LADDER-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R6a;cutoff inverter input
+MOD-LADDER-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R5;cutoff pot series
+MOD-LADDER-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R1;input load
+MOD-LADDER-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R8;resonance CV
+MOD-LADDER-1;1;100k cutoff;Potentiometer_THT:Potentiometer_Alpha_RD901F-40-00D_Single_Vertical;RV2;Panel cutoff
+MOD-LADDER-1;1;100k drive;Potentiometer_THT:Potentiometer_Alpha_RD901F-40-00D_Single_Vertical;RV1;Drive / saturation into the ladder
+MOD-LADDER-1;1;100k resonance;Potentiometer_THT:Potentiometer_Alpha_RD901F-40-00D_Single_Vertical;RV3;Resonance (self oscillation at max)
+MOD-LADDER-1;4;100n;Capacitor_THT:CP_Radial_D6.3mm_P2.50mm;C10 C11 C8 C9;Rail decoupling
+MOD-LADDER-1;1;10k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R7;IRES bias
+MOD-LADDER-1;1;10k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R2;input series into ladder
+MOD-LADDER-1;1;10uF;Capacitor_THT:CP_Radial_D6.3mm_P2.50mm;C5;AUD_OUT AC coupling
+MOD-LADDER-1;2;10uF;Capacitor_THT:CP_Radial_D6.3mm_P2.50mm;C6 C7;Rail decoupling
+MOD-LADDER-1;4;1n C0G;Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm;C1 C2 C3 C4;ladder cap
+MOD-LADDER-1;1;24C02;Package_DIP:DIP-8_W7.62mm;U3;Module descriptor, kind=7, addr 0x50+port
+MOD-LADDER-1;1;AS3320;Package_DIP:DIP-18_W7.62mm;U1;Alfa AS3320 four pole VCF (CEM3320 clone)
+MOD-LADDER-1;1;BAT54S;Diode_SMD:D_SOD-323;D1;AUD_IN clamp
+MOD-LADDER-1;1;BAT54S;Diode_SMD:D_SOD-323;D2;CV1 clamp
+MOD-LADDER-1;1;BAT54S;Diode_SMD:D_SOD-323;D3;CV2 clamp
+MOD-LADDER-1;1;LP/HP;;SW1;Response: 4-pole LP / 4-pole HP
+MOD-LADDER-1;1;Bukifon Bus 26 pin;Connector_IDC:IDC-Header_2x13_P2.54mm_Vertical;J1;Bukifon Bus IDC-26 (2x13)
+MOD-LADDER-1;1;TL074;Package_DIP:DIP-14_W7.62mm;U2;input buffer
+MOD-LADDER-1;3;addr;Diode_SMD:D_SOD-323;JP1 JP2 JP3;EEPROM address strap
+MOD-PROTO-1;26;0R;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R1 R10 R11 R12 R13 R14 R15 R16 R17 R18 R19 R2 R20 R21 R22 R23 R24 R25 R26 R3 R4 R5 R6 R7 R8 R9;bus link
+MOD-PROTO-1;4;100n;Capacitor_THT:CP_Radial_D6.3mm_P2.50mm;C3 C4 C5 C6;Rail decoupling
+MOD-PROTO-1;2;10uF;Capacitor_THT:CP_Radial_D6.3mm_P2.50mm;C1 C2;Rail decoupling
+MOD-PROTO-1;1;24C02;Package_DIP:DIP-8_W7.62mm;U1;Module descriptor EEPROM 0x50+port
+MOD-PROTO-1;1;Bukifon Bus 26 pin;Connector_IDC:IDC-Header_2x13_P2.54mm_Vertical;J1;Bukifon Bus IDC-26 (2x13)
+MOD-PROTO-1;3;addr;Diode_SMD:D_SOD-323;JP1 JP2 JP3;EEPROM address strap
+MOD-PROTO-1;1;comb A 1-13;Connector_PinHeader_2.54mm:PinHeader_1x13_P2.54mm_Vertical;J2;2.54 mm comb, mirror of bus pins 1..13
+MOD-PROTO-1;1;comb A' 1-13;Connector_PinHeader_2.54mm:PinHeader_1x13_P2.54mm_Vertical;J4;second contact of each bus line
+MOD-PROTO-1;1;comb B 14-26;Connector_PinHeader_2.54mm:PinHeader_1x13_P2.54mm_Vertical;J3;2.54 mm comb, mirror of bus pins 14..26
+MOD-PROTO-1;1;comb B' 14-26;Connector_PinHeader_2.54mm:PinHeader_1x13_P2.54mm_Vertical;J5;second contact of each bus line
+MOD-VCO-1;1;100R;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R18;AUD_OUT series
+MOD-VCO-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R17;AUD_OUT DC return
+MOD-VCO-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R1;CV1 input resistor
+MOD-VCO-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R21a;CV1 return
+MOD-VCO-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R2;CV2 input resistor
+MOD-VCO-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R21b;CV2 return
+MOD-VCO-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R3;Summing feedback
+MOD-VCO-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R5b;Tune pot bottom
+MOD-VCO-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R5a;Tune pot top
+MOD-VCO-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R5;Tune wiper resistor
+MOD-VCO-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R4;VSUM_NI -> VFCI (10 uA/V)
+MOD-VCO-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R3b;inverter feedback
+MOD-VCO-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R3a;inverter input
+MOD-VCO-1;1;100k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R23;linear FM input
+MOD-VCO-1;1;100k 0.1%;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R9;octave offset resistor
+MOD-VCO-1;4;100n;Capacitor_THT:CP_Radial_D6.3mm_P2.50mm;C10 C7 C8 C9;Rail decoupling
+MOD-VCO-1;1;100n;Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm;C4;EEPROM decoupling
+MOD-VCO-1;1;100n;Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm;C2;reference decoupling
+MOD-VCO-1;1;10k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R13;PWM 50% divider bottom
+MOD-VCO-1;1;10k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R12;PWM 50% divider top
+MOD-VCO-1;1;10k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R15;buffer feedback
+MOD-VCO-1;1;10k PWM depth;Potentiometer_THT:Potentiometer_Alpha_RD901F-40-00D_Single_Vertical;RV2;Panel PWM depth (CV2 attenuator)
+MOD-VCO-1;1;10k output level;Potentiometer_THT:Potentiometer_Bourns_3296W_Vertical;RV5;Output level trim to +/-5 V
+MOD-VCO-1;1;10k tune;Potentiometer_THT:Potentiometer_Alpha_RD901F-40-00D_Single_Vertical;RV1;Panel tune +/- 1 semitone..octave
+MOD-VCO-1;1;10uF;Capacitor_THT:CP_Radial_D6.3mm_P2.50mm;C3;AUD_OUT AC coupling
+MOD-VCO-1;2;10uF;Capacitor_THT:CP_Radial_D6.3mm_P2.50mm;C5 C6;Rail decoupling
+MOD-VCO-1;1;1k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R19;CV1 series
+MOD-VCO-1;1;1k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R20;CV2 series
+MOD-VCO-1;1;1k;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R6;TL431 cathode resistor
+MOD-VCO-1;1;1k 3300ppm;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;RT1;Tempco 1k 3300ppm/K (pin1 -> -12V)
+MOD-VCO-1;1;1n C0G;Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm;C1;VCO timing capacitor
+MOD-VCO-1;1;20k 1%;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R7;divider 2.5V -> 1.0V
+MOD-VCO-1;1;20k scale trim;Potentiometer_THT:Potentiometer_Bourns_3296W_Vertical;RV3;Exponential scale trim
+MOD-VCO-1;1;24C02;Package_DIP:DIP-8_W7.62mm;U4;Module descriptor EEPROM, addr 0x50+port
+MOD-VCO-1;1;30k 1%;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R8;divider 2.5V -> 1.0V
+MOD-VCO-1;1;33k2 0.1%;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R11;octave offset resistor
+MOD-VCO-1;1;40k2;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R16;buffer gain resistor
+MOD-VCO-1;1;49k9 0.1%;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R10;octave offset resistor
+MOD-VCO-1;1;4k7;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R21;hard sync series
+MOD-VCO-1;1;4k7;Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;R22;soft sync series
+MOD-VCO-1;1;50k HF trim;Potentiometer_THT:Potentiometer_Bourns_3296W_Vertical;RV4;High frequency tracking trim
+MOD-VCO-1;1;AS3340;Package_DIP:DIP-16_W7.62mm;U1;Alfa AS3340 VCO (CEM3340 clone)
+MOD-VCO-1;1;BAT54S;Diode_SMD:D_SOD-323;D3;AUD_OUT clamp
+MOD-VCO-1;1;BAT54S;Diode_SMD:D_SOD-323;D1;CV1 clamp to +12V/GND
+MOD-VCO-1;1;BAT54S;Diode_SMD:D_SOD-323;D2;CV2 clamp
+MOD-VCO-1;1;PWM src (ganged with SW2);;SW3;Second pole of the waveform switch: PWM source
+MOD-VCO-1;1;Bukifon Bus 26 pin;Connector_IDC:IDC-Header_2x13_P2.54mm_Vertical;J1;Bukifon Bus IDC-26 (2x13)
+MOD-VCO-1;1;TL072;Package_DIP:DIP-8_W7.62mm;U5;TL072 supply
+MOD-VCO-1;1;TL074;Package_DIP:DIP-14_W7.62mm;U2;CV summing amp
+MOD-VCO-1;1;TL431;Package_TO_SOT_THT:TO-92_Inline;U3;2.495 V shunt reference
+MOD-VCO-1;3;addr;Diode_SMD:D_SOD-323;JP1 JP2 JP3;EEPROM address strap
+MOD-VCO-1;1;octave 1/2/3;;SW1;Octave range switch
+MOD-VCO-1;1;saw/sq/pulse;;SW2;Waveform selector

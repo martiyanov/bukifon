@@ -1,0 +1,1796 @@
+{
+ "parts": {
+  "bottom_L": {
+   "file": "bottom_L.stl",
+   "bbox": [
+    157.5,
+    145.0,
+    43.0
+   ],
+   "min": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "max": [
+    157.5,
+    145.0,
+    43.0
+   ],
+   "watertight": true,
+   "watertight_reload": true,
+   "volume_mm3": 139375.3,
+   "shells": -1,
+   "triangles": 9866
+  },
+  "bottom_R": {
+   "file": "bottom_R.stl",
+   "bbox": [
+    157.5,
+    145.0,
+    43.0
+   ],
+   "min": [
+    157.5,
+    0.0,
+    0.0
+   ],
+   "max": [
+    315.0,
+    145.0,
+    43.0
+   ],
+   "watertight": true,
+   "watertight_reload": true,
+   "volume_mm3": 139862.5,
+   "shells": -1,
+   "triangles": 9072
+  },
+  "panel_upper_L": {
+   "file": "panel_upper_L.stl",
+   "bbox": [
+    157.5,
+    66.0,
+    3.0
+   ],
+   "min": [
+    0.0,
+    0.0,
+    43.0
+   ],
+   "max": [
+    157.5,
+    66.0,
+    46.0
+   ],
+   "watertight": true,
+   "watertight_reload": true,
+   "volume_mm3": 25526.1,
+   "shells": -1,
+   "triangles": 2960
+  },
+  "panel_upper_R": {
+   "file": "panel_upper_R.stl",
+   "bbox": [
+    157.5,
+    66.0,
+    3.0
+   ],
+   "min": [
+    157.5,
+    0.0,
+    43.0
+   ],
+   "max": [
+    315.0,
+    66.0,
+    46.0
+   ],
+   "watertight": true,
+   "watertight_reload": true,
+   "volume_mm3": 25526.1,
+   "shells": -1,
+   "triangles": 2960
+  },
+  "deck_plate_L_pads": {
+   "file": "deck_plate_L_pads.stl",
+   "bbox": [
+    148.0,
+    78.0,
+    2.5
+   ],
+   "min": [
+    9.5,
+    66.0,
+    43.0
+   ],
+   "max": [
+    157.5,
+    144.0,
+    45.5
+   ],
+   "watertight": true,
+   "watertight_reload": true,
+   "volume_mm3": 18625.6,
+   "shells": -1,
+   "triangles": 3708
+  },
+  "deck_plate_R_pads": {
+   "file": "deck_plate_R_pads.stl",
+   "bbox": [
+    148.0,
+    78.0,
+    2.5
+   ],
+   "min": [
+    157.5,
+    66.0,
+    43.0
+   ],
+   "max": [
+    305.5,
+    144.0,
+    45.5
+   ],
+   "watertight": true,
+   "watertight_reload": true,
+   "volume_mm3": 18625.7,
+   "shells": -1,
+   "triangles": 3716
+  },
+  "deck_plate_L_keys": {
+   "file": "deck_plate_L_keys.stl",
+   "bbox": [
+    148.0,
+    78.0,
+    2.5
+   ],
+   "min": [
+    9.5,
+    66.0,
+    43.0
+   ],
+   "max": [
+    157.5,
+    144.0,
+    45.5
+   ],
+   "watertight": true,
+   "watertight_reload": true,
+   "volume_mm3": 17611.9,
+   "shells": -1,
+   "triangles": 7020
+  },
+  "deck_plate_R_keys": {
+   "file": "deck_plate_R_keys.stl",
+   "bbox": [
+    148.0,
+    78.0,
+    2.5
+   ],
+   "min": [
+    157.5,
+    66.0,
+    43.0
+   ],
+   "max": [
+    305.5,
+    144.0,
+    45.5
+   ],
+   "watertight": true,
+   "watertight_reload": true,
+   "volume_mm3": 17611.9,
+   "shells": -1,
+   "triangles": 7028
+  },
+  "knob": {
+   "file": "knob.stl",
+   "bbox": [
+    18.0,
+    18.0,
+    15.0
+   ],
+   "min": [
+    -9.0,
+    -9.0,
+    0.0
+   ],
+   "max": [
+    9.0,
+    9.0,
+    15.0
+   ],
+   "watertight": true,
+   "watertight_reload": true,
+   "volume_mm3": 2290.0,
+   "shells": -1,
+   "triangles": 2712
+  },
+  "pad_cap": {
+   "file": "pad_cap.stl",
+   "bbox": [
+    20.0,
+    20.0,
+    9.0
+   ],
+   "min": [
+    -10.0,
+    -10.0,
+    0.0
+   ],
+   "max": [
+    10.0,
+    10.0,
+    9.0
+   ],
+   "watertight": true,
+   "watertight_reload": true,
+   "volume_mm3": 2088.1,
+   "shells": -1,
+   "triangles": 1462
+  },
+  "keycap": {
+   "file": "keycap.stl",
+   "bbox": [
+    17.5,
+    16.5,
+    8.0
+   ],
+   "min": [
+    -8.75,
+    -8.25,
+    0.0
+   ],
+   "max": [
+    8.75,
+    8.25,
+    8.0
+   ],
+   "watertight": true,
+   "watertight_reload": true,
+   "volume_mm3": 1475.4,
+   "shells": -1,
+   "triangles": 1274
+  },
+  "fader_cap": {
+   "file": "fader_cap.stl",
+   "bbox": [
+    16.0,
+    9.0,
+    8.0
+   ],
+   "min": [
+    -8.0,
+    -4.5,
+    0.0
+   ],
+   "max": [
+    8.0,
+    4.5,
+    8.0
+   ],
+   "watertight": true,
+   "watertight_reload": true,
+   "volume_mm3": 396.6,
+   "shells": -1,
+   "triangles": 486
+  },
+  "shoulder_cap": {
+   "file": "shoulder_cap.stl",
+   "bbox": [
+    10.0,
+    10.0,
+    4.0
+   ],
+   "min": [
+    -5.0,
+    -5.0,
+    0.0
+   ],
+   "max": [
+    5.0,
+    5.0,
+    4.0
+   ],
+   "watertight": true,
+   "watertight_reload": true,
+   "volume_mm3": 99.7,
+   "shells": -1,
+   "triangles": 2152
+  },
+  "light_guide": {
+   "file": "light_guide.stl",
+   "bbox": [
+    4.0,
+    4.0,
+    6.0
+   ],
+   "min": [
+    -2.0,
+    -2.0,
+    0.0
+   ],
+   "max": [
+    2.0,
+    2.0,
+    6.0
+   ],
+   "watertight": true,
+   "watertight_reload": true,
+   "volume_mm3": 72.1,
+   "shells": -1,
+   "triangles": 256
+  },
+  "dock_cradle": {
+   "file": "dock_cradle.stl",
+   "bbox": [
+    110.0,
+    45.0,
+    22.999
+   ],
+   "min": [
+    102.5,
+    -42.0,
+    43.0
+   ],
+   "max": [
+    212.5,
+    3.0,
+    65.999
+   ],
+   "watertight": true,
+   "watertight_reload": true,
+   "volume_mm3": 28928.7,
+   "shells": -1,
+   "triangles": 234
+  },
+  "bay_hatch": {
+   "file": "bay_hatch.stl",
+   "bbox": [
+    210.0,
+    70.0,
+    2.0
+   ],
+   "min": [
+    -105.0,
+    -35.0,
+    0.0
+   ],
+   "max": [
+    105.0,
+    35.0,
+    2.0
+   ],
+   "watertight": true,
+   "watertight_reload": true,
+   "volume_mm3": 28434.2,
+   "shells": -1,
+   "triangles": 2160
+  },
+  "rear_plate_L": {
+   "file": "rear_plate_L.stl",
+   "bbox": [
+    150.0,
+    2.0,
+    44.0
+   ],
+   "min": [
+    7.5,
+    -2.0,
+    2.0
+   ],
+   "max": [
+    157.5,
+    0.0,
+    46.0
+   ],
+   "watertight": true,
+   "watertight_reload": true,
+   "volume_mm3": 11950.1,
+   "shells": -1,
+   "triangles": 5014
+  },
+  "rear_plate_R": {
+   "file": "rear_plate_R.stl",
+   "bbox": [
+    150.0,
+    2.0,
+    44.0
+   ],
+   "min": [
+    157.5,
+    -2.0,
+    2.0
+   ],
+   "max": [
+    307.5,
+    0.0,
+    46.0
+   ],
+   "watertight": true,
+   "watertight_reload": true,
+   "volume_mm3": 12974.5,
+   "shells": -1,
+   "triangles": 1528
+  },
+  "grip_pad": {
+   "file": "grip_pad.stl",
+   "bbox": [
+    55.0,
+    85.0,
+    3.5
+   ],
+   "min": [
+    -27.5,
+    -42.5,
+    -1.5
+   ],
+   "max": [
+    27.5,
+    42.5,
+    2.0
+   ],
+   "watertight": true,
+   "watertight_reload": true,
+   "volume_mm3": 8855.4,
+   "shells": -1,
+   "triangles": 626
+  },
+  "seam_key": {
+   "file": "seam_key.stl",
+   "bbox": [
+    6.0,
+    3.0,
+    2.0
+   ],
+   "min": [
+    -3.0,
+    -1.5,
+    0.0
+   ],
+   "max": [
+    3.0,
+    1.5,
+    2.0
+   ],
+   "watertight": true,
+   "watertight_reload": true,
+   "volume_mm3": 36.0,
+   "shells": -1,
+   "triangles": 12
+  }
+ },
+ "instances": [
+  {
+   "name": "bottom_L",
+   "file": "bottom_L.stl",
+   "pos": [
+    0,
+    0,
+    0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "bottom_R",
+   "file": "bottom_R.stl",
+   "pos": [
+    0,
+    0,
+    0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "panel_upper_L",
+   "file": "panel_upper_L.stl",
+   "pos": [
+    0,
+    0,
+    0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "panel_upper_R",
+   "file": "panel_upper_R.stl",
+   "pos": [
+    0,
+    0,
+    0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "deck_plate_L_pads",
+   "file": "deck_plate_L_pads.stl",
+   "pos": [
+    0,
+    0,
+    0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "deck_plate_R_pads",
+   "file": "deck_plate_R_pads.stl",
+   "pos": [
+    0,
+    0,
+    0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "knob_1",
+   "file": "knob.stl",
+   "pos": [
+    30.0,
+    24.0,
+    46.0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "knob_2",
+   "file": "knob.stl",
+   "pos": [
+    66.0,
+    24.0,
+    46.0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "knob_3",
+   "file": "knob.stl",
+   "pos": [
+    30.0,
+    56.0,
+    46.0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "knob_4",
+   "file": "knob.stl",
+   "pos": [
+    66.0,
+    56.0,
+    46.0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "knob_5",
+   "file": "knob.stl",
+   "pos": [
+    249.0,
+    24.0,
+    46.0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "knob_6",
+   "file": "knob.stl",
+   "pos": [
+    285.0,
+    24.0,
+    46.0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "knob_7",
+   "file": "knob.stl",
+   "pos": [
+    249.0,
+    56.0,
+    46.0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "knob_8",
+   "file": "knob.stl",
+   "pos": [
+    285.0,
+    56.0,
+    46.0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "pad_cap",
+   "file": "pad_cap.stl",
+   "pos": [
+    22.0,
+    78.0,
+    38.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "pad_cap",
+   "file": "pad_cap.stl",
+   "pos": [
+    22.0,
+    104.0,
+    38.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "pad_cap",
+   "file": "pad_cap.stl",
+   "pos": [
+    22.0,
+    130.0,
+    38.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "pad_cap",
+   "file": "pad_cap.stl",
+   "pos": [
+    48.0,
+    78.0,
+    38.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "pad_cap",
+   "file": "pad_cap.stl",
+   "pos": [
+    48.0,
+    104.0,
+    38.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "pad_cap",
+   "file": "pad_cap.stl",
+   "pos": [
+    48.0,
+    130.0,
+    38.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "pad_cap",
+   "file": "pad_cap.stl",
+   "pos": [
+    74.0,
+    78.0,
+    38.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "pad_cap",
+   "file": "pad_cap.stl",
+   "pos": [
+    74.0,
+    104.0,
+    38.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "pad_cap",
+   "file": "pad_cap.stl",
+   "pos": [
+    74.0,
+    130.0,
+    38.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "pad_cap",
+   "file": "pad_cap.stl",
+   "pos": [
+    241.0,
+    78.0,
+    38.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "pad_cap",
+   "file": "pad_cap.stl",
+   "pos": [
+    241.0,
+    104.0,
+    38.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "pad_cap",
+   "file": "pad_cap.stl",
+   "pos": [
+    241.0,
+    130.0,
+    38.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "pad_cap",
+   "file": "pad_cap.stl",
+   "pos": [
+    267.0,
+    78.0,
+    38.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "pad_cap",
+   "file": "pad_cap.stl",
+   "pos": [
+    267.0,
+    104.0,
+    38.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "pad_cap",
+   "file": "pad_cap.stl",
+   "pos": [
+    267.0,
+    130.0,
+    38.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "pad_cap",
+   "file": "pad_cap.stl",
+   "pos": [
+    293.0,
+    78.0,
+    38.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "pad_cap",
+   "file": "pad_cap.stl",
+   "pos": [
+    293.0,
+    104.0,
+    38.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "pad_cap",
+   "file": "pad_cap.stl",
+   "pos": [
+    293.0,
+    130.0,
+    38.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    20.0,
+    74.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    20.0,
+    91.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    20.0,
+    108.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    38.0,
+    74.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    38.0,
+    91.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    38.0,
+    108.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    56.0,
+    74.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    56.0,
+    91.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    56.0,
+    108.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    74.0,
+    74.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    74.0,
+    91.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    74.0,
+    108.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    92.0,
+    74.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    92.0,
+    91.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    92.0,
+    108.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    110.0,
+    74.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    110.0,
+    91.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    110.0,
+    108.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    39.0,
+    126.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    57.0,
+    126.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    75.0,
+    126.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    295.0,
+    74.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    295.0,
+    91.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    295.0,
+    108.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    277.0,
+    74.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    277.0,
+    91.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    277.0,
+    108.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    259.0,
+    74.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    259.0,
+    91.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    259.0,
+    108.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    241.0,
+    74.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    241.0,
+    91.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    241.0,
+    108.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    223.0,
+    74.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    223.0,
+    91.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    223.0,
+    108.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    205.0,
+    74.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    205.0,
+    91.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    205.0,
+    108.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    276.0,
+    126.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    258.0,
+    126.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "keycap",
+   "file": "keycap.stl",
+   "pos": [
+    240.0,
+    126.0,
+    45.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "fader_cap_SL1",
+   "file": "fader_cap.stl",
+   "pos": [
+    137.0,
+    113.0,
+    40.5
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "fader_cap_SL2",
+   "file": "fader_cap.stl",
+   "pos": [
+    178.0,
+    113.0,
+    40.5
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "shoulder_cap_L1",
+   "file": "shoulder_cap.stl",
+   "pos": [
+    16.0,
+    8.0,
+    46.0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "shoulder_cap_L2",
+   "file": "shoulder_cap.stl",
+   "pos": [
+    52.0,
+    8.0,
+    46.0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "shoulder_cap_R1",
+   "file": "shoulder_cap.stl",
+   "pos": [
+    263.0,
+    8.0,
+    46.0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "shoulder_cap_R2",
+   "file": "shoulder_cap.stl",
+   "pos": [
+    299.0,
+    8.0,
+    46.0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "light_guide_1",
+   "file": "light_guide.stl",
+   "pos": [
+    30.0,
+    24.0,
+    38.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "light_guide_2",
+   "file": "light_guide.stl",
+   "pos": [
+    66.0,
+    24.0,
+    38.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "light_guide_3",
+   "file": "light_guide.stl",
+   "pos": [
+    30.0,
+    56.0,
+    38.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "light_guide_4",
+   "file": "light_guide.stl",
+   "pos": [
+    66.0,
+    56.0,
+    38.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "light_guide_5",
+   "file": "light_guide.stl",
+   "pos": [
+    249.0,
+    24.0,
+    38.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "light_guide_6",
+   "file": "light_guide.stl",
+   "pos": [
+    285.0,
+    24.0,
+    38.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "light_guide_7",
+   "file": "light_guide.stl",
+   "pos": [
+    249.0,
+    56.0,
+    38.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "light_guide_8",
+   "file": "light_guide.stl",
+   "pos": [
+    285.0,
+    56.0,
+    38.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "light_guide_status",
+   "file": "light_guide.stl",
+   "pos": [
+    157.5,
+    76.0,
+    38.6
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "dock_cradle",
+   "file": "dock_cradle.stl",
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "bay_hatch",
+   "file": "bay_hatch.stl",
+   "pos": [
+    157.5,
+    72.5,
+    0.0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "rear_plate_L",
+   "file": "rear_plate_L.stl",
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "rear_plate_R",
+   "file": "rear_plate_R.stl",
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "grip_pad_L",
+   "file": "grip_pad.stl",
+   "pos": [
+    30.0,
+    70.0,
+    -0.5
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "grip_pad_R",
+   "file": "grip_pad.stl",
+   "pos": [
+    285.0,
+    70.0,
+    -0.5
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  }
+ ]
+}

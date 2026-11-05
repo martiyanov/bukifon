@@ -1,0 +1,20 @@
+ERC report (2026-11-05T15:56:30, Encoding UTF8)
+Report includes: Errors, Warnings
+
+***** Sheet /
+[missing_input_pin]: Символ U5 имеет не размещенные входные выводы в частях [ B ]
+    ; warning
+    @(25.40 mm, 90.17 mm): Символ U5 [TL072]
+[missing_unit]: Символ U5 имеет неразмещенные части [ B ]
+    ; warning
+    @(25.40 mm, 90.17 mm): Символ U5 [TL072]
+
+ ** ERC messages: 2  Errors 0  Warnings 2
+
+ ** Ignored checks:
+    - Global label only appears once in the schematic
+    - Four connection points are joined together
+    - SPICE model issue
+    - Library symbol issue
+    - Symbol doesn't match copy in library
+    - Assigned footprint doesn't match footprint filters

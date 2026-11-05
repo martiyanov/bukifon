@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="46" viewBox="0 0 180 46">
+  <!-- Bukifon wordmark for panel silk / stickers. Source of truth: this SVG. -->
+  <rect x="0" y="0" width="180" height="46" rx="3" ry="3" fill="none"/>
+  <text x="2" y="27" font-family="Helvetica, Arial, sans-serif" font-size="21"
+        font-weight="700" letter-spacing="2.6" fill="#111111">BUKIFON</text>
+  <text x="3" y="40" font-family="Helvetica, Arial, sans-serif" font-size="6.4"
+        letter-spacing="1.5" fill="#555555">OPEN MODULAR SYNTHESIZER</text>
+  <circle cx="172" cy="13" r="3.2" fill="none" stroke="#111111" stroke-width="1.2"/>
+  <circle cx="172" cy="13" r="1.1" fill="#111111"/>
+</svg>

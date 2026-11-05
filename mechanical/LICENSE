@@ -1,0 +1,26 @@
+Bukifon — mechanical design files (parametric generator, STL, documentation)
+Copyright (C) 2025 Bukifon project contributors
+
+This design is licensed under the CERN Open Hardware Licence Version 2 —
+Strongly Reciprocal (CERN-OHL-S-2.0).
+
+SPDX-License-Identifier: CERN-OHL-S-2.0
+
+You may redistribute and modify this design and make products from it under
+the terms of the CERN-OHL-S-2.0. You should have received a copy of the
+licence with this design; if not, see https://ohwr.org/cern_ohl_s_v2.txt
+or https://gitlab.com/ohwr/cern-ohl/-/raw/master/CERN_OHL_S_2_0.txt
+
+The full licence text is available at the URL above and is incorporated here
+by reference. In particular, if you modify or manufacture products from these
+files, the CERN-OHL-S-2.0 requires you to make the complete corresponding
+source (the generator sources in mechanical/generator/ and all parameters)
+available under the same licence.
+
+Files in this directory (STL, generator, documentation) are covered by
+CERN-OHL-S-2.0. The Bukifon documentation set is additionally published under
+CC BY-SA 4.0, and the firmware under GPL-3.0-or-later (see project root).
+
+NOTICE: this is an open-source hardware project; the design is provided
+"as is", without warranty of any kind, including fitness for a particular
+purpose. Building and using it is at your own risk.

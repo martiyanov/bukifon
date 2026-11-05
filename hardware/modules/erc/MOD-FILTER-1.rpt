@@ -1,0 +1,20 @@
+ERC report (2026-11-05T15:56:22, Encoding UTF8)
+Report includes: Errors, Warnings
+
+***** Sheet /
+[missing_input_pin]: Символ U1 имеет не размещенные входные выводы в частях [ B, D ]
+    ; warning
+    @(71.12 mm, 38.10 mm): Символ U1 [LM13700]
+[missing_unit]: Символ U1 имеет неразмещенные части [ B, D ]
+    ; warning
+    @(71.12 mm, 38.10 mm): Символ U1 [LM13700]
+
+ ** ERC messages: 2  Errors 0  Warnings 2
+
+ ** Ignored checks:
+    - Global label only appears once in the schematic
+    - Four connection points are joined together
+    - SPICE model issue
+    - Library symbol issue
+    - Symbol doesn't match copy in library
+    - Assigned footprint doesn't match footprint filters

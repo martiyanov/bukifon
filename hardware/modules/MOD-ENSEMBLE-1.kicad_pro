@@ -1,0 +1,20 @@
+{
+ "meta": {
+  "filename": "MOD-ENSEMBLE-1.kicad_pro",
+  "version": 1
+ },
+ "erc": {
+  "rule_severities": {
+   "pin_not_driven": "warning",
+   "power_pin_not_driven": "warning",
+   "lib_symbol_mismatch": "ignore",
+   "lib_symbol_issues": "ignore",
+   "isolated_pin_label": "warning",
+   "unconnected_wire_endpoint": "warning",
+   "endpoint_off_grid": "warning",
+   "label_dangling": "error",
+   "pin_not_connected": "error",
+   "no_connect_dangling": "error"
+  }
+ }
+}

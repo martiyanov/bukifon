@@ -1,0 +1,78 @@
+board;entity;x_mm;y_mm;mechanical;note
+panel;J-LCD;157.5;37.0;window 60x46 R2;"screen 2.8"" ST7789, active 57.6x43.2"
+panel;ENC1;30.0;24.0;"hole D7.2; knob D18x15; bushing M7";EC11 smooth + push, CUTOFF
+panel;ENC2;66.0;24.0;"hole D7.2; knob D18x15; bushing M7";EC11 smooth + push, RESONANCE
+panel;ENC3;30.0;56.0;"hole D7.2; knob D18x15; bushing M7";EC11 smooth + push, ATTACK
+panel;ENC4;66.0;56.0;"hole D7.2; knob D18x15; bushing M7";EC11 smooth + push, DECAY
+panel;ENC5;249.0;24.0;"hole D7.2; knob D18x15; bushing M7";EC11 smooth + push, SUSTAIN
+panel;ENC6;285.0;24.0;"hole D7.2; knob D18x15; bushing M7";EC11 smooth + push, RELEASE
+panel;ENC7;249.0;56.0;"hole D7.2; knob D18x15; bushing M7";EC11 smooth + push, LEVEL/MIX
+panel;ENC8;285.0;56.0;"hole D7.2; knob D18x15; bushing M7";EC11 smooth + push, TEMPO
+panel;BTN_L1;16.0;8.0;hole D8;shoulder L1, OCT-
+panel;BTN_L2;52.0;8.0;hole D8;shoulder L2, OCT+
+panel;BTN_R1;263.0;8.0;hole D8;shoulder R1, SHIFT
+panel;BTN_R2;299.0;8.0;hole D8;shoulder R2, PLAY/STOP
+deck-pad;PAD1;22.0;78.0;pad 20x20, travel 1.2;tactile 12x12x5, matrix ROW1/COL1
+deck-pad;PAD2;48.0;78.0;pad 20x20, travel 1.2;tactile 12x12x5, matrix ROW1/COL2
+deck-pad;PAD3;74.0;78.0;pad 20x20, travel 1.2;tactile 12x12x5, matrix ROW1/COL3
+deck-pad;PAD4;22.0;104.0;pad 20x20, travel 1.2;tactile 12x12x5, matrix ROW2/COL1
+deck-pad;PAD5;48.0;104.0;pad 20x20, travel 1.2;tactile 12x12x5, matrix ROW2/COL2
+deck-pad;PAD6;74.0;104.0;pad 20x20, travel 1.2;tactile 12x12x5, matrix ROW2/COL3
+deck-pad;PAD7;22.0;130.0;pad 20x20, travel 1.2;tactile 12x12x5, matrix ROW3/COL1
+deck-pad;PAD8;48.0;130.0;pad 20x20, travel 1.2;tactile 12x12x5, matrix ROW3/COL2
+deck-pad;PAD9;74.0;130.0;pad 20x20, travel 1.2;tactile 12x12x5, matrix ROW3/COL3
+deck-pad;PAD10;241.0;78.0;pad 20x20, travel 1.2;tactile 12x12x5, matrix ROW1/COL4
+deck-pad;PAD11;267.0;78.0;pad 20x20, travel 1.2;tactile 12x12x5, matrix ROW1/COL5
+deck-pad;PAD12;293.0;78.0;pad 20x20, travel 1.2;tactile 12x12x5, matrix ROW1/COL6
+deck-pad;PAD13;241.0;104.0;pad 20x20, travel 1.2;tactile 12x12x5, matrix ROW2/COL4
+deck-pad;PAD14;267.0;104.0;pad 20x20, travel 1.2;tactile 12x12x5, matrix ROW2/COL5
+deck-pad;PAD15;293.0;104.0;pad 20x20, travel 1.2;tactile 12x12x5, matrix ROW2/COL6
+deck-pad;PAD16;241.0;130.0;pad 20x20, travel 1.2;tactile 12x12x5, matrix ROW3/COL4
+deck-pad;PAD17;267.0;130.0;pad 20x20, travel 1.2;tactile 12x12x5, matrix ROW3/COL5
+deck-pad;PAD18;293.0;130.0;pad 20x20, travel 1.2;tactile 12x12x5, matrix ROW3/COL6
+deck-pad;SL1;137.0;113.0;"slot 8x34 R4; travel 30 (Y 98..128)";fader 30 mm 10k, CUTOFF
+deck-keys;SL1;137.0;113.0;"slot 8x34 R4; travel 30 (Y 98..128)";fader 30 mm 10k, CUTOFF
+deck-pad;SL2;178.0;113.0;"slot 8x34 R4; travel 30 (Y 98..128)";fader 30 mm 10k, MIX
+deck-keys;SL2;178.0;113.0;"slot 8x34 R4; travel 30 (Y 98..128)";fader 30 mm 10k, MIX
+deck-keys;KEY1;20.0;74.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW1/COL1
+deck-keys;KEY2;38.0;74.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW1/COL2
+deck-keys;KEY3;56.0;74.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW1/COL3
+deck-keys;KEY4;74.0;74.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW1/COL4
+deck-keys;KEY5;92.0;74.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW1/COL5
+deck-keys;KEY6;110.0;74.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW1/COL6
+deck-keys;KEY7;20.0;91.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW2/COL1
+deck-keys;KEY8;38.0;91.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW2/COL2
+deck-keys;KEY9;56.0;91.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW2/COL3
+deck-keys;KEY10;74.0;91.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW2/COL4
+deck-keys;KEY11;92.0;91.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW2/COL5
+deck-keys;KEY12;110.0;91.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW2/COL6
+deck-keys;KEY13;20.0;108.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW3/COL1
+deck-keys;KEY14;38.0;108.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW3/COL2
+deck-keys;KEY15;56.0;108.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW3/COL3
+deck-keys;KEY16;74.0;108.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW3/COL4
+deck-keys;KEY17;92.0;108.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW3/COL5
+deck-keys;KEY18;110.0;108.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW3/COL6
+deck-keys;KEY19;39.0;126.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW1/COL7
+deck-keys;KEY20;57.0;126.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW2/COL7
+deck-keys;KEY21;75.0;126.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW3/COL7
+deck-keys;KEY22;205.0;74.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW4/COL1
+deck-keys;KEY23;223.0;74.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW4/COL2
+deck-keys;KEY24;241.0;74.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW4/COL3
+deck-keys;KEY25;259.0;74.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW4/COL4
+deck-keys;KEY26;277.0;74.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW4/COL5
+deck-keys;KEY27;295.0;74.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW4/COL6
+deck-keys;KEY28;205.0;91.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW5/COL1
+deck-keys;KEY29;223.0;91.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW5/COL2
+deck-keys;KEY30;241.0;91.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW5/COL3
+deck-keys;KEY31;259.0;91.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW5/COL4
+deck-keys;KEY32;277.0;91.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW5/COL5
+deck-keys;KEY33;295.0;91.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW5/COL6
+deck-keys;KEY34;205.0;108.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW6/COL1
+deck-keys;KEY35;223.0;108.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW6/COL2
+deck-keys;KEY36;241.0;108.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW6/COL3
+deck-keys;KEY37;259.0;108.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW6/COL4
+deck-keys;KEY38;277.0;108.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW6/COL5
+deck-keys;KEY39;295.0;108.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW6/COL6
+deck-keys;KEY40;240.0;126.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW4/COL7
+deck-keys;KEY41;258.0;126.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW5/COL7
+deck-keys;KEY42;276.0;126.0;"cap 17.5x16.5; window 14.2x14.2";Kailh Choc, matrix ROW6/COL7

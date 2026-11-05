@@ -1,0 +1,44 @@
+Плата;Позиционное обозначение;Номинал;Корпус / footprint;Артикул (предложение);Кол-во;Примечание
+panel-1;C100 C101 C102 C103 C104 C105 C106 C107 C108 C109 C110 C111 C112 C113 C114 C115 C201 C202 C203 C204 C205 C206 C300 C301 C302 C303 C304 C305 C306 C307 C308 C310 C311 C312 C313 C500;100n;Capacitor_SMD:C_0603_1608Metric;CC0603KRX7R9BB104;36;фильтры фаз энкодеров, блокировка ИС и LED, RC входов АЦП
+panel-1;R100 R101 R103 R104 R106 R107 R109 R110 R112 R113 R115 R116 R118 R119 R121 R122 R201 R202 R203 R204 R205 R206 R207 R208 R210 R211 R212 R213 R303;10k;Resistor_SMD:R_0603_1608Metric;RC0603FR-0710KL;29;RC-фильтры фаз энкодеров / подтяжки / FSR-делители / затвор BL
+panel-1;LED_ENC1 LED_ENC2 LED_ENC3 LED_ENC4 LED_ENC5 LED_ENC6 LED_ENC7 LED_ENC8 LED_STATUS;WS2812B-2020;LED_SMD:LED_WS2812B-2020_PLCC4_2.0x2.0mm;WS2812B-2020;9;RGB 2.0x2.0 мм, цепочка 3.3 В (ограничение яркости в прошивке)
+panel-1;ENC1 ENC2 ENC3 ENC4 ENC5 ENC6 ENC7 ENC8;EC11;Rotary_Encoder:RotaryEncoder_Alps_EC11E-Switch_Vertical_H20mm;EC11E15244G1 (Bourns/Alps);8;энкодер гладкий с кнопкой, D-вал 6 мм, 8 шт.
+panel-1;U1 U2 U3 U4 U5 U6;74HC165;Package_SO:SOIC-16_3.9x9.9mm_P1.27mm;74HC165D;6;сдвиговый регистр, каскад 6 шт. = 48 бит
+panel-1;BTN_L1 BTN_L2 BTN_R1 BTN_R2;SW_PUSH_6mm;Button_Switch_THT:SW_PUSH_6mm;TS-1088-AR02016;4;плечевая кнопка 6x6 мм, 4 шт.
+panel-1;R310 R311 R312;1k;Resistor_SMD:R_0603_1608Metric;RC0603FR-071KL;3;RC слайдеров/FSR перед MCP3208, индикаторы режима
+panel-1;R320 R321;4.7k;Resistor_SMD:R_0603_1608Metric;RC0603FR-074K7L;2;"подтяжка I2C0 (сегмент деки); делитель DECK_ID в старой ревизии"
+panel-1;R302;100R;Resistor_SMD:R_0603_1608Metric;RC0603FR-07100RL;1;затвор Q1 подсветки
+panel-1;Q1;2N7002;Package_TO_SOT_SMD:SOT-23;2N7002;1;ключ подсветки LCD (ШИМ GP15)
+panel-1;R300;330R;Resistor_SMD:R_0603_1608Metric;RC0603FR-07330RL;1;последовательный резистор LED_DATA (WS2812)
+panel-1;R301;33R;Resistor_SMD:R_0603_1608Metric;RC0603FR-0733RL;1;токоограничение анода подсветки LCD
+panel-1;U7;74HCT1G125;Package_TO_SOT_SMD:SOT-23-5;74HCT1G125 (символ 74AHCT1G125 - TTL-совместимый буфер, VCC 5 В);1;буфер LED_DATA, VCC = 5 В (вход TTL-совместим с 3.3 В)
+panel-1;J-DECK;IDC16;Connector_IDC:IDC-Header_2x08_P2.54mm_Vertical;IDC-16 2x8 box header 2.54 mm;1;IDC-16 2x8, шлейф деки
+panel-1;J-CORE;IDC32;Connector_PinHeader_2.54mm:PinHeader_2x16_P2.54mm_Vertical;IDC-32 2x16 box header 2.54 mm;1;IDC-32 2x16 (или 2x16 pin header), шлейф к CORE-1
+panel-1;J-LCD;LCD_ST7789_1x14;Connector_PinHeader_2.54mm:PinHeader_1x14_P2.54mm_Vertical;;1;"разъём экрана 1x14 2.54 мм (ST7789 2.8"", SPI)"
+panel-1;ИТОГО позиций;;;;105;16 уникальных номиналов
+deck-pad;R1 R21 R22 R23 R24 R25 R26 R61 R62 R63 R64 R65 R66 R67 R68 R69 R70 R71 R72 R73 R74 R75 R76 R77 R78;10k;Resistor_SMD:R_0603_1608Metric;RC0603FR-0710KL;25;RC-фильтры фаз энкодеров / подтяжки / FSR-делители / затвор BL
+deck-pad;C1 C101 C102 C103 C104 C105 C106 C107 C108 C109 C110 C111 C112 C113 C114 C115 C116 C117 C118 C4 C5;100n;Capacitor_SMD:C_0603_1608Metric;CC0603KRX7R9BB104;21;фильтры фаз энкодеров, блокировка ИС и LED, RC входов АЦП
+deck-pad;FSR1 FSR10 FSR11 FSR12 FSR13 FSR14 FSR15 FSR16 FSR17 FSR18 FSR2 FSR3 FSR4 FSR5 FSR6 FSR7 FSR8 FSR9;FSR_PAD;Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical;;18;посадочное место под вывод плёнки FSR (опция)
+deck-pad;PAD1 PAD10 PAD11 PAD12 PAD13 PAD14 PAD15 PAD16 PAD17 PAD18 PAD2 PAD3 PAD4 PAD5 PAD6 PAD7 PAD8 PAD9;SW_PUSH-12mm;Button_Switch_THT:SW_PUSH-12mm;TS-1088-AR02016 (12x12x5);18;тактовая кнопка 12x12x5 мм, 18 шт.
+deck-pad;LED_PAD1 LED_PAD10 LED_PAD11 LED_PAD12 LED_PAD13 LED_PAD14 LED_PAD15 LED_PAD16 LED_PAD17 LED_PAD18 LED_PAD2 LED_PAD3 LED_PAD4 LED_PAD5 LED_PAD6 LED_PAD7 LED_PAD8 LED_PAD9;WS2812B-2020;LED_SMD:LED_WS2812B-2020_PLCC4_2.0x2.0mm;WS2812B-2020;18;RGB 2.0x2.0 мм, цепочка 3.3 В (ограничение яркости в прошивке)
+deck-pad;U2 U3;74HC4067;Package_SO:SOIC-24W_7.5x15.4mm_P1.27mm;CD74HC4067M;2;16:1 аналоговый мультиплексор для FSR (опция velocity)
+deck-pad;SL1 SL2;POT30;Potentiometer_THT:Potentiometer_Bourns_PTA3043_Single_Slide;Bourns PTA3043-2015DPB103 (10k, 30 mm);2;слайдер 30 мм, 10 кОм, линейный
+deck-pad;R11;3.3k;Resistor_SMD:R_0603_1608Metric;RC0603FR-073K3L;1;делитель DECK_ID: 33k/3.3k = 0.30 В (PAD), 3.3k/33k = 3.00 В (KEYS)
+deck-pad;R10;33k;Resistor_SMD:R_0603_1608Metric;RC0603FR-0733KL;1;делитель DECK_ID
+deck-pad;J-DECK;IDC16;Connector_IDC:IDC-Header_2x08_P2.54mm_Vertical;IDC-16 2x8 box header 2.54 mm;1;IDC-16 2x8, шлейф деки
+deck-pad;U1;MCP23017;Package_DIP:DIP-28_W7.62mm;MCP23017-E/SP;1;I2C expander 0x20, матрица пэдов/клавиш + INT
+deck-pad;ИТОГО позиций;;;;108;11 уникальных номиналов
+deck-keys;C1 C101 C102 C103 C104 C105 C106 C107 C108 C109 C110 C111 C112 C113 C114 C115 C116 C117 C118 C119 C120 C121 C122 C123 C124 C125 C126 C127 C128 C129 C130 C131 C132 C133 C134 C135 C136 C137 C138 C139 C140 C141 C142;100n;Capacitor_SMD:C_0603_1608Metric;CC0603KRX7R9BB104;43;фильтры фаз энкодеров, блокировка ИС и LED, RC входов АЦП
+deck-keys;D1 D10 D11 D12 D13 D14 D15 D16 D17 D18 D19 D2 D20 D21 D22 D23 D24 D25 D26 D27 D28 D29 D3 D30 D31 D32 D33 D34 D35 D36 D37 D38 D39 D4 D40 D41 D42 D5 D6 D7 D8 D9;1N4148;Diode_SMD:D_SOD-323;1N4148W;42;диод матрицы 6x7 (анод = клавиша, катод = столбец)
+deck-keys;KEY1 KEY10 KEY11 KEY12 KEY13 KEY14 KEY15 KEY16 KEY17 KEY18 KEY19 KEY2 KEY20 KEY21 KEY22 KEY23 KEY24 KEY25 KEY26 KEY27 KEY28 KEY29 KEY3 KEY30 KEY31 KEY32 KEY33 KEY34 KEY35 KEY36 KEY37 KEY38 KEY39 KEY4 KEY40 KEY41 KEY42 KEY5 KEY6 KEY7 KEY8 KEY9;CHOC;;Kailh Choc v1 hot-swap socket (CPG1350);42;Kailh Choc v1, hot-swap гнездо (footprint нарисовать, см. README)
+deck-keys;LED_KEY1 LED_KEY10 LED_KEY11 LED_KEY12 LED_KEY13 LED_KEY14 LED_KEY15 LED_KEY16 LED_KEY17 LED_KEY18 LED_KEY19 LED_KEY2 LED_KEY20 LED_KEY21 LED_KEY22 LED_KEY23 LED_KEY24 LED_KEY25 LED_KEY26 LED_KEY27 LED_KEY28 LED_KEY29 LED_KEY3 LED_KEY30 LED_KEY31 LED_KEY32 LED_KEY33 LED_KEY34 LED_KEY35 LED_KEY36 LED_KEY37 LED_KEY38 LED_KEY39 LED_KEY4 LED_KEY40 LED_KEY41 LED_KEY42 LED_KEY5 LED_KEY6 LED_KEY7 LED_KEY8 LED_KEY9;SK6812MINI-E;LED_SMD:LED_SK6812MINI-E_3.2x2.8mm_P1.5mm_ReverseMount;SK6812MINI-E;42;RGB 3.2x2.8 мм reverse-mount, цепочка 3.3 В
+deck-keys;R1 R21 R22 R23 R24 R25 R26 R27;10k;Resistor_SMD:R_0603_1608Metric;RC0603FR-0710KL;8;RC-фильтры фаз энкодеров / подтяжки / FSR-делители / затвор BL
+deck-keys;R2 R3;1k;Resistor_SMD:R_0603_1608Metric;RC0603FR-071KL;2;RC слайдеров/FSR перед MCP3208, индикаторы режима
+deck-keys;LED_MODE1 LED_MODE2;LED;LED_SMD:LED_0603_1608Metric;;2;
+deck-keys;SL1 SL2;POT30;Potentiometer_THT:Potentiometer_Bourns_PTA3043_Single_Slide;Bourns PTA3043-2015DPB103 (10k, 30 mm);2;слайдер 30 мм, 10 кОм, линейный
+deck-keys;R4;3.3k;Resistor_SMD:R_0603_1608Metric;RC0603FR-073K3L;1;делитель DECK_ID: 33k/3.3k = 0.30 В (PAD), 3.3k/33k = 3.00 В (KEYS)
+deck-keys;R5;33k;Resistor_SMD:R_0603_1608Metric;RC0603FR-0733KL;1;делитель DECK_ID
+deck-keys;J-DECK;IDC16;Connector_IDC:IDC-Header_2x08_P2.54mm_Vertical;IDC-16 2x8 box header 2.54 mm;1;IDC-16 2x8, шлейф деки
+deck-keys;U1;MCP23017;Package_DIP:DIP-28_W7.62mm;MCP23017-E/SP;1;I2C expander 0x20, матрица пэдов/клавиш + INT
+deck-keys;ИТОГО позиций;;;;187;12 уникальных номиналов
+ВСЕГО;;;;;400;

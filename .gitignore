@@ -1,0 +1,18 @@
+# Build & tool caches
+**/build/
+**/.pio/
+**/__pycache__/
+*.pyc
+.pytest_cache/
+
+# Generated test output
+firmware/tests/out/
+
+# Prebuilt firmware images (собираются из исходников, см. firmware/README.md)
+firmware/artifacts/
+
+# OS / editor
+.DS_Store
+*.swp
+.idea/
+.vscode/

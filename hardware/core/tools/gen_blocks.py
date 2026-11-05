@@ -1,0 +1,55 @@
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
+plt.rcParams['font.family']='DejaVu Sans'
+fig, ax = plt.subplots(figsize=(17, 9.2))
+ax.set_xlim(0, 100); ax.set_ylim(0, 54); ax.axis('off')
+def box(x, y, w, h, title, sub='', fc='#eef3fb', ec='#33507a'):
+    ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle='round,pad=0.35,rounding_size=0.9',
+                                fc=fc, ec=ec, lw=1.3))
+    ax.text(x+w/2, y+h-1.6, title, ha='center', va='top', fontsize=8.8, weight='bold')
+    if sub: ax.text(x+w/2, y+h-4.0, sub, ha='center', va='top', fontsize=6.6, color='#1c2b40')
+def arrow(x1,y1,x2,y2,label='',color='#33507a'):
+    ax.add_patch(FancyArrowPatch((x1,y1),(x2,y2), arrowstyle='-|>', mutation_scale=11,
+                                 lw=1.1, color=color, shrinkA=0.5, shrinkB=0.5))
+    ax.text((x1+x2)/2, (y1+y2)/2+0.8, label, ha='center', fontsize=6.2, color=color)
+def rowlabel(y, text):
+    ax.text(0.6, y+5, text, rotation=90, ha='center', va='center', fontsize=8.5,
+            weight='bold', color='#555')
+# POWER row (y 40..52)
+rowlabel(44, 'POWER')
+box(3, 41, 16, 9.5, 'DC 12V input', 'J-DC (J14) · SW · F1 2A\nTVS SMAJ15A · SS34 · 1000uF')
+box(22, 41, 15, 9.5, 'MP1584 step-down', 'U1: 12V -> 5.1V, 3A\nFB3 + 100uF')
+box(40, 41, 14, 9.5, 'AP2112K LDO', 'U2: 5V -> 3.3V, 600mA\n(panel + logic)')
+box(57, 41, 15, 9.5, 'MC34063 inverter', 'U3: 12V -> -12V, 250mA\nRsc · Ct · L 220uH · SS34')
+box(75, 41, 22, 9.5, 'Filters + star ground', 'FB1..FB5 600R on +12/-12/+5/+3V3/Vref\nNT1/NT2: AGND-DGND-PGND (one point)')
+arrow(19, 45.8, 22, 45.8, '12V'); arrow(37, 45.8, 40, 45.8, '5V'); arrow(54, 45.8, 57, 45.8, '12V')
+# DIGITAL row (y 26..38)
+rowlabel(30, 'DIGITAL')
+box(3, 27, 20, 9.5, 'Raspberry Pi Pico', 'RP2040, 40-pin castellated\nUSB / SWD (J16) / RESET')
+box(27, 27, 20, 9.5, 'MCP4728 #1 (0x60)', 'I2C DAC 4ch, Vref 2.048V\n-> CV1..CV4 (bus)')
+box(51, 27, 20, 9.5, 'MCP4728 #2 (0x61)', 'I2C DAC 4ch (2 used)\n-> CV5/CV6 (jacks)')
+box(75, 27, 22, 9.5, '24C32 EEPROM + MIDI', 'calibration 0x57\n6N137 IN / 74HCT125 OUT')
+arrow(23, 31.7, 27, 31.7, 'I2C0'); arrow(47, 31.7, 51, 31.7, 'I2C0'); arrow(71, 31.7, 75, 31.7, 'I2C0')
+# ANALOG row (y 12..24)
+rowlabel(15, 'ANALOG')
+box(3, 13, 21, 9.5, 'PCM5102A DAC', 'I2S from Pico PIO (GP16/17/18)\n2.1 Vrms L/R + charge pump')
+box(28, 13, 20, 9.5, 'TL074 inverting summer', 'DAC L/R + 3 x AUD_OUT (ports)\nRf 22k, inputs 10k/22k')
+box(52, 13, 18, 9.5, 'MASTER VOL + TL072', 'dual 10k log pot (panel)\n2 x TL072 buffer + 100R')
+box(74, 13, 23, 9.5, 'CV output buffers', '6 x TL074 x4.9 -> 0..10V\n1k + BAT54S protection')
+arrow(24, 17.7, 28, 17.7, 'L/R'); arrow(48, 17.7, 52, 17.7, 'sum'); arrow(70, 17.7, 74, 17.7, 'DAC A..F')
+# I/O row (y 0..9)
+rowlabel(3, 'I/O')
+box(3, 0.5, 20, 9, 'Bus ports P1..P3', 'IDC-26: +-12V/5V/3V3, CV1..4,\nGATE1/2, AUD_IN/OUT, I2C, SPI0, CS')
+box(27, 0.5, 22, 9, 'PANEL-1 (J15, IDC-32)', 'SPI1, LCD, HC165, LED_DATA, I2C0,\nSL1/SL2, FSR, DECK_ID, 3V3/5V')
+box(53, 0.5, 21, 9, 'MCP3208 ADC', 'CH0/1 SL1/SL2, CH2/3 CV IN 1/2,\nCH6 FSR, CH7 SYS_MON, CH4/5 reserved')
+box(78, 0.5, 19, 9, 'Jacks via TB1/TB2', 'LINE/PHONES, CV OUT 1/2,\nCV IN 1/2, GATE 1/2, MIDI TRS-A')
+arrow(100, 42.5, 97, 9.5, '', color='#a33')
+arrow(23, 4.7, 27, 4.7, 'CV'); arrow(49, 4.7, 53, 4.7, 'ADC'); arrow(74, 4.7, 78, 4.7, 'CV IN')
+arrow(53, 13, 53, 9.5, 'GATE', color='#a33'); arrow(62, 13, 60, 9.5, '', color='#a33')
+plt.title('Bukifon CORE-1 — block diagram (spec v1.1: 6 CV out, 2 x MCP4728)', fontsize=12.5, weight='bold', pad=8)
+plt.tight_layout()
+plt.savefig('CORE-1-blocks.svg', format='svg', bbox_inches='tight')
+plt.savefig('CORE-1-blocks.png', dpi=150, bbox_inches='tight')
+print('ok')

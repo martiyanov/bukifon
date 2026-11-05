@@ -1,0 +1,24 @@
+Bukifon — NOTICE
+
+Third-party components and their licenses:
+
+  * Raspberry Pi Pico / RP2040 — hardware: Raspberry Pi Ltd terms; SDK: BSD-3-Clause.
+  * arduino-pico core — LGPL-2.1 (see upstream).
+  * TinyUSB — MIT.
+  * KiCad symbol/footprint libraries (used as references) — CC-BY-SA 4.0 with
+    exception; schematic files embed symbols derived from the official KiCad
+    libraries. Attribution: KiCad E.D.A. <https://kicad.org>.
+  * Blender — GPL-2.0-or-later (used only as a rendering tool, not linked).
+  * Trimesh / manifold3d / shapely / numpy / matplotlib — MIT / BSD / Apache-2.0
+    (used as build-time tools only).
+  * Datasheets referenced in docs: TI, Microchip, Alfa, Diodes Inc., etc. —
+    trademarks of their respective owners; only public reference data used.
+
+Analog module references:
+  * Digi-Key/TI application notes on AS3340/AS3320 usage; LM13700 datasheet.
+  * Moog ladder filter topology and Polyvox (Поливокс) character are discussed
+    as design references; no proprietary designs or trademarks are used.
+
+If you build and distribute hardware from these files, keep the CERN-OHL-S-2.0
+requirements: publish the complete source (schematics, PCB, BOM, mechanical
+files) under the same license, including your modifications.
