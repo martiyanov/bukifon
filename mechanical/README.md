@@ -198,3 +198,35 @@ MPLCONFIGDIR=/tmp/mplcache /Applications/Blender.app/Contents/MacOS/Blender \
    6 вентщелей в дне, окно USB-C-кабеля в задней стенке.
 6. **Платы** PANEL-1 rev.2 / CORE-1 rev.3 приняты как посадочные габариты
    (документации ревизий в репозитории нет) — см. fit_check §v1.7-2.
+<!-- section:v0.4-readme -->
+
+---
+
+# Букифон v0.4 — панель по канону (task-10)
+
+Канон панели — `spec/panel-spec-v0.4.json` (точная Lapka-42 ±18°).
+Пересобрана **только панель**; корпус/ножки/крепёж — из v1.7.
+
+```
+mechanical/
+├── generator/params_v04.py     # все координаты панели из v0.4 JSON
+├── generator/case_v04.py       # panel_L/R + копии корпуса/ножек/колпачков
+├── generator/fitcheck_v04.py   # проверки → секция v0.4 в fit_check.md
+├── generator/render_v04.py     # рендеры → preview_v04/
+├── stl_v04/                    # panel_L/R (+3MF), копии body/foot/keycap_v17
+├── preview_v04/                # iso_top, top_ortho, top_ortho_overlay,
+│                               #   panel_closeup (строго по канону v0.4)
+└── fit_check.md                # секция v0.4 (0 конфликтов)
+```
+
+Перегенерация:
+
+```bash
+MPLCONFIGDIR=/tmp/mplcache /tmp/msvenv/bin/python mechanical/generator/case_v04.py
+MPLCONFIGDIR=/tmp/mplcache /Applications/Blender.app/Contents/MacOS/Blender \
+  -b -P mechanical/generator/render_v04.py -- --samples 32 --res 1600 1000
+```
+
+Ключевые проверки v0.4: все центры вырезов = JSON ±0.05 мм; 83 сквозных
+отверстия; 0 пересечений (корпус/платы/компоненты); габарит 380 × 210 × 63;
+overlay `top_ortho_overlay.png` — наложение на `renders/templates/bukifon_v04_render.png`.
