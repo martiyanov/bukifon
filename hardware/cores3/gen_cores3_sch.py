@@ -32,15 +32,15 @@ U28 R16 C27 L3 D6 R17 R18 C28 C29 C30
 U23 Q1 Q2 R7 C8 J2 TH1 R5
 U26 C17 C18 C19 FB1 C20 C21 C22
 U27 C24 C25 C26 U30 C35 C36 C37
-J13 TB2 R73 C99 R74 C100 R105 U44 R90 TP7 TP19 TP21 TP22
+J13 TB2 R73 C99 R74 C100 R105 U44 R90 TP7 TP19 TP21 TP22 J4 R32 R33 R34 R35 Q4 R87 R88 R89
 '''.split())
 
 RENET = {
  '3V3_MCU': '3V3', '3V3_MCU_RAW': '3V3',
  'CHIP_PU': 'EN_S3',
  'USB_HS_DP': 'USB_FS_DP', 'USB_HS_DM': 'USB_FS_DM',
- 'SD_CLK': 'SPI3_SCK', 'SD_CMD': 'SPI3_MOSI', 'SD_D0': 'SPI3_MISO',
- 'SD_D1': 'NC', 'SD_D2': 'NC', 'SD_D3': 'SD_CS',
+ 'SD_CLK': 'SD_CLK', 'SD_CMD': 'SD_CMD', 'SD_D0': 'SD_D0',
+ 'SD_D1': 'NC', 'SD_D2': 'NC', 'SD_D3': 'NC', 'SD_CS': 'NC', 'SD_CD': 'NC',
  'SPI2_SCK': 'SPI3_SCK', 'SPI2_MOSI': 'SPI3_MOSI', 'SPI2_MISO': 'SPI3_MISO',
  'LCD_DISP': 'NC', 'STRAP36': 'NC', 'VBUS_DET': 'NC',
 }
@@ -51,12 +51,12 @@ DROP_NETS = {'3V3_C6', 'BATT_N', 'BQ_BAT', 'TS', 'G_BMS_C', 'G_BMS_D', 'BMS_MID'
 def new_a1():
     nets = {
      '1':'DGND','2':'3V3','3':'EN_S3','4':'SPI3_SCK','5':'SPI3_MOSI','6':'SPI3_MISO',
-     '7':'MCP3208_CS','8':'SD_CS','9':'I2C0_SDA','10':'I2C0_SCL','11':'I2S_MCLK',
-     '12':'LCD_RST','13':'USB_FS_DM','14':'USB_FS_DP','15':'GATE2_GPIO','16':'NC','17':'LCD_DC',
-     '18':'LCD_CS','19':'LCD_MOSI','20':'LCD_SCK','21':'PWR_GOOD','22':'SD_CD','23':'BL_PWM',
+     '7':'MCP3208_CS','8':'SD_CLK','9':'I2C0_SDA','10':'I2C0_SCL','11':'I2S_MCLK',
+     '12':'LCD_RST','13':'USB_FS_DM','14':'USB_FS_DP','15':'PWR_GOOD','16':'NC','17':'LCD_DC',
+     '18':'LCD_CS','19':'LCD_MOSI','20':'LCD_SCK','21':'SD_D0','22':'SD_CMD','23':'BL_PWM',
      '24':'PANEL_IRQ','25':'GATE1_GPIO','26':'NC','27':'BOOT','28':'NC','29':'NC','30':'NC',
      '31':'I2S_DAC_DIN','32':'I2S_ADC_DOUT','33':'MIDI_TX','34':'MIDI_RX','35':'LED_GPIO',
-     '36':'UART0_RX','37':'UART0_TX','38':'I2S_LRCK','39':'I2S_BCK','40':'DGND','41':'DGND',
+     '36':'NC','37':'NC','38':'I2S_LRCK','39':'I2S_BCK','40':'DGND','41':'DGND',
     }
     return dict(ref='A1', lib=('RF_Module','ESP32-S3-WROOM-1'),
                 val='ESP32-S3-WROOM-1-N16R8 (16 MB flash, 8 MB octal PSRAM)',
@@ -86,12 +86,12 @@ def build_C():
             c['note'] = 'SPI display subset on PANEL-2 J12 connector: SCK/MOSI/CS/DC/RST/BL; RGB565 pins NC'
             c['nets'] = {str(p): n for p, n in BS.J15_DISPLAY}
     # microSD: SPI mode on SPI3
-    sd = {'1':'NC','2':'SD_CS','3':'SPI3_MOSI','4':'3V3','5':'SPI3_SCK','6':'DGND',
-          '7':'SPI3_MISO','8':'NC','9':'SD_CD','SH':'DGND'}
+    sd = {'1':'NC','2':'NC','3':'SD_CMD','4':'3V3','5':'SD_CLK','6':'DGND',
+          '7':'SD_D0','8':'NC','9':'NC','SH':'DGND'}
     for c in C:
         if c['ref'] == 'J5':
-            c['val'] = 'microSD (SPI mode)'
-            c['note'] = 'microSD in SPI mode on SPI3 (shared with MCP3208)'
+            c['val'] = 'microSD (1-bit SDMMC)'
+            c['note'] = 'microSD 1-bit SDMMC (CLK/CMD/D0), no card-detect; ~0.8-1.2 MB/s'
             c['nets'] = sd
         if c['ref'] in ('R30','R31','R32','R33'):
             continue  # SD pullups not needed in SPI mode
