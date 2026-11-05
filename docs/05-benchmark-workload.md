@@ -205,3 +205,19 @@ control candidate if P4 silicon/SDK is not stable).
   are host-proxy/descriptor-only; device envs are prepared in
   `firmware/platformio.ini` (`bench_s3` built; `bench_p4`/`bench_h743`
   prepared, need their platforms installed — see [howto](05a-benchmark-howto.md)).
+
+## 10. Профиль S3-base (дополнение после консультации GPT)
+
+S3 — **полноценный третий профиль P1**, а не «reference only» (первый SKU, D-38).
+Отличия от общего workload:
+
+| Параметр | Общий (P4/H743) | S3-base |
+|---|---|---|
+| PSRAM-буфер сэмплов | 8 МиБ | **4 МиБ** + framebuffer 750 КиБ |
+| Дисплей | 30 fps full / 60 partial | **≥15 fps full / ≥30 partial**, dirty rects, один FB |
+| USB | UAC2 8×8 HS | **stereo UAC2 24/48** (FS), HID+MIDI+CDC, endpoint ceiling |
+| SD | 4-bit | **1-bit SDMMC** |
+| Критерий аудио | max block ≤650 µs, 24 h soak | max block ≤650 µs, 1 h + 30–60 мин USB soak |
+| Дополнительно | — | 0 LCD drift за час |
+
+Методика и ограничения — [docs/31-core-s3-constraints.md](31-core-s3-constraints.md).
