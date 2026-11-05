@@ -52,6 +52,12 @@ FP = {
     'LED2020': 'LED_SMD:LED_WS2812B-2020_PLCC4_2.0x2.0mm',
     'HOLE': 'MountingHole:MountingHole_3.2mm_M3',
     'TP': 'TestPoint:TestPoint_Pad_D1.0mm',
+    'MEMS': 'Sensor_Audio:InvenSense_ICS-43434-6_3.5x2.65mm',
+    'SW_SPST': 'Button_Switch_THT:SW_DIP_SPSTx01_Slide_6.7x4.1mm_W7.62mm_P2.54mm_LowProfile',
+    'ESD': 'Package_TO_SOT_SMD:SOT-23-6',
+    'FB': 'Inductor_SMD:L_Bourns_SRN6045TA',
+    'LED0603': 'LED_SMD:LED_0603_1608Metric',
+    'IDC6': 'Connector_IDC:IDC-Header_2x03_P2.54mm_Vertical',
 }
 
 MPN = {
@@ -70,6 +76,13 @@ MPN = {
     'HDR1x14': '1x14 pin header 2.54 (SPI alt, DNP)',
     'WS2812B-2020': 'WS2812B-2020', 'CHOC': 'Kailh Choc v1 hot-swap (CPG1350)',
     'M3': 'Mounting hole M3 (3.2 mm)', 'TP': 'Test point 1.0 mm pad',
+    'ICS-43434': 'ICS-43434 (TDK InvenSense, I2S MEMS, 24 бит, 3.3 В, −26 дБFS)',
+    'SPH0645LM4H': 'SPH0645LM4H (Knowles, резерв, I2S MEMS)',
+    'SW_SPST': 'SS-12D00 (SPST слайд, мьют питания микрофона)',
+    'SRV05-4': 'SRV05-4 (ESD-матрица 4 линии, 3.3 В)',
+    'FB': 'Ferrite bead 600 Ом @100 МГц (развязка MIC от WS2812/BL)',
+    'IDC6': 'IDC-6 2x3 box header (микрофонный шлейф к CORE-2)',
+    'LED0603': 'LED 0603 зелёный (MIC ON)',
 }
 
 BOM_NOTE = {
@@ -105,6 +118,12 @@ BOM_NOTE = {
     'CHOC': 'Kailh Choc hot-swap (footprint нарисовать на PCB)',
     'M3': 'крепёж: 6 стоек PANEL-1 rev.2 (30/145/260 × 30/180)',
     'TP': 'тестпоинты',
+    'ICS-43434': 'I2S MEMS-микрофон 24 бит/48 кГц, 3.3 В; акустический порт верхней кромки',
+    'SW_SPST': 'аппаратный МЬЮТ: разрывает питание микрофона (R-37, docs/71)',
+    'SRV05-4': 'ESD-защита линий MIC_BCK/WS/DATA',
+    'FB': 'развязка питания микрофона от WS2812/подсветки',
+    'IDC6': 'шлейф MIC: BCK/WS/DATA + 3V3 + 2×GND',
+    'LED0603': 'индикатор MIC ON (горит только при включённом питании микрофона)',
 }
 
 # KiCad "derived" library symbols are flattened by our generator and then ERC warns
@@ -359,10 +378,10 @@ s = b.sch
 # PRE-FREEZE stamp + notes
 # --------------------------------------------------------------------------
 s.text('! PANEL-2  PRE-FREEZE  —  DO NOT FABRICATE  —  НЕ ЗАКАЗЫВАТЬ ПЛАТУ !', (25.4, 25.4), 5.0)
-s.text('PANEL-2 rev.2 (pre-freeze contract, synced with CORE-2 rev.2 + PWR-2) | panel v0.4 380x210 '
+s.text('PANEL-2 rev.3 (pre-freeze contract: CORE-2 rev.3 + PWR-2; + I2S MEMS ICS-43434) | panel v0.4 380x210 '
        '(spec/panel-spec-v0.4.json) | geometry check vs JSON: max dev %.2f mm | CERN-OHL-S-2.0'
        % GEOM_ERR, (25.4, 36.0), 2.2)
-s.text('rev.2: J13.9/13=5V_LED, J13.16=LED_RET, J13.15=EN_RAILS (0x23 GPA7), J14.25=EN_LED5 '
+s.text('rev.3: I2S MEMS ICS-43434 (порт Ø1.8 @122.0/5.5, LED Ø1.6 @116.0/10.5, звуковод <=3 мм), мьют SW1, J16 IDC-6 = CORE-2 J19 (1 BCK,2 GND,3 WS,4 GND,5 DATA,6 3V3). rev.2: J13.9/13=5V_LED, J13.16=LED_RET, J13.15=EN_RAILS (0x23 GPA7), J14.25=EN_LED5 '
        '(0x23 GPB6); LED_DATA 3.3V from CORE-2 (U44/R90 DNP there) -> U6 74HCT1G125 on PANEL-2; '
        'matrix ROW=GPB0..5 / COL=GPA0..6; GATE_IN read locally (0x23 GPB7). '
        'Назначение: проверенный контракт PANEL-2 <-> CORE-2, не заказ платы.', (25.4, 43.0), 1.6)
@@ -700,13 +719,13 @@ for i, (netname, note) in enumerate((('SDA', 'I2C SDA'), ('SCL', 'I2C SCL'), ('I
     tp = b.part('Connector', 'TestPoint', 'TP%d' % (i + 1), 'TP', 30.0 + i * 35.56, 88.9, FP['TP'], note)
     b.net(tp, '1', netname)
 
-s.power_anchor('+3V3', 25.4, 558.8)
-s.power_anchor('GND', 60.96, 558.8)
-s.power_anchor('GNDA', 96.52, 558.8)
+def _grid127(v):
+    return round(math.floor(float(v) / 1.27 + 0.5) * 1.27, 3)
 
 
 def named_power_anchor(port_sym, net_name, x, y):
     """Power port whose net name comes from the instance Value (KiCad power symbols)."""
+    x, y = _grid127(x), _grid127(y)
     s._pwr += 1
     s.sym('power', port_sym, '#PWR%03d' % s._pwr, net_name, x, y,
           hide_ref=True, ref_off=(0, -3.81), val_off=(0, 3.81))
@@ -714,6 +733,82 @@ def named_power_anchor(port_sym, net_name, x, y):
     s._pwr += 1
     s.sym('power', 'PWR_FLAG', '#FLG%03d' % s._pwr, 'PWR_FLAG', x + 5.08, y, hide_ref=True)
     s.label(net_name, (x + 5.08, y), angle=0, justify='left')
+
+
+# --------------------------------------------------------------------------
+# 9. I2S MEMS-микрофон (rev.3, docs/71, D-91/D-94): ICS-43434 + мьют + ESD
+# --------------------------------------------------------------------------
+s.text('9. I2S MEMS-микрофон rev.3: ICS-43434 (порт Ø1.8 в (X 122.0, Y 5.5), цековка Ø3.4x0.7, '
+       'углубление MEMS Ø5x1.2, звуковод <=3 мм; LED MIC ON Ø1.6 в (X 116.0, Y 10.5) — fitcheck '
+       'mechanical). 3.3 В, I2S1 (BCK/WS/DATA). Аппаратный МЬЮТ разрывает питание (R-37), LED '
+       '«MIC ON» горит только при включённом питании. Развязка: ferrite + 10u/100n, ESD SRV05-4, '
+       'серия 33R. Линии — J16 IDC-6 (pinout 1:1 с CORE-2 J19).', (25.4, 172.72), 1.6)
+
+# J16 — mic ribbon to CORE-2 (IDC-6, 2x3): 1 BCK, 2 GND, 3 WS, 4 GND, 5 DATA, 6 +3V3
+j_mic = b.part('Connector_Generic', 'Conn_02x03_Odd_Even', 'J16', 'IDC6', 619.76, 119.38,
+               FP['IDC6'], 'MIC: I2S1 RX (BCK/WS/DATA) + 3V3 + GND; CORE-2 J19 (pinout 1:1)')
+MIC_J16 = {'1': 'MIC_BCK', '2': 'GND', '3': 'MIC_WS', '4': 'GND', '5': 'MIC_DATA', '6': '+3V3'}
+for pin, net in MIC_J16.items():
+    b.net(j_mic, int(pin), net)
+
+# mute switch: 3V3 -> MIC_VDD_SW (open = muted), pull-down, ferrite, decoupling
+sw = b.part('Switch', 'SW_SPST', 'SW1', 'SW_SPST', 619.76, 190.5, FP['SW_SPST'],
+            'аппаратный MUTE: разрывает питание микрофона (R-37)')
+b.net(sw, '1', '+3V3')
+b.net(sw, '2', 'MIC_VDD_SW')
+r_pd = b.r('R120', '100k', 619.76, 224.79, 'R0603')
+b.net(r_pd, '1', 'MIC_VDD_SW'); b.rail(r_pd, '2', 'GND')
+fb = b.part('Device', 'FerriteBead', 'FB1', 'FB', 660.4, 190.5, FP['FB'],
+            'развязка MIC от WS2812/BL (600 Ом @100 МГц)')
+b.net(fb, '1', 'MIC_VDD_SW'); b.net(fb, '2', 'MIC_VDD')
+c_sw2 = b.c('C80', '100n', 660.4, 149.86, 'C0603')
+b.net(c_sw2, '1', 'MIC_VDD_SW'); b.rail(c_sw2, '2', 'GND')
+c_vdd1 = b.c('C81', '10u', 693.42, 190.5, 'C0603')
+b.net(c_vdd1, '1', 'MIC_VDD'); b.rail(c_vdd1, '2', 'GND')
+c_vdd2 = b.c('C82', '100n', 693.42, 226.06, 'C0603')
+b.net(c_vdd2, '1', 'MIC_VDD'); b.rail(c_vdd2, '2', 'GND')
+
+# MIC ON LED from the switched rail
+led_on = b.r('R121', '1k', 619.76, 259.08, 'R0603')
+b.net(led_on, '1', 'MIC_VDD_SW'); b.net(led_on, '2', 'LED_MICON')
+led = b.part('Device', 'LED', 'LED_MICON', 'LED0603', 619.76, 292.1, FP['LED0603'],
+             'индикатор MIC ON (питание микрофона включено)')
+b.net(led, '2', 'LED_MICON'); b.rail(led, '1', 'GND')
+
+# series 33R (mic side) + ESD array on the ribbon side
+u_mic = b.part('Sensor_Audio', 'ICS-43434', 'U8', 'ICS-43434', 701.04, 325.12, FP['MEMS'],
+               'I2S MEMS mic, LR = GND (моно/левый), порт Ø1.8 на верхней кромке')
+b.net_pin(u_mic, 'VDD', 'MIC_VDD')
+b.net_pin(u_mic, 'GND', 'GND')
+b.net_pin(u_mic, 'LR', 'GND')
+for i, (pinname, ribbon, micside) in enumerate((('WS', 'MIC_WS', 'MIC_WS_M'),
+                                                ('SCK', 'MIC_BCK', 'MIC_BCK_M'),
+                                                ('SD', 'MIC_DATA', 'MIC_DATA_M'))):
+    r = b.r('R%d' % (122 + i), '33R', 660.4, 259.08 + i * 19.05, 'R0603')
+    b.net(r, '1', ribbon); b.net(r, '2', micside)
+    b.net_pin(u_mic, pinname, micside)
+esd = b.part('Power_Protection', 'SRV05-4', 'U9', 'SRV05-4', 619.76, 340.36,
+             'Package_TO_SOT_SMD:SOT-23-6', 'ESD-матрица на MIC_BCK/WS/DATA')
+b.net(esd, 1, 'MIC_BCK'); b.net(esd, 3, 'MIC_WS'); b.net(esd, 4, 'MIC_DATA')
+b.rail(esd, 5, '+3V3'); b.rail(esd, 2, 'GND')
+b.nc(esd, 6)
+
+# test points on the mic lines
+for i, (netname, note) in enumerate((('MIC_BCK', 'TP MIC_BCK (I2S1)'),
+                                     ('MIC_WS', 'TP MIC_WS (I2S1)'),
+                                     ('MIC_DATA', 'TP MIC_DATA (I2S1)'))):
+    tp = b.part('Connector', 'TestPoint', 'TP%d' % (36 + i), 'TP',
+                600.0 + i * 30.48, 381.0, FP['TP'], note)
+    b.net(tp, '1', netname)
+tp_vdd = b.part('Connector', 'TestPoint', 'TP39', 'TP', 693.42, 381.0, FP['TP'],
+                'TP MIC_VDD (после мьюта/ferrite)')
+b.net(tp_vdd, '1', 'MIC_VDD')
+# MIC_VDD is a local rail with power_in pins -> give it a PWR_FLAG (named power port)
+named_power_anchor('+3V3', 'MIC_VDD', 750.0, 381.0)
+
+s.power_anchor('+3V3', 25.4, 558.8)
+s.power_anchor('GND', 60.96, 558.8)
+s.power_anchor('GNDA', 96.52, 558.8)
 
 
 named_power_anchor('+5V', '5V_LED', 132.08, 558.8)
@@ -796,7 +891,26 @@ def write_matrix():
     A('| `GATE_IN_CLEAN` | GPB7 | локально (74LVC1G17 → 1k → GPB7), на шлейф не выходит | 0/3.3 В, '
       'читается прошивкой по I2C |')
     A('')
-    A('## 5. Диагональные нажатия и дребезг')
+    A('## 5. I2S MEMS-микрофон (rev.3) — линии')
+    A('')
+    A('| Линия | Пин (PANEL-2) | Куда | Примечание |')
+    A('|---|---|---|---|')
+    A('| `MIC_BCK` | J16.1 | CORE-2 J19.1 → I2S1 SCK (через 33R + SRV05-4) | 1.4…3.1 МГц |')
+    A('| `MIC_WS` | J16.3 | CORE-2 J19.3 → I2S1 WS/LRCLK | 48 кГц |')
+    A('| `MIC_DATA` | J16.5 | CORE-2 J19.5 → I2S1 RX (SD) | 24 бит, выход ICS-43434 |')
+    A('| `MIC_VDD` | SW1 (мьют) → FB1 | ICS-43434 VDD | LED_MICON = питание вкл. |')
+    A('')
+    A('Мьют: SW1 разрывает +3V3 к микрофону (R-37); микрофон не в матрице и не на MCP23017 — '
+      'это отдельный I2S-тракт. Канон pinout J16 ↔ J19: 1 BCK, 2 GND, 3 WS, 4 GND, 5 DATA, 6 3V3 '
+      '(⚠️ фактический J19 в `hardware/core2` rev.3 — *3V3, GND, BCK, WS, DATA, GND*: требует '
+      'выравнивания, README §6 п.10).')
+    A('')
+    A('**Механика (fitcheck mechanical, v0.5-B-light):** акустический порт **Ø1.8 в (X 122.0, Y 5.5)**, '
+      'цековка Ø3.4×0.7, углубление MEMS Ø5×1.2 снизу, звуковод ≤3 мм; LED MIC ON **Ø1.6 в '
+      '(X 116.0, Y 10.5)**. MEMS на PCB — под звуководом (X≈122), зазор до WS2812/подсветки ≥10 мм. '
+      '`spec/panel-spec-v0.4.json` не менялся (85 отверстий = 83 JSON + порт + LED).')
+    A('')
+    A('## 6. Диагональные нажатия и дребезг')
     A('')
     A('* Матрица с диодами: «диагональ» (две клавиши в разных строках/столбцах) читается корректно — '
       'фантом исключён диодом; ограничение только у клавиш **без** диодов.')
@@ -858,6 +972,15 @@ def write_pinmap():
                         '0..3.3 В' if net.startswith('FADER') else '—'))))
         rows.append(('J14 (IDC-26)', pin, net, d, 'analog' if net != 'NC' else 'nc', level,
                      'аналоговое поле'))
+    MIC_DIR = {'MIC_BCK': 'core→panel', 'MIC_WS': 'core→panel', 'MIC_DATA': 'panel→core',
+               '+3V3': 'core→panel', 'GND': '—'}
+    MIC_LEVEL = {'MIC_BCK': '1.4…3.1 МГц', 'MIC_WS': '48 кГц', 'MIC_DATA': '3.3 В I2S',
+                 '+3V3': '3.3 В (≤5 мА)', 'GND': '—'}
+    for pin in sorted(MIC_J16, key=int):
+        net = MIC_J16[pin]
+        rows.append(('J16 (IDC-6)', pin, net, MIC_DIR[net],
+                     'power' if net in ('+3V3', 'GND') else 'digital', MIC_LEVEL[net],
+                     'I2S1 MEMS-микрофон (rev.3): ICS-43434, мьют + LED MIC ON'))
     # summary
     sig = [r for r in rows if r[2] not in ('GND', 'GNDA', 'NC')]
     L = []
@@ -875,6 +998,7 @@ def write_pinmap():
     A('| LCD подсветка: BL_PWM (драйвер/boost на CORE-2) + BL_ANODE/BL_CATHODE | 3 | J12 FFC-40 |')
     A('| Энкодеры 16 × (A,B,SW) = 48 → I2C (SDA, SCL) + INT | 3 | J13 IDC-16 |')
     A('| EN рельсов: EN_RAILS (0x23 GPA7), EN_LED5 (0x23 GPB6) | 2 | J13.15 / J14.25 |')
+    A('| I2S1 MEMS-микрофон (rev.3): MIC_BCK, MIC_WS, MIC_DATA | 3 | J16 IDC-6 |')
     A('| Матрица 42 клавиш 6×7 = 13 → MCP23017 (на той же I2C) | 0 доп. | J13 IDC-16 |')
     A('| LED-цепочка 17 × WS2812B: LED_DATA | 1 | J13 IDC-16 |')
     A('| Джек-поле: 4 CV OUT + 4 CV IN + GATE OUT + GATE IN | 10 | J14 IDC-26 |')
@@ -882,9 +1006,10 @@ def write_pinmap():
     A('| Питание: 5V_LED + отдельный LED_RET (цепочка LED, 0.55 А), +3V3 (логика), GND/GNDA | '
       '2 рельса + 2 возврата | J13/J14 |')
     A('')
-    A('**Итого сигналов: 40** (16 RGB + 4 синхро + BL_PWM + BL_ANODE + BL_CATHODE = 23 по J12; '
+    A('**Итого сигналов: 43** (16 RGB + 4 синхро + BL_PWM + BL_ANODE + BL_CATHODE = 23 по J12; '
       'I2C 2 + INT + LED_DATA + EN_RAILS = 5 по J13; 4 CV OUT + 4 CV IN + GATE_OUT + 2 фейдера + '
-      'EN_LED5 = 12 по J14). GATE_IN читается на PANEL-2 (0x23 GPB7) и на шлейф не выходит.')
+      'EN_LED5 = 12 по J14; MIC_BCK/WS/DATA = 3 по J16). GATE_IN читается на PANEL-2 (0x23 GPB7) '
+      'и на шлейф не выходит.')
     A('**Одного IDC-26 не хватает:** в IDC-26 максимум 13 сигнальных пинов при «сигнал/земля»; '
       'даже без LCD нужно 16 сигналов (3 + 1 + 12). Поэтому:')
     A('')
@@ -919,6 +1044,21 @@ def write_pinmap():
     A('|---:|---|---|---|---|')
     for r in [r for r in rows if r[0].startswith('J14')]:
         A('| %s | `%s` | %s | %s | %s |' % (r[1], r[2], r[3], r[5], r[6]))
+    A('')
+    A('## 4a. J16 — IDC-6 (I2S1 MEMS-микрофон, rev.3)')
+    A('')
+    A('| Pin | Сигнал | Направление | Уровень | Примечание |')
+    A('|---:|---|---|---|---|')
+    for r in [r for r in rows if r[0].startswith('J16')]:
+        A('| %s | `%s` | %s | %s | %s |' % (r[1], r[2], r[3], r[5], r[6]))
+    A('')
+    A('**J16 (PANEL-2) ↔ J19 (CORE-2)** — канон 1:1: 1 BCK, 2 GND, 3 WS, 4 GND, 5 DATA, 6 3V3. '
+      '⚠️ в `hardware/core2` rev.3 J19 фактически *3V3, GND, BCK, WS, DATA, GND* — порядок нужно '
+      'выровнять на одной из плат (4 цепи, README §6 п.10). '
+      'Между сигналами и питанием — чередование «сигнал/земля» для I2S на 3 МГц.')
+    A('Акустический порт: **Ø1.8, центр (X 122.0, Y 5.5)** панели, цековка Ø3.4×0.7, MEMS-углубление '
+      'Ø5×1.2 снизу, звуковод ≤3 мм; LED MIC ON **Ø1.6, центр (X 116.0, Y 10.5)** — по fitcheck '
+      'mechanical (85 сквозных отверстий = 83 JSON + порт + LED).')
     A('')
     A('## 5. J11 — FPC-40 (LCD panel tail, на PANEL-2)')
     A('')
@@ -1161,6 +1301,37 @@ def write_interfaces():
     A('| LED_RET | PANEL-2 → PWR-2 (J13.16) | возврат LED-цепочки через Q7 на PWR-2 | тот же ток |')
     A('| GND / GNDA | CORE-2 (J13/J14) | возвраты | — |')
     A('')
+    A('## 8. I2S MEMS-микрофон (rev.3, docs/71, D-91/D-94)')
+    A('')
+    A('**MPN:** `ICS-43434` (TDK InvenSense, I2S MEMS, 24 бит, 3.3 В, −26 дБFS, LGA-6 3.5×2.65); '
+      'резерв — `SPH0645LM4H` (Knowles; pin-функции совпадают, **пады другого размера**).')
+    A('')
+    A('| Параметр | Значение |')
+    A('|---|---|')
+    A('| Интерфейс | I2S1 RX: `MIC_BCK` (SCK), `MIC_WS` (LRCLK), `MIC_DATA` (SD) |')
+    A('| Питание | +3V3 через аппаратный мьют и ferrite bead 600 Ом (развязка от WS2812/BL) |')
+    A('| Развязка | FB1 + 10 мкФ + 100 нФ (MIC_VDD), 100 нФ на MIC_VDD_SW |')
+    A('| ESD/RC | SRV05-4 (ESD-матрица на BCK/WS/DATA) + серия 33 Ом перед выводами MEMS |')
+    A('| Канал | LR = GND → моно/левый канал I2S1 |')
+    A('| Мьют (R-37) | **SW1** разрывает питание микрофона + R120 100k (разряд) + **LED_MICON** '
+      '(R121 1k) — горит только при включённом питании |')
+    A('| Линии на CORE-2 | **J16 IDC-6** ↔ CORE-2 **J19 IDC-6** (канон 1:1): 1 MIC_BCK, 2 GND, '
+      '3 MIC_WS, 4 GND, 5 MIC_DATA, 6 +3V3; в CORE-2 rev.3 — I2S1 RX. ⚠️ **конфликт к решению '
+      'Lead:** фактический J19 в `hardware/core2` rev.3 = *3V3_MIC, GND, BCK, WS, DATA, GND* — '
+      'порядок нужно выровнять (4 цепи, README §6 п.10) |')
+    A('| TP | TP36 MIC_BCK, TP37 MIC_WS, TP38 MIC_DATA, TP39 MIC_VDD |')
+    A('| Акустический порт | **Ø1.8 мм**, центр **(X 122.0, Y 5.5)** панели; цековка Ø3.4×0.7, '
+      'углубление MEMS Ø5×1.2 снизу; сетка + поролон 1–2 мм, звуковод ≤3 мм (MEMS под звуководом, '
+      'X≈122) — по fitcheck mechanical |')
+    A('| LED MIC ON | **Ø1.6 мм**, центр **(X 116.0, Y 10.5)**; R121 1k от MIC_VDD_SW |')
+    A('')
+    A('**Приватность (R-37):** мьют физически разрывает питание MEMS — прошивка не может включить '
+      'микрофон программно; LED — единственный индикатор. Требование docs/71 §2/§5.')
+    A('')
+    A('**Layout-правила (PCB):** MEMS — у верхней кромки под звуководом (X≈122), ≥10 мм от WS2812 '
+      'и разъёма подсветки; земля MIC — отдельный полигон/звезда к GND у J16; I2S-линии — '
+      '«сигнал/земля» в шлейфе, длина ≤100 мм.')
+    A('')
     with open(os.path.join(P2, 'interfaces.md'), 'w', encoding='utf-8') as f:
         f.write('\n'.join(L) + '\n')
     return os.path.join(P2, 'interfaces.md')
@@ -1175,13 +1346,16 @@ print('interfaces:', write_interfaces())
 def write_readme():
     L = []
     A = L.append
-    A('# PANEL-2 rev.2 — PRE-FREEZE (не заказывать плату)')
+    A('# PANEL-2 rev.3 — PRE-FREEZE (не заказывать плату)')
     A('')
     A('Схема панели **v0.4** (380 × 210 мм): 16 × EC11, 42 × Kailh Choc (Lapka-42, матрица 6×7), '
       'экран 5.0" 800×480 RGB 16 бит, 10 × mini-jack, 2 фейдера 60 мм, 17 × WS2812B. '
       'Статус: **PRE-FREEZE / DO NOT FABRICATE** — цель этапа не «плата к заказу», а проверенный '
-      'контракт CORE-2 ↔ PANEL-2 и ревью решений. **rev.2**: синхронизировано с CORE-2 rev.2 и '
-      'PWR-2 (EN_RAILS/EN_LED5, 5V_LED/LED_RET, LED_DATA 3.3 В, GATE_IN на панели).')
+      'контракт CORE-2 ↔ PANEL-2 и ревью решений. **rev.3**: **I2S MEMS-микрофон ICS-43434** '
+      '(верхняя кромка: порт **Ø1.8 в (X 122.0, Y 5.5)**, цековка Ø3.4×0.7, углубление MEMS '
+      'Ø5×1.2, LED MIC ON **Ø1.6 в (X 116.0, Y 10.5)** — fitcheck mechanical), аппаратный мьют + '
+      'LED (R-37), линии I2S1 в **J16 IDC-6** (pinout 1:1 с CORE-2 J19). rev.2: EN_RAILS/EN_LED5, '
+      '5V_LED/LED_RET, LED_DATA 3.3 В, GATE_IN на панели.')
     A('')
     A('Лицензия: CERN-OHL-S-2.0. Геометрия: `spec/panel-spec-v0.4.json` (единственный источник); '
       'реестр требований: `spec/90-requirements-registry.md` (R-01…R-11).')
@@ -1224,6 +1398,14 @@ def write_readme():
     A('6. **Матрица**: 1N4148 в каждой клавише (антифантом), строки сканируются по одной, '
       'внешние подтяжки 10 кОм по столбцам. rev.2 canon: ROW1…6 = GPB0…5 (выходы), '
       'COL1…7 = GPA0…6 (входы).')
+    A('8. **rev.3 — цифровой микрофон** (docs/71, D-91/D-94): **ICS-43434** (I2S MEMS, 24 бит/48 кГц, '
+      '3.3 В) на верхней кромке панели; акустический порт **Ø1.8 (X 122.0, Y 5.5)** с цековкой '
+      'Ø3.4×0.7, сеткой и поролоном 1–2 мм, звуковод ≤3 мм; MEMS — под звуководом (X≈122) с '
+      'зазором до WS2812/BL ≥10 мм; LED MIC ON — **Ø1.6 в (X 116.0, Y 10.5)**. Питание через '
+      '**аппаратный мьют SW1** (разрывает +3V3, R-37) + FB1 600 Ом + 10u/100n; ESD SRV05-4 + серия '
+      '33R на BCK/WS/DATA; LED_MICON = «питание микрофона вкл.». Линии I2S1 — **J16 IDC-6** '
+      '(1 BCK, 2 GND, 3 WS, 4 GND, 5 DATA, 6 +3V3; канон 1:1 с CORE-2 **J19**), TP36…TP39. '
+      '85 сквозных отверстий = 83 из JSON + порт + LED (JSON не менялся).')
     A('7. **rev.2 sync с CORE-2/PWR-2**: J13.9/13 = `5V_LED`, J13.16 = `LED_RET` (отдельный '
       'коммутируемый возврат LED, не через землю аудио), J13.15 = `EN_RAILS` (0x23 GPA7), '
       'J14.25 = `EN_LED5` (0x23 GPB6); `GATE_IN` читается на PANEL-2 (0x23 GPB7, через 1k от '
@@ -1234,7 +1416,7 @@ def write_readme():
     A('')
     A('| Плата | Errors | Warnings | Компонентов | Соединений |')
     A('|---|---:|---:|---:|---:|')
-    A('| PANEL-2 | **0** | **6** (isolated_pin_label, nets SPI2_* на DNP-разъёме J15) | 337 | 976 |')
+    A('| PANEL-2 rev.3 | **0** | **6** (isolated_pin_label, nets SPI2_* на DNP-разъёме J15) | 361 | 1019 |')
     A('')
     A('## 4. Проверки (не «на глаз»)')
     A('')
@@ -1275,6 +1457,18 @@ def write_readme():
       'её из своего pinout |')
     A('| 8 | CVIN3/4 → MCP3208 CH4/CH5, EXPRESSION теряет канал | ⚠️ **на стороне CORE-2** '
       '(открытые N-2/N-3 в `core2/rev2-plan.md` §9) |')
+    A('| 9 | Акустический порт MEMS + LED MIC ON | ✅ **согласовано с mechanical**: порт **Ø1.8, '
+      'центр (X 122.0, Y 5.5)**, цековка Ø3.4×0.7, углубление MEMS Ø5×1.2 снизу, звуковод ≤3 мм; '
+      'LED MIC ON **Ø1.6, центр (X 116.0, Y 10.5)**. 85 сквозных отверстий (83 JSON + порт + LED), '
+      '`spec/panel-spec-v0.4.json` не менялся, B-light ≈231.4 г / 11.2 ч |')
+    A('| 10 | CORE-2 rev.3: I2S1 RX + ответный **J19 IDC-6** | ⚠️ **канон**: PANEL-2 **J16** ↔ '
+      'CORE-2 **J19**, 1:1 — 1 BCK, 2 GND, 3 WS, 4 GND, 5 DATA, 6 3V3. **Конфликт к решению Lead:** '
+      'в `hardware/core2` rev.3 фактический J19 — *3V3_MIC, GND, BCK, WS, DATA, GND* (pins 3/4/5 = '
+      'BCK/WS/DATA). Для кабеля 1:1 нужен один порядок: либо CORE-2 J19 → 1 BCK, 2 GND, 3 WS, 4 GND, '
+      '5 DATA, 6 3V3 (4 цепи на CORE-2), либо PANEL-2 J16 → 1 3V3, 2 GND, 3 BCK, 4 WS, 5 DATA, 6 GND '
+      '(4 цепи на PANEL-2, без смены компонентов) |')
+    A('| 11 | Резервный MEMS `SPH0645LM4H` | ⚠️ назначение выводов совпадает, но **пады LGA-6 '
+      'другого размера** (Knowles 3.5×2.65 vs InvenSense) — замена = другой footprint |')
     A('')
     A('## 7. Режимы работы (требование заказчика: DAW-контроллер + HID)')
     A('')
@@ -1305,6 +1499,8 @@ def write_readme():
     A('* Footprint Kailh Choc hot-swap и FPC-40 зависят от выбранных компонентов — на PCB-этапе.')
     A('* Номиналы защиты требуют проверки на макете (TVS под конкретные модули); драйвер подсветки — '
       'на CORE-2, на PANEL-2 его нет.')
+    A('* **Акустика микрофона** (чувствительность, SNR, тест речи/свиста на 30 см) проверяется только '
+      'на образце PANEL-2 + шлейфе J16 + CORE-2 rev.3; сейчас — схема и порт.')
     A('')
     with open(os.path.join(P2, 'README.md'), 'w', encoding='utf-8') as f:
         f.write('\n'.join(L) + '\n')

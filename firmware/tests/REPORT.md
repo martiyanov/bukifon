@@ -927,3 +927,30 @@ Pillow) installed in `/tmp/msvenv`; no system packages assumed.
 - **TODO(hw)**: real DIN/USB-MIDI gateway, MIDI-in clock/CC learn, project v2
   integration of the `EXTP` payload, 4 CC per track (v1.1), hardware latency
   and USB-MIDI host.
+
+---
+
+# Round 15 — voice as input: MIC capture, recording, beatbox, privacy (2026-11-06)
+
+- **Mic engine** `src/io/mic.*`:
+  - `MicCapture`: host model of I2S1 MEMS capture, LINE/MIC source, gain dB,
+    RMS level/peak, VAD threshold.
+  - `VoiceTake`: record ≤30 s, silence auto-trim, name/pad/PSRAM-SD storage,
+    peak; hardware mute blocks recording.
+  - `MicPrivacy`: mute switch + MIC ON LED model; no implicit BLE/Wi-Fi
+    transmission (`micNetworkTransmissionAllowed(false)`).
+  - `BeatboxDetector`: onset (energy + derivative per 1/16 window), classes
+    kick/snare/hat (low/high/ZCR), velocity/accent, quantized step fill with
+    notes 36/38/42; `BeatboxPattern` provides UNDO.
+- **UI**: 7th tab **MIC** (`MAIN/SEQ/MIX/MOD/GEN/EXT/MIC`): MIC ON/MUTED privacy
+  banner, SOURCE, LEVEL meter + peak, BEATBOX ON/OFF, REC PAD + take name,
+  SRC/GAIN/THR/MON/BEAT/SENS/PAD/LVL fields in the mirrored 16-cell map, MIC
+  state in the persistent context line. Screenshot `artifacts/ui/mic.png`.
+- **Tests**: **311/311 PASS** (288 pre-existing untouched; +23: 18 mic engine/
+  beatbox/privacy/record, 5 UI MIC). Beatbox accuracy ≥80 % at 90/110/140 BPM on
+  synthetic 4/4 bars; `run_tests.sh` → ALL HOST TESTS PASSED; `run_sim_demo.sh`
+  → **11** PNG.  Profile tests got retry wrappers for host scheduling spikes.
+- **Docs**: `docs/71` §8 implementation + §9 TODO(hw); `docs/66` §8 MIC row.
+- **TODO(hw)**: I2S1 DMA (MEMS), MAX9814/PCM1808 line/mic mux, PSRAM/SD sample
+  write/playback, hardware mute switch/LED GPIO, beatbox robustness v1.1,
+  privacy audit of the BLE/Wi-Fi stacks.

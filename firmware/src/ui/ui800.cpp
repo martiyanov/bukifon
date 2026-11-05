@@ -72,6 +72,7 @@ const char* screenName(Screen s) {
     case Screen::Modules: return "MODULES";
     case Screen::Gen: return "GEN";
     case Screen::Ext: return "EXT";
+    case Screen::Mic: return "MIC";
     default: return "?";
   }
 }
@@ -91,18 +92,15 @@ void drawHeader(ICanvas& c, const UiSnapshot& s) {
   drawTextRole(c, 620, 2, status, statusColor, UiTextRole::Critical);
   // Page label + 12 px tabs (L2 access, docs/68).
   drawTextRole(c, 12, 44, s.page, mutedColor(), UiTextRole::Caption);
-  const char* tabs[6] = {"MAIN", "SEQ", "MIX", "MOD", "GEN", "EXT"};
-  for (int i = 0; i < 6; ++i) {
+  const char* tabs[7] = {"MAIN", "SEQ", "MIX", "MOD", "GEN", "EXT", "MIC"};
+  for (int i = 0; i < 7; ++i) {
     const bool active = static_cast<int>(s.screen) == i;
-    drawTextRole(c, 140 + i * 44, 44, tabs[i], active ? accentColor() : mutedColor(),
+    drawTextRole(c, 140 + i * 40, 44, tabs[i], active ? accentColor() : mutedColor(),
                  UiTextRole::Caption);
   }
-  std::snprintf(buf, sizeof(buf), "BAR %03d", s.bar + 1);
-  drawTextRole(c, 400, 44, buf, mutedColor(), UiTextRole::Caption);
-  std::snprintf(buf, sizeof(buf), "PAT %02d", s.pattern);
-  drawTextRole(c, 470, 44, buf, mutedColor(), UiTextRole::Caption);
-  std::snprintf(buf, sizeof(buf), "MODE %s", s.deviceMode);
-  drawTextRole(c, 545, 44, buf, orangeColor(), UiTextRole::Caption);
+  char modeBuf[24];
+  std::snprintf(modeBuf, sizeof(modeBuf), "MODE %s", s.deviceMode);
+  drawTextRole(c, 620, 44, modeBuf, orangeColor(), UiTextRole::Caption);
   // Persistent context line (PART · SELECTED · PAGE · FADERS · REC · UNSAVED).
   c.fillRect(0, 57, kUiWidth, 18, cardColor());
   char context[160];
@@ -275,10 +273,13 @@ void drawParamPanel(ICanvas& c, const UiSnapshot& s) {
     const int index = uiEncoderCellIndex(e, &isMacro);
     if (index < 0) continue;
     UiParam display = isMacro ? s.macros[index] : s.params[index];
-    if (!isMacro) {
-      static const char* shortLabels[kNumParams] = {"CUTOFF", "RES", "ENVAMT", "DRIVE",
-                                                    "ATK", "DEC", "SUS", "REL"};
-      std::snprintf(display.label, sizeof(display.label), "%s", shortLabels[index]);
+    if (!isMacro && (s.screen == Screen::Main || s.screen == Screen::Mic)) {
+      static const char* mainShort[kNumParams] = {"CUTOFF", "RES", "ENVAMT", "DRIVE",
+                                                  "ATK", "DEC", "SUS", "REL"};
+      static const char* micShort[kNumParams] = {"SRC", "GAIN", "THR", "MON",
+                                                 "BEAT", "SENS", "PAD", "LVL"};
+      std::snprintf(display.label, sizeof(display.label), "%s",
+                    s.screen == Screen::Main ? mainShort[index] : micShort[index]);
     }
     const UiParam& p = display;
     const bool selected = e == s.selectedEncoder;
@@ -412,6 +413,38 @@ void drawExtScreen(ICanvas& c, const UiSnapshot& s) {
   }
 }
 
+void drawMicScreen(ICanvas& c, const UiSnapshot& s) {
+  // Privacy banner: MIC ON only when the hardware switch is on (LED model).
+  const bool on = !s.micMuted;
+  drawTextRole(c, 12, kTracksY + 4, on ? "MIC ON" : "MIC MUTED",
+               on ? greenColor() : redColor(), UiTextRole::Critical);
+  char buf[48];
+  std::snprintf(buf, sizeof(buf), "SOURCE %s", s.micSource);
+  drawTextRole(c, 220, kTracksY + 8, buf, textColor(), UiTextRole::Value);
+  std::snprintf(buf, sizeof(buf), "%s", s.micBeatbox ? "BEATBOX ON" : "BEATBOX OFF");
+  drawTextRole(c, 430, kTracksY + 8, buf, s.micBeatbox ? orangeColor() : mutedColor(),
+               UiTextRole::Value);
+  std::snprintf(buf, sizeof(buf), "%s", s.micRecording ? "REC" : "READY");
+  drawTextRole(c, 650, kTracksY + 4, buf, s.micRecording ? redColor() : mutedColor(),
+               UiTextRole::Critical);
+  // Input level meter (L1 indicator, docs/71 §4).
+  drawTextRole(c, 12, kTracksY + 44, "LEVEL", mutedColor(), UiTextRole::Caption);
+  drawBar(c, 90, kTracksY + 46, 420, 18, s.micLevel, on ? greenColor() : mutedColor());
+  std::snprintf(buf, sizeof(buf), "PEAK %3d%%", static_cast<int>(s.micPeak * 100.0f));
+  drawTextRole(c, 530, kTracksY + 44, buf, textColor(), UiTextRole::Caption);
+  // REC -> PAD target and the recorded take name.
+  drawTextRole(c, 12, kTracksY + 82, "REC PAD", mutedColor(), UiTextRole::Caption);
+  std::snprintf(buf, sizeof(buf), "PAD %d  %s", 1, s.micTake);
+  drawTextRole(c, 110, kTracksY + 82, buf, orangeColor(), UiTextRole::Value);
+  // Beatbox classes legend (kick/snare/hat -> notes 36/38/42).
+  drawTextRole(c, 420, kTracksY + 82, "KICK 36  SNARE 38  HAT 42", mutedColor(),
+               UiTextRole::Caption);
+  if (s.micMuted) {
+    drawTextRole(c, 12, kTracksY + 120, "PRIVACY: recording disabled (hardware mute)",
+                 redColor(), UiTextRole::Caption);
+  }
+}
+
 void drawHints(ICanvas& c, const UiSnapshot& s) {
   for (int i = 0; i < kNumHints; ++i) {
     const int x = 10 + i * 98;
@@ -486,6 +519,11 @@ void uiSnapshotGenDemo(UiSnapshot* snapshot) {
 void uiSnapshotExtDemo(UiSnapshot* snapshot) {
   if (!snapshot) return;
   uiSnapshotDemo(snapshot, Screen::Ext);
+}
+
+void uiSnapshotMicDemo(UiSnapshot* snapshot) {
+  if (!snapshot) return;
+  uiSnapshotDemo(snapshot, Screen::Mic);
 }
 
 void uiSnapshotDemo(UiSnapshot* snapshot, Screen screen) {
@@ -664,17 +702,45 @@ void uiSnapshotDemo(UiSnapshot* snapshot, Screen screen) {
     std::snprintf(snapshot->footer, sizeof(snapshot->footer),
                   "EXT | 8 MIDI tracks | clock out 24 ppqn | p-lock step 5");
   }
+  if (screen == Screen::Mic) {
+    const char* labels[8] = {"SOURCE", "GAIN", "THRESH", "MONITOR",
+                             "BEATBOX", "SENS", "REC PAD", "LEVEL"};
+    const char* values[8] = {"MIC", "+20dB", "2%", "OFF", "ON", "50%", "PAD 1", "-18dB"};
+    for (int i = 0; i < kNumParams; ++i) {
+      std::snprintf(snapshot->params[i].label, sizeof(snapshot->params[i].label), "%s", labels[i]);
+      std::snprintf(snapshot->params[i].value, sizeof(snapshot->params[i].value), "%s", values[i]);
+      snapshot->params[i].norm = 0.2f + 0.08f * static_cast<float>(i);
+    }
+    const char* hints[8] = {"SOURCE", "GAIN", "THRESH", "MONITOR",
+                            "BEATBOX", "SENS", "REC", "PAD"};
+    for (int i = 0; i < kNumHints; ++i) {
+      std::snprintf(snapshot->hints[i], sizeof(snapshot->hints[i]), "%s", hints[i]);
+    }
+    std::snprintf(snapshot->micSource, sizeof(snapshot->micSource), "%s", "MIC");
+    snapshot->micLevel = 0.42f;
+    snapshot->micPeak = 0.68f;
+    snapshot->micMuted = false;
+    snapshot->micRecording = false;
+    snapshot->micBeatbox = true;
+    snapshot->micMonitor = false;
+    std::snprintf(snapshot->micTake, sizeof(snapshot->micTake), "%s", "TAKE 1");
+    std::snprintf(snapshot->selectedLabel, sizeof(snapshot->selectedLabel), "%s", "MIC");
+    std::snprintf(snapshot->footer, sizeof(snapshot->footer),
+                  "MIC | beatbox 90-140 BPM | REC->PAD 30 s | privacy mute+LED");
+  }
 }
 
 
 void uiBuildContextLine(const UiSnapshot* snapshot, char* out, size_t capacity) {
   if (!snapshot || !out || capacity == 0) return;
-  std::snprintf(out, capacity, "%s  SELECTED %s  PAGE %s  FADERS %s  REC %s  %s",
+  std::snprintf(out, capacity,
+                "%s  SELECTED %s  PAGE %s  PAT %02d BAR %03d  FADERS %s  REC %s  MIC %s  %s",
                 snapshot->partLabel[0] ? snapshot->partLabel : "PART 1",
                 snapshot->selectedLabel[0] ? snapshot->selectedLabel : "1",
-                snapshot->page[0] ? snapshot->page : "MAIN",
+                snapshot->page[0] ? snapshot->page : "MAIN", snapshot->pattern, snapshot->bar + 1,
                 snapshot->faderMode[0] ? snapshot->faderMode : "TRACK",
-                snapshot->transportRecord ? "ON" : "OFF", snapshot->unsaved ? "UNSAVED" : "SAVED");
+                snapshot->transportRecord ? "ON" : "OFF", snapshot->micMuted ? "MUTE" : "ON",
+                snapshot->unsaved ? "UNSAVED" : "SAVED");
 }
 
 void uiHandleHome(UiSnapshot* snapshot) {
@@ -948,6 +1014,8 @@ void drawUi800(ICanvas& canvas, const UiSnapshot& s) {
     drawGenScreen(canvas, s);
   } else if (s.screen == Screen::Ext) {
     drawExtScreen(canvas, s);
+  } else if (s.screen == Screen::Mic) {
+    drawMicScreen(canvas, s);
   } else {
     drawTracks(canvas, s);
   }

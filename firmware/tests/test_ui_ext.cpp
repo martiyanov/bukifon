@@ -39,7 +39,7 @@ TEST(UiExtSnapshotTracksAndSteps) {
   CHECK(snapshot.screen == ui::Screen::Ext);
   CHECK(std::strcmp(snapshot.page, "EXT") == 0);
   CHECK(static_cast<int>(ui::Screen::Ext) == 5);
-  CHECK(static_cast<int>(ui::Screen::kNumScreens) == 6);
+  CHECK(static_cast<int>(ui::Screen::kNumScreens) == 7);
   for (int t = 0; t < 8; ++t) {
     CHECK(snapshot.extTracks[t].channel >= 1 && snapshot.extTracks[t].channel <= 16);
     CHECK(snapshot.extTracks[t].program <= 127);

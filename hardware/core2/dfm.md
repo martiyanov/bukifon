@@ -7,8 +7,8 @@
 
 ## 1. Test points (≤30; доступ после сборки)
 
-TP1…TP30 — все в `CORE-2.kicad_sch` (TP28–TP30 добавлены в rev.3-итерации: LED_RET,
-I2S_BCK, I2S_LRCK); остальные сигналы доступны на разъёмах/падах компонентов (не считаются TP).
+TP1…TP32 — все в `CORE-2.kicad_sch` (TP28–TP30: LED_RET/I2S_BCK/I2S_LRCK; TP31/TP32:
+MIC_DATA/MIC_BCK — mic D-91); остальные сигналы доступны на разъёмах/падах компонентов.
 BOOT/RESET/UART0 — TP17/TP18 + J4 (UART0 TP), отдельных падов не требуют.
 
 | # | TP | Цепь | Где / доступ | Назначение |
@@ -43,6 +43,8 @@ BOOT/RESET/UART0 — TP17/TP18 + J4 (UART0 TP), отдельных падов н
 | 28 | TP28 | `LED_RET` | J16.16 → J18.18 | возврат LED (Q7 PWR-2) |
 | 29 | TP29 | `I2S_BCK` | пад у PCM5102A/PCM1808 | аудио BCK |
 | 30 | TP30 | `I2S_LRCK` | пад у кодека | аудио LRCK |
+| 31 | TP31 | `MIC_DATA` | J19.5 / пад | MEMS I2S1 data (D-91) |
+| 32 | TP32 | `MIC_BCK` | J19.3 / пад | MEMS I2S1 bit clock (D-91) |
 
 Групповой доступ (не отдельные TP): I2C — J16.1/3 и J18.3/4; SPI2 — J16?/U40 пады + C6 (TP21);
 CV OUT1-4/CV IN1-4/GATE — J14; MIDI — J6/J7; SDIO D0-D3/CMD — пады J5; UART0 — J4 (TX/RX/GND);
@@ -52,7 +54,7 @@ C6 SPI — TP21/22 + U31; PWR-2 EN/I2C/гейдж — J18.
 TP на 20 В (TP20) — только с предупреждением и щупом 100:1; все TP доступны после сборки
 (верх/низ платы с учётом корпуса, docs/21 — 6×M3, задняя крышка).
 
-## 2. Self-test (прошивка + производственный тест)
+## 2. Self-test 20 + mic (21) (прошивка + производственный тест)
 
 | # | Тест | Метод | Pass | Auto (BIST) |
 |---:|---|---|---|---|
@@ -76,6 +78,7 @@ TP на 20 В (TP20) — только с предупреждением и щу�
 | 18 | USB HS composite | enumerate Win/macOS/Linux, HID+MIDI+UAC2+CDC | 0 drop/reconnect за 30 мин | да |
 | 19 | UART0/BOOT | J4 лог + BOOT strap | лог 115200, download boot | да |
 | 20 | Серийник/ревизия | чтение EEPROM, QR на корпусе | SN/rev/date/batch совпадают | да |
+| 21 | **Mic (D-91)** | MEMS: I2S1 record 48/24, VAD; electret: MIC_SEL=1, MAX9814 AGC, loopback mic→PCM1808→I2S0; SW3 mute=0 и LED | запись без клиппинга, SNR ≥65 дБ, mute глушит, задержка ≤5 мс | да (оператор) |
 
 ## 3. Serialization / traceability
 
@@ -128,13 +131,16 @@ I2C при boot, пишет в USB-дескриптор (iSerial) и лог.
   SN/QR-зона, TP-подписи, предупреждение о 20 В; не ставить шелкографию под FPC.
 - **TP/пады:** не под разъёмами и не в зоне шлейфов, доступ после сборки, маска открыта.
 - **ESD/защита:** USBLC6, TVS на входы/джеках, polyfuse; проверка после сборки.
+- **Mic (D-91):** J19 — экранированный кабель ≤150 мм, BCK/WS/DATA в отдельной зоне от BL_20V и
+  WS2812 (guard GND между), 3V3_MIC через FB8; аналоговая часть MAX9814/PCM1808 — keepout от
+  цифровых/20 В; TP31/32 не под шлейфом; SW3 mute доступен снаружи; loopback mic→PCM1808→DAC.
 
 ## 6. Чек-лист «перед заказом PCB» (20 пунктов)
 
 1. [ ] Реестр `spec/90` подписан, PRE-FREEZE снят для rev.2.
 2. [ ] P1-стенд P4/C6/PSRAM пройден (DMA/дисплей/USB/AUDIO).
 3. [ ] ERC 0/0 и `check_pinmap`/`check_schematic` PASS на финальной схеме.
-4. [ ] Все TP (TP1–TP30) на плате, не под разъёмами.
+4. [ ] Все TP (TP1–TP32) на плате, не под разъёмами.
 5. [ ] BOOT/RESET + UART0 J4 + strap-пады GPIO35/36.
 6. [ ] EEPROM 24C32 на I2C 0x57, адреса панели 0x20–0x23, 0x36 PWR-2 свободны/подтверждены.
 7. [ ] Recovery-сценарий (UART0 download) проверен на devkit.

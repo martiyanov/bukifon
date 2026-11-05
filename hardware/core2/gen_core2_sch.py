@@ -96,6 +96,26 @@ def build_custom_lib():
         (-7.62, -7.62, 7.62, 7.62),
         [('1', 'IN+', -10.16, 2.54, 0), ('2', 'IN-', -10.16, -2.54, 0),
          ('3', 'OUT+', 10.16, 2.54, 180), ('4', 'OUT-', 10.16, -2.54, 180)])
+    lib['MAX9814'] = custom_symbol(
+        'MAX9814', 'U', 'MAX9814 mic amp with AGC + mic bias (TDFN-14)',
+        (-12.7, -16.51, 12.7, 16.51),
+        [('1', 'CT', -15.24, 12.7, 0), ('2', 'SHDN', -15.24, 10.16, 0),
+         ('3', 'CG', -15.24, 7.62, 0), ('4', 'NC4', -15.24, 5.08, 0),
+         ('5', 'VDD', -15.24, 2.54, 0), ('6', 'MICOUT', 15.24, 2.54, 180),
+         ('7', 'GND', 0, -20.32, 90), ('8', 'MICIN', -15.24, -2.54, 0),
+         ('9', 'AR', -15.24, -5.08, 0), ('10', 'GAIN', -15.24, -7.62, 0),
+         ('11', 'NC11', 15.24, -12.7, 180), ('12', 'BIAS', 15.24, 12.7, 180),
+         ('13', 'MCBIAS', 15.24, 10.16, 180), ('14', 'EP', 15.24, -15.24, 180)],
+        hide_num=False)
+    lib['TS5A23157'] = custom_symbol(
+        'TS5A23157', 'U', 'TS5A23157 dual SPDT analog switch (VSSOP-10)',
+        (-10.16, -12.7, 10.16, 12.7),
+        [('1', 'IN1', -12.7, 7.62, 0), ('2', 'NO1', 12.7, 10.16, 180),
+         ('3', 'GND', 0, -15.24, 90), ('4', 'NO2', 12.7, 5.08, 180),
+         ('5', 'COM2', 12.7, 2.54, 180), ('6', 'NC2', 12.7, 0, 180),
+         ('7', 'IN2', -12.7, 0, 0), ('8', 'VCC', 0, 15.24, 270),
+         ('9', 'NC1', 12.7, -2.54, 180), ('10', 'COM1', 12.7, -5.08, 180)],
+        hide_num=False)
     lib['PCM1808'] = custom_symbol(
         'PCM1808', 'U', 'PCM1808 24-bit 96 kHz stereo I2S ADC (TSSOP-14)',
         (-12.7, -16.51, 12.7, 16.51),
@@ -327,9 +347,6 @@ add('C51', ('Device','C'), '100nF', {'1':'CHIP_PU','2':'DGND'}, FP['C'], 'reset 
 add('R24', ('Device','R'), '10k', {'1':'STRAP36','2':'3V3_MCU'}, FP['R'], 'GPIO36 strap PU (joint download boot reachable)', M)
 add('R91', ('Device','R'), '10k', {'1':'3V3','2':'PANEL_IRQ'}, FP['R'], 'PANEL_IRQ pull-up (4x MCP23017 INTA wire-OR on PANEL-2)', M)
 add('J4', ('Connector_Generic','Conn_01x03'), 'UART0 TP', {'1':'DGND','2':'UART0_TX','3':'UART0_RX'}, FP['HDR3'], 'UART0 testpoints/boot log', M)
-add('R25', ('Device','R'), '100k', {'1':'VBUS_CHG','2':'VBUS_DET'}, FP['R'], 'VBUS detect divider', M)
-add('R26', ('Device','R'), '100k', {'1':'VBUS_DET','2':'DGND'}, FP['R'], '', M)
-add('C52', ('Device','C'), '100nF', {'1':'VBUS_DET','2':'DGND'}, FP['C'], '', M)
 add('U31', ('picomod','ESP32-C6-MINI-1'), 'ESP32-C6-MINI-1 (Wi-Fi6/BLE5.3)',
     {'1':'3V3_C6','2':'DGND','3':'C6_RST','4':'SPI2_SCK','5':'SPI2_MOSI','6':'SPI2_MISO',
      '7':'C6_CS','8':'C6_HS','9':'C6_DR','10':'DGND'}, '',
@@ -339,11 +356,11 @@ add('C53', ('Device','C'), '22uF/10V', {'1':'3V3_C6','2':'DGND'}, FP['C'], '', M
 add('C54', ('Device','C'), '100nF', {'1':'3V3_C6','2':'DGND'}, FP['C'], '', M)
 add('C55', ('Device','C'), '100nF', {'1':'3V3_C6','2':'DGND'}, FP['C'], '', M)
 # microSD
-add('J5', ('Connector','Micro_SD_Card_Det1'), 'microSD (SDIO 4-bit)',
-    {'1':'SD_D2','2':'SD_D3','3':'SD_CMD','4':'3V3','5':'SD_CLK','6':'DGND',
-     '7':'SD_D0','8':'SD_D1','9':'SD_CD','SH':'DGND'}, FP['SD'], 'SDMMC slot0, 4-bit', M)
-for i, (net) in enumerate(['SD_CMD','SD_D0','SD_D1','SD_D2','SD_D3']):
-    add('R%d' % (30+i), ('Device','R'), '10k', {'1':'3V3','2':net}, FP['R'], 'SDIO pull-up', M)
+add('J5', ('Connector','Micro_SD_Card_Det1'), 'microSD (SDIO 1-bit)',
+    {'1':'NC','2':'NC','3':'SD_CMD','4':'3V3','5':'SD_CLK','6':'DGND',
+     '7':'SD_D0','8':'NC','9':'SD_CD','SH':'DGND'}, FP['SD'], 'SDMMC slot0, 1-bit (D1-D3 -> mic I2S1)', M)
+for i, (net) in enumerate(['SD_CMD', 'SD_D0']):
+    add('R%d' % (30+i), ('Device','R'), '10k', {'1':'3V3','2':net}, FP['R'], 'SDIO pull-up (1-bit)', M)
 add('R35', ('Device','R'), '10k', {'1':'3V3','2':'SD_CD'}, FP['R'], 'card detect pull-up', M)
 add('C56', ('Device','C'), '100nF', {'1':'3V3','2':'DGND'}, FP['C'], '', M)
 add('C57', ('Device','C'), '10uF/10V', {'1':'3V3','2':'DGND'}, FP['C'], '', M)
@@ -391,11 +408,52 @@ add('C76', ('Device','C'), '100nF', {'1':'3V3','2':'DGND'}, FP['C'], 'VDD 3.3 V 
 add('R43', ('Device','R'), '1k', {'1':'AUDIN_L','2':'AUDIN_L_F'}, FP['R'], 'input protection', A)
 add('D8', ('Diode','BAT54S'), 'BAT54S', {'1':'AGND','2':'5V','3':'AUDIN_L_F'}, FP['BAT54S'], 'clamp', A)
 add('C77', ('Device','C'), '100pF', {'1':'AUDIN_L_F','2':'AGND'}, FP['C'], '', A)
-add('C78', ('Device','C'), '1uF/16V', {'1':'AUDIN_L_F','2':'AUDIN_L_C'}, FP['C'], 'AC coupling to VINL', A)
+add('C78', ('Device','C'), '1uF/16V', {'1':'SW_L_COM','2':'AUDIN_L_C'}, FP['C'], 'AC coupling to VINL (after line/mic switch)', A)
 add('R44', ('Device','R'), '1k', {'1':'AUDIN_R','2':'AUDIN_R_F'}, FP['R'], '', A)
 add('D9', ('Diode','BAT54S'), 'BAT54S', {'1':'AGND','2':'5V','3':'AUDIN_R_F'}, FP['BAT54S'], '', A)
 add('C79', ('Device','C'), '100pF', {'1':'AUDIN_R_F','2':'AGND'}, FP['C'], '', A)
-add('C80', ('Device','C'), '1uF/16V', {'1':'AUDIN_R_F','2':'AUDIN_R_C'}, FP['C'], '', A)
+add('C80', ('Device','C'), '1uF/16V', {'1':'SW_R_COM','2':'AUDIN_R_C'}, FP['C'], 'AC coupling to VINR (after switch)', A)
+
+
+# ---------------------------- MIC INPUT (D-91) ----------------------------
+add('J19', ('Connector_Generic','Conn_02x03_Odd_Even'), 'PANEL-2 MEMS mic (IDC-6)',
+    {'1':'3V3_MIC','2':'DGND','3':'MIC_BCK','4':'MIC_WS','5':'MIC_DATA','6':'DGND'},
+    'Connector_IDC:IDC-Header_2x03_P2.54mm_Vertical',
+    'rev.3: MEMS I2S1 BCK/WS/DATA + 3V3/GND; shielded cable, ESD', A)
+add('FB8', ('Device','FerriteBead'), '600R@100MHz', {'1':'3V3','2':'3V3_MIC'}, FP['FB'], 'mic 3.3 V filter', A)
+add('C128', ('Device','C_Polarized'), '10uF/10V', {'1':'3V3_MIC','2':'AGND'}, FP['CP'], '', A)
+add('C129', ('Device','C'), '100nF', {'1':'3V3_MIC','2':'AGND'}, FP['C'], '', A)
+add('U48', ('Power_Protection','USBLC6-2SC6'), 'USBLC6-2SC6',
+    {'1':'MIC_BCK','2':'DGND','3':'MIC_WS','4':'MIC_WS','5':'3V3','6':'MIC_BCK'},
+    FP['SOT236'], 'ESD mic I2S BCK/WS', A)
+add('U49', ('Power_Protection','USBLC6-2SC6'), 'USBLC6-2SC6',
+    {'1':'MIC_DATA','2':'DGND','3':'NC','4':'NC','5':'3V3','6':'MIC_DATA'},
+    FP['SOT236'], 'ESD mic I2S DATA', A)
+add('J20', ('Connector_Audio','AudioJack3'), 'MIC IN 3.5mm TRS (electret)',
+    {'T':'MIC_IN','R':'MIC_BIAS','S':'AGND'}, '', 'rear panel mic/headset jack; tip=signal, ring=bias', N, on_board=False)
+add('D30', ('Diode','SMAJ5.0A'), 'SMAJ5.0A', {'1':'MIC_IN','2':'AGND'}, FP['DIODE'], 'ESD/защита mic jack', A)
+add('R106', ('Device','R'), '2.2k', {'1':'MICBIAS_N','2':'MIC_BIAS'}, FP['R'], 'electret bias (2.2k)', A)
+add('C127', ('Device','C'), '100nF', {'1':'MIC_IN','2':'MICIN_A'}, FP['C'], 'AC coupling to MAX9814', A)
+add('C122', ('Device','C'), '1uF/10V', {'1':'MICBIAS_N','2':'AGND'}, FP['C'], 'mic bias decoupling', A)
+add('U46', ('picomod','MAX9814'), 'MAX9814 (AGC mic amp)',
+    {'1':'CT','2':'SHDN','3':'CG','4':'AGND','5':'3V3_MIC','6':'MIC_AGC',
+     '7':'AGND','8':'MICIN_A','9':'AGND','10':'AGND','11':'AGND','12':'BIAS',
+     '13':'MICBIAS_N','14':'AGND'}, 'Package_DFN_QFN:TDFN-14-1EP_3x3mm_P0.4mm_EP1.78x2.35mm',
+    'AGC mic preamp (D-91); pinout verify vs datasheet before PCB', A)
+add('C125', ('Device','C'), '1uF/10V', {'1':'CT','2':'AGND'}, FP['C'], 'AGC attack/release (CT)', A)
+add('C124', ('Device','C'), '2.2uF/10V', {'1':'CG','2':'AGND'}, FP['C'], 'DC offset adjust (CG)', A)
+add('C123', ('Device','C'), '470nF', {'1':'BIAS','2':'AGND'}, FP['C'], 'bias decoupling', A)
+add('R113', ('Device','R'), '100k', {'1':'3V3_MIC','2':'SHDN'}, FP['R'], 'SHDN pull-up (mic on)', A)
+add('SW3', ('Switch','SW_SPST'), 'MIC MUTE', {'1':'SHDN','2':'AGND'}, FP['BTN'], 'аппаратный mute: SHDN->GND (D-92)', A)
+add('Q5', ('Transistor_FET','Q_NMOS_GDS'), '2N7000', {'1':'SHDN','2':'MIC_LED_K','3':'AGND'}, FP['TO92'], 'MIC ON LED driver', A)
+add('R114', ('Device','R'), '1k', {'1':'3V3_MIC','2':'MIC_LED_A'}, FP['R'], '', A)
+add('D31', ('Device','LED'), 'MIC ON', {'1':'MIC_LED_K','2':'MIC_LED_A'}, FP['C'], 'LED «MIC ON» (D-92)', A)
+add('C126', ('Device','C'), '1uF/16V', {'1':'MIC_AGC','2':'SW_MIC'}, FP['C'], 'MAX9814 out -> switch', A)
+add('U47', ('picomod','TS5A23157'), 'TS5A23157 (line/mic switch)',
+    {'1':'MIC_SEL','2':'AUDIN_L_F','3':'AGND','4':'AUDIN_R_F','5':'SW_R_COM',
+     '6':'SW_MIC','7':'MIC_SEL','8':'3V3','9':'SW_MIC','10':'SW_L_COM'},
+    'Package_SO:MSOP-10-1EP_3x3mm_P0.5mm_EP1.68x1.88mm', 'analog switch line(AUDIO IN)/mic, control MIC_SEL (footprint verify vs DGS)', A)
+add('R110', ('Device','R'), '100k', {'1':'MIC_SEL','2':'AGND'}, FP['R'], 'MIC_SEL pull-down = LINE by default', A)
 
 # ---------------------------- CV ------------------------------------------
 add('U35', ('Analog_DAC','MCP4728'), 'MCP4728A0-E/UN (0x60)',
@@ -738,7 +796,7 @@ def make_schematic():
 SEC_TITLES = {
  'POWER': 'POWER: USB-C, BQ24074 charge/path, BMS 1S, MT3608 x3 (+12/+5/BL20), MP1584 3V3_MCU, AP2112 x2, MC34063 -12V',
  'MCU': 'MCU: ESP32-P4 module slot, ESP32-C6 Wi-Fi/BLE (SPI esp-hosted), USB-C HS, microSD SDIO',
- 'AUDIO': 'AUDIO: PCM5102A DAC + PCM1808 ADC (I2S), TL072 LINE/PHONES, rear jacks',
+ 'AUDIO': 'AUDIO: PCM5102A DAC + PCM1808 ADC (I2S), TL072 LINE/PHONES, rear jacks, mic (MAX9814 + line/mic switch + I2S1 MEMS, D-91)',
  'CV': 'CV: 2x MCP4728 (0x60/0x61), 6x TL074 x4.9, CV IN level shift, MCP3208 + chains',
  'MIDI': 'MIDI TRS-A: 6N137 IN / 74HCT125 OUT; GATE drivers 2N7000; LED level shifter',
  'BUS': 'MODULE BUS: 2x IDC-26 analog bus (+-12V, CV1..4, GATE, audio), per-port protection',

@@ -81,3 +81,9 @@ J14 (IDC-26);20;GNDA;—;analog;—;аналоговое поле
 J14 (IDC-26);22;GNDA;—;analog;—;аналоговое поле
 J14 (IDC-26);24;GNDA;—;analog;—;аналоговое поле
 J14 (IDC-26);26;GNDA;—;analog;—;аналоговое поле
+J16 (IDC-6);1;MIC_BCK;core→panel;digital;1.4…3.1 МГц;I2S1 MEMS-микрофон (rev.3): ICS-43434, мьют + LED MIC ON
+J16 (IDC-6);2;GND;—;power;—;I2S1 MEMS-микрофон (rev.3): ICS-43434, мьют + LED MIC ON
+J16 (IDC-6);3;MIC_WS;core→panel;digital;48 кГц;I2S1 MEMS-микрофон (rev.3): ICS-43434, мьют + LED MIC ON
+J16 (IDC-6);4;GND;—;power;—;I2S1 MEMS-микрофон (rev.3): ICS-43434, мьют + LED MIC ON
+J16 (IDC-6);5;MIC_DATA;panel→core;digital;3.3 В I2S;I2S1 MEMS-микрофон (rev.3): ICS-43434, мьют + LED MIC ON
+J16 (IDC-6);6;+3V3;core→panel;power;3.3 В (≤5 мА);I2S1 MEMS-микрофон (rev.3): ICS-43434, мьют + LED MIC ON

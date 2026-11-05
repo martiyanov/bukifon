@@ -69,11 +69,12 @@ bool writeScreens(sim::Simulator& simulator, const std::string& outDir) {
     std::printf("ERROR: cannot allocate 800x480 framebuffer\n");
     return false;
   }
-  const ui::Screen screens[6] = {ui::Screen::Main, ui::Screen::Sequencer, ui::Screen::Mixer,
-                                 ui::Screen::Modules, ui::Screen::Gen, ui::Screen::Ext};
-  const char* names[6] = {"main", "sequencer", "mixer", "modules", "gen", "ext"};
+  const ui::Screen screens[7] = {ui::Screen::Main, ui::Screen::Sequencer, ui::Screen::Mixer,
+                                 ui::Screen::Modules, ui::Screen::Gen, ui::Screen::Ext,
+                                 ui::Screen::Mic};
+  const char* names[7] = {"main", "sequencer", "mixer", "modules", "gen", "ext", "mic"};
   bool ok = true;
-  for (int i = 0; i < 6; ++i) {
+  for (int i = 0; i < 7; ++i) {
     framebuffer.clear(colors::kBlack);
     const ui::UiSnapshot snapshot = simulator.snapshot(screens[i]);
     ui::drawUi800(framebuffer, snapshot);

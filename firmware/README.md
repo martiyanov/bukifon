@@ -44,7 +44,7 @@ firmware/
   engine_unity.cpp / sim_unity.cpp  PlatformIO unity translation units
   Bukifon/      RP2040 Arduino sketch: Bukifon.ino + platformio.ini
   host/         native build (Makefile + CMakeLists.txt), WAV renderer
-  tests/        unit tests (288), FFT analysis, run_tests.sh, run_sim_demo.sh, REPORT.md
+  tests/        unit tests (311), FFT analysis, run_tests.sh, run_sim_demo.sh, REPORT.md
   tools/        wavetable/font generators, ppm_to_png.py, build_pico.sh
   artifacts/    generated 800x480 UI screenshots + demo logs (git-ignored)
 ```
@@ -52,7 +52,7 @@ firmware/
 ## v0.5 host prototype — what to run
 
 ```bash
-make -C firmware/host test          # 288 unit tests
+make -C firmware/host test          # 311 unit tests
 firmware/tests/run_tests.sh         # build + tests + WAV render + FFT report
 firmware/tests/run_sim_demo.sh      # 16-bar demo, event-log determinism, 4 PNG
 ```
@@ -95,7 +95,7 @@ firmware/tests/run_tests.sh         # full pipeline: build, tests, WAV render, F
 
 Latest measured results (see `tests/REPORT.md` and `tests/out/test_log.txt`):
 
-- **288 unit tests, 0 failures** (Apple clang 21, C++17, `-O2`)
+- **311 unit tests, 0 failures** (Apple clang 21, C++17, `-O2`)
 - line coverage **83.5 %** (4347/5204 lines, gcov, generated tables excluded)
 - host demo: 16 bars, 1024 note-ons, 32 p-locks, deterministic event log, 4 PNG screens
 - A4 = **440.0000 Hz** (error `-0.0000 %`, limit ±0.1 %)
@@ -144,6 +144,15 @@ export PLATFORMIO_CORE_DIR=/tmp/piocore
 RAM 87.7 % — запас ~32 KiB; при добавлении эффектов/модулей оптимизировать
 буферы (delay-линия, пресет-кэш, 8-дорожечный секвенсор) или перенести часть в
 PSRAM (RP2350).
+
+## Round 15 — voice as input: MIC
+
+- **MIC page** (7th tab): MIC ON/MUTED privacy banner, SOURCE LINE/MIC, GAIN,
+  THRESH, MONITOR, BEATBOX+SENS, REC→PAD, LEVEL meter; 16-cell mirror.
+- **Engine** `src/io/mic.*`: capture/VAD model, ≤30 s voice take with silence
+  auto-trim, beatbox onset→kick/snare/hat steps (UNDO, ≥80 % at 90–140 BPM),
+  mute switch+LED, no implicit BLE/Wi-Fi transmission.
+- Screenshot `artifacts/ui/mic.png`; TODO(hw) in docs/71 §9.
 
 ## Round 14 — external MIDI sequencer v1.0-rc
 

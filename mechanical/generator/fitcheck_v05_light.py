@@ -16,6 +16,7 @@ import params_v05 as PV
 import params_v04 as P04
 import case as C
 import fitcheck_v04 as F4
+import mic_v05 as MIC
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
@@ -133,11 +134,84 @@ def run(name, meta, instances, parts):
                               and m["watertight_reload"]) else "КОНФЛИКТ"))
     # --- панель: вырезы по JSON --------------------------------------------
     rows += F4.check_centers()
+    # --- микрофон (docs/71, D-94): панель = JSON + порт + LED -------------
+    for i, r in enumerate(rows):
+        if r[1] == "Число сквозных отверстий панели":
+            rows[i] = ("[J]", "Число сквозных отверстий панели",
+                       "83 из JSON + порт Ø1.8 + LED Ø1.6 = 85",
+                       f"{r[3]} (JSON) + 2 (mic/LED)", "OK")
+    _mic_rows(rows, pan_L, pan_R, p2w, M)
 
     conflicts = [r for r in rows if r[4] != "OK"]
     write_report(name, v, rows, conflicts)
     print(f"[fit v0.5-B-light] строк {len(rows)}, конфликтов {len(conflicts)}")
     return rows
+
+
+def _inter(a, b):
+    try:
+        return abs(float(trimesh.boolean.intersection([a, b], engine="manifold").volume))
+    except Exception:  # noqa: BLE001
+        return 0.0
+
+
+def _probe(r, z0, z1, x, y):
+    return C.cyl_z(r, z0, z1, x, y, 28)
+
+
+def _mic_rows(rows, pan_L, pan_R, p2w, M):
+    """Проверки порта/цековки/MEMS/LED/звуковода и держателей."""
+    flat = trimesh.util.concatenate([pan_L, pan_R])
+    p = MIC.PORT
+    probe = _probe(p["d"] / 2 - 0.1, 59.5, 64.0, p["x"], p["y"])
+    v = _inter(probe, flat)
+    rows.append(("[M]", f"Порт Ø{p['d']} в панели (X{p['x']}, Y{p['y']})",
+                 "отверстие открыто", f"пересечение {v:.1f} мм³",
+                 "OK" if v < 1.0 else "КОНФЛИКТ"))
+    fr = _probe(MIC.FOAM["d"] / 2 - 0.1, 62.4, 63.3, p["x"], p["y"])
+    v = _inter(fr, flat)
+    rows.append(("[M]", "Цековка под сетку/поролон Ø3.4×0.7 (сверху)",
+                 "глубина 0.7 мм", f"пересечение {v:.1f} мм³",
+                 "OK" if v < 1.0 else "КОНФЛИКТ"))
+    me = _probe(MIC.MEMS["d"] / 2 - 0.1, 59.95, 61.15, p["x"], p["y"])
+    v = _inter(me, flat)
+    rows.append(("[M]", "Углубление под MEMS/звуковод Ø5×1.2 (снизу)",
+                 "глубина 1.2 мм", f"пересечение {v:.1f} мм³",
+                 "OK" if v < 1.0 else "КОНФЛИКТ"))
+    rest = _probe(MIC.MEMS["d"] / 2 - 0.1, 61.35, 62.3, p["x"], p["y"])
+    vr = _inter(rest, flat)
+    rows.append(("[M]", "Остаточная толщина панели над MEMS-углублением",
+                 "≥ 0.6 мм", f"{vr/ (3.14159*(MIC.MEMS['d']/2-0.1)**2) :.2f} мм (материал)",
+                 "OK" if vr > 5.0 else "КОНФЛИКТ"))
+    led = MIC.LED
+    lp = _probe(led["d"] / 2 - 0.1, 59.5, 64.0, led["x"], led["y"])
+    v = _inter(lp, flat)
+    rows.append(("[M]", f"LED MIC ON Ø{led['d']} (X{led['x']}, Y{led['y']})",
+                 "отверстие открыто", f"пересечение {v:.1f} мм³",
+                 "OK" if v < 1.0 else "КОНФЛИКТ"))
+    # звуковод: флянец под панелью, низ на 0.5 мм выше PANEL-2
+    guide = trimesh.load(os.path.join(STL_DIR, "mic_guide.stl"))
+    gw = guide.copy(); gw.apply_transform(M)
+    rows.append(("[M]", "Звуковод Ø8→Ø3.5, канал 2→4.5, H7.5",
+                 "между панелью и PANEL-2, без пересечений",
+                 f"пересеч. с панелью {_inter(gw, pan_L)+_inter(gw, pan_R):.1f}, "
+                 f"с PANEL-2 {_inter(gw, p2w):.1f} мм³",
+                 "OK" if _inter(gw, pan_L) < 3 and _inter(gw, pan_R) < 3
+                 and _inter(gw, p2w) < 3 else "КОНФЛИКТ"))
+    # держатели гусиной шеи
+    for nm, label, bbox_max in (
+            ("mic_clip_rear", "Клипса на заднюю кромку (зев 3.6, гнездо Ø3.6×8)",
+             (30, 25, 20)),
+            ("mic_holder_top", "Короткий держатель на верхнюю кромку (гнездо Ø3.6×5)",
+             (30, 25, 20))):
+        m = trimesh.load(os.path.join(STL_DIR, nm + ".stl"))
+        b = m.bounds[1] - m.bounds[0]
+        rows.append(("[M]", label, "печатная деталь, watertight, ≤220",
+                     f"{b[0]:.0f}×{b[1]:.0f}×{b[2]:.0f}, watertight={m.is_watertight}",
+                     "OK" if m.is_watertight and max(b) <= 220 else "КОНФЛИКТ"))
+    rows.append(("[M]", "Гусиная шея 3.5 мм: гнездо Ø3.6 (зазор 0.1)",
+                 "Ø3.5 входит в Ø3.6", "клипса/держатель — MIC.SOCKET_HOLE=3.6",
+                 "OK"))
 
 
 def write_report(name, v, rows, conflicts):

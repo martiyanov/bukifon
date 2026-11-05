@@ -96,7 +96,7 @@
    ],
    "watertight": true,
    "watertight_reload": true,
-   "volume_mm3": 93837.2
+   "volume_mm3": 93796.6
   },
   "panel_R": {
    "file": "panel_R.stl",
@@ -160,6 +160,69 @@
    "watertight": true,
    "watertight_reload": true,
    "volume_mm3": 935.7
+  },
+  "mic_guide": {
+   "file": "mic_guide.stl",
+   "bbox": [
+    8.0,
+    8.0,
+    7.5
+   ],
+   "min": [
+    118.0,
+    1.5,
+    52.5
+   ],
+   "max": [
+    126.0,
+    9.5,
+    60.0
+   ],
+   "watertight": true,
+   "watertight_reload": true,
+   "volume_mm3": 207.4
+  },
+  "mic_clip_rear": {
+   "file": "mic_clip_rear.stl",
+   "bbox": [
+    18.0,
+    16.0,
+    13.6
+   ],
+   "min": [
+    -9.0,
+    -8.0,
+    0.0
+   ],
+   "max": [
+    9.0,
+    8.0,
+    13.6
+   ],
+   "watertight": true,
+   "watertight_reload": true,
+   "volume_mm3": 1435.4
+  },
+  "mic_holder_top": {
+   "file": "mic_holder_top.stl",
+   "bbox": [
+    20.0,
+    20.0,
+    11.1
+   ],
+   "min": [
+    -10.0,
+    -10.0,
+    0.0
+   ],
+   "max": [
+    10.0,
+    10.0,
+    11.1
+   ],
+   "watertight": true,
+   "watertight_reload": true,
+   "volume_mm3": 1375.9
   }
  },
  "instances": [
@@ -276,6 +339,76 @@
     0,
     0
    ]
+  },
+  {
+   "name": "panel_mic_guide",
+   "file": "mic_guide.stl",
+   "pos": [
+    0,
+    0,
+    0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ],
+   "panel": true,
+   "mic": true
+  },
+  {
+   "name": "mic_clip_rear",
+   "file": "mic_clip_rear.stl",
+   "pos": [
+    60,
+    -300,
+    0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ],
+   "mic": true
+  },
+  {
+   "name": "mic_holder_top",
+   "file": "mic_holder_top.stl",
+   "pos": [
+    120,
+    -300,
+    0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ],
+   "mic": true
   }
- ]
+ ],
+ "mic": {
+  "port": {
+   "x": 122.0,
+   "y": 5.5,
+   "d": 1.8
+  },
+  "foam": {
+   "d": 3.4,
+   "depth": 0.7
+  },
+  "mems": {
+   "d": 5.0,
+   "depth": 1.2
+  },
+  "led": {
+   "x": 116.0,
+   "y": 10.5,
+   "d": 1.6,
+   "recess_d": 2.8,
+   "recess_depth": 0.5
+  },
+  "socket": 3.6,
+  "clamp_gap": 3.6
+ }
 }

@@ -2,6 +2,25 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.23.0] — 2025-11-06 — «Микрофон: ревизии и прошивка»
+
+### Добавлено
+- **PANEL-2 rev.3**: цифровой **I2S MEMS ICS-43434** (24 бит/48 кГц), акустический порт
+  Ø1.8 в (122.0, 5.5), цековка Ø3.4×0.7, MEMS-углубление Ø5×1.2, LED MIC ON (116.0, 10.5);
+  **J16 IDC-6** (1:1 с CORE-2 J19); аппаратный mute SW1 (разрыв +3V3) + FB1 + ESD SRV05-4;
+  ERC **0/6w** (прежние SPI2 DNP), verify **1342/0**; 85 отверстий (83 JSON + порт + LED).
+- **CORE-2 rev.3**: I2S1 RX `MIC_BCK/WS/DATA` = GPIO40/41/42, `MIC_SEL` GPIO54; **J19 IDC-6**;
+  **3.5 мм TRS mic jack** (J20) + bias + **MAX9814** AGC + **TS5A23157** line/mic → PCM1808;
+  **SW3 MIC MUTE** + LED; ESD USBLC6/SMAJ5.0A; **SDIO 4-bit → 1-bit** (DAT1–3 = NC);
+  TP31/TP32; ERC **0/0**, pinmap/schematic PASS; BOM 265 строк.
+- **Механика**: звуковод `mic_guide`, клипсы `mic_clip_rear`/`mic_holder_top`, fitcheck
+  **41/0**, B-light **231.4 г / 11.2 ч** (+1.4 г).
+- **Прошивка**: `io/mic.*` — захват I2S1 (модель), запись ≤30 с с авто-обрезкой тишины,
+  **битбокс** (onset/классы kick-snare-hat, velocity/акцент, UNDO, точность ≥80 % на 90/110/140 BPM),
+  приватность (mute блокирует запись, LED, никакой неявной передачи), **UI MIC** — 7-я вкладка
+  (SRC/GAIN/THR/MON/BEAT/SENS/PAD/LVL + макросы, 16-ячеечная карта); **311/311 тестов**.
+- docs/71 §5/§8/§9 (реализация PANEL-2/CORE-2/прошивки, TODO(hw)), docs/38/43 обновлены.
+
 ## [0.22.0] — 2025-11-06 — «Голос как вход»
 
 ### Добавлено

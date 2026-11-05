@@ -36,9 +36,9 @@ SDMMC slot0 на падах GPIO39…GPIO48, LCD_CAM (parallel RGB 16 бит) и
 | # | Сигнал | GPIO | Периферия | Напряжение | Направление | Подтяжка | Boot-состояние | Слот J-MCU | Разъём | Примечание |
 |---|---|---|---|---|---|---|---|---|---|---|
 | 1 | `SD_D0` | GPIO39 | SDMMC SLOT0 D0 | 3.3 | bidir | 10k PU | high | 23 | J-SD.DAT0 | IO MUX SD1_CDATA0 |
-| 2 | `SD_D1` | GPIO40 | SDMMC SLOT0 D1 | 3.3 | bidir | 10k PU | high | 24 | J-SD.DAT1 | IO MUX SD1_CDATA1 |
-| 3 | `SD_D2` | GPIO41 | SDMMC SLOT0 D2 | 3.3 | bidir | 10k PU | high | 25 | J-SD.DAT2 | IO MUX SD1_CDATA2 |
-| 4 | `SD_D3` | GPIO42 | SDMMC SLOT0 D3 | 3.3 | bidir | 10k PU | high | 26 | J-SD.DAT3/CD | IO MUX SD1_CDATA3 |
+| 2 | `MIC_BCK` | GPIO40 | I2S1 RX BCK (MEMS) | 3.3 | in | none | low | 24 | J19.3 | ex-SD_D1; SDIO now 1-bit; series/ESD at J19 |
+| 3 | `MIC_WS` | GPIO41 | I2S1 RX WS (MEMS) | 3.3 | in | none | low | 25 | J19.4 | ex-SD_D2; SDIO now 1-bit |
+| 4 | `MIC_DATA` | GPIO42 | I2S1 RX DATA (MEMS) | 3.3 | in | none | low | 26 | J19.5 | ex-SD_D3; SDIO now 1-bit |
 | 5 | `SD_CLK` | GPIO43 | SDMMC SLOT0 CLK | 3.3 | out | none | low | 27 | J-SD.CLK | IO MUX SD1_CCLK |
 | 6 | `SD_CMD` | GPIO44 | SDMMC SLOT0 CMD | 3.3 | bidir | 10k PU | high | 28 | J-SD.CMD | IO MUX SD1_CCMD |
 | 7 | `SD_CD` | GPIO45 | GPIO in (card detect) | 3.3 | in | 10k PU | high | 29 | J-SD.DET | card detect switch to GND |
@@ -87,7 +87,7 @@ SDMMC slot0 на падах GPIO39…GPIO48, LCD_CAM (parallel RGB 16 бит) и
 | 50 | `C6_DR` | GPIO25 | GPIO (data ready IRQ) | 3.3 | in | 10k PU | high | 12 | U-C6.DATA_READY | GPIO25 has USB_PU strap at reset (kept high) |
 | 51 | `C6_RST` | GPIO27 | GPIO out (C6 reset) | 3.3 | out | 10k PD | low | 13 | U-C6.EN | resets C6 at power-up; released by firmware |
 | 52 | `BOOT` | GPIO35 | boot strapping (GPIO35) | 3.3 | in (strap) | 10k PU + button to GND | high (SPI boot) | 8 | SW-BOOT | low at reset = joint download boot (USB HS / UART0) |
-| 53 | `VBUS_DET` | GPIO54 | GPIO in (VBUS detect) | 3.3 | in | 100k/100k divider | low | 14 | D1/R | USB-C attach detect (100k/100k + 100nF) |
+| 53 | `MIC_SEL` | GPIO54 | GPIO out (mic/line select) | 3.3 | out | 100k PD | low | 14 | U47.IN1/IN2 | line=0 / mic=1; ex-VBUS_DET |
 | 54 | `LCD_DISP` | GPIO50 | GPIO out (LCD power/enable) | 3.3 | out | none | low | 17 | J-LCD.37 | display enable; final controllable GPIO |
 
 ## 3. Выделенные и не-GPIO выводы модуля
@@ -170,6 +170,8 @@ EN_LED5 — «active-high enable», по умолчанию OFF. При high-Z (
 | TP28 | `LED_RET` | LED return to PWR-2 Q7 (rev.3 DFM) |
 | TP29 | `I2S_BCK` | audio bit clock (rev.3 DFM) |
 | TP30 | `I2S_LRCK` | audio word clock (rev.3 DFM) |
+| TP31 | `MIC_DATA` | MEMS I2S1 data (D-91) |
+| TP32 | `MIC_BCK` | MEMS I2S1 bit clock (D-91) |
 
 I2C0 (GPIO21/22) — общая шина: 2× MCP4728 (0x60/0x61), 24C32 (0x57), MAX17048 (0x36, PWR-2),
 4× MCP23017 (0x20/0x21/0x22/0x23): 48 линий энкодеров (16× A/B/push) + 13 линий матрицы 6×7 = 61; 3 линии резерв. Наружу — только SDA/SCL/INT (wire-OR INTA). Подтяжки I2C 2.2 к и INT 10 к — на CORE-2; ёмкость шины ≤ 200 pF.
@@ -219,7 +221,7 @@ I2C0 (GPIO21/22) — общая шина: 2× MCP4728 (0x60/0x61), 24C32 (0x57),
 | 11 | `C6_HS` |
 | 12 | `C6_DR` |
 | 13 | `C6_RST` |
-| 14 | `VBUS_DET` |
+| 14 | `MIC_SEL` |
 | 15 | `LED_GPIO` |
 | 16 | `BL_PWM` |
 | 17 | `LCD_DISP` |
@@ -229,9 +231,9 @@ I2C0 (GPIO21/22) — общая шина: 2× MCP4728 (0x60/0x61), 24C32 (0x57),
 | 21 | `UART0_TX` |
 | 22 | `UART0_RX` |
 | 23 | `SD_D0` |
-| 24 | `SD_D1` |
-| 25 | `SD_D2` |
-| 26 | `SD_D3` |
+| 24 | `MIC_BCK` |
+| 25 | `MIC_WS` |
+| 26 | `MIC_DATA` |
 | 27 | `SD_CLK` |
 | 28 | `SD_CMD` |
 | 29 | `SD_CD` |

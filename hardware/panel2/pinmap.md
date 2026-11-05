@@ -11,13 +11,14 @@
 | LCD подсветка: BL_PWM (драйвер/boost на CORE-2) + BL_ANODE/BL_CATHODE | 3 | J12 FFC-40 |
 | Энкодеры 16 × (A,B,SW) = 48 → I2C (SDA, SCL) + INT | 3 | J13 IDC-16 |
 | EN рельсов: EN_RAILS (0x23 GPA7), EN_LED5 (0x23 GPB6) | 2 | J13.15 / J14.25 |
+| I2S1 MEMS-микрофон (rev.3): MIC_BCK, MIC_WS, MIC_DATA | 3 | J16 IDC-6 |
 | Матрица 42 клавиш 6×7 = 13 → MCP23017 (на той же I2C) | 0 доп. | J13 IDC-16 |
 | LED-цепочка 17 × WS2812B: LED_DATA | 1 | J13 IDC-16 |
 | Джек-поле: 4 CV OUT + 4 CV IN + GATE OUT + GATE IN | 10 | J14 IDC-26 |
 | Фейдеры 2 × 10k → MCP3208 (CORE-2) | 2 | J14 IDC-26 |
 | Питание: 5V_LED + отдельный LED_RET (цепочка LED, 0.55 А), +3V3 (логика), GND/GNDA | 2 рельса + 2 возврата | J13/J14 |
 
-**Итого сигналов: 40** (16 RGB + 4 синхро + BL_PWM + BL_ANODE + BL_CATHODE = 23 по J12; I2C 2 + INT + LED_DATA + EN_RAILS = 5 по J13; 4 CV OUT + 4 CV IN + GATE_OUT + 2 фейдера + EN_LED5 = 12 по J14). GATE_IN читается на PANEL-2 (0x23 GPB7) и на шлейф не выходит.
+**Итого сигналов: 43** (16 RGB + 4 синхро + BL_PWM + BL_ANODE + BL_CATHODE = 23 по J12; I2C 2 + INT + LED_DATA + EN_RAILS = 5 по J13; 4 CV OUT + 4 CV IN + GATE_OUT + 2 фейдера + EN_LED5 = 12 по J14; MIC_BCK/WS/DATA = 3 по J16). GATE_IN читается на PANEL-2 (0x23 GPB7) и на шлейф не выходит.
 **Одного IDC-26 не хватает:** в IDC-26 максимум 13 сигнальных пинов при «сигнал/земля»; даже без LCD нужно 16 сигналов (3 + 1 + 12). Поэтому:
 
 1. **J12 FFC-40** — LCD RGB-шина (23 сигнала, включая BL_PWM и клеммы LED-линейки) + питание: высокочастотные линии нельзя тащить через IDC-26 вместе с аналогом и I2C;
@@ -122,6 +123,20 @@
 | 22 | `GNDA` | — | — | аналоговое поле |
 | 24 | `GNDA` | — | — | аналоговое поле |
 | 26 | `GNDA` | — | — | аналоговое поле |
+
+## 4a. J16 — IDC-6 (I2S1 MEMS-микрофон, rev.3)
+
+| Pin | Сигнал | Направление | Уровень | Примечание |
+|---:|---|---|---|---|
+| 1 | `MIC_BCK` | core→panel | 1.4…3.1 МГц | I2S1 MEMS-микрофон (rev.3): ICS-43434, мьют + LED MIC ON |
+| 2 | `GND` | — | — | I2S1 MEMS-микрофон (rev.3): ICS-43434, мьют + LED MIC ON |
+| 3 | `MIC_WS` | core→panel | 48 кГц | I2S1 MEMS-микрофон (rev.3): ICS-43434, мьют + LED MIC ON |
+| 4 | `GND` | — | — | I2S1 MEMS-микрофон (rev.3): ICS-43434, мьют + LED MIC ON |
+| 5 | `MIC_DATA` | panel→core | 3.3 В I2S | I2S1 MEMS-микрофон (rev.3): ICS-43434, мьют + LED MIC ON |
+| 6 | `+3V3` | core→panel | 3.3 В (≤5 мА) | I2S1 MEMS-микрофон (rev.3): ICS-43434, мьют + LED MIC ON |
+
+**J16 (PANEL-2) ↔ J19 (CORE-2)** — канон 1:1: 1 BCK, 2 GND, 3 WS, 4 GND, 5 DATA, 6 3V3. ⚠️ в `hardware/core2` rev.3 J19 фактически *3V3, GND, BCK, WS, DATA, GND* — порядок нужно выровнять на одной из плат (4 цепи, README §6 п.10). Между сигналами и питанием — чередование «сигнал/земля» для I2S на 3 МГц.
+Акустический порт: **Ø1.8, центр (X 122.0, Y 5.5)** панели, цековка Ø3.4×0.7, MEMS-углубление Ø5×1.2 снизу, звуковод ≤3 мм; LED MIC ON **Ø1.6, центр (X 116.0, Y 10.5)** — по fitcheck mechanical (85 сквозных отверстий = 83 JSON + порт + LED).
 
 ## 5. J11 — FPC-40 (LCD panel tail, на PANEL-2)
 

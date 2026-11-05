@@ -29,7 +29,7 @@
 | 11 | CV/GATE: loopback CV OUT→CV IN, GATE OUT→GATE IN | ошибка ≤±0.5 % FS |
 | 12 | USB HS composite (HID+MIDI+UAC2+CDC), 30 мин | 0 drop/reconnect |
 | 13 | PWR-2: подключить J17/J18, проверить +12/−12/+5/5V_LED/LED_RET, EN | рельсы по бюджету, PWR_GOOD ок |
-| 14 | Self-test 20 (dfm.md §2) + soak 30–60 мин | все PASS, 0 xruns |
+| 14 | Self-test 21 (dfm.md §2, вкл. mic D-91) + soak 30–60 мин | все PASS, 0 xruns |
 | 15 | Тепловой контроль: P4/PSRAM, MT3608 #3, BQ24074 | ≤70 °C (кроме BL) |
 
 ## 2. Ожидаемые значения
@@ -75,7 +75,7 @@
 
 ## 5. Ссылки
 
-- Self-test 20 тестов: `hardware/core2/dfm.md` §2.
+- Self-test 21 тест (вкл. mic D-91): `hardware/core2/dfm.md` §2.
 - DFM/TP/серийник/recovery: `hardware/core2/dfm.md` §1/§3/§4/§5.
 - Обзор DFM-пакета: `docs/38-dfm-testability.md`.
 - План rev.3 и fallback H743: `hardware/core2/rev3-plan.md`.

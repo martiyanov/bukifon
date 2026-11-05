@@ -74,9 +74,9 @@ RAILS = [
 PINMAP = [
  # --- SDIO microSD (SDMMC slot0 pads GPIO39..GPIO44, IO MUX) ---
  ('SD_D0', 39, 'SDMMC SLOT0 D0', '3.3', 'bidir', '10k PU', 'high', 23, 'J-SD.DAT0', 'IO MUX SD1_CDATA0'),
- ('SD_D1', 40, 'SDMMC SLOT0 D1', '3.3', 'bidir', '10k PU', 'high', 24, 'J-SD.DAT1', 'IO MUX SD1_CDATA1'),
- ('SD_D2', 41, 'SDMMC SLOT0 D2', '3.3', 'bidir', '10k PU', 'high', 25, 'J-SD.DAT2', 'IO MUX SD1_CDATA2'),
- ('SD_D3', 42, 'SDMMC SLOT0 D3', '3.3', 'bidir', '10k PU', 'high', 26, 'J-SD.DAT3/CD', 'IO MUX SD1_CDATA3'),
+ ('MIC_BCK', 40, 'I2S1 RX BCK (MEMS)', '3.3', 'in', 'none', 'low', 24, 'J19.3', 'ex-SD_D1; SDIO now 1-bit; series/ESD at J19'),
+ ('MIC_WS', 41, 'I2S1 RX WS (MEMS)', '3.3', 'in', 'none', 'low', 25, 'J19.4', 'ex-SD_D2; SDIO now 1-bit'),
+ ('MIC_DATA', 42, 'I2S1 RX DATA (MEMS)', '3.3', 'in', 'none', 'low', 26, 'J19.5', 'ex-SD_D3; SDIO now 1-bit'),
  ('SD_CLK', 43, 'SDMMC SLOT0 CLK', '3.3', 'out', 'none', 'low', 27, 'J-SD.CLK', 'IO MUX SD1_CCLK'),
  ('SD_CMD', 44, 'SDMMC SLOT0 CMD', '3.3', 'bidir', '10k PU', 'high', 28, 'J-SD.CMD', 'IO MUX SD1_CCMD'),
  ('SD_CD', 45, 'GPIO in (card detect)', '3.3', 'in', '10k PU', 'high', 29, 'J-SD.DET', 'card detect switch to GND'),
@@ -135,7 +135,7 @@ PINMAP = [
  # --- USB / power / strap ---
  ('BOOT', 35, 'boot strapping (GPIO35)', '3.3', 'in (strap)', '10k PU + button to GND', 'high (SPI boot)', 8, 'SW-BOOT', 'low at reset = joint download boot (USB HS / UART0)'),
  ('STRAP36', 36, 'boot strapping (GPIO36)', '3.3', 'in (strap)', '10k PU', 'high', 9, 'R96', 'needs 1 for joint download boot; 10k PU allows BOOT-button flashing'),
- ('VBUS_DET', 54, 'GPIO in (VBUS detect)', '3.3', 'in', '100k/100k divider', 'low', 14, 'D1/R', 'USB-C attach detect (100k/100k + 100nF)'),
+ ('MIC_SEL', 54, 'GPIO out (mic/line select)', '3.3', 'out', '100k PD', 'low', 14, 'U47.IN1/IN2', 'line=0 / mic=1; ex-VBUS_DET'),
  # --- dedicated / non-GPIO module pins ---
  ('USB_HS_DP', None, 'USB 2.0 HS OTG D+ (dedicated pin 50)', 'USB', 'bidir', 'USB internal', 'USB', 6, 'J-USB.A6/B6', 'through USBLC6-2SC6'),
  ('USB_HS_DM', None, 'USB 2.0 HS OTG D- (dedicated pin 49)', 'USB', 'bidir', 'USB internal', 'USB', 7, 'J-USB.A7/B7', 'through USBLC6-2SC6'),
@@ -223,6 +223,8 @@ TPS = [
  ('TP28', 'LED_RET', 'LED return to PWR-2 Q7 (rev.3 DFM)'),
  ('TP29', 'I2S_BCK', 'audio bit clock (rev.3 DFM)'),
  ('TP30', 'I2S_LRCK', 'audio word clock (rev.3 DFM)'),
+ ('TP31', 'MIC_DATA', 'MEMS I2S1 data (D-91)'),
+ ('TP32', 'MIC_BCK', 'MEMS I2S1 bit clock (D-91)'),
 ]
 # rear-panel connectors: audio jacks on CORE-2 rear wall (lead change)
 TB_REAR = [

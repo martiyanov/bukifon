@@ -23,6 +23,7 @@ enum class Screen : uint8_t {
   Modules,
   Gen,  // 5th tab: generative functions (PROB/EUCLID/MUTATE/SCALE/ARP/...)
   Ext,  // 6th tab: 8 external MIDI tracks (docs/70)
+  Mic,  // 7th tab: mic/voice input, recording, beatbox (docs/71)
   kNumScreens
 };
 
@@ -134,6 +135,15 @@ struct UiSnapshot {
   UiExtTrack extTracks[8];
   int extSelectedTrack = 0;
   int extSelectedStep = 0;
+  // --- MIC page (docs/71) --------------------------------------------------
+  char micSource[8] = "MIC";
+  float micLevel = 0.0f;
+  float micPeak = 0.0f;
+  bool micMuted = true;
+  bool micRecording = false;
+  bool micBeatbox = false;
+  bool micMonitor = false;
+  char micTake[16] = "TAKE 1";
 };
 
 // Fill a snapshot with deterministic, screen-appropriate demo content.
@@ -145,6 +155,8 @@ void uiSnapshotForDeviceMode(UiSnapshot* snapshot, DeviceMode mode);
 void uiSnapshotGenDemo(UiSnapshot* snapshot);
 // EXT page demo content: 8 external tracks / 16 steps / CH,PC,VEL,LEN,CC,...
 void uiSnapshotExtDemo(UiSnapshot* snapshot);
+// MIC page demo content: source/gain/threshold/monitor/beatbox/rec+pad/meter.
+void uiSnapshotMicDemo(UiSnapshot* snapshot);
 
 // UX helpers (docs/68/69):
 // Build the always-visible context line (PART · SELECTED · PAGE · FADERS · REC · UNSAVED).

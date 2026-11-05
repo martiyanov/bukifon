@@ -136,7 +136,8 @@ def main():
     # 3. pinmap.csv <-> netlist
     with open(os.path.join(P2, 'pinmap.csv'), encoding='utf-8') as f:
         pm = list(csv.DictReader(f, delimiter=';'))
-    names = {'J12 (FFC-40)': 'J12', 'J13 (IDC-16)': 'J13', 'J14 (IDC-26)': 'J14'}
+    names = {'J12 (FFC-40)': 'J12', 'J13 (IDC-16)': 'J13', 'J14 (IDC-26)': 'J14',
+             'J16 (IDC-6)': 'J16'}
     n = 0
     for r in pm:
         conn = names.get(r['connector'])
@@ -173,10 +174,14 @@ def main():
     check(len([k for k in pin2net if k[0] == 'J14']) >= 24, 'J14 pin count')
     check(len([k for k in pin2net if k[0] == 'J11' and not is_nc(pin2net[k])]) == 34,
           'J11 connected (non-NC) pins')
+    check(len([k for k in pin2net if k[0] == 'J16']) == 6, 'J16 mic connector 6 pins')
+    check(pin2net.get(('U8', '1')) == 'MIC_WS_M' or pin2net.get(('U8', '1')) == 'MIC_WS_M',
+          'mic U8 WS pin on MIC_WS_M')
     # 10 jacks, 2 faders, 17 LEDs
     check(all('J%02d' % i in values for i in range(1, 11)), '10 jacks J01..J10')
     check(len([r for r in values if re.fullmatch(r'F\d', r)]) == 2, '2 faders')
-    check(len([r for r in values if r.startswith('LED_')]) == 17, '17 LEDs')
+    check(len([r for r in values if r.startswith('LED_')
+               and r != 'LED_MICON']) == 17, '17 RGB LEDs (+ LED_MICON indicator)')
 
     print('nets=%d components=%d connected pins=%d intent=%d'
           % (len(nets), len(values), len(pin2net), len(intent)))

@@ -321,8 +321,15 @@ def export_variant(v, stl_dir, parts):
 
 
 def copy_shared(stl_dir):
-    """Панель (v0.4 JSON), ножки, колпачок — копии без изменений."""
+    """Панель (v0.4 JSON), ножки, колпачок — копии без изменений.
+
+    Панели с портом микрофона (D-94) уже лежат в stl_v05_B_light — их НЕ
+    перезаписываем каноническими, иначе пропадут вырезы порта/LED.
+    """
     for part in ("panel_L", "panel_R", "foot", "keycap_v17"):
+        dst = os.path.join(stl_dir, part + ".stl")
+        if part.startswith("panel") and os.path.exists(dst):
+            continue
         for ext in (".stl", ".3mf"):
             try:
                 shutil.copy2(os.path.join(STL_V04, part + ext),
@@ -371,7 +378,12 @@ def main():
         M = (trimesh.transformations.translation_matrix([0, 105.0, v["center_rim"]])
              @ trimesh.transformations.rotation_matrix(-a, [1, 0, 0])
              @ trimesh.transformations.translation_matrix([0, -105.0, -60.0]))
-        with open(os.path.join(HERE, "assembly_v05_B_light.json"), "w") as f:
+        asm_path = os.path.join(HERE, "assembly_v05_B_light.json")
+        try:
+            _old = json.load(open(asm_path))
+        except Exception:  # noqa: BLE001
+            _old = {}
+        with open(asm_path, "w") as f:
             json.dump({"variant": name,
                        "params": {k: v[k] for k in
                                   ("angle_deg", "front_rim", "rear_rim",
@@ -379,6 +391,20 @@ def main():
                        "panel_matrix": [[round(float(x), 6) for x in row] for row in M],
                        "parts": meta, "instances": inst}, f, indent=1,
                       ensure_ascii=False)
+        # вернуть детали микрофона, добавленные make_mic_v05.py (D-94)
+        if _old.get("mic"):
+            with open(asm_path) as f:
+                _new = json.load(f)
+            for k, val in _old["parts"].items():
+                if k.startswith("mic"):
+                    _new["parts"][k] = val
+            for it in _old["instances"]:
+                if it.get("mic"):
+                    _new["instances"].append(it)
+            _new["mic"] = _old["mic"]
+            with open(asm_path, "w") as f:
+                json.dump(_new, f, indent=1, ensure_ascii=False)
+
         placed = []
         for item in inst:
             m = trimesh.load(os.path.join(stl_dir, item["file"]))

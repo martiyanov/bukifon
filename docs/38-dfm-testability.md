@@ -9,14 +9,14 @@
 
 | Плата | DFM-документ | Основное |
 |---|---|---|
-| **CORE-2 (P4)** — главная | `hardware/core2/dfm.md` | TP ≤30, self-test 20, серийник (24C32/OTP/flash), recovery (UART0/BOOT/OTA), DFM 6 слоёв/USB HS/FPC-40/6×M3, чек-лист 20 |
+| **CORE-2 (P4)** — главная | `hardware/core2/dfm.md` | TP ≤30, self-test 21 (вкл. mic), серийник (24C32/OTP/flash), recovery (UART0/BOOT/OTA), DFM 6 слоёв/USB HS/FPC-40/6×M3, чек-лист 20 |
 | **PANEL-2** | `hardware/panel2/dfm.md` | TP ≤20, self-test матрицы/энкодеров/фейдеров/LED/джеков, DFM FFC-40/IDC, чек-лист 15 |
 | **PWR-2** | `hardware/power2/dfm.md` | TP рельсов/PWR_GOOD/EN, self-test БП/гейджа/NTC, DFM 3 А/J3, чек-лист 15 |
 | CORE-S3 (lite later) | `hardware/cores3/dfm.md` | сокращённо: TP, self-test lite, O-17/O-18, краткий DFM |
 
 ## 2. Test points — сводка
 
-- **CORE-2:** TP1–TP30 (все в схеме rev.2+rev.3-итерация: TP28 `LED_RET`, TP29 `I2S_BCK`, TP30 `I2S_LRCK`). Рельсы: VSYS, +12, −12 (N12_EXT), +5 (5V_EXT), +3V3, +3V3_C6,
+- **CORE-2:** TP1–TP32 (все в схеме rev.2+rev.3: TP28 `LED_RET`, TP29 `I2S_BCK`, TP30 `I2S_LRCK`, TP31/TP32 `MIC_DATA/MIC_BCK` — D-91). Рельсы: VSYS, +12, −12 (N12_EXT), +5 (5V_EXT), +3V3, +3V3_C6,
   +3V3_MCU, 5V_LED, BL_20V, LED_RET; сигналы: I2S (MCLK/BCK/LRCK/DIN/DOUT), USB HS D+/D−,
   SDIO, I2C, SPI2/C6, CV, MIDI, UART0/BOOT. Доступ после сборки, не под разъёмами/шлейфами.
 - **PANEL-2:** 3V3/5V/GND, I2C/INT, LED_DATA, BL_PWM/BL_ANODE, CV/GATE (J14), фейдеры.

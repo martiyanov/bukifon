@@ -53,8 +53,8 @@ def expected():
            'B5':'CC2','B6':'USB_DP_C','B7':'USB_DM_C','B8':'NC','B9':'VBUS_CHG',
            'B12':'DGND','SH':'DGND'}
     for p, n in usb.items(): exp[('J1', p)] = n
-    sd = {'1':'SD_D2','2':'SD_D3','3':'SD_CMD','4':'3V3','5':'SD_CLK','6':'DGND',
-          '7':'SD_D0','8':'SD_D1','9':'SD_CD','SH':'DGND'}
+    sd = {'1':'NC','2':'NC','3':'SD_CMD','4':'3V3','5':'SD_CLK','6':'DGND',
+          '7':'SD_D0','8':'NC','9':'SD_CD','SH':'DGND'}
     for p, n in sd.items(): exp[('J5', p)] = n
     return exp
 

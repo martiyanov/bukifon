@@ -458,10 +458,10 @@ void Simulator::buildSnapshot(ui::UiSnapshot* snapshot, ui::Screen screen) const
   if (!snapshot) return;
   ui::uiSnapshotInit(snapshot);
   snapshot->screen = screen;
-  static const char* pages[] = {"MAIN", "SEQUENCER", "MIXER", "MODULES", "GEN", "EXT"};
+  static const char* pages[] = {"MAIN", "SEQUENCER", "MIXER", "MODULES", "GEN", "EXT", "MIC"};
   const int screenIndex = static_cast<int>(screen);
   copyString(snapshot->page, sizeof(snapshot->page),
-             pages[screenIndex >= 0 && screenIndex < 6 ? screenIndex : 0]);
+             pages[screenIndex >= 0 && screenIndex < 7 ? screenIndex : 0]);
   snapshot->bpm = sequencer_.bpm();
   snapshot->pattern = sequencer_.patternIndex() + 1;
   snapshot->playing = playing();
@@ -543,6 +543,25 @@ void Simulator::buildSnapshot(ui::UiSnapshot* snapshot, ui::Screen screen) const
     for (int i = 0; i < kNumHints; ++i) copyString(snapshot->hints[i], sizeof(snapshot->hints[i]), extDemo.hints[i]);
     copyString(snapshot->selectedLabel, sizeof(snapshot->selectedLabel), extDemo.selectedLabel);
     copyString(snapshot->footer, sizeof(snapshot->footer), extDemo.footer);
+  }
+  if (screen == ui::Screen::Mic) {
+    ui::UiSnapshot micDemo;
+    ui::uiSnapshotMicDemo(&micDemo);
+    for (int i = 0; i < kNumParams; ++i) {
+      copyString(snapshot->params[i].label, sizeof(snapshot->params[i].label), micDemo.params[i].label);
+      copyString(snapshot->params[i].value, sizeof(snapshot->params[i].value), micDemo.params[i].value);
+      snapshot->params[i].norm = micDemo.params[i].norm;
+    }
+    for (int i = 0; i < kNumHints; ++i) copyString(snapshot->hints[i], sizeof(snapshot->hints[i]), micDemo.hints[i]);
+    copyString(snapshot->micSource, sizeof(snapshot->micSource), micDemo.micSource);
+    snapshot->micLevel = micDemo.micLevel;
+    snapshot->micPeak = micDemo.micPeak;
+    snapshot->micMuted = micDemo.micMuted;
+    snapshot->micRecording = micDemo.micRecording;
+    snapshot->micBeatbox = micDemo.micBeatbox;
+    snapshot->micMonitor = micDemo.micMonitor;
+    copyString(snapshot->micTake, sizeof(snapshot->micTake), micDemo.micTake);
+    copyString(snapshot->selectedLabel, sizeof(snapshot->selectedLabel), micDemo.selectedLabel);
   }
   std::snprintf(snapshot->footer, sizeof(snapshot->footer),
                 "16 bars | 4 tracks | p-lock t1 s5 | %d voices | %.1f s | MODE %s",

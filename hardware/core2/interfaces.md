@@ -55,6 +55,19 @@ RC 1k/100pF на входе, защита BAT54S. MD0=MD1=0, FMT=0.
 потере MCLK PCM1808 уходит в reset по clock-halt; PCM5102A XSMT=0 (mute).
 Отдельного аналогового реле/mute-транзистора нет (pre-freeze).
 
+### 1a. Микрофонный вход (rev.3, D-91)
+
+| Вход | Тракт | Пины/линии |
+|---|---|---|
+| MEMS (PANEL-2) | I2S1 RX (BCK/WS/DATA), 24 бит/48 кГц, slave | GPIO40/41/42, J19 (IDC-6: 3V3_MIC, GND, BCK, WS, DATA, GND) |
+| 3.5 мм electret | MAX9814 AGC → C126 1 мкФ → TS5A23157 (line/mic) → C78/C80 → PCM1808 VINL/VINR | MIC_SEL = GPIO54 (0=LINE, 1=MIC), U46/U47, J20 (TRS: tip=signal, ring=bias 2.2 к) |
+| Приватность | SW3 MIC MUTE тянет SHDN→GND; LED «MIC ON» (Q5/D31); прошивка запрещает запись при mute | D-92 |
+
+Задержка mic→P4 ≤5 мс (I2S DMA); I2S1 отдельный от I2S0-кодека. MIC_SEL по умолчанию LINE
+(R110 100k PD); MEMS 3.3 В через FB8 + 10 мкФ/100 нФ; ESD USBLC6 ×2 на I2S1. **SDIO 4-bit
+урезан до 1-bit** (D1–D3 отданы под I2S1): ~6 МБ/с достаточно для 8-дорожечного стриминга,
+но загрузка SD медленнее; альтернатива при необходимости 4-bit — освободить GATE2/SD_CD/VBUS.
+
 ## 2. USB 2.0 High-Speed
 
 | Параметр | Значение |
