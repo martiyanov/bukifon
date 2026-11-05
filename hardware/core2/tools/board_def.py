@@ -240,7 +240,7 @@ MCP23017 = [
             'GPB0..GPB5 = ROW0..ROW5 (outputs, scan)',
             'GPA7 = EN_RAILS (rev.2, active-high disable +12/-12/+5)',
             'GPB6 = EN_LED5 (rev.2, active-high enable; default OFF)',
-            'GPB7 = spare', 'INTA -> PANEL_IRQ']),
+            'GPB7 = GATE_IN_CLEAN input (N-2)', 'INTA -> PANEL_IRQ']),
 ]
 # PANEL-2 totals (verified with panel netlist): 4x MCP23017 = 64 I/O,
 # 48 encoder lines (16 x A/B/push) + 13 matrix lines = 61 used, 3 spare.
@@ -276,7 +276,7 @@ JACKS = [
  ('MIDI IN', 'MIDI_IN_T/R', '6N137 + 220R (rear TRS-A, TB2.1/2)'),
  ('MIDI OUT', 'MIDI_OUT_T/R', '74HCT125 + 33R/220R (rear TRS-A, TB2.4/5)'),
  ('DC 12 V', '12V_EXT', 'rear 5.5/2.1 mm, from PWR-2 / external PSU (TB2.7/8), diode-OR to +12V'),
- ('EXPRESSION', 'EXPR', 'rear 6.35/3.5 mm, 3V3->pot->tip; RC 1k/100nF -> MCP3208 CH4 (TB2.9/10)'),
+ ('EXPRESSION (rev.2 removed)', 'EXPR', 'N-2: убрано — MCP3208 CH4/CH5 отданы CV IN3/4; опция — C6 ADC'),
 ]
 # display contract
 DISPLAY = dict(interface='LCD_CAM parallel RGB565 (16-bit) + PCLK/DE/HSYNC/VSYNC',
@@ -325,7 +325,7 @@ J_PWR3 = [  # CORE-2 connector -> PWR-2 J3
  (19, 'PGND', 'gnd'), (20, 'PGND', 'gnd'),
 ]
 J_PWR4 = [  # CORE-2 connector -> PWR-2 J4
- (1, 'BATT_MON', 'a'), (2, 'NTC_PACK', 'a'),
+ (1, 'BATT_MON_RAW', 'a'), (2, 'NTC_PACK', 'a'),
  (3, 'I2C0_SDA', 'd'), (4, 'I2C0_SCL', 'd'),
  (5, 'FUEL_ALRT', 'd'), (6, 'PWR_GOOD', 'd'),
  (7, 'EN_BUS12', 'd'), (8, 'EN_N12', 'd'),
@@ -416,3 +416,42 @@ REV2_5V_LOADS = [
  ('MP1584 -> +3V3_MCU (700 мА, вариант b: от +5)', 510, '+5 (вариант a: +12)'),
  ('вход BL-boost (19-22 В, 25 мА)', 80, '+5'),
 ]
+
+# --- rev.2 canonical harness pinouts (matching PANEL-2 rev.2 pins) ----------
+J14_REV2 = [  # CORE-2 J14 (IDC-26) <-> PANEL-2 J14 (analog field, evens = GNDA)
+ (1, 'CVOUT1'), (2, 'AGND'), (3, 'CVOUT2'), (4, 'AGND'), (5, 'CVOUT3'), (6, 'AGND'),
+ (7, 'CVOUT4'), (8, 'AGND'), (9, 'CVIN1'), (10, 'AGND'), (11, 'CVIN2'), (12, 'AGND'),
+ (13, 'CVIN3'), (14, 'AGND'), (15, 'CVIN4'), (16, 'AGND'), (17, 'GATE1'), (18, 'AGND'),
+ (19, 'NC'), (20, 'AGND'), (21, 'FADER1'), (22, 'AGND'), (23, 'FADER2'), (24, 'AGND'),
+ (25, 'EN_LED5'), (26, 'AGND'),
+]
+J15_REV2 = [  # CORE-2 J15 (FFC-40) <-> PANEL-2 J12 (LCD RGB565 + BL)
+ (1, 'DGND'), (2, 'DGND'), (3, 'LCD_R0'), (4, 'LCD_R1'), (5, 'LCD_R2'), (6, 'LCD_R3'),
+ (7, 'LCD_R4'), (8, 'LCD_G0'), (9, 'LCD_G1'), (10, 'LCD_G2'), (11, 'LCD_G3'), (12, 'LCD_G4'),
+ (13, 'LCD_G5'), (14, 'LCD_B0'), (15, 'LCD_B1'), (16, 'LCD_B2'), (17, 'LCD_B3'), (18, 'LCD_B4'),
+ (19, 'DGND'), (20, 'DGND'), (21, 'LCD_PCLK'), (22, 'LCD_DE'), (23, 'LCD_HSYNC'), (24, 'LCD_VSYNC'),
+ (25, 'DGND'), (26, 'DGND'), (27, '3V3_PANEL'), (28, '3V3_PANEL'), (29, 'DGND'),
+ (30, 'BL_PWM'), (31, 'BL_20V'), (32, 'BL_CATHODE'),
+ (33, 'DGND'), (34, 'DGND'), (35, 'DGND'), (36, 'DGND'), (37, 'DGND'), (38, 'DGND'),
+ (39, 'DGND'), (40, 'DGND'),
+]
+J16_REV2 = [  # CORE-2 J16 (IDC-16) <-> PANEL-2 J13 (digital/power)
+ (1, 'I2C0_SDA'), (2, 'DGND'), (3, 'I2C0_SCL'), (4, 'DGND'), (5, 'PANEL_IRQ'), (6, 'DGND'),
+ (7, 'LED_DATA'), (8, 'DGND'), (9, '5V_LED'), (10, 'DGND'), (11, '3V3_PANEL'), (12, 'DGND'),
+ (13, '5V_LED'), (14, 'DGND'), (15, 'EN_RAILS'), (16, 'LED_RET'),
+]
+# additional DNP caused by N-2 decisions (EXPRESSION removed, local TS NTC removed)
+REV2_DNP.update({
+ 'R5': 'DNP rev.2 (N-2): TS driven by PWR-2 NTC_PACK; local 10k bias removed',
+ 'J13': 'DNP rev.2 (N-2): EXPRESSION jack removed (CVIN3/4 take CH4/CH5)',
+ 'R73': 'DNP rev.2 (N-2): EXPRESSION chain removed',
+ 'C99': 'DNP rev.2 (N-2): EXPRESSION chain removed',
+ 'R74': 'DNP rev.2 (N-2): SPARE_ADC channel replaced by CVIN4',
+ 'C100': 'DNP rev.2 (N-2): SPARE_ADC channel replaced by CVIN4',
+ 'TB2': 'DNP rev.2 (N-2): rear TB2 removed (EXPRESSION gone; DC/MIDI moved to PWR-2/panel harness)',
+})
+# refs considered "new in rev.2" for the BOM rev.2 column
+REV2_NEW_REFS = set(x['ref'] for x in REV2_NEW) | {
+ 'C116', 'C117', 'C118', 'C119', 'C120', 'C121', 'FB7', 'R97', 'R98',
+ 'R99', 'R100', 'R101', 'R102', 'R103', 'R104', 'R105', 'U45', 'D24', 'D25',
+}

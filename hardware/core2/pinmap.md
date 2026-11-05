@@ -117,7 +117,7 @@ SDMMC slot0 на падах GPIO39…GPIO48, LCD_CAM (parallel RGB 16 бит) и
 | 0x20 | U-P1 | ENC1..ENC8 A/B (16 lines) | GPA0..GPA7 = ENC1_A..ENC8_A<br>GPB0..GPB7 = ENC1_B..ENC8_B<br>INTA -> PANEL_IRQ |
 | 0x21 | U-P2 | ENC9..ENC16 A/B (16 lines) | GPA0..GPA7 = ENC9_A..ENC16_A<br>GPB0..GPB7 = ENC9_B..ENC16_B<br>INTA -> PANEL_IRQ |
 | 0x22 | U-P3 | 16 encoder push buttons (16 lines) | GPA0..GPA7 = ENC1_PUSH..ENC8_PUSH<br>GPB0..GPB7 = ENC9_PUSH..ENC16_PUSH<br>INTA -> PANEL_IRQ |
-| 0x23 | U-P4 | 42-key matrix 6x7 (13 lines) + 2 EN lines (rev.2) | GPA0..GPA6 = COL0..COL6 (inputs, 10k PU)<br>GPB0..GPB5 = ROW0..ROW5 (outputs, scan)<br>GPA7 = EN_RAILS (rev.2, active-high disable +12/-12/+5)<br>GPB6 = EN_LED5 (rev.2, active-high enable; default OFF)<br>GPB7 = spare<br>INTA -> PANEL_IRQ |
+| 0x23 | U-P4 | 42-key matrix 6x7 (13 lines) + 2 EN lines (rev.2) | GPA0..GPA6 = COL0..COL6 (inputs, 10k PU)<br>GPB0..GPB5 = ROW0..ROW5 (outputs, scan)<br>GPA7 = EN_RAILS (rev.2, active-high disable +12/-12/+5)<br>GPB6 = EN_LED5 (rev.2, active-high enable; default OFF)<br>GPB7 = GATE_IN_CLEAN input (N-2)<br>INTA -> PANEL_IRQ |
 
 
 ### PANEL-2 MCP23017 — EN-линии rev.2 (D-33/O-4)
@@ -236,81 +236,102 @@ I2C0 (GPIO21/22) — общая шина: 2× MCP4728 (0x60/0x61), 24C32 (0x57),
 | 63 | `GND` |
 | 64 | `GND` |
 
-### J-PANEL — PANEL-2 (IDC-26): I2C, энкодеры*, матрица*, фейдеры, CV, GATE, LED
+### J14 — PANEL-2 J14 (IDC-26, rev.2 canon): CV OUT1-4, CV IN1-4, GATE_OUT, FADER1/2, EN_LED5; evens = GNDA
 
 | Pin | Цепь |
 |---|---|
-| 1 | `3V3` |
-| 2 | `DGND` |
-| 3 | `5V` |
-| 4 | `CVOUT5` |
-| 5 | `I2C0_SDA` |
-| 6 | `DGND` |
-| 7 | `I2C0_SCL` |
-| 8 | `DGND` |
-| 9 | `PANEL_IRQ` |
-| 10 | `CVOUT6` |
-| 11 | `LED_DATA` |
-| 12 | `DGND` |
-| 13 | `FADER1` |
+| 1 | `CVOUT1` |
+| 2 | `AGND` |
+| 3 | `CVOUT2` |
+| 4 | `AGND` |
+| 5 | `CVOUT3` |
+| 6 | `AGND` |
+| 7 | `CVOUT4` |
+| 8 | `AGND` |
+| 9 | `CVIN1` |
+| 10 | `AGND` |
+| 11 | `CVIN2` |
+| 12 | `AGND` |
+| 13 | `CVIN3` |
 | 14 | `AGND` |
-| 15 | `FADER2` |
+| 15 | `CVIN4` |
 | 16 | `AGND` |
-| 17 | `CVIN1` |
+| 17 | `GATE1` |
 | 18 | `AGND` |
-| 19 | `CVIN2` |
+| 19 | `NC` |
 | 20 | `AGND` |
-| 21 | `CVOUT1` |
-| 22 | `CVOUT2` |
-| 23 | `CVOUT3` |
-| 24 | `CVOUT4` |
-| 25 | `GATE1` |
-| 26 | `GATE2` |
+| 21 | `FADER1` |
+| 22 | `AGND` |
+| 23 | `FADER2` |
+| 24 | `AGND` |
+| 25 | `EN_LED5` |
+| 26 | `AGND` |
 
-### J-LCD — дисплей 800×480 (FFC-40, 0.5 мм): RGB565 + синхро + BL/DISP + AUDIO IN
+### J15 — PANEL-2 J12 (FFC-40, rev.2 canon): RGB565 + sync + BL_PWM/BL_20V/BL_CATHODE + 3V3 + GND
 
 | Pin | Цепь |
 |---|---|
-| 1 | `5V` |
-| 2 | `5V` |
-| 3 | `DGND` |
-| 4 | `DGND` |
-| 5 | `3V3` |
-| 6 | `DGND` |
-| 7 | `LCD_PCLK` |
-| 8 | `DGND` |
-| 9 | `LCD_DE` |
-| 10 | `DGND` |
-| 11 | `LCD_HSYNC` |
-| 12 | `DGND` |
-| 13 | `LCD_VSYNC` |
-| 14 | `DGND` |
-| 15 | `LCD_B0` |
-| 16 | `LCD_B1` |
-| 17 | `LCD_B2` |
-| 18 | `LCD_B3` |
-| 19 | `LCD_B4` |
-| 20 | `LCD_G0` |
-| 21 | `LCD_G1` |
-| 22 | `LCD_G2` |
-| 23 | `LCD_G3` |
-| 24 | `LCD_G4` |
-| 25 | `LCD_G5` |
-| 26 | `LCD_R0` |
-| 27 | `LCD_R1` |
-| 28 | `LCD_R2` |
-| 29 | `LCD_R3` |
-| 30 | `LCD_R4` |
-| 31 | `BL_PWM` |
-| 32 | `BL_ANODE` |
-| 33 | `BL_CATHODE` |
-| 34 | `I2C0_SDA` |
-| 35 | `I2C0_SCL` |
-| 36 | `PANEL_IRQ` |
-| 37 | `LCD_DISP` |
+| 1 | `DGND` |
+| 2 | `DGND` |
+| 3 | `LCD_R0` |
+| 4 | `LCD_R1` |
+| 5 | `LCD_R2` |
+| 6 | `LCD_R3` |
+| 7 | `LCD_R4` |
+| 8 | `LCD_G0` |
+| 9 | `LCD_G1` |
+| 10 | `LCD_G2` |
+| 11 | `LCD_G3` |
+| 12 | `LCD_G4` |
+| 13 | `LCD_G5` |
+| 14 | `LCD_B0` |
+| 15 | `LCD_B1` |
+| 16 | `LCD_B2` |
+| 17 | `LCD_B3` |
+| 18 | `LCD_B4` |
+| 19 | `DGND` |
+| 20 | `DGND` |
+| 21 | `LCD_PCLK` |
+| 22 | `LCD_DE` |
+| 23 | `LCD_HSYNC` |
+| 24 | `LCD_VSYNC` |
+| 25 | `DGND` |
+| 26 | `DGND` |
+| 27 | `3V3_PANEL` |
+| 28 | `3V3_PANEL` |
+| 29 | `DGND` |
+| 30 | `BL_PWM` |
+| 31 | `BL_20V` |
+| 32 | `BL_CATHODE` |
+| 33 | `DGND` |
+| 34 | `DGND` |
+| 35 | `DGND` |
+| 36 | `DGND` |
+| 37 | `DGND` |
 | 38 | `DGND` |
 | 39 | `DGND` |
 | 40 | `DGND` |
+
+### J16 — PANEL-2 J13 (IDC-16, rev.2 canon): I2C, INT, LED_DATA 3.3 В, 5V_LED/LED_RET, EN_RAILS
+
+| Pin | Цепь |
+|---|---|
+| 1 | `I2C0_SDA` |
+| 2 | `DGND` |
+| 3 | `I2C0_SCL` |
+| 4 | `DGND` |
+| 5 | `PANEL_IRQ` |
+| 6 | `DGND` |
+| 7 | `LED_DATA` |
+| 8 | `DGND` |
+| 9 | `5V_LED` |
+| 10 | `DGND` |
+| 11 | `3V3_PANEL` |
+| 12 | `DGND` |
+| 13 | `5V_LED` |
+| 14 | `DGND` |
+| 15 | `EN_RAILS` |
+| 16 | `LED_RET` |
 
 ### J-BUS1/J-BUS2 — аналоговая шина модулей (IDC-26, 2 шт.)
 
@@ -343,7 +364,7 @@ I2C0 (GPIO21/22) — общая шина: 2× MCP4728 (0x60/0x61), 24C32 (0x57),
 | 25 | `SPARE1` |
 | 26 | `SPARE2` |
 
-### J-DIG-EXP — цифровое расширение умных модулей (R-22: TDM/I2S + SPI mailbox)
+### J-DIG — цифровое расширение R-22 (в rev.2 ОТЛОЖЕНО до rev.3; J16 занят PANEL-2)
 
 | Pin | Цепь |
 |---|---|
@@ -432,7 +453,7 @@ I2C0 (GPIO21/22) — общая шина: 2× MCP4728 (0x60/0x61), 24C32 (0x57),
 
 | Pin | Цепь |
 |---|---|
-| 1 | `BATT_MON` |
+| 1 | `BATT_MON_RAW` |
 | 2 | `NTC_PACK` |
 | 3 | `I2C0_SDA` |
 | 4 | `I2C0_SCL` |

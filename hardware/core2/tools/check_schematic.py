@@ -28,9 +28,11 @@ def expected():
     def add_conn(ref, pins):
         for p, sig, *_ in pins:
             exp[(ref, str(p))] = MAP.get(sig, sig)
-    add_conn('J14', B.J_PANEL)
-    add_conn('J15', B.J_LCD)
-    add_conn('J16', B.J_DIG)
+    for ref, lst in (('J14', B.J14_REV2), ('J15', B.J15_REV2), ('J16', B.J16_REV2),
+                     ('J17', [(p, s) for p, s, *_ in B.J_PWR3]),
+                     ('J18', [(p, s) for p, s, *_ in B.J_PWR4])):
+        for p, sig in lst:
+            exp[(ref, str(p))] = sig
     for p, sig, kind in B.J_BUS:
         n = p
         port = 'P1' if True else ''

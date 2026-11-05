@@ -119,6 +119,9 @@ firmware/README). Этот файл фиксирует актуальные тр
 | O-9 | PANEL-2 J14 CVIN3/4 и GATE_IN отсутствуют в CORE-2 | **решено**: CVIN3/4 → MCP3208 CH4/CH5; GATE_IN → MCP23017 0x23 GPB7 на PANEL-2; EXPRESSION убрать/на C6 |
 | O-10 | Цифровое расширение TDM/I2S+SPI (R-22) не влезает в J16 | **отложено** до rev.3 (отметить в rev2-plan) |
 | O-11 | J3 IDC-20 vs Micro-Fit 3.0 | **прототип — IDC-20** (тест ≤100 мВ/≤30 °C), **rev.2 — Micro-Fit 3.0** (D-40) |
+| O-12 | LCD_DISP: CORE-2 ждёт GPIO50, в J12 PANEL-2 цепи DISP нет | решить при фиксации FPC-40 (вывести на свободный пин J12) |
+| O-13 | `GATE_IN_CLEAN` остался в CORE-2 pinmap (§9) | убрать из CORE-2 (читается на PANEL-2 0x23 GPB7) |
+| O-14 | EXPRESSION теряет канал после переноса CVIN3/4 | решить: на C6 или убрать (N-2) |
 
 ## 5. Подпись
 

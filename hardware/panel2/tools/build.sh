@@ -21,5 +21,8 @@ echo "== exports"
       --fields "Reference;Value;Footprint;QUANTITY" --labels "Refs;Value;Footprint;Qty" \
       --group-by "Value;Footprint" "PANEL-2.kicad_sch" 2>/dev/null >/dev/null || true
 
+echo "== PII sanitation"
+python3 tools/sanitize_exports.py
+
 echo "== netlist vs contract"
 python3 tools/verify_netlist.py

@@ -224,7 +224,7 @@ class Sch:
         self.power_rails = ('GND', '+3V3', '+5V', '+12V', '-12V')
 
     # ---- primitives
-    def sym(self, libname, name, ref, value, x, y, footprint='', props=None, hide_value=False, hide_ref=False, ref_off=(2.54,-1.27), val_off=(2.54,1.27), unit=1, on_board=True, in_bom=True):
+    def sym(self, libname, name, ref, value, x, y, footprint='', props=None, hide_value=False, hide_ref=False, ref_off=(2.54,-1.27), val_off=(2.54,1.27), unit=1, on_board=True, in_bom=True, dnp=False):
         lid = '%s:%s' % (libname, name)
         if lid not in self.libsyms:
             self.libsyms[lid] = symbol_raw(libname, name)
@@ -232,7 +232,7 @@ class Sch:
         p = dict(libname=libname, name=name, lid=lid, ref=ref, value=value, x=float(x), y=float(y),
                  footprint=footprint, props=props or {}, hide_value=hide_value, hide_ref=hide_ref,
                  ref_off=ref_off, val_off=val_off, unit=int(unit), on_board=on_board, in_bom=in_bom,
-                 uuid=_u())
+                 dnp=bool(dnp), uuid=_u())
         self.comps.append(p)
         return p
 
@@ -336,9 +336,10 @@ class Sch:
 
     def _comp_text(self, c):
         L = []
-        L.append('\t(symbol\n\t\t(lib_id "%s")\n\t\t(at %s %s 0)\n\t\t(unit %d)\n\t\t(exclude_from_sim no)\n\t\t(in_bom %s)\n\t\t(on_board %s)\n\t\t(dnp no)\n\t\t(uuid "%s")\n' % (
+        L.append('\t(symbol\n\t\t(lib_id "%s")\n\t\t(at %s %s 0)\n\t\t(unit %d)\n\t\t(exclude_from_sim no)\n\t\t(in_bom %s)\n\t\t(on_board %s)\n\t\t(dnp %s)\n\t\t(uuid "%s")\n' % (
             c['lid'], _fmt(c['x']), _fmt(c['y']), c['unit'],
-            'yes' if c['in_bom'] else 'no', 'yes' if c['on_board'] else 'no', c['uuid']))
+            'yes' if c['in_bom'] else 'no', 'yes' if c['on_board'] else 'no',
+            'yes' if c.get('dnp') else 'no', c['uuid']))
         rx, ry = c['x'] + c['ref_off'][0], c['y'] + c['ref_off'][1]
         vx, vy = c['x'] + c['val_off'][0], c['y'] + c['val_off'][1]
         hide_ref = '\n\t\t\t(hide yes)' if c['hide_ref'] else ''

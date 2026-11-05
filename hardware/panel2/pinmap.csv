@@ -39,22 +39,22 @@ J12 (FFC-40);37;GND;—;power;—;LCD RGB-шина к CORE-2
 J12 (FFC-40);38;GND;—;power;—;LCD RGB-шина к CORE-2
 J12 (FFC-40);39;GND;—;power;—;LCD RGB-шина к CORE-2
 J12 (FFC-40);40;GND;—;power;—;LCD RGB-шина к CORE-2
-J13 (IDC-16);1;SDA;bidir;digital;3.3 В;цифровой/питание
-J13 (IDC-16);2;GND;—;power;—;цифровой/питание
-J13 (IDC-16);3;SCL;core→panel;digital;3.3 В;цифровой/питание
-J13 (IDC-16);4;GND;—;power;—;цифровой/питание
-J13 (IDC-16);5;INT;panel→core;digital;3.3 В;цифровой/питание
-J13 (IDC-16);6;GND;—;power;—;цифровой/питание
-J13 (IDC-16);7;LED_DATA;core→panel;digital;3.3 В;цифровой/питание
-J13 (IDC-16);8;GND;—;power;—;цифровой/питание
-J13 (IDC-16);9;+5V;core→panel;power;5 В;цифровой/питание
-J13 (IDC-16);10;GND;—;power;—;цифровой/питание
-J13 (IDC-16);11;+3V3;core→panel;power;3.3 В;цифровой/питание
-J13 (IDC-16);12;GND;—;power;—;цифровой/питание
-J13 (IDC-16);13;+5V;core→panel;power;5 В;цифровой/питание
-J13 (IDC-16);14;GND;—;power;—;цифровой/питание
-J13 (IDC-16);15;NC;—;digital;3.3 В;цифровой/питание
-J13 (IDC-16);16;GND;—;power;—;цифровой/питание
+J13 (IDC-16);1;SDA;bidir;digital;3.3 В;цифровой/питание (rev.2: 5V_LED/LED_RET/EN_RAILS)
+J13 (IDC-16);2;GND;—;power;—;цифровой/питание (rev.2: 5V_LED/LED_RET/EN_RAILS)
+J13 (IDC-16);3;SCL;core→panel;digital;3.3 В;цифровой/питание (rev.2: 5V_LED/LED_RET/EN_RAILS)
+J13 (IDC-16);4;GND;—;power;—;цифровой/питание (rev.2: 5V_LED/LED_RET/EN_RAILS)
+J13 (IDC-16);5;INT;panel→core;digital;3.3 В;цифровой/питание (rev.2: 5V_LED/LED_RET/EN_RAILS)
+J13 (IDC-16);6;GND;—;power;—;цифровой/питание (rev.2: 5V_LED/LED_RET/EN_RAILS)
+J13 (IDC-16);7;LED_DATA;core→panel;digital;3.3 В (5 В после U6);цифровой/питание (rev.2: 5V_LED/LED_RET/EN_RAILS)
+J13 (IDC-16);8;GND;—;power;—;цифровой/питание (rev.2: 5V_LED/LED_RET/EN_RAILS)
+J13 (IDC-16);9;5V_LED;core→panel;power;5.0 В;цифровой/питание (rev.2: 5V_LED/LED_RET/EN_RAILS)
+J13 (IDC-16);10;GND;—;power;—;цифровой/питание (rev.2: 5V_LED/LED_RET/EN_RAILS)
+J13 (IDC-16);11;+3V3;core→panel;power;3.3 В;цифровой/питание (rev.2: 5V_LED/LED_RET/EN_RAILS)
+J13 (IDC-16);12;GND;—;power;—;цифровой/питание (rev.2: 5V_LED/LED_RET/EN_RAILS)
+J13 (IDC-16);13;5V_LED;core→panel;power;5.0 В;цифровой/питание (rev.2: 5V_LED/LED_RET/EN_RAILS)
+J13 (IDC-16);14;GND;—;power;—;цифровой/питание (rev.2: 5V_LED/LED_RET/EN_RAILS)
+J13 (IDC-16);15;EN_RAILS;panel→core;digital;0/3.3 В (high-Z = rails ON);цифровой/питание (rev.2: 5V_LED/LED_RET/EN_RAILS)
+J13 (IDC-16);16;LED_RET;panel→core;power;возврат LED, до 0.55 А;цифровой/питание (rev.2: 5V_LED/LED_RET/EN_RAILS)
 J14 (IDC-26);1;CVOUT1;core→panel;analog;0..10 В;аналоговое поле
 J14 (IDC-26);3;CVOUT2;core→panel;analog;0..10 В;аналоговое поле
 J14 (IDC-26);5;CVOUT3;core→panel;analog;0..10 В;аналоговое поле
@@ -64,10 +64,10 @@ J14 (IDC-26);11;CVIN2;panel→core;analog;±10 В;аналоговое поле
 J14 (IDC-26);13;CVIN3;panel→core;analog;±10 В;аналоговое поле
 J14 (IDC-26);15;CVIN4;panel→core;analog;±10 В;аналоговое поле
 J14 (IDC-26);17;GATE_OUT;core→panel;analog;0/5 В;аналоговое поле
-J14 (IDC-26);19;GATE_IN_CLEAN;panel→core;analog;0/3.3 В;аналоговое поле
+J14 (IDC-26);19;NC;—;nc;—;аналоговое поле
 J14 (IDC-26);21;FADER1;panel→core;analog;0..3.3 В;аналоговое поле
 J14 (IDC-26);23;FADER2;panel→core;analog;0..3.3 В;аналоговое поле
-J14 (IDC-26);25;NC;—;nc;—;аналоговое поле
+J14 (IDC-26);25;EN_LED5;panel→core;analog;0/3.3 В (active-high enable);аналоговое поле
 J14 (IDC-26);2;GNDA;—;analog;—;аналоговое поле
 J14 (IDC-26);4;GNDA;—;analog;—;аналоговое поле
 J14 (IDC-26);6;GNDA;—;analog;—;аналоговое поле

@@ -204,7 +204,7 @@ add('F1', ('Device','Polyfuse'), '1.5A', {'1':'VBUS_CHG','2':'VBUS_F'}, FP['PF']
 add('C1', ('Device','C'), '10uF/10V', {'1':'VBUS_F','2':'PGND'}, FP['C'], '', P)
 add('C2', ('Device','C'), '100nF/16V', {'1':'VBUS_F','2':'PGND'}, FP['C'], '', P)
 add('U22', ('Battery_Management','BQ24074RGT'), 'BQ24074RGT',
-    {'1':'TS','2':'BATT_P','3':'BATT_P','4':'PGND','5':'VBUS_CHG','6':'VBUS_CHG',
+    {'1':'NTC_PACK','2':'BATT_P','3':'BATT_P','4':'PGND','5':'VBUS_CHG','6':'VBUS_CHG',
      '7':'NC','8':'PGND','9':'CHG','10':'VSYS','11':'VSYS','12':'ILIM','13':'VBUS_F',
      '14':'TMR','15':'ITERM','16':'ISET','17':'PGND'},
     '', 'charger + power-path (1.5 A)', P)
@@ -214,7 +214,7 @@ add('R3', ('Device','R'), '2k', {'1':'ITERM','2':'PGND'}, FP['R'], 'termination'
 add('R4', ('Device','R'), '100k', {'1':'TMR','2':'PGND'}, FP['R'], 'safety timer', P)
 add('R5', ('Device','R'), '10k', {'1':'VBUS_F','2':'TS'}, FP['R'], 'TS network', P)
 add('TH1', ('Device','Thermistor_NTC'), 'NTC 10k', {'1':'TS','2':'PGND'}, FP['R'], 'battery NTC', P)
-add('C3', ('Device','C'), '100nF', {'1':'TS','2':'PGND'}, FP['C'], '', P)
+add('C3', ('Device','C'), '100nF', {'1':'NTC_PACK','2':'PGND'}, FP['C'], '', P)
 add('R6', ('Device','R'), '1k', {'1':'VBUS_CHG','2':'CHG_LED'}, FP['R'], '', P)
 add('D3', ('Device','LED'), 'CHG', {'1':'CHG','2':'CHG_LED'}, FP['C'], 'charge LED (open-collector CHG)', P)
 add('C4', ('Device','C'), '10uF/10V', {'1':'VSYS','2':'PGND'}, FP['C'], '', P)
@@ -468,8 +468,8 @@ add('C92', ('Device','C'), '100nF', {'1':'12V','2':'AGND'}, FP['C'], '', V)
 add('C93', ('Device','C'), '100nF', {'1':'-12V','2':'AGND'}, FP['C'], '', V)
 # MCP3208 ADC + input chains
 add('U40', ('Analog_ADC','MCP3208'), 'MCP3208',
-    {'1':'CVIN1_ADC','2':'CVIN2_ADC','3':'FADER1_ADC','4':'FADER2_ADC','5':'EXPR_ADC',
-     '6':'SPARE_ADC','7':'BATT_MON','8':'TEMP_MON','9':'DGND','10':'MCP3208_CS',
+    {'1':'CVIN1_ADC','2':'CVIN2_ADC','3':'FADER1_ADC','4':'FADER2_ADC','5':'CVIN3_ADC',
+     '6':'CVIN4_ADC','7':'BATT_MON','8':'TEMP_MON','9':'DGND','10':'MCP3208_CS',
      '11':'SPI2_MOSI','12':'SPI2_MISO','13':'SPI2_SCK','14':'AGND','15':'VREF33','16':'3V3'},
     FP['DIP16'], '8-ch 12-bit SPI ADC', V)
 add('FB6', ('Device','FerriteBead'), '600R@100MHz', {'1':'3V3','2':'VREF33'}, FP['FB'], 'ADC reference filter', V)
@@ -484,7 +484,7 @@ add('R73', ('Device','R'), '1k', {'1':'EXPR','2':'EXPR_ADC'}, FP['R'], 'expressi
 add('C99', ('Device','C'), '100nF', {'1':'EXPR_ADC','2':'AGND'}, FP['C'], '', V)
 add('R74', ('Device','R'), '1k', {'1':'SPARE_ADC','2':'AGND'}, FP['R'], 'reserved channel to AGND', V)
 add('C100', ('Device','C'), '100nF', {'1':'SPARE_ADC','2':'AGND'}, FP['C'], '', V)
-add('R75', ('Device','R'), '100k', {'1':'BATT_P','2':'BATT_MON'}, FP['R'], 'battery divider', V)
+add('R75', ('Device','R'), '100k', {'1':'BATT_MON_RAW','2':'BATT_MON'}, FP['R'], 'battery divider (raw VBAT from PWR-2 J18.1)', V)
 add('R76', ('Device','R'), '47k', {'1':'BATT_MON','2':'AGND'}, FP['R'], '', V)
 add('C101', ('Device','C'), '100nF', {'1':'BATT_MON','2':'AGND'}, FP['C'], '', V)
 add('TH2', ('Device','Thermistor_NTC'), 'NTC 10k', {'1':'3V3','2':'TEMP_MON'}, FP['R'], 'pack temperature', V)
@@ -555,13 +555,15 @@ def conn_nets(pins):
     for p, sig, kind in pins:
         out[str(p)] = PANEL_MAP.get(sig, sig)
     return out
-add('J14', ('Connector_Generic','Conn_02x13_Odd_Even'), 'PANEL-2 J14 (IDC-26) control/analog',
-    conn_nets(B.J_PANEL), FP['IDC26'], 'I2C, encoders/matrix (via expanders), faders, CV, GATE, LED', N)
-add('J15', ('Connector_Generic','Conn_02x20_Odd_Even'), 'PANEL-2 J12 (FFC-40) LCD+I2C+INT+BL',
-    conn_nets(B.J_LCD), FP['FFC40'], '25 signals: RGB565 + I2C + INT + BL_PWM + BL_ANODE/CATHODE', N)
-add('J16', ('Connector_Generic','Conn_02x08_Odd_Even'), 'J-DIG-EXP (IDC-16) smart-module digital',
-    conn_nets([(p, s, k) for p, s, k in B.J_DIG]), FP['IDC16'], 'TDM/I2S + SPI mailbox + I2C (R-22)', N)
-add('R95', ('Device','R'), '0R', {'1':'BL_CATHODE','2':'PGND'}, FP['R'], 'backlight LED return path', N)
+def list_nets(lst):
+    return {str(p): net for p, net in lst}
+add('J14', ('Connector_Generic','Conn_02x13_Odd_Even'), 'PANEL-2 J14 (IDC-26) analog field [rev.2 canon]',
+    list_nets(B.J14_REV2), FP['IDC26'], 'CVOUT1-4, CVIN1-4, GATE_OUT, FADER1/2, EN_LED5; evens AGND', N)
+add('J15', ('Connector_Generic','Conn_02x20_Odd_Even'), 'PANEL-2 J12 (FFC-40) LCD RGB565+BL [rev.2 canon]',
+    list_nets(B.J15_REV2), FP['FFC40'], 'RGB565 + sync + BL_PWM/BL_20V/BL_CATHODE, 3V3, GND (per PANEL-2 J12)', N)
+add('J16', ('Connector_Generic','Conn_02x08_Odd_Even'), 'PANEL-2 J13 (IDC-16) digital/power [rev.2 canon]',
+    list_nets(B.J16_REV2), FP['IDC16'], 'I2C, INT, LED_DATA(3V3), 5V_LED/LED_RET, EN_RAILS; R-22 digital exp deferred to rev.3', N)
+add('R97', ('Device','R'), '0R', {'1':'BL_CATHODE','2':'PGND'}, FP['R'], 'backlight LED return path', N)
 # rear panel connectors (off-board, wired via TB1/TB2)
 add('J6', ('Connector_Audio','AudioJack3'), 'MIDI IN TRS-A', {'T':'MIDI_IN_T','R':'MIDI_IN_R','S':'DGND'}, '', 'rear panel jack', N, on_board=False)
 add('J7', ('Connector_Audio','AudioJack3'), 'MIDI OUT TRS-A', {'T':'MIDI_OUT_T','R':'MIDI_OUT_R','S':'DGND'}, '', 'rear panel jack', N, on_board=False)
@@ -579,6 +581,54 @@ add('TB2', ('Connector_Generic','Conn_01x10'), 'Rear MIDI/DC/EXPR terminal block
     '6':'DGND','7':'12V_EXT','8':'PGND','9':'EXPR','10':'3V3'}, 'TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1-10-3.81_1x10_P3.81mm_Horizontal', '', N)
 
 # ---------------------------- test points + power flags -------------------
+
+# ---------------------------- rev.2: PWR-2 connectors + inputs ------------
+add('J17', ('Connector_Generic','Conn_02x10_Odd_Even'), 'PWR-2 J3 (IDC-20) [rev.2]',
+    {'1':'VSYS','2':'VSYS','3':'BATT_P','4':'BATT_P','5':'12V_EXT','6':'12V_EXT',
+     '7':'PGND','8':'PGND','9':'N12_EXT','10':'N12_EXT','11':'PGND','12':'PGND',
+     '13':'5V_EXT','14':'5V_EXT','15':'PGND','16':'PGND','17':'5V_LED','18':'LED_RET',
+     '19':'PGND','20':'PGND'}, 'Connector_IDC:IDC-Header_2x10_P2.54mm_Vertical',
+    'rev.2: силовой разъём PWR-2 J3; при 3 А — альтернатива Micro-Fit 3.0 2x6', N)
+add('J18', ('Connector_Generic','Conn_02x06_Odd_Even'), 'PWR-2 J4 (IDC-12) [rev.2]',
+    {'1':'BATT_MON_RAW','2':'NTC_PACK','3':'I2C0_SDA','4':'I2C0_SCL','5':'FUEL_ALRT',
+     '6':'PWR_GOOD','7':'EN_BUS12','8':'EN_N12','9':'EN_LED5','10':'EN_5V',
+     '11':'PGND','12':'PGND'}, 'Connector_IDC:IDC-Header_2x06_P2.54mm_Vertical',
+    'rev.2: управляющий разъём PWR-2 J4 (гейдж, PWR_GOOD, EN)', N)
+add('D19', ('Diode','SS34'), 'SS34', {'1':'-12V','2':'N12_EXT'}, FP['DIODE'], 'rev.2: N12_EXT series back-feed protection', P)
+add('D20', ('Diode','SMAJ15A'), 'SMAJ15A', {'1':'N12_EXT','2':'PGND'}, FP['DIODE'], 'rev.2: N12_EXT TVS', P)
+add('C112', ('Device','C_Polarized'), '100uF/25V', {'1':'N12_EXT','2':'PGND'}, FP['CP'], 'rev.2: N12_EXT bulk', P)
+add('C113', ('Device','C'), '100nF/50V', {'1':'N12_EXT','2':'PGND'}, FP['C'], 'rev.2: N12_EXT ceramic', P)
+add('C114', ('Device','C_Polarized'), '100uF/10V', {'1':'5V_EXT','2':'PGND'}, FP['CP'], 'rev.2: +5V_EXT bulk', P)
+add('C115', ('Device','C'), '100nF', {'1':'5V_EXT','2':'PGND'}, FP['C'], 'rev.2: +5V_EXT ceramic', P)
+add('FB7', ('Device','FerriteBead'), '600R@100MHz', {'1':'5V_EXT','2':'5V'}, FP['FB'], 'rev.2: +5V from PWR-2 filter', P)
+add('C117', ('Device','C_Polarized'), '100uF/10V', {'1':'5V','2':'PGND'}, FP['CP'], 'rev.2: +5V bulk (replaces DNP C15)', P)
+add('C116', ('Device','C'), '100nF', {'1':'5V_LED','2':'PGND'}, FP['C'], 'rev.2: 5V_LED at J16', P)
+add('R92', ('Device','R'), '100k', {'1':'3V3','2':'PWR_GOOD'}, FP['R'], 'rev.2: PWR_GOOD pull-up (O-8)', P)
+add('R93', ('Device','R'), '100k', {'1':'3V3','2':'FUEL_ALRT'}, FP['R'], 'rev.2: FUEL_ALRT pull-up (O-8)', P)
+add('R94', ('Device','R'), '0R', {'1':'EN_RAILS','2':'EN_BUS12'}, FP['R'], 'rev.2: EN_RAILS -> EN_BUS12 (J18.7)', P)
+add('R95', ('Device','R'), '0R', {'1':'EN_RAILS','2':'EN_N12'}, FP['R'], 'rev.2: EN_RAILS -> EN_N12 (J18.8)', P)
+add('R96', ('Device','R'), '0R', {'1':'EN_RAILS','2':'EN_5V'}, FP['R'], 'rev.2: EN_RAILS -> EN_5V (J18.10)', P)
+add('R98', ('Device','R'), '0R', {'1':'LED_GPIO','2':'LED_DATA'}, FP['R'], 'rev.2: bypass LED level shifter (U44/R90 DNP); 3.3 V to PANEL-2', M)
+add('R105', ('Device','R'), '0R', {'1':'LCD_DISP','2':'3V3'}, FP['R'], 'rev.2: display always enabled (PANEL-2 J12 has no DISP pin)', N)
+# rev.2: CVIN3/CVIN4 (PANEL-2 J14 pins 13/15) -> MCP3208 CH4/CH5 (N-2)
+add('U45', ('Amplifier_Operational','TL074'), 'TL074', {'1':'CVIN3_RAW','2':'CVIN3_N','3':'CVREF_B'}, FP['DIP14'], 'CV IN3 level shift', V, unit=1)
+add('U45', ('Amplifier_Operational','TL074'), 'TL074', {'7':'CVIN4_RAW','6':'CVIN4_N','5':'CVREF_B'}, FP['DIP14'], 'CV IN4 level shift', V, unit=2)
+add('U45', ('Amplifier_Operational','TL074'), 'TL074', {'8':'SPARE_F','9':'SPARE_F','10':'AGND'}, FP['DIP14'], 'spare (grounded)', V, unit=3)
+add('U45', ('Amplifier_Operational','TL074'), 'TL074', {'14':'SPARE_G','13':'SPARE_G','12':'AGND'}, FP['DIP14'], 'spare (grounded)', V, unit=4)
+add('U45', ('Amplifier_Operational','TL074'), 'TL074', {'4':'12V','11':'-12V'}, FP['DIP14'], 'power', V, unit=5)
+add('R99', ('Device','R'), '100k', {'1':'CVIN3','2':'CVIN3_N'}, FP['R'], '', V)
+add('R100', ('Device','R'), '100k', {'1':'CVIN4','2':'CVIN4_N'}, FP['R'], '', V)
+add('R101', ('Device','R'), '16.5k', {'1':'CVIN3_N','2':'CVIN3_RAW'}, FP['R'], 'gain 0.165', V)
+add('R102', ('Device','R'), '16.5k', {'1':'CVIN4_N','2':'CVIN4_RAW'}, FP['R'], 'gain 0.165', V)
+add('R103', ('Device','R'), '1k', {'1':'CVIN3_RAW','2':'CVIN3_ADC'}, FP['R'], '', V)
+add('R104', ('Device','R'), '1k', {'1':'CVIN4_RAW','2':'CVIN4_ADC'}, FP['R'], '', V)
+add('C118', ('Device','C'), '100nF', {'1':'CVIN3_ADC','2':'AGND'}, FP['C'], '', V)
+add('C119', ('Device','C'), '100nF', {'1':'CVIN4_ADC','2':'AGND'}, FP['C'], '', V)
+add('D24', ('Diode','BAT54S'), 'BAT54S', {'1':'AGND','2':'3V3','3':'CVIN3_ADC'}, FP['BAT54S'], '', V)
+add('D25', ('Diode','BAT54S'), 'BAT54S', {'1':'AGND','2':'3V3','3':'CVIN4_ADC'}, FP['BAT54S'], '', V)
+add('C120', ('Device','C'), '100nF', {'1':'12V','2':'AGND'}, FP['C'], '', V)
+add('C121', ('Device','C'), '100nF', {'1':'-12V','2':'AGND'}, FP['C'], '', V)
+
 for i, (tp, net, why) in enumerate(B.TPS):
     add(tp, ('Connector','TestPoint'), net, {'1': net}, '', why, 'TP', on_board=True)
 FLAGS = ['VBUS_CHG', 'VBUS_F', 'BATT_N', 'PGND', '12V', '-12V', '5V', 'VREF33', '3V3_MCU', 'DGND', 'AGND']
@@ -615,7 +665,7 @@ class Section:
         y = self.y0 + 12.0 + (self.row + h/2.0) * SH
         c = self.sch.sym(comp['lib'][0], comp['lib'][1], comp['ref'], comp['val'],
                          x, y, footprint=comp['fp'], unit=unit,
-                         on_board=comp['on_board'],
+                         on_board=comp['on_board'], dnp=(comp['ref'] in B.REV2_DNP),
                          ref_off=(-w*SW/2 + 4, -h*SH/2 + 3.0),
                          val_off=(-w*SW/2 + 4, -h*SH/2 + 6.0))
         c['note'] = comp['note']; c['section'] = comp['section']
@@ -735,6 +785,11 @@ def run(cmd):
 def exports():
     schfile = os.path.join(HERE, PROJECT + '.kicad_sch')
     os.makedirs(os.path.join(HERE, 'erc'), exist_ok=True)
+    # stale project-local annotation state (.kicad_prl) from a previous generation
+    # makes the first KiCad load report "annotation errors"; drop it.
+    prl = os.path.join(HERE, PROJECT + '.kicad_prl')
+    if os.path.exists(prl):
+        os.remove(prl)
     run([KICAD_CLI, 'sch', 'erc', '--severity-all', '--format', 'report',
          '-o', os.path.join(HERE, 'erc', 'erc.rpt'), schfile])
     run([KICAD_CLI, 'sch', 'erc', '--severity-all', '--format', 'json',
@@ -745,6 +800,13 @@ def exports():
     src = os.path.join(HERE, 'svg', PROJECT + '.svg')
     if os.path.exists(src):
         shutil.copy(src, os.path.join(HERE, PROJECT + '.svg'))
+    # first CLI netlist load after writing the .kicad_sch may report stale annotation
+    # (KiCad rebuilds .kicad_prl annotation state); warm up silently, then export.
+    warm = os.path.join(HERE, '.netlist_warmup')
+    subprocess.run([KICAD_CLI, 'sch', 'export', 'netlist', '--format', 'kicadsexpr',
+                    '-o', warm, schfile], capture_output=True, text=True)
+    if os.path.exists(warm):
+        os.remove(warm)
     run([KICAD_CLI, 'sch', 'export', 'netlist', '--format', 'kicadsexpr',
          '-o', os.path.join(HERE, 'netlist.net'), schfile])
     run([KICAD_CLI, 'sch', 'export', 'netlist', '--format', 'kicadxml',
@@ -813,9 +875,15 @@ def write_bom():
             rr['note'] = (rr['note'] + '; ' if rr['note'] else '') + 'DNP rev.2: ' + '; '.join(reasons)
             split_rows.append(rr)
     rows = split_rows
+    present = {x for r in rows for x in r['refs'].split()}
     for i, n in enumerate(B.REV2_NEW):
+        if n['ref'] in present:
+            continue
         rows.append(dict(code='PM-C2-R2-%02d' % (i+1), mpn='', val=n['val'], qty=1,
                          refs=n['ref'], fp=n['fp'], note=n['note'], rev2='NEW'))
+    for r in rows:
+        if r.get('rev2') != 'DNP' and all(x in B.REV2_NEW_REFS for x in r['refs'].split()):
+            r['rev2'] = 'NEW'
     rows.sort(key=lambda r: r['code'])
     with open(os.path.join(HERE, 'BOM-core2.csv'), 'w', newline='', encoding='utf-8') as fh:
         w = csv.writer(fh, delimiter=';')
