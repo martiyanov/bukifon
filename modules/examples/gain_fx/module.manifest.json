@@ -1,0 +1,33 @@
+{
+  "schema": "bukifon.module.package.v1",
+  "id": "bukifon.gain_fx",
+  "name": "Gain FX",
+  "version": "0.1.0",
+  "abi": 0,
+  "author": "bukifon",
+  "license": "GPL-3.0-or-later",
+  "description": "Диодный драйв с tone-контролем (пример Module API v0)",
+  "created_by": "tools/package_module.py",
+  "files": [
+    {
+      "path": "LICENSE",
+      "sha256": "f39518131d6f529f142afec07ba328757e3c5c95578b9cc015eaf1d4199bc345",
+      "size": 1037
+    },
+    {
+      "path": "README.md",
+      "sha256": "500d962b2babff9d32f64f5498808a10171ed9af0f949e88c3ee74580e8963e4",
+      "size": 374
+    },
+    {
+      "path": "module.json",
+      "sha256": "b80938597e38ea762794f879b7b1d3fd3b22c8ed1984f71bc9a764e937a7f7f1",
+      "size": 634
+    },
+    {
+      "path": "src/gain_fx.cpp",
+      "sha256": "bc604b186a0d310811255c763ac184fea76e9221ce6867900d5c9283860abcdf",
+      "size": 2926
+    }
+  ]
+}

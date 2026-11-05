@@ -166,14 +166,18 @@ addEventListener("keyup", (e) => {
   const n = pressed.get(e.code); if (n != null) { noteOff(n); markKey(n, false); pressed.delete(e.code); }
 });
 
-let midiAccess = null;
+let midiAccess = null, midiOut = null;
+function sendCC(cc, val) { if (midiOut) { try { midiOut.send([0xB0, cc, clamp(Math.round(val), 0, 127)]); } catch (e) {} } }
 function midiInit() {
   if (!navigator.requestMIDIAccess) return;
   navigator.requestMIDIAccess({ sysex: false }).then((access) => {
     midiAccess = access;
     const bind = () => {
       const inputs = [...access.inputs.values()];
-      $("midiState").textContent = inputs.length ? `MIDI: ${inputs.map((i) => i.name).join(", ").slice(0, 34)}` : "MIDI: нет устройств";
+      const outputs = [...access.outputs.values()];
+      midiOut = outputs[0] || null;
+      $("midiState").textContent = inputs.length ? `MIDI: ${inputs.map((i) => i.name).join(", ").slice(0, 30)}` : "MIDI: нет входов";
+      if (outputs.length) $("midiState").textContent += " · OUT OK";
       inputs.forEach((input) => { input.onmidimessage = onMidi; });
     };
     bind(); access.onstatechange = bind;
@@ -241,7 +245,7 @@ function buildKnobs() {
       if (startY == null) return;
       const dy = startY - e.clientY, range = PARAM_MAX[i] - PARAM_MIN[i];
       const val = clamp(startVal + (dy / 120) * range, PARAM_MIN[i], PARAM_MAX[i]);
-      state.parts[state.selPart].params[i] = val; paintKnobs(); save();
+      state.parts[state.selPart].params[i] = val; paintKnobs(); save(); sendCC(74 + i, ((val - PARAM_MIN[i]) / (PARAM_MAX[i] - PARAM_MIN[i])) * 127);
     };
     const up = () => { startY = null; };
     k.addEventListener("pointerdown", down); k.addEventListener("pointermove", move); k.addEventListener("pointerup", up); k.addEventListener("pointercancel", up);
@@ -257,6 +261,8 @@ function paintKnobs() {
 
 /* faders */
 function buildFaders() {
+  const shareBtn = document.getElementById("btnShare");
+  if (shareBtn) shareBtn.addEventListener("click", copyShareLink);
   document.querySelectorAll(".fader").forEach((f) => {
     let startY = null, startVal = 0;
     const down = (e) => { e.preventDefault(); startY = e.clientY; startVal = f.dataset.fader === "0" ? state.volume : state.delayMix; f.setPointerCapture(e.pointerId); };
@@ -439,6 +445,32 @@ cv.addEventListener("pointerdown", (e) => {
 });
 function startPreview(part, s) { if (!state.playing) { const n = part.root + part.steps[s].note; noteOn(n, 0.8, part); setTimeout(() => noteOff(n), 180); } }
 
+/* ---------- share pattern via URL ---------- */
+function encodeState() {
+  const compact = { b: state.bpm, s: state.selPart, p: state.parts.map((p) => ({ r: p.root, a: p.active ? 1 : 0, m: p.mute ? 1 : 0, q: p.params.map((x) => Math.round(x)), st: p.steps.map((x) => (x.on ? (x.accent ? 2 : 1) : 0) * 128 + x.note) })) };
+  return btoa(JSON.stringify(compact)).replace(/=+$/, "");
+}
+function decodeState(b64) {
+  try {
+    const compact = JSON.parse(atob(b64));
+    if (compact.b) state.bpm = clamp(compact.b, 40, 220);
+    if (compact.s != null) state.selPart = clamp(compact.s, 0, 3);
+    (compact.p || []).forEach((cp, i) => {
+      const p = state.parts[i]; if (!p) return;
+      p.root = cp.r; p.active = !!cp.a; p.mute = !!cp.m; p.params = (cp.q || p.params).slice(0, 8);
+      (cp.st || []).forEach((v, s2) => { const on = Math.floor(v / 128) > 0; p.steps[s2].on = on; p.steps[s2].accent = Math.floor(v / 128) === 2; p.steps[s2].note = v % 128; });
+    });
+    return true;
+  } catch (e) { return false; }
+}
+function copyShareLink() {
+  const url = location.origin + location.pathname + "#p=" + encodeState();
+  navigator.clipboard && navigator.clipboard.writeText(url).catch(() => {});
+  $("shareState").textContent = "ссылка скопирована";
+  setTimeout(() => { $("shareState").textContent = ""; }, 2000);
+}
+function loadFromHash() { const m = location.hash.match(/#p=(.+)/); if (m) return decodeState(m[1]); return false; }
+
 /* ---------- init ---------- */
 function bindUI() {
   $("btnPlay").addEventListener("click", () => state.playing ? stopSeq() : startSeq());
@@ -447,10 +479,12 @@ function bindUI() {
   $("bpm").addEventListener("change", (e) => { state.bpm = clamp(+e.target.value || 120, 40, 220); save(); });
   $("volume").value = Math.round(state.volume * 100);
   $("volume").addEventListener("input", (e) => { state.volume = +e.target.value / 100; if (master) master.gain.value = state.volume; save(); });
+  const shareBtn = document.getElementById("btnShare");
+  if (shareBtn) shareBtn.addEventListener("click", copyShareLink);
   document.querySelectorAll(".fader").forEach((f) => {
     const v = f.dataset.fader === "0" ? state.volume : state.delayMix;
     f.style.setProperty("--top", ((1 - v) * 100).toFixed(1) + "%");
   });
 }
-load(); buildKeys(); buildKnobs(); buildFaders(); buildJacks(); bindUI(); paintKnobs(); midiInit();
+load(); loadFromHash(); buildKeys(); buildKnobs(); buildFaders(); buildJacks(); bindUI(); paintKnobs(); midiInit();
 (function loop() { draw(); requestAnimationFrame(loop); })();
