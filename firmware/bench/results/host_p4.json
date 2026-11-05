@@ -1,0 +1,32 @@
+{
+  "schema": "bukifon-bench-v1",
+  "tool": "bukifon-bench",
+  "platform": "macOS arm64",
+  "host": "host",
+  "compiler": "clang 21.0.0 (clang-2100.4.1.1)",
+  "timestamp": "2026-11-05T22:33:34Z",
+  "build": "host-native",
+  "notes": "Host timings are a reference for workload sanity, not a device verdict",
+  "block_frames": 64,
+  "sample_rate": 48000,
+  "deadline_us": 1333.3333,
+  "audio_max_block_us": 650.0000,
+  "all_pass": true,
+  "scenarios": [
+    {
+      "name": "p4_profile",
+      "description": "P4 first SKU: RGB565 750 KiB framebuffer + 25 KiB bounce, 8 FM voices + 8 stereo tracks, RGB565/DSI display model (>=15 fps), HS USB 8x8 UAC2 2.304 MB/s, 24 h soak target",
+      "blocks": 2000,
+      "block_frames": 64,
+      "deadline_us": 1333.3333,
+      "max_block_us": 650.0000,
+      "deterministic": true,
+      "pass": true,
+      "fail_reason": "",
+      "overruns": 0,
+      "checksum": 3291457365238972008,
+      "times_us": {"min": 72.3330, "max": 319.6660, "mean": 76.9570, "p50": 73.5830, "p95": 97.2142, "p99": 132.1723},
+      "metrics": [{"name": "framebuffer_kib", "value": 750.0000, "unit": "KiB"}, {"name": "bounce_kib", "value": 25.0000, "unit": "KiB"}, {"name": "rgb_full_fps", "value": 52.0833, "unit": "fps"}, {"name": "rgb_partial_fps", "value": 130.2083, "unit": "fps"}, {"name": "usb_8x8_mb_s", "value": 2.3040, "unit": "MB/s"}, {"name": "usb_hs_ok", "value": 1.0000, "unit": "flag"}, {"name": "soak_hours", "value": 24.0000, "unit": "h"}, {"name": "block_us", "value": 76.9570, "unit": "us"}]
+    }
+  ]
+}

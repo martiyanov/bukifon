@@ -14,6 +14,7 @@ IScenario* createPsramStreamScenario();
 IScenario* createUiFrameScenario(bool partial);
 IScenario* createUsbDescriptorScenario();
 IScenario* createS3ProfileScenario();
+IScenario* createP4ProfileScenario();
 
 }  // namespace bench
 }  // namespace bukifon

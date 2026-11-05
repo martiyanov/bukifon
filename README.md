@@ -1,6 +1,6 @@
 # Букифон (Bukifon) — открытая платформа: сэмплер + синтезатор + модули
 
-**Версия: 0.10.0** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
+**Версия: 0.11.0** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
 
 **Букифон** — настольный музыкальный инструмент-платформа, который собирается из
 доступных компонентов, печатается на 3D-принтере, расширяется модулями и полностью
@@ -32,16 +32,16 @@ BLE HID, передача проектов). То есть Букифон — е
 аналоговый картридж на шине 26-pin или сменная панельная дека (18 пэдов / 42 клавиши).
 Подробнее — [spec/00-vision.md §12](spec/00-vision.md).
 
-## Текущее состояние (v0.10.0)
+## Текущее состояние (v0.11.0)
 
 | Блок | Состояние |
 |---|---|
 | **Панель v0.4** | 380 × 210 × 3 мм: 42 клавиши Lapka-42 (точная геометрия, ±18°), 16 энкодеров Ø14, экран 5.0″ 800×480 без рамки, 10 mini-jack, 2 фейдера 60 мм; пересечений 0 |
 | **Корпус v0.5-B** | **клин 8°**: 380 × 210 × 61.5 мм (перед 32 / зад 61.5), 6 деталей watertight, печать без поддержек 279 г / 18.3 ч, fitcheck 32/0, профиль 1:1 для картонной проверки |
-| **Product BOM S3** | `BOM-s3.csv` + `docs/33`: kit COGS **$189 / $166 / $149** на 1/10/25 шт; $199 — founders beta (COGS ≤$125–135 для нормального SKU), S3 Complete $249–269 |
+| **Product BOM P4 (первый SKU)** | `BOM-p4.csv` + `docs/33/40`: COGS **$219/$194/$176** на 1/10/25; **P4 Standard $299** (gross 35 % на 10), Full Bundle $399; S3 lite — второй профиль ($199/$175/$157) |
 | **Сборка** | `renders/templates/bukifon_assembly_map_1to1.pdf` (4 стр: слои, панель 1:1, крепёж/шлейфы), `docs/34`, `docs/35` print-first, 3D exploded |
-| **Прошивка v0.6** | S3 HAL `s3base` — сборка SUCCESS (flash 11.3 %, RAM 62.7 %), 146/146 тестов, UI 4 режимов, P1 S3-профиль PASS (max block 192 µs; SPI full 13 fps — риск D-51), Module API v0.1 (12 колбэков, события, host services) |
-| **CORE-S3 rev.0** | «народная» плата: ESP32-S3-N16R8, USB FS стерео UAC2, 1-bit SD, **SPI-дисплей** (RGB565 не влезает: 31 доступная линия), TPS63000 placeholder; **ERC 0/0**, GPIO 27/31 занято; PRE-FREEZE |
+| **Прошивка v0.7** | **160/160 тестов**; S3 HAL сборка SUCCESS; spike `spike_s3` SUCCESS; **P1 P4-профиль** PASS (RGB/DSI 52 fps, HS UAC2 8×8, max block 320 µs); UI 4 режимов; Module API v0.1 |
+| **CORE-2 rev.2 (основная плата)** | ESP32-P4 + ESP32-C6, 32 МБ PSRAM, USB HS, RGB565/DSI, ERC 0/0; DFM/DFT: 30 TP, 20 self-test, recovery, 6 слоёв — PRE-FREEZE |
 | **Корпус B-light** | **230 г / 11.1 ч** (−17 % массы, −39 % времени): стенки 2.0/дно 1.8, 3 периметра + локальные рёбра, панели-оболочки; 6 STL watertight, fitcheck 32/0 |
 | **CORE-2 rev.2** | схема внесена: J17/J18, входы 12V_EXT/N12_EXT/+5V_EXT/5V_LED, EN-развязки, CV IN3/4 на MCP3208, re-pin J14/J15/J16, DNP 46; **ERC 0/0**, pinmap PASS |
 | **PANEL-2 rev.2** | J13/J14 (5V_LED, LED_RET, EN_RAILS, EN_LED5), re-pin по канону, GATE_IN на MCP23017 0x23, LED_DATA 3.3 В + shifter; **ERC 0 err/6 warn**, verify 1290/0 |
@@ -129,6 +129,9 @@ cd firmware/host && make test                    # host-тесты DSP (67 те�
 ```
 
 ## Структура репозитория
+
+Текущее — в рабочих папках, всё старое — в [`archive/`](archive/README.md); карта — [STRUCTURE.md](STRUCTURE.md).
+
 
 ```
 spec/            требования, архитектура, электрика, механика, прошивка, реестр требований

@@ -2,6 +2,35 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.11.0] — 2025-11-06 — «P4 first + структура»
+
+### Изменено (решения заказчика)
+- **Первый SKU — P4-версия с RGB565/DSI** (D-58): S3-base $199 отменён, S3 уходит в «lite later»;
+  стартовый комплект — **P4 Standard (Complete) $299** (D-59), Full Bundle $399 позже.
+- **P1-стенд утверждён** (D-60): P4 EV + NUCLEO-H743ZI2 + кодеки (~$110–130), точные MPN и ссылки в docs/29.
+- **Репозиторий пересоздать** (D-61) для purge PII: план и команды — docs/41.
+- Тестовая половинка корпуса B-light — печатать (D-62); батарея в первой партии не продаётся.
+
+### Добавлено
+- **DFM/DFT для P4-ветки**: `docs/38-dfm-testability.md`, `hardware/{core2,panel2,power2}/dfm.md`
+  — 30 TP (единое pogo-поле), 20 self-test, serialization (24C32 + flash/NVS + QR),
+  recovery (UART0+BOOT, dual OTA), 6-слойный stackup, чек-листы; S3 — короткий lite-пакет.
+- **Product BOM P4**: `BOM-p4.csv` + `docs/33`, `docs/40-kit-contents.md` — COGS
+  **$219/$194/$176** на 1/10/25; $299 жизнеспособен (gross 35 % на партии 10), $399 Full Bundle;
+  COGS S3 lite $199/$175/$157 (второй профиль).
+- **S3 vertical-slice spike** `firmware/spike_s3/` (сборка SUCCESS; host-sim PASS),
+  протокол `docs/39-s3-spike-protocol.md` с разделом P4-transfer; **P1 P4-профиль** в bench:
+  `host_p4.json` PASS (RGB/DSI модель 52 fps, HS UAC2 8×8, max block 320 µs).
+- **DFM/DFT-ревью GPT** `docs/42`: 30-точечное pogo-поле, 14 self-test, serialization,
+  recovery, DFM, план founders beta (3 инженерных + 2 валидационных, EOL 6–8 мин).
+- **Структура репозитория**: `STRUCTURE.md`, `archive/README.md`; старые версии перенесены
+  в `archive/<version>/` (v1.0, v0.3, v0.4, v1.4…v1.8) через `tools/archive_versions.sh`.
+- Решения D-58…D-72; исправлены O-17 (TL074=4), O-18 (TPS63802), O-19 (дисплей RGB/SPI).
+
+### Проверки
+- ERC: CORE-2 0/0, PANEL-2 0/6warn, PWR-2 0/0, CORE-S3 0/0; **160/160 host-тестов**;
+- `spike_s3` сборка SUCCESS; `bench host_p4` PASS; сайт/структура — проверены.
+
 ## [0.10.0] — 2025-11-06 — «RC-контур»
 
 ### Добавлено

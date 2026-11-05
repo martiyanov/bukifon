@@ -23,6 +23,7 @@ const Entry kEntries[] = {
     {"ui_frame_partial", []() -> IScenario* { return createUiFrameScenario(true); }},
     {"usb_descriptor", createUsbDescriptorScenario},
     {"s3_profile", createS3ProfileScenario},
+    {"p4_profile", createP4ProfileScenario},
 };
 
 constexpr int kCount = static_cast<int>(sizeof(kEntries) / sizeof(kEntries[0]));

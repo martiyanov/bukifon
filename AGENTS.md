@@ -32,7 +32,7 @@ README обновляется в том же коммите. Устаревши�
 ## 3. Единственный источник геометрии
 
 - Панель: `spec/panel-spec-v0.4.json` (или более новая версия в `spec/`).
-- Корпус: `mechanical/generator/params_v04.py` + `spec/panel-spec-v0.4.json`.
+- Корпус: `mechanical/generator/params_v05.py` / `case_v05_light.py` + `spec/panel-spec-v0.4.json`.
 - Требования: `spec/90-requirements-registry.md` (R-xx, журнал D-xx).
 - Устаревшие спеки (`spec/20`, `spec/40`, старый README) правятся по реестру, а не
   «как получится».
@@ -43,13 +43,20 @@ README обновляется в том же коммите. Устаревши�
 # панель: 1:1 шаблон + рендер + пересечения (должно быть 0)
 MPLCONFIGDIR=/tmp/mplcache /tmp/msvenv/bin/python tools/panel_from_json.py spec/panel-spec-v0.4.json bukifon_v04
 # корпус: STL + fitcheck (пересечения 0)
-MPLCONFIGDIR=/tmp/mplcache /tmp/msvenv/bin/python mechanical/generator/case_v04.py
-MPLCONFIGDIR=/tmp/mplcache /tmp/msvenv/bin/python mechanical/generator/fitcheck_v04.py
+MPLCONFIGDIR=/tmp/mplcache /tmp/msvenv/bin/python mechanical/generator/case_v05_light.py
+MPLCONFIGDIR=/tmp/mplcache /tmp/msvenv/bin/python mechanical/generator/fitcheck_v05_light.py
 # безопасность/приватность (секреты, EXIF/GPS, абсолютные пути)
 bash tools/security_scan.sh
 # прошивка: host-тесты
 cd firmware/host && make test        # или: make -C firmware/host
 ```
+
+## 4a. Архив версий (обязательно при релизе)
+
+Устаревшие раскладки, STL, превью, шаблоны и spec JSON **не оставлять в рабочих папках**:
+переносить в `archive/<version>/` через `bash tools/archive_versions.sh` (git mv), обновлять
+`archive/README.md` и `STRUCTURE.md`. В `renders/templates/`, `mechanical/`, `spec/` — только
+текущая версия. Старые файлы доступны через историю/теги.
 
 ## 5. Документы, которые нельзя удалять
 

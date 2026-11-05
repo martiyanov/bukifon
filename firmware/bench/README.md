@@ -22,6 +22,8 @@ allocations by the host tests.
 | `ui_frame` | full 800×480 RGB565 UI redraw (snapshot-driven shell) |
 | `ui_frame_partial` | 800×480 partial redraw (4 dirty rectangles) |
 | `usb_descriptor` | USB composite descriptor build (HID keyboard + MIDI + UAC2 + CDC) and UAC2 8×8/24/48 bandwidth feasibility (2.304 MB/s) |
+| `s3_profile` | S3-lite concept profile: 4 MiB pool + 750 KiB framebuffer + bounce, 6 voices + 4 granular tracks, SPI (13 fps full) vs RGB model, FS stereo USB |
+| `p4_profile` | **P4 first-SKU profile**: 750 KiB RGB565 framebuffer + bounce, 8 voices + 8 stereo tracks, RGB565/DSI model (≥15 fps full), HS USB 8×8 UAC2 (2.304 MB/s), 24 h soak target |
 
 Reported per scenario: min/max/mean/p50/p95/p99 block time, overruns vs the
 real-time deadline, determinism (two runs, same checksum), per-scenario metrics
@@ -37,8 +39,17 @@ make -C firmware/bench host        # builds + runs, writes results/host.{json,cs
 ```
 
 Latest host reference (macOS arm64, Apple clang 21, `-O2`) is stored in
-[`results/host.json`](results/host.json).  Host timings are a **workload sanity
-reference**, not a device verdict.
+[`results/host.json`](results/host.json); the S3-lite and **P4 first-SKU**
+profiles are in [`results/host_s3.json`](results/host_s3.json) and
+[`results/host_p4.json`](results/host_p4.json) (`make host_s3` / `make host_p4`).
+Host timings are a **workload sanity reference**, not a device verdict.
+
+**Platform priority (round 6):** P4 with RGB565/DSI is the first SKU; S3 is the
+"lite later" concept platform.  `s3_profile` keeps the SPI model so the S3-lite
+limitation is documented (13 fps full <15), while `p4_profile` models the RGB565
+path and HS USB 8×8.  The UI (including the 4 device-mode panels) is identical
+for P4 and S3-lite — only the display backend and USB PHY differ.  P4 builds
+remain blocked by the missing PlatformIO P4 platform; no success is claimed.
 
 ## Run on devices
 
@@ -46,6 +57,7 @@ reference**, not a device verdict.
 |---|---|---|
 | `bench` (native) | builds (same as Makefile target) | `pio run -d firmware -e bench` |
 | `bench_s3` (ESP32-S3 DevKitC-1) | **builds** (Flash 17.7 %, RAM 6.8 %) | `pio run -d firmware -e bench_s3 -t upload` |
+| `bench_p4` | **prepared, not buildable** (official espressif32 8.0.0 has no P4) — P4 is the **first SKU**; `p4_profile` is ready for the P1 stand | see `docs/05a` |
 | `bench_p4` | **prepared, not buildable** — official `espressif32` 8.0.0 has no P4 board/framework; uncomment after installing a P4-capable platform | see `docs/05a` |
 | `bench_h743` (Nucleo-H743ZI2) | **prepared, not buildable here** — needs `pio platform install ststm32`; uncomment the env | see `docs/05a` |
 

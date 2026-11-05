@@ -18,6 +18,8 @@ import os
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 SPEC_JSON = os.path.join(ROOT, "spec", "panel-spec-v1.7.json")
+if not os.path.exists(SPEC_JSON):  # v1.7 перенесён в архив (STRUCTURE.md)
+    SPEC_JSON = os.path.join(ROOT, "archive", "v1.7", "spec", "panel-spec-v1.7.json")
 
 # ---------------------------------------------------------------------------
 # 0. Панель (spec/panel-spec-v1.7.json)

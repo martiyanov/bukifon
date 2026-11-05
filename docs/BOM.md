@@ -209,3 +209,18 @@
 [`docs/01-quickstart.md`](01-quickstart.md) · [`docs/09-licensing.md`](09-licensing.md) ·
 [`spec/90-requirements-registry.md`](../spec/90-requirements-registry.md) ·
 [`docs/12-roadmap.md`](12-roadmap.md).
+
+---
+
+## 6. Product BOM (отдельные файлы, с 2026-11-05)
+
+Мастерский `BOM.csv` выше — **workshop/справочный**, не себестоимость изделия.
+Product BOM для SKU ведутся отдельно:
+
+| Файл | SKU | COGS (партия 10 / 25) |
+|---|---|---:|
+| [`BOM-p4.csv`](../BOM-p4.csv) | **P4 Standard (Complete) $299**, P4 Full Bundle $399 | $194 / $176 |
+| [`BOM-s3.csv`](../BOM-s3.csv) | S3 Complete/lite ($249–269, later) | $175 / $157 |
+
+Сводки и маржа — [`docs/33-bom-s3.md`](33-bom-s3.md); комплектация SKU, упаковка,
+вкладыш, серийники, QC — [`docs/40-kit-contents.md`](40-kit-contents.md).

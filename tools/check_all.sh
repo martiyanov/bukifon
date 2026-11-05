@@ -17,9 +17,9 @@ print("пересечения:", d["count"])
 sys.exit(1 if d["count"] else 0)
 PY
 
-say "2/6 Корпус v0.4: STL + fitcheck"
-if [ -f mechanical/generator/case_v04.py ]; then $PY mechanical/generator/case_v04.py 2>&1 | tail -3 || fail=1; fi
-if [ -f mechanical/generator/fitcheck_v04.py ]; then $PY mechanical/generator/fitcheck_v04.py 2>&1 | tail -3 || fail=1; fi
+say "2/6 Корпус v0.5-B-light: STL + fitcheck"
+if [ -f mechanical/generator/case_v05_light.py ]; then $PY mechanical/generator/case_v05_light.py 2>&1 | tail -3 || fail=1; fi
+if [ -f mechanical/generator/fitcheck_v05_light.py ]; then $PY mechanical/generator/fitcheck_v05_light.py 2>&1 | tail -3 || fail=1; fi
 
 say "3/6 Прошивка: host-тесты"
 if [ -f firmware/host/Makefile ]; then (cd firmware/host && make -s test 2>&1 | tail -5) || fail=1; else echo "skip: firmware/host/Makefile нет"; fi

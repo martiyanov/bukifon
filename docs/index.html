@@ -76,7 +76,7 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
   <nav><a href="#about">О проекте</a><a href="#modes">Режимы</a><a href="#hardware">Железо</a><a href="#status">Статус</a><a href="#kit">Комплект</a><a href="#bench">Бенчмарк</a><a href="#modules">Модули</a><a href="#docs">Документы</a><a href="en/" hreflang="en">English</a></nav>
   <h1>Букифон <span style="color:var(--mut);font-weight:400">/ Bukifon</span></h1>
   <p class="sub">Открытый настольный <strong>синтезатор + сэмплер + платформа модулей</strong>. 3D-печатный корпус, открытые схемы KiCad, открытая прошивка C++.<br><strong>Народный инструмент:</strong> комплект от <strong>≤ $200</strong> (S3) до <strong>≤ $400</strong> (полный с P4 и картриджами).</p>
-  <span class="badge">v0.10.0</span><span class="badge">CERN-OHL-S-2.0</span><span class="badge">GPL-3.0-or-later</span><span class="badge">клин 8° · 380×210×61.5</span><span class="badge">Wi-Fi + BT</span><span class="badge">USB HID + MIDI + UAC2</span>
+  <span class="badge">v0.11.0</span><span class="badge">CERN-OHL-S-2.0</span><span class="badge">GPL-3.0-or-later</span><span class="badge">клин 8° · 380×210×61.5</span><span class="badge">Wi-Fi + BT</span><span class="badge">USB HID + MIDI + UAC2</span>
   <p style="margin-top:20px">
     <a class="cta" href="https://github.com/martiyanov/bukifon">GitHub</a>
     <a class="cta alt" href="https://github.com/martiyanov/bukifon/blob/main/docs/12-roadmap.md">Дорожная карта</a>
@@ -100,7 +100,7 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
     <div class="card"><h3>Эргономика</h3><p>Две половины клавиатуры Lapka-42 развёрнуты наружу (±18°), тамбы смотрят к центру, между ними — два 60-мм фейдера. Руки лежат как на пульте, а не на ноутбуке.</p></div>
     <div class="card"><h3>Звук</h3><p>4 части, 8 голосов, 4-операторный FM, wavetable, ZDF-фильтры, лестница Муга (AS3320), характер Поливокса, 3D-мод-матрица на 16 слотов.</p></div>
     <div class="card"><h3>Секвенсор</h3><p>Воркфлоу Elektron: p-locks, условия триггеров, микротайминг, звуковые локи, макросы и ctrl-all.</p></div>
-    <div class="card"><h3>Клавиатура и DAW</h3><p>Работает как USB-клавиатура: 42 клавиши Lapka-42 как печатная раскладка со слоями, 16 энкодеров как CC-контроллеры, transport. Плюс BLE-MIDI и BLE HID.</p></div><div class="card"><h3>Модули</h3><p>Шина 26-pin для аналоговых картриджей (VCO, фильтры, PT2399), программные модули через SDK и сменные деки ввода: 18 пэдов или 42 клавиши.</p></div>
+    <div class="card"><h3>RF/дисплей</h3><p>ESP32-P4 + ESP32-C6: Wi-Fi 6/BLE 5.3, RGB565/DSI 800×480, 32 МБ PSRAM, USB HS.</p></div><div class="card"><h3>Клавиатура и DAW</h3><p>Работает как USB-клавиатура: 42 клавиши Lapka-42 как печатная раскладка со слоями, 16 энкодеров как CC-контроллеры, transport. Плюс BLE-MIDI и BLE HID.</p></div><div class="card"><h3>Модули</h3><p>Шина 26-pin для аналоговых картриджей (VCO, фильтры, PT2399), программные модули через SDK и сменные деки ввода: 18 пэдов или 42 клавиши.</p></div>
   </div>
 </section>
 
@@ -136,7 +136,7 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
 </section>
 
 <section id="status">
-  <h2>Статус (v0.10.0)</h2>
+  <h2>Статус (v0.11.0)</h2>
   <p><strong>Host-демо уже работает:</strong> интерфейс 800×480, 4 дорожки × 16 шагов, play/stop, BPM, mute, p-lock, save/load с CRC, Module API v0 — 112 host-тестов, 83.5 % покрытия. Сборка ESP32-S3 проходит. Корпус v0.5-B (клин 8°) напечатан в модели, CORE-2/PANEL-2 — pre-freeze (ERC 0 ошибок).</p>
   <p><img src="assets/ui-main.jpg" alt="Host-демо интерфейса Букифона 800×480: статус-бар, 4 дорожки, панель параметров, transport" loading="lazy"></p>
   <ul>
@@ -170,7 +170,7 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
 </section>
 
 <section id="kit">
-  <h2>Комплекты: founders beta <strong>$199</strong> · S3 Complete $249–269</h2>
+  <h2>Комплекты: <strong>P4 Standard $299</strong> · Full Bundle $399</h2>
   <p>«Народность» — это не урезание органов управления, а честный product BOM и закупка. В kit входят CORE-S3, PANEL-2, упрощённый PWR-2, дисплей 5″, корпус и крепёж, 42 клавиши Choc с hot-swap, 16 энкодеров, 2 фейдера, 10 джеков, CV/GATE, печатные ручки и базовые колпачки. Опции: картриджи, microSD, БП, аккумуляторный pack, премиальные колпачки.</p>
   <p>Корпус печатается за 11 ч / 230 г. Экран в S3-версии — SPI (10–20 fps partial); RGB565/DSI — в P4-версии. Партия 10–25, direct-sale, статус limited DIY/beta. P4-стандарт ($299) — после P1-бенчмарка; full ($399) — bundle с картриджами. Подробный разбор — <a href="https://github.com/martiyanov/bukifon/blob/main/docs/27-costdown.md">docs/27-costdown</a>.</p>
   <p><a href="https://github.com/martiyanov/bukifon/blob/main/docs/26-p1-bench-kit.md">P1-стенд</a> ·

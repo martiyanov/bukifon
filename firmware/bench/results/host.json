@@ -4,7 +4,7 @@
   "platform": "macOS arm64",
   "host": "host",
   "compiler": "clang 21.0.0 (clang-2100.4.1.1)",
-  "timestamp": "2026-11-05T22:21:43Z",
+  "timestamp": "2026-11-05T22:33:34Z",
   "build": "host-native",
   "notes": "Host timings are a reference for workload sanity, not a device verdict",
   "block_frames": 64,
@@ -25,7 +25,7 @@
       "fail_reason": "",
       "overruns": 0,
       "checksum": 17058765422961135765,
-      "times_us": {"min": 67.8750, "max": 103.2500, "mean": 69.3058, "p50": 68.0410, "p95": 77.7520, "p99": 87.0000},
+      "times_us": {"min": 69.1670, "max": 315.3330, "mean": 73.6721, "p50": 70.0840, "p95": 88.7184, "p99": 137.9412},
       "metrics": [{"name": "voices", "value": 8.0000, "unit": "voices"}, {"name": "fm_operators", "value": 4.0000, "unit": "ops"}, {"name": "oversampling", "value": 2.0000, "unit": "x"}, {"name": "deadline_use_percent", "value": 0.0000, "unit": "%"}]
     },
     {
@@ -40,8 +40,8 @@
       "fail_reason": "",
       "overruns": 0,
       "checksum": 1735647180516965950,
-      "times_us": {"min": 10.6660, "max": 79.8340, "mean": 11.6343, "p50": 10.8750, "p95": 14.0851, "p99": 18.2207},
-      "metrics": [{"name": "tracks", "value": 8.0000, "unit": "tracks"}, {"name": "grains", "value": 4.0000, "unit": "per track"}, {"name": "grain_size", "value": 2048.0000, "unit": "samples"}, {"name": "random_reads", "value": 2048.0000, "unit": "per block"}, {"name": "block_us", "value": 11.6343, "unit": "us"}]
+      "times_us": {"min": 10.8750, "max": 42.5830, "mean": 11.4957, "p50": 11.1250, "p95": 12.6271, "p99": 17.2109},
+      "metrics": [{"name": "tracks", "value": 8.0000, "unit": "tracks"}, {"name": "grains", "value": 4.0000, "unit": "per track"}, {"name": "grain_size", "value": 2048.0000, "unit": "samples"}, {"name": "random_reads", "value": 2048.0000, "unit": "per block"}, {"name": "block_us", "value": 11.4957, "unit": "us"}]
     },
     {
       "name": "mix_bus",
@@ -55,8 +55,8 @@
       "fail_reason": "",
       "overruns": 0,
       "checksum": 5134474134364094870,
-      "times_us": {"min": 10.4170, "max": 39.2920, "mean": 11.1835, "p50": 10.9580, "p95": 11.3750, "p99": 12.1845},
-      "metrics": [{"name": "tracks", "value": 8.0000, "unit": "tracks"}, {"name": "inserts", "value": 8.0000, "unit": "fx"}, {"name": "sends", "value": 2.0000, "unit": "buses"}, {"name": "block_us", "value": 11.1835, "unit": "us"}]
+      "times_us": {"min": 4.9160, "max": 61.3750, "mean": 5.2822, "p50": 5.0000, "p95": 5.2500, "p99": 14.1254},
+      "metrics": [{"name": "tracks", "value": 8.0000, "unit": "tracks"}, {"name": "inserts", "value": 8.0000, "unit": "fx"}, {"name": "sends", "value": 2.0000, "unit": "buses"}, {"name": "block_us", "value": 5.2822, "unit": "us"}]
     },
     {
       "name": "psram_stream",
@@ -70,8 +70,8 @@
       "fail_reason": "",
       "overruns": 0,
       "checksum": 17013409374725469234,
-      "times_us": {"min": 1.0830, "max": 1.5830, "mean": 1.2690, "p50": 1.2500, "p95": 1.4160, "p99": 1.4590},
-      "metrics": [{"name": "mb_per_s", "value": 24.5760, "unit": "MB/s"}, {"name": "ns_per_line", "value": 2.4784, "unit": "ns"}, {"name": "lines_per_block", "value": 512.0000, "unit": "reads"}, {"name": "working_set", "value": 8.0000, "unit": "MiB"}]
+      "times_us": {"min": 1.2920, "max": 30.6670, "mean": 1.8301, "p50": 1.5840, "p95": 2.7920, "p99": 3.5848},
+      "metrics": [{"name": "mb_per_s", "value": 24.5760, "unit": "MB/s"}, {"name": "ns_per_line", "value": 3.5745, "unit": "ns"}, {"name": "lines_per_block", "value": 512.0000, "unit": "reads"}, {"name": "working_set", "value": 8.0000, "unit": "MiB"}]
     },
     {
       "name": "ui_frame",
@@ -85,8 +85,8 @@
       "fail_reason": "",
       "overruns": 0,
       "checksum": 12381763531129155184,
-      "times_us": {"min": 49.5410, "max": 152.6670, "mean": 50.9832, "p50": 49.8330, "p95": 53.5420, "p99": 72.9588},
-      "metrics": [{"name": "fps", "value": 19614.3076, "unit": "fps"}, {"name": "pixels", "value": 384000.0000, "unit": "px"}, {"name": "partial", "value": 0.0000, "unit": "flag"}, {"name": "frame_us", "value": 50.9832, "unit": "us"}]
+      "times_us": {"min": 50.5000, "max": 140.7080, "mean": 52.9458, "p50": 51.4580, "p95": 57.1785, "p99": 96.2592},
+      "metrics": [{"name": "fps", "value": 18887.2540, "unit": "fps"}, {"name": "pixels", "value": 384000.0000, "unit": "px"}, {"name": "partial", "value": 0.0000, "unit": "flag"}, {"name": "frame_us", "value": 52.9458, "unit": "us"}]
     },
     {
       "name": "ui_frame_partial",
@@ -100,8 +100,8 @@
       "fail_reason": "",
       "overruns": 0,
       "checksum": 13118147200607307808,
-      "times_us": {"min": 19.4160, "max": 68.0000, "mean": 20.2324, "p50": 19.5420, "p95": 21.1690, "p99": 38.0046},
-      "metrics": [{"name": "fps", "value": 49425.7018, "unit": "fps"}, {"name": "pixels", "value": 384000.0000, "unit": "px"}, {"name": "partial", "value": 1.0000, "unit": "flag"}, {"name": "frame_us", "value": 20.2324, "unit": "us"}]
+      "times_us": {"min": 19.7910, "max": 105.8340, "mean": 21.1707, "p50": 20.2910, "p95": 21.9581, "p99": 47.6371},
+      "metrics": [{"name": "fps", "value": 47235.1864, "unit": "fps"}, {"name": "pixels", "value": 384000.0000, "unit": "px"}, {"name": "partial", "value": 1.0000, "unit": "flag"}, {"name": "frame_us", "value": 21.1707, "unit": "us"}]
     },
     {
       "name": "usb_descriptor",
@@ -115,8 +115,8 @@
       "fail_reason": "",
       "overruns": 0,
       "checksum": 10642302694525822900,
-      "times_us": {"min": 0.5410, "max": 12.2080, "mean": 0.6442, "p50": 0.6250, "p95": 0.6670, "p99": 0.7090},
-      "metrics": [{"name": "config_bytes", "value": 174.0000, "unit": "bytes"}, {"name": "interfaces", "value": 7.0000, "unit": "ifaces"}, {"name": "endpoints", "value": 7.0000, "unit": "eps"}, {"name": "uac2_required_mb_s", "value": 2.3040, "unit": "MB/s"}, {"name": "usb_fs_feasible", "value": 0.0000, "unit": "flag"}, {"name": "usb_hs_feasible", "value": 1.0000, "unit": "flag"}, {"name": "build_us", "value": 0.6442, "unit": "us"}]
+      "times_us": {"min": 0.5830, "max": 8.1670, "mean": 0.6422, "p50": 0.6250, "p95": 0.6670, "p99": 0.7500},
+      "metrics": [{"name": "config_bytes", "value": 174.0000, "unit": "bytes"}, {"name": "interfaces", "value": 7.0000, "unit": "ifaces"}, {"name": "endpoints", "value": 7.0000, "unit": "eps"}, {"name": "uac2_required_mb_s", "value": 2.3040, "unit": "MB/s"}, {"name": "usb_fs_feasible", "value": 0.0000, "unit": "flag"}, {"name": "usb_hs_feasible", "value": 1.0000, "unit": "flag"}, {"name": "build_us", "value": 0.6422, "unit": "us"}]
     },
     {
       "name": "s3_profile",
@@ -130,8 +130,23 @@
       "fail_reason": "",
       "overruns": 0,
       "checksum": 894414921837501835,
-      "times_us": {"min": 51.1660, "max": 147.3330, "mean": 54.7303, "p50": 51.4170, "p95": 72.8527, "p99": 104.4227},
+      "times_us": {"min": 52.1250, "max": 215.9160, "mean": 56.9744, "p50": 53.1250, "p95": 89.8371, "p99": 111.7642},
       "metrics": [{"name": "pool_mib", "value": 4.0000, "unit": "MiB"}, {"name": "framebuffer_kib", "value": 750.0000, "unit": "KiB"}, {"name": "bounce_kib", "value": 25.0000, "unit": "KiB"}, {"name": "spi_full_fps", "value": 13.0208, "unit": "fps"}, {"name": "spi_partial_updates_s", "value": 32.5521, "unit": "updates/s"}, {"name": "rgb_full_fps", "value": 52.0833, "unit": "fps"}, {"name": "usb_stereo_mb_s", "value": 0.2880, "unit": "MB/s"}]
+    },
+    {
+      "name": "p4_profile",
+      "description": "P4 first SKU: RGB565 750 KiB framebuffer + 25 KiB bounce, 8 FM voices + 8 stereo tracks, RGB565/DSI display model (>=15 fps), HS USB 8x8 UAC2 2.304 MB/s, 24 h soak target",
+      "blocks": 2000,
+      "block_frames": 64,
+      "deadline_us": 1333.3333,
+      "max_block_us": 650.0000,
+      "deterministic": true,
+      "pass": true,
+      "fail_reason": "",
+      "overruns": 0,
+      "checksum": 3291457365238972008,
+      "times_us": {"min": 72.4170, "max": 269.5420, "mean": 77.6880, "p50": 73.6250, "p95": 100.7729, "p99": 143.5897},
+      "metrics": [{"name": "framebuffer_kib", "value": 750.0000, "unit": "KiB"}, {"name": "bounce_kib", "value": 25.0000, "unit": "KiB"}, {"name": "rgb_full_fps", "value": 52.0833, "unit": "fps"}, {"name": "rgb_partial_fps", "value": 130.2083, "unit": "fps"}, {"name": "usb_8x8_mb_s", "value": 2.3040, "unit": "MB/s"}, {"name": "usb_hs_ok", "value": 1.0000, "unit": "flag"}, {"name": "soak_hours", "value": 24.0000, "unit": "h"}, {"name": "block_us", "value": 77.6880, "unit": "us"}]
     }
   ]
 }

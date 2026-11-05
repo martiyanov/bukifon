@@ -503,3 +503,93 @@ Header `firmware/include/bukifon_module.h`; docs `docs/24-module-sdk.md`.
 5. **USB**: FS only → stereo UAC2 (D-48); 8×8 UAC2 stays P4/H743-only. TinyUSB glue and
    descriptor binding are not implemented yet.
 6. **P4**: still not buildable with the installed PlatformIO platform; no false success.
+
+---
+
+# Round 6 — S3 vertical-slice spike + P4 first-SKU priority (2026-11-05)
+
+Customer decision: **P4 with RGB565/DSI + HS USB is the first SKU**; S3-base is
+the "lite later" concept platform.  The UI (4 pages + 4 device-mode panels) is
+identical for both — only the display backend and USB PHY differ.
+
+## Builds
+
+| Build | Command | Result |
+|---|---|---|
+| Host tests | `make -C firmware/host test` | **160 / 160 passed** (146 pre-existing unchanged, +9 spike, +5 p4_profile) |
+| Host pipeline | `firmware/tests/run_tests.sh` | ALL HOST TESTS PASSED (160 + WAV/FFT) |
+| **S3 spike firmware** | `PLATFORMIO_CORE_DIR=/tmp/piocore pio run -d firmware/spike_s3 -e spike_s3` | **SUCCESS** — Flash 432 483 / 6 553 600 B (**6.6 %**), RAM 66 820 / 327 680 B (**20.4 %**) |
+| Native / s3base | as before | unchanged SUCCESS (previous round) |
+| **P4 build** | — | **not buildable**: official `espressif32` 8.0.0 has no P4 board/framework; `env:p4`/`bench_p4` prepared/commented, no false success |
+
+## S3 vertical-slice spike (`firmware/spike_s3/`, lite concept platform)
+
+Standalone PlatformIO project (`firmware/spike_s3/platformio.ini`, env
+`spike_s3`, ESP32-S3-N16R8).  One cooperative loop runs all subsystems and logs
+`SPIKE_METRIC` every second + a final `SPIKE_RESULT pass=0|1` per docs/36 §2.
+
+**Ready (real code / real metrics):**
+- SPI display 800×480 full flush (30 × 16-row bounce batches) and dirty-rect
+  partial updates; fps/lcd-drift metrics.
+- SD 1-bit SDMMC 4 KiB write+read roundtrip every 5 s; latency/error metrics.
+- I2C MCP23017 panel scan (0x20–0x23, GPIOA), latency/error metrics.
+- Audio block timing/xruns, metric accumulation (min/max/mean/p99 histogram),
+  pass/fail criteria, machine-readable log, host parser and host simulation.
+- `spike_core.hpp` portable core is shared by firmware, host sim and host tests
+  (`tests/test_spike.cpp`), so the pass/fail logic is CI-tested.
+
+**Stubs (`TODO(hw)`, honest):** I2S driver init/read/write (synthetic loopback is
+timed; enable `BUKIFON_SPIKE_USE_I2S` after wiring), TinyUSB composite UAC2+MIDI+
+HID+CDC (`BUKIFON_SPIKE_TINYUSB`), panel controller init sequence
+(ST7796/ILI9488 MADCTL/gamma), SD card-detect (absent on CORE-S3), backlight
+curve.  No devkit measurements exist yet.
+
+**Host simulation:** `bash firmware/spike_s3/run_host_spike.sh` → PASS:
+`audio_max=389 µs`, `p99=416 µs`, `xruns=0`, `full_fps=15.0`,
+`partial=31.5/s`, `usb_drops=0`, `sd_max=5.25 ms`, `panel_max=741 µs`,
+`panel_errors=0`.  These are simulation values, not hardware.
+
+## P4 first-SKU profile (`p4_profile`, bench)
+
+Added because P4 is now the first SKU: `make -C firmware/bench host_p4` →
+`firmware/bench/results/host_p4.json` (host reference; 2000 blocks, 100 warm-up):
+
+| Metric | Value |
+|---|---|
+| Compute | 8 FM voices + 8 stereo tracks + limiter, 64-frame blocks |
+| Memory | 750 KiB RGB565 framebuffer + 25 KiB (16-row) bounce |
+| Host max block | **319.7 µs** (mean 77.0 µs, p99 132.2 µs), 0 overruns |
+| RGB565 display model | **52.1 fps full, 130.2 partial/s** (≥15 fps / ≥30 criteria met) |
+| HS USB 8×8 UAC2 24/48 | **2.304 MB/s**, HS-feasible flag = 1 |
+| Soak target | 24 h recorded for the P1 stand device run |
+
+`s3_profile` remains as the lite-limitation reference: SPI full 13.02 fps (<15,
+D-51) vs RGB model 52.08 fps; partial 32.55/s.  `host.json` now runs all 9
+scenarios, all PASS.
+
+## What the P1 stand should run first (max value)
+
+1. `p4_profile` on the P4 devkit (audio max/p99/xruns; RGB565 full/partial fps;
+   HS USB 8×8 drops; 24 h soak) — the primary SKU decision.
+2. `s3_profile` on S3-N16R8 (lite check; SPI limit confirms D-51) — secondary.
+3. `bench` device envs (`bench_s3` builds; `bench_p4` prepared) for the full
+   frozen workload; `s3_profile`/`p4_profile` scenarios specifically answer the
+   RC-DoD tests 1–3 and 6.
+
+## Switch the spike to P4
+
+Keep `spike_core.hpp` (buffers/metrics/log/parser); replace `flushRows` SPI with
+an RGB565/DSI backend (PPA/DMA2D), set frame timing from the RGB565 pixel clock,
+enable HS TinyUSB composite (8×8 UAC2), and build with a P4-capable PlatformIO
+platform (pioarduino/arduino-esp32 P4 preview).  Same codecs/SD/panel metrics,
+same acceptance thresholds.  UI is unchanged (same 800×480 snapshot shell + 4
+mode panels).
+
+## Risks / limitations
+
+- S3-lite SPI: full refresh ~13 fps < D-46 15 fps (D-51); partial redraw is the
+  fallback.  P4 RGB565/DSI is the first-SKU answer.
+- No hardware verification: I2S/TinyUSB/panel-init are stubs; devkit spike
+  protocol (`docs/39`) is ready but has not been executed.
+- P4 toolchain is not available in this environment; P4 numbers are host models
+  from `p4_profile`, not silicon measurements.

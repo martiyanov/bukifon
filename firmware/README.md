@@ -44,7 +44,7 @@ firmware/
   engine_unity.cpp / sim_unity.cpp  PlatformIO unity translation units
   Bukifon/      RP2040 Arduino sketch: Bukifon.ino + platformio.ini
   host/         native build (Makefile + CMakeLists.txt), WAV renderer
-  tests/        unit tests (146), FFT analysis, run_tests.sh, run_sim_demo.sh, REPORT.md
+  tests/        unit tests (160), FFT analysis, run_tests.sh, run_sim_demo.sh, REPORT.md
   tools/        wavetable/font generators, ppm_to_png.py, build_pico.sh
   artifacts/    generated 800x480 UI screenshots + demo logs (git-ignored)
 ```
@@ -52,7 +52,7 @@ firmware/
 ## v0.5 host prototype — what to run
 
 ```bash
-make -C firmware/host test          # 146 unit tests
+make -C firmware/host test          # 160 unit tests
 firmware/tests/run_tests.sh         # build + tests + WAV render + FFT report
 firmware/tests/run_sim_demo.sh      # 16-bar demo, event-log determinism, 4 PNG
 ```
@@ -95,7 +95,7 @@ firmware/tests/run_tests.sh         # full pipeline: build, tests, WAV render, F
 
 Latest measured results (see `tests/REPORT.md` and `tests/out/test_log.txt`):
 
-- **146 unit tests, 0 failures** (Apple clang 21, C++17, `-O2`)
+- **160 unit tests, 0 failures** (Apple clang 21, C++17, `-O2`)
 - line coverage **83.5 %** (4347/5204 lines, gcov, generated tables excluded)
 - host demo: 16 bars, 1024 note-ons, 32 p-locks, deterministic event log, 4 PNG screens
 - A4 = **440.0000 Hz** (error `-0.0000 %`, limit ±0.1 %)
@@ -145,6 +145,23 @@ RAM 87.7 % — запас ~32 KiB; при добавлении эффектов/
 буферы (delay-линия, пресет-кэш, 8-дорожечный секвенсор) или перенести часть в
 PSRAM (RP2350).
 
+## Platform priority (round 6): P4 first, S3 lite later
+
+The customer decision is that the **first SKU is P4 with RGB565/DSI + HS USB**;
+S3-base is the "lite later" concept platform.  The 800×480 UI and the four
+device-mode panels are **identical for P4 and S3-lite** — only the display
+backend (RGB565/DSI vs SPI) and USB PHY (HS 8×8 vs FS stereo) differ.
+
+- **P4 profile in bench**: `make -C firmware/bench host_p4` →
+  `firmware/bench/results/host_p4.json` (8 voices + 8 stereo tracks, 750 KiB
+  RGB565 + bounce, HS USB 8×8 UAC2, max block ≤650 µs, 24 h soak target).  P4
+  build itself is still blocked by the missing PlatformIO P4 platform (honest).
+- **S3 vertical-slice spike (lite concept)**: `firmware/spike_s3/` — standalone
+  env `spike_s3` (builds: Flash 6.6 %, RAM 20.4 %) for the devkit spike
+  (audio/display/SD/USB/panel metrics + docs/36 pass/fail), protocol in
+  [docs/39-s3-spike-protocol.md](../docs/39-s3-spike-protocol.md).  I2S/TinyUSB/
+  panel-init remain explicit `TODO(hw)` stubs; no hardware results yet.
+
 ## S3-base firmware (CORE-S3 rev.0, ESP32-S3-N16R8)
 
 ```bash
@@ -177,9 +194,10 @@ Workload freeze: [docs/05-benchmark-workload.md](../docs/05-benchmark-workload.m
 devkit howto: [docs/05a-benchmark-howto.md](../docs/05a-benchmark-howto.md);
 harness: [bench/README.md](bench/README.md).  Envs: `bench`/`bench_s3` build,
 `bench_p4`/`bench_h743` are prepared (P4 platform / ststm32 not available here).
-S3-base profile: `make -C firmware/bench host_s3` → `bench/results/host_s3.json`
-(4 MiB pool + 750 KiB framebuffer + bounce; SPI 13.02 fps full / 32.55 partial/s,
-RGB model 52.08 fps, USB FS stereo 0.288 MB/s).
+S3-lite profile: `make -C firmware/bench host_s3` → `bench/results/host_s3.json`
+(SPI 13.02 fps full <15 — D-51, so S3-lite uses partial redraw; RGB model
+52.08 fps, USB FS stereo 0.288 MB/s).  P4 profile: `host_p4` (RGB565 52.1 fps,
+HS USB 8×8 2.304 MB/s).
 Host reference worst audio max is 218 µs (16.4 % of the 1.333 ms deadline,
 2.98× below the 650 µs criterion); device runs decide P4 vs H743.
 
