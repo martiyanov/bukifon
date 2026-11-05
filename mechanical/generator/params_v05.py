@@ -34,28 +34,32 @@ SEAM_X = P04.SEAM_X        # 190
 PANEL_T = P04.PANEL_T      # 3
 
 # --- варианты --------------------------------------------------------------
+# Высоты — «в сборе» (верх панели над столом), см. docs/21-ergonomics.md:
+#   A flat  — 63 мм (как v0.4);
+#   B 8°    — перед 32, зад 61.5 (перепад 210·tan8° = 29.5);
+#   C 12°   — только для сравнительного рендера (не в производство).
 VARIANTS = {
     "A": dict(
         title="A — flat (как v0.4)",
         angle_deg=0.0,
-        front_rim=60.0,          # высота стенки у передней кромки (дно=0)
-        battery="space",         # батарея в ложементе, без крышки
+        front_total=63.0,
+        battery="space",
         stand=False,
         cable_channel=False,
     ),
     "B": dict(
-        title="B — wedge 8°",
+        title="B — wedge 8° (базовый v1.0-rc)",
         angle_deg=8.0,
-        front_rim=40.0,          # высота стенки у передней кромки
+        front_total=32.0,        # docs/21-ergonomics: передняя кромка 31–33
         battery="space",
         stand=False,
         cable_channel=False,
     ),
     "C": dict(
-        title="C — wedge 12° + battery bay + stand",
+        title="C — wedge 12° + battery bay + stand (сравнительный)",
         angle_deg=12.0,
-        front_rim=38.0,
-        battery="bay",           # отсек с крышкой на винтах
+        front_total=32.0,
+        battery="bay",
         stand=True,
         cable_channel=True,
     ),
@@ -70,7 +74,8 @@ def variant(name):
     v["k"] = math.tan(a)                 # наклон верхней плоскости dz/dy
     v["sin"] = math.sin(a)
     v["cos"] = math.cos(a)
-    # высота верхней кромки (плоскости панели) у передней/задней кромок
+    # высота стенки у передней кромки = верх панели минус толщина панели
+    v["front_rim"] = v["front_total"] - PANEL_T * v["cos"]
     v["rear_rim"] = v["front_rim"] + D * v["k"]
     # высота плоскости у центра (Y=105)
     v["center_rim"] = v["front_rim"] + (D / 2) * v["k"]
@@ -130,6 +135,10 @@ FOOT_RECESS_D = P17.FOOT_RECESS_D
 FOOT_RECESS_H = P17.FOOT_RECESS_H
 USBC = P04.USBC
 USBC_CABLE_SLOT = P17.USBC_CABLE_SLOT
+M3_INSERT_D = P17.M3_INSERT_D
+M3_INSERT_DEPTH = P17.M3_INSERT_DEPTH
+M3_CLEAR_D = P17.M3_CLEAR_D
+M2_INSERT_D = P17.M2_INSERT_D
 
 # --- сборка экземпляров ----------------------------------------------------
 def instances(v):
