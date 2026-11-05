@@ -262,7 +262,7 @@ LCD_FPC = {
     '14': 'B0', '15': 'B1', '16': 'B2', '17': 'B3', '18': 'B4',
     '19': 'GND', '20': 'GND', '21': 'PCLK', '22': 'DE', '23': 'HSYNC', '24': 'VSYNC',
     '25': 'GND', '26': 'GND', '27': 'LCD_3V3', '28': 'LCD_3V3', '29': 'GND',
-    '30': 'BL_K', '31': 'BL_A', '32': 'GND',
+    '30': 'BL_CATHODE', '31': 'BL_ANODE', '32': 'GND',
     '33': 'NC', '34': 'NC', '35': 'NC', '36': 'NC', '37': 'NC', '38': 'NC',
     '39': 'GND', '40': 'GND',
 }
@@ -273,7 +273,7 @@ FFC_CORE = {
     '14': 'B0', '15': 'B1', '16': 'B2', '17': 'B3', '18': 'B4',
     '19': 'GND', '20': 'GND', '21': 'PCLK', '22': 'DE', '23': 'HSYNC', '24': 'VSYNC',
     '25': 'GND', '26': 'GND', '27': 'LCD_3V3', '28': 'LCD_3V3', '29': 'GND',
-    '30': 'BL_PWM', '31': '+5V', '32': '+5V',
+    '30': 'BL_PWM', '31': 'BL_ANODE', '32': 'BL_CATHODE',
     '33': 'GND', '34': 'GND', '35': 'GND', '36': 'GND', '37': 'GND', '38': 'GND',
     '39': 'GND', '40': 'GND',
 }
@@ -521,35 +521,12 @@ for i in range(4):
     c = b.c('C%d' % (37 + i), '100n', 279.4 + i * 20.32, 736.6, 'C0603')
     b.rail(c, '1', 'LCD_3V3'); b.rail(c, '2', 'GND')
 
-# backlight: boost 5V -> BL_A (~19 V) + low-side PWM switch + bypass jumper
-u_bl = b.part('Regulator_Switching', 'MT3608', 'U7', 'MT3608', 596.9, 660.4, FP['SOT23_6'],
-              'backlight boost 5V -> ~19V (DNP if the LCD module has its own driver)')
-b.net_pin(u_bl, 'IN', '+5V'); b.net_pin(u_bl, 'GND', 'GND')
-# pin 6 of MT3608 is NC (library pin type "no_connect") - left open
-b.net_pin(u_bl, 'SW', 'BL_SW')
-b.net_pin(u_bl, 'FB', 'BL_FB')
-b.net_pin(u_bl, 'EN', 'BL_PWM')
-l1 = b.part('Device', 'L', 'L1', '22uH', 596.9, 711.2, FP['L'], 'boost inductor')
-b.net(l1, '1', '+5V'); b.net(l1, '2', 'BL_SW')
-d_bl = b.part('Diode', 'SS34', 'D43', 'SS34', 629.92, 711.2, FP['D_SMA'], 'boost rectifier')
-b.net(d_bl, '2', 'BL_SW'); b.net(d_bl, '1', 'BL_A')
-r_fb1 = b.r('R106', '33k', 660.4, 660.4, 'R0603')
-b.net(r_fb1, '1', 'BL_A'); b.net(r_fb1, '2', 'BL_FB')
-r_fb2 = b.r('R107', '1k', 660.4, 711.2, 'R0603')
-b.net(r_fb2, '1', 'BL_FB'); b.rail(r_fb2, '2', 'GND')
-c_in = b.c('C73', '22uF', 568.0, 711.2, 'C0603')
-b.rail(c_in, '1', '+5V'); b.rail(c_in, '2', 'GND')
-c_out = b.c('C74', '10u', 691.0, 711.2, 'C0603')
-b.net(c_out, '1', 'BL_A'); b.rail(c_out, '2', 'GND')
-r_led = b.r('R108', '33R', 721.36, 660.4, 'R0603')
-b.net(r_led, '1', 'BL_A'); b.net(r_led, '2', 'BL_K')
-q_bl = b.part('Transistor_FET', '2N7002', 'Q2', '2N7002', 751.84, 711.2, FP['D_SOT23'],
-              'low-side PWM switch for the LED string')
-b.net_pin(q_bl, 'D', 'BL_K'); b.net_pin(q_bl, 'S', 'GND'); b.net_pin(q_bl, 'G', 'BL_G')
-rg = b.r('R109', '100R', 721.36, 736.6, 'R0603')
-b.net(rg, '1', 'BL_PWM'); b.net(rg, '2', 'BL_G')
-rpd = b.r('R93', '10k', 751.84, 736.6, 'R0603')
-b.net(rpd, '1', 'BL_G'); b.rail(rpd, '2', 'GND')
+# Backlight driver is on CORE-2 (Lead decision 05.11: no high voltage on the panel ribbon).
+# PANEL-2 only carries BL_PWM (from CORE-2) and the LED string terminals BL_ANODE/BL_CATHODE
+# (J11) across to the FFC (J12). If the 5.0" module has its own backlight driver, the
+# BL_ANODE/BL_CATHODE pair is not used (DNP at the harness level).
+#
+# (The former MT3608 boost + 2N7002 PWM switch block was removed from PANEL-2.)
 
 # alternative SPI display header (DNP)
 j_spi = b.part('Connector_Generic', 'Conn_01x14', 'J15', 'HDR1x14', 279.4, 660.4, FP['HDR1x14'],
@@ -797,15 +774,25 @@ def write_matrix():
 # --------------------------------------------------------------------------
 def write_pinmap():
     rows = []   # connector, pin, signal, direction, kind, level, note
+    LCD_SIG = ('R0', 'R1', 'R2', 'R3', 'R4', 'G0', 'G1', 'G2', 'G3', 'G4', 'G5',
+               'B0', 'B1', 'B2', 'B3', 'B4', 'PCLK', 'DE', 'HSYNC', 'VSYNC', 'BL_PWM', 'BL_ANODE')
+    LEVEL = {'BL_ANODE': '19…22 В (LED string)', 'BL_CATHODE': '0…22 В (возврат)'}
     for pin, net in FFC_CORE.items():
-        kind = 'power' if net in ('+5V', 'LCD_3V3', 'GND') else 'digital'
-        d = 'core→panel' if net in ('BL_PWM', '+5V', 'LCD_3V3') else (
-            'panel→core' if net.startswith(('R', 'G', 'B')) and net[-1].isdigit() else '—')
-        if net in ('R0', 'R1', 'R2', 'R3', 'R4', 'G0', 'G1', 'G2', 'G3', 'G4', 'G5',
-                   'B0', 'B1', 'B2', 'B3', 'B4', 'PCLK', 'DE', 'HSYNC', 'VSYNC'):
-            d = 'core→panel'
-        rows.append(('J12 (FFC-40)', pin, net, d, kind, '3.3 В' if kind == 'digital' else '—',
-                     'LCD RGB-шина к CORE-2'))
+        if net == 'GND':
+            kind, d = 'power', '—'
+        elif net == 'LCD_3V3':
+            kind, d = 'power', 'core→panel'
+        elif net == 'BL_ANODE':
+            kind, d = 'power', 'core→panel'
+        elif net == 'BL_CATHODE':
+            kind, d = 'power', 'panel→core'
+        elif net in LCD_SIG:
+            kind, d = 'digital', 'core→panel'
+        else:
+            kind, d = 'digital', '—'
+        rows.append(('J12 (FFC-40)', pin, net, d, kind,
+                     LEVEL.get(net, '3.3 В' if kind == 'digital' else '—'),
+                     'LCD RGB-шина к CORE-2' if net not in LEVEL else 'подсветка LCD (драйвер — на CORE-2)'))
     for pin, net in IDC_DIG.items():
         d = {'SDA': 'bidir', 'SCL': 'core→panel', 'INT': 'panel→core', 'LED_DATA': 'core→panel',
              '+5V': 'core→panel', '+3V3': 'core→panel', 'GND': '—', 'NC': '—'}[net]
@@ -839,20 +826,21 @@ def write_pinmap():
     A('|---|---:|---|')
     A('| LCD RGB 16 бит: R0-R4 (5) + G0-G5 (6) + B0-B4 (5) | 16 | J12 FFC-40 |')
     A('| LCD sync/clock: PCLK, DE, HSYNC, VSYNC | 4 | J12 FFC-40 |')
-    A('| LCD подсветка: BL_PWM (+ BL_A/BL_K локально на PANEL-2) | 1 | J12 FFC-40 |')
+    A('| LCD подсветка: BL_PWM (драйвер/boost на CORE-2) + BL_ANODE/BL_CATHODE | 3 | J12 FFC-40 |')
     A('| Энкодеры 16 × (A,B,SW) = 48 → I2C (SDA, SCL) + INT | 3 | J13 IDC-16 |')
     A('| Матрица 42 клавиш 6×7 = 13 → MCP23017 (на той же I2C) | 0 доп. | J13 IDC-16 |')
     A('| LED-цепочка 17 × WS2812B: LED_DATA | 1 | J13 IDC-16 |')
     A('| Джек-поле: 4 CV OUT + 4 CV IN + GATE OUT + GATE IN | 10 | J14 IDC-26 |')
     A('| Фейдеры 2 × 10k → MCP3208 (CORE-2) | 2 | J14 IDC-26 |')
-    A('| Питание: +5 В (LED, подсветка boost), +3V3 (логика), GND/GNDA | 2 рельса + возврат | J13/J14 |')
+    A('| Питание: +5 В (только LED; boost подсветки — на CORE-2), +3V3 (логика), GND/GNDA | 2 рельса + возврат | J13/J14 |')
     A('')
-    A('**Итого сигналов: 37** (21 LCD + 3 I2C/INT + 1 LED + 10 джеков + 2 фейдера).')
+    A('**Итого сигналов: 39** (16 RGB + 4 синхро + BL_PWM + BL_ANODE + BL_CATHODE = 23 по J12, '
+      '3 I2C/INT + 1 LED = 4 по J13, 10 джеков + 2 фейдера = 12 по J14).')
     A('**Одного IDC-26 не хватает:** в IDC-26 максимум 13 сигнальных пинов при «сигнал/земля»; '
-      'даже без LCD нужно 16 сигналов. Поэтому:')
+      'даже без LCD нужно 16 сигналов (3 + 1 + 12). Поэтому:')
     A('')
-    A('1. **J12 FFC-40** — LCD RGB-шина (21 сигнал) + питание: высокочастотные линии нельзя '
-      'тащить через IDC-26 вместе с аналогом и I2C;')
+    A('1. **J12 FFC-40** — LCD RGB-шина (23 сигнала, включая BL_PWM и клеммы LED-линейки) + '
+      'питание: высокочастотные линии нельзя тащить через IDC-26 вместе с аналогом и I2C;')
     A('2. **J13 IDC-16** — цифровое: I2C (2) + INT (1) + LED_DATA (1) + +5V/+3V3/GND;')
     A('3. **J14 IDC-26** — аналоговое поле: 12 сигналов на нечётных пинах, GNDA на чётных '
       '(экранировка «сигнал/земля»).')
@@ -899,8 +887,8 @@ def write_pinmap():
     A('')
     A('| Разъём | Тип | Что несёт | Сигнальных линий |')
     A('|---|---|---|---|')
-    A('| J11 | FPC-40 0.5 мм | LCD panel tail | 21 + питание |')
-    A('| J12 | FFC-40 0.5 мм | LCD RGB в CORE-2 | 21 + питание |')
+    A('| J11 | FPC-40 0.5 мм | LCD panel tail | 20 RGB/синхро + BL_ANODE/BL_CATHODE + питание |')
+    A('| J12 | FFC-40 0.5 мм | LCD RGB в CORE-2 (+BL_PWM, BL_ANODE/BL_CATHODE) | 23 + питание |')
     A('| J13 | IDC-16 2×8 | цифровое/питание | 4 + питание |')
     A('| J14 | IDC-26 2×13 | аналоговое поле | 12 |')
     A('')
@@ -993,34 +981,37 @@ def write_interfaces():
     A('* **Земли**: цифровая `GND` и аналоговая `GNDA` соединены в одной точке (R112 = 0 Ω) — '
       'звезда на PCB, чтобы не гнать цифровые токи через аналоговый возврат.')
     A('')
-    A('### 1.2 Аудио (вне верхнего джек-поля, на задней панели CORE-2)')
+    A('### 1.2 Аудио — 5 джеков на задней панели CORE-2 (решение Lead 05.11)')
     A('')
-    A('Аудио-тракт PANEL-2 не касается, но контракт фиксируем:')
+    A('Верхнее джек-поле PANEL-2 (10 шт., R-06) — только CV/GATE. Аудио целиком на CORE-2:')
     A('')
-    A('| Сигнал | Разъём | AC-coupling | Защита |')
+    A('| Джек (rear) | Тип | AC-coupling | Защита |')
     A('|---|---|---|---|')
-    A('| LINE OUT (стерео) | 3.5 мм TRS, задняя панель | `10 мкФ` X7R/электролит + `10 кОм` на GNDA '
-      '(срез ~1.6 Гц) | `1 кОм` + `BAT54S` + `100 пФ` на выходе буфера TL072 |')
-    A('| PHONES | 3.5 мм TRS | `10 мкФ` + `10 кОм`, последовательно `100 Ом` | `BAT54S` |')
-    A('| AUDIO IN (для PCM1808) | 3.5 мм TRS | `2.2 мкФ` + `10 кОм` (срез ~7 Гц) | `1 кОм` + `BAT54S` + '
-      '`100 пФ` |')
+    A('| LINE OUT L | 3.5 мм моно/TRS | `10 мкФ` + `10 кОм` на GNDA (срез ~1.6 Гц) | `1 кОм` + `BAT54S` + '
+      '`100 пФ` на выходе буфера TL072 |')
+    A('| LINE OUT R | 3.5 мм моно/TRS | `10 мкФ` + `10 кОм` | `1 кОм` + `BAT54S` + `100 пФ` |')
+    A('| PHONES | 3.5 мм TRS (стерео) | `10 мкФ` + `10 кОм` на канал, последовательно `100 Ом` | `BAT54S` |')
+    A('| AUDIO IN L | 3.5 мм моно/TRS | `2.2 мкФ` + `10 кОм` (срез ~7 Гц) | `1 кОм` + `BAT54S` + `100 пФ` |')
+    A('| AUDIO IN R | 3.5 мм моно/TRS | `2.2 мкФ` + `10 кОм` | `1 кОм` + `BAT54S` + `100 пФ` |')
     A('')
-    A('Если Lead решит включить аудио в верхнее поле (R-06 = 10 шт.), меняются местами два джека: '
-      'J09/J10 (GATE) → LINE/AUDIO IN; в этом случае PANEL-2 получает тракт AC-coupling '
-      '(конденсаторы + RC) по таблице выше. Изменение — одна таблица в генераторе. ')
+    A('Постоянка на разъёмы не выходит (последовательный конденсатор), вход PCM1808 защищён от '
+      'фантомного питания. PANEL-2 эти цепи не содержит и не меняет.')
     A('')
     A('## 2. Экран 5.0" 800×480 RGB 16 бит')
     A('')
     A('* **J11** — FPC-40 (0.5 мм) под хвост панели; **J12** — FFC-40 в CORE-2. '
-      'Пины: R0-R4 (5), G0-G5 (6), B0-B4 (5), PCLK, DE, HSYNC, VSYNC, BL_PWM + 3V3/5V/GND.')
+      'Пины: R0-R4 (5), G0-G5 (6), B0-B4 (5), PCLK, DE, HSYNC, VSYNC, BL_PWM, BL_ANODE, '
+      'BL_CATHODE + LCD_3V3/GND (5 В на J12 не нужно — boost уехал в CORE-2). '
+      '⚠️ **Пин-аут TBD** по datasheet конкретного модуля 5.0" перед PCB.')
     A('* RGB565: младшие биты R5/G6/G7/B5 не разводятся — 16 бит достаточно для UI '
       '(65 536 цветов); панель 24-битная, младшие биты можно посадить на GND на CORE-2.')
     A('* Тайминг-бюджет (ориентир): 800×480 @ 60 Гц, PCLK ≈ 33 МГц, HBP/HFP/VBP/VFP — '
       'по datasheet панели; линии PCLK/DE/HSYNC/VSYNC — короткие, с FFC 0.5 мм «земля-сигнал-земля».')
-    A('* **Подсветка**: типичная линейка 5.0" RGB — 4…6 белых LED последовательно, 19…22 В / 20…40 мА. '
-      'На PANEL-2: **MT3608** boost 5 В → ~19 В (feedback 33k/1k), последовательный 33 R, '
-      'низковольтный ключ **2N7002** на BL_K (PWM от CORE-2, 100 R + 10k). '
-      '**DNP**: если модуль панели имеет свой драйвер подсветки — boost не ставить (только JP-обход).')
+    A('* **Подсветка**: драйвер (boost ~19 В / CC) перенесён на **CORE-2** — высокое напряжение '
+      'не тащим через шлейф панели. На PANEL-2 только: `BL_PWM` (вход драйвера), `BL_ANODE` и '
+      '`BL_CATHODE` — клеммы LED-линейки панели (J11 pin 31/30), выведенные на J12 (pin 31/32). '
+      'Если выбранный модуль 5.0" имеет собственный драйвер подсветки — пара BL_ANODE/BL_CATHODE '
+      'не используется (DNP), BL_PWM идёт прямо на модуль.')
     A('* Альтернатива **J15** (1×14, DNP): SPI-дисплей по R-18 (SPI2_SCK/MOSI/CS/DC/RST/MISO/BL). '
       'Nets SPI2_* намеренно никуда не идут — это точка расширения; ERC даёт 6 warnings '
       '`isolated_pin_label` на них (см. README).')
@@ -1069,7 +1060,7 @@ def write_interfaces():
     A('| Рельс | Откуда | Потребители | Оценка |')
     A('|---|---|---|---|')
     A('| +3V3 | CORE-2 (J13) | 4 × MCP23017, матрица/подтяжки, буфер Шмитта, 74HCT1G125 | ≈ 30 мА |')
-    A('| +5V | CORE-2 (J13, 2 пина) | 17 × WS2812, boost подсветки | ≈ 170 мА + 40 мА |')
+    A('| +5V | CORE-2 (J13, 2 пина) | 17 × WS2812 (boost подсветки — на CORE-2) | ≈ 170 мА |')
     A('| GND / GNDA | CORE-2 (J13/J14) | возвраты | — |')
     A('')
     with open(os.path.join(P2, 'interfaces.md'), 'w', encoding='utf-8') as f:
@@ -1123,10 +1114,12 @@ def write_readme():
       '+ 2 фейдера) — в IDC-26 помещается максимум 13 сигнальных. Отсюда **J12 FFC-40** (LCD RGB) + '
       '**J13 IDC-16** (цифровое/питание) + **J14 IDC-26** (аналог, «сигнал/AGND»). '
       'Это ответ на вопрос «хватает ли одного IDC-26» — нет. Подробно: `pinmap.md` §1.')
-    A('3. **Джек-поле**: 4 CV OUT + 4 CV IN + GATE OUT + GATE IN (10 по R-06). Аудио — на задней '
-      'панели CORE-2 (AC-coupling описан в `interfaces.md` §1.2) — **требует подтверждения Lead**.')
-    A('4. **Экран**: FPC-40 на панели (J11) + FFC-40 в CORE-2 (J12); подсветка boost MT3608 (DNP, '
-      'если модуль имеет свой драйвер); J15 — альтернатива SPI (DNP).')
+    A('3. **Джек-поле**: 4 CV OUT + 4 CV IN + GATE OUT + GATE IN (10 по R-06). Аудио — **5 джеков на '
+      'задней панели CORE-2** (LINE OUT L, LINE OUT R, PHONES, AUDIO IN L, AUDIO IN R; AC-coupling — '
+      '`interfaces.md` §1.2; решение Lead 05.11).')
+    A('4. **Экран**: FPC-40 на панели (J11) + FFC-40 в CORE-2 (J12); **драйвер подсветки — на CORE-2** '
+      '(высокое напряжение не идёт через шлейф панели), на PANEL-2 только `BL_PWM` + клеммы '
+      '`BL_ANODE`/`BL_CATHODE`; J15 — альтернатива SPI (DNP).')
     A('5. **Защита джеков**: CV OUT 1k + SMAJ12A; CV IN 100R + SMAJ15A (0.1 % погрешности); '
       'GATE OUT 1k + SMAJ5.0A; GATE IN 4.7k + BAT54S + 74LVC1G17.')
     A('6. **Матрица**: 1N4148 в каждой клавише (антифантом), строки сканируются по одной, '
@@ -1136,7 +1129,7 @@ def write_readme():
     A('')
     A('| Плата | Errors | Warnings | Компонентов | Соединений |')
     A('|---|---:|---:|---:|---:|')
-    A('| PANEL-2 | **0** | **6** (isolated_pin_label, nets SPI2_* на DNP-разъёме J15) | 353 | 999 |')
+    A('| PANEL-2 | **0** | **6** (isolated_pin_label, nets SPI2_* на DNP-разъёме J15) | 337 | 976 |')
     A('')
     A('## 4. Проверки (не «на глаз»)')
     A('')
@@ -1155,24 +1148,50 @@ def write_readme():
       '(разъём); в CORE-2 они придут, если SPI-вариант будет выбран. На PCB-этапе либо подключить их '
       'к CORE-2, либо убрать J15.')
     A('')
-    A('## 6. Открытые вопросы (для Lead / CORE-2)')
+    A('## 6. Открытые вопросы (статус после ревью Lead 05.11)')
     A('')
-    A('1. **Аудио-джеки**: подтвердить, что LINE/PHONES/AUDIO IN остаются на задней панели CORE-2 '
-      '(в верхнем поле R-06 ровно 10, все заняты CV/GATE). Альтернатива — забрать 2 позиции у джек-поля.')
-    A('2. **FPC-40 распиновка** зависит от модуля 5.0" 800×480: таблица `pinmap.md` §5 — предлагаемый '
-      'контракт, перед PCB сверить с datasheet панели.')
-    A('3. **Подсветка**: тип линейки (4…6 LED, 19…22 В) и наличие драйвера в модуле → решение '
-      '«ста**вить/не ставить MT3608».')
-    A('4. **Крепёж**: механические параметры PANEL-1 rev.2 задают **6 стоек M3** '
-      '(30/145/260 × 30/180), в задаче было 4×M3 — в схему заложены 6 отверстий по механике; '
-      'подтвердить.')
-    A('5. **CORE-2**: сколько пинов выделяется под I2C/INT, LCD RGB, BL_PWM (нужно 3 + 21 + 1).')
+    A('| # | Вопрос | Статус |')
+    A('|---|---|---|')
+    A('| 1 | Аудио-джеки (LINE/PHONES/AUDIO IN) | ✅ **решено**: 5 джеков на задней панели CORE-2 '
+      '(LINE OUT L, LINE OUT R, PHONES, AUDIO IN L, AUDIO IN R). Верхние 10 — 4 CV OUT + 4 CV IN + '
+      'GATE OUT + GATE IN. AC-coupling — `interfaces.md` §1.2 |')
+    A('| 2 | Распиновка FPC-40 | ⏳ **TBD**: пин-аут по datasheet конкретного модуля 5.0" перед PCB '
+      '(текущая таблица — предлагаемый контракт, `pinmap.md` §5) |')
+    A('| 3 | Подсветка | ✅ **решено**: boost/CC-драйвер перенесён на **CORE-2**; на PANEL-2 только '
+      '`BL_PWM`, `BL_ANODE`, `BL_CATHODE`; модуль со своим драйвером → пара BL_ANODE/BL_CATHODE DNP |')
+    A('| 4 | Крепёж 4×M3 vs 6 стоек | ✅ **решено**: 6×M3 по механике PANEL-1 rev.2 '
+      '(30/145/260 × 30/180) |')
+    A('| 5 | 25 пинов CORE-2 (I2C/INT + LCD RGB + BL_PWM) | ✅ **решено**: принято и передано в CORE-2 |')
     A('')
-    A('## 7. Что не сделано (осознанно)')
+    A('## 7. Режимы работы (требование заказчика: DAW-контроллер + HID)')
+    A('')
+    A('**Схема PANEL-2 при этом не меняется**: 42 клавиши уже HID-совместимы (матрица 6×7 с диодами, '
+      'скан 500 Гц; одновременно читаются все 6 строк — n-key rollover ограничен только сканом), '
+      '16 энкодеров — 16 относительных каналов, 2 фейдера — абсолютные, 10 джеков — CV/GATE. '
+      'Меняется только прошивка CORE-2 (реестр R-12/R-18):')
+    A('')
+    A('| Режим | Что делает | Использует на PANEL-2 |')
+    A('|---|---|---|')
+    A('| **HID-клавиатура** | 42 клавиши как раскладка (ноты/аккорды/транспорт/шаги) со слоями '
+      '(SHIFT-слой, 3 слоя), 16 энкодеров как колёса/зум/скраб | матрица 6×7 + 16 × A/B |')
+    A('| **MIDI-контроллер** | 16 энкодеров → CC (банки по 16 CC), нажатия энкодеров → CC/PC, '
+      '2 фейдера → CC 7/11 (volume/expression), 42 клавиши → note/transport | матрица, энкодеры, '
+      'фейдеры |')
+    A('| **BLE-MIDI / BLE-HID** | те же функции по радио: BLE-MIDI (GATT-MIDI) + BLE-HID; на '
+      'ESP32-S3 — нативно, на ESP32-P4 — через компаньон ESP32-C6 (CORE-2) | ничего не меняется |')
+    A('| **USB-композит** | один USB-кабель: HID-клавиатура + USB-MIDI + UAC2 аудио-интерфейс '
+      '(запись с PCM1808 / воспроизведение в PCM5102A) | матрица/энкодеры/фейдеры/джеки |')
+    A('')
+    A('Переключение режимов — по USB-дескриптору при подключении и/или комбинации SHIFT; '
+      'аудио-джеки (rear) и CV/GATE (верх) работают независимо от режима. PANEL-2 остаётся '
+      '«тупой» панелью ввода: вся логика режимов и радио — на CORE-2.')
+    A('')
+    A('## 8. Что не сделано (осознанно)')
     A('')
     A('* `.kicad_pcb`: разводка/трассировка не делалась (PCB-этап после freeze).')
     A('* Footprint Kailh Choc hot-swap и FPC-40 зависят от выбранных компонентов — на PCB-этапе.')
-    A('* Номиналы защиты/подсветки требуют проверки на макете (TVS/boost под конкретные модули).')
+    A('* Номиналы защиты требуют проверки на макете (TVS под конкретные модули); драйвер подсветки — '
+      'на CORE-2, на PANEL-2 его нет.')
     A('')
     with open(os.path.join(P2, 'README.md'), 'w', encoding='utf-8') as f:
         f.write('\n'.join(L) + '\n')

@@ -328,6 +328,29 @@ def render(name):
 
 
 # ---------------------------------------------------------------------------
+def scene_side(name="side_profile.png"):
+    """Профиль сбоку (ортокамера, строго вдоль -X): видно угол 8°."""
+    from mathutils import Vector as V_
+    import bpy as _b
+    clear()
+    setup(SAMPLES)
+    world()
+    build()
+    floor()
+    three_point()
+    cd = _b.data.cameras.new("c")
+    cd.type = "ORTHO"
+    cd.ortho_scale = 250.0
+    cd.clip_start = 1.0
+    cd.clip_end = 20000.0
+    cam = _b.data.objects.new("c", cd)
+    _b.context.collection.objects.link(cam)
+    cam.location = (1200.0, 105.0, 30.0)
+    cam.rotation_euler = (math.pi / 2, 0.0, math.pi / 2)
+    _b.context.scene.camera = cam
+    render(name)
+
+
 def scene_iso(explode=False, name="iso_top.png", cam=(-380, 1050, 760),
               target=(190, 100, 20), lens=62, explode_off=(0, 0, 0),
               ortho=None, roll=0.0, floor_off=None, up="Y"):
@@ -358,9 +381,7 @@ if __name__ == "__main__":
         scene_iso(name="front_panel.png", cam=(190, 760, 190),
                   target=(190, 105, 34), lens=70)
     if want("side"):
-        # профиль сбоку (важно для угла 8°): ортокамера вдоль -X
-        scene_iso(name="side_profile.png", cam=(-1500, 105.0, 31.0),
-                  target=(190, 105, 31), lens=70, ortho=245.0, up="Z")
+        scene_side()
     if want("exploded"):
         scene_iso(explode=True, name="exploded.png", cam=(-620, 1050, 780),
                   target=(190, 100, 120), lens=56)

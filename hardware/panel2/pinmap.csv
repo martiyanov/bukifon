@@ -29,8 +29,8 @@ J12 (FFC-40);27;LCD_3V3;core→panel;power;—;LCD RGB-шина к CORE-2
 J12 (FFC-40);28;LCD_3V3;core→panel;power;—;LCD RGB-шина к CORE-2
 J12 (FFC-40);29;GND;—;power;—;LCD RGB-шина к CORE-2
 J12 (FFC-40);30;BL_PWM;core→panel;digital;3.3 В;LCD RGB-шина к CORE-2
-J12 (FFC-40);31;+5V;core→panel;power;—;LCD RGB-шина к CORE-2
-J12 (FFC-40);32;+5V;core→panel;power;—;LCD RGB-шина к CORE-2
+J12 (FFC-40);31;BL_ANODE;core→panel;power;19…22 В (LED string);подсветка LCD (драйвер — на CORE-2)
+J12 (FFC-40);32;BL_CATHODE;panel→core;power;0…22 В (возврат);подсветка LCD (драйвер — на CORE-2)
 J12 (FFC-40);33;GND;—;power;—;LCD RGB-шина к CORE-2
 J12 (FFC-40);34;GND;—;power;—;LCD RGB-шина к CORE-2
 J12 (FFC-40);35;GND;—;power;—;LCD RGB-шина к CORE-2
