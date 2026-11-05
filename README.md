@@ -179,3 +179,11 @@ refs/          исходный эскиз
 устанавливается с SD/USB и появляется в списке машин), аналоговый картридж на шине
 26-pin (CARTRIDGE.md) или сменная панельная дека (18 пэдов / 42 клавиши).
 Подробнее — [spec/00-vision.md §12](spec/00-vision.md).
+
+## Документы по платформе и плану
+
+- [docs/10-elektron-hardware.md](docs/10-elektron-hardware.md) — что стоит внутри Elektron.
+- [docs/11-esp32-feasibility.md](docs/11-esp32-feasibility.md) — можно ли на ESP32 (с поправками ревью).
+- [docs/03-second-opinion-mcu.md](docs/03-second-opinion-mcu.md) — второе мнение по MCU и архитектуре.
+- [docs/12-roadmap.md](docs/12-roadmap.md) — дорожная карта P1–P8.
+- [spec/90-requirements-registry.md](spec/90-requirements-registry.md) — реестр требований (единственный источник).
