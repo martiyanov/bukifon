@@ -11,25 +11,33 @@ USB-C (5 V, данные+заряд) -> USBLC6-2SC6 -> F1 polyfuse 1.5 A -> BQ24
 
 VSYS --+-- U1 MT3608 boost --> +12 V (12.1 V) --+--> BUS1/BUS2 (IDC-26, protected)
        |                                        +--> U5 MC34063 inverter --> -12 V
-       +-- U2 MT3608 boost --> +5 V (5.1 V) ---+--> panel backlight / WS2812 chain
+       +-- U2 MT3608 boost --> +5 V (5.1 V) ---+--> WS2812 chain / audio / relays
                                                 +--> U3 AP2112K-3.3 --> +3V3 (periph/analog)
+                                                +--> U6 AP2112K-3.3 --> +3V3_C6 (ESP32-C6)
                                                 +--> U4 MP1584 buck -> +3V3_MCU (P4+PSRAM)
+                                                +--> U7 MT3608 boost #3 --> BL_20 V
 
 AGND / DGND / PGND — три отдельные цепи, соединены в одной точке NT1/NT2 (net-tie).
-LDO/DC-DC входы и выходы развязаны ферритами FB1..FB5 + 100 nF/10 uF.
+LDO/DC-DC входы и выходы развязаны ферритами FB1..FB6 + 100 nF/10 uF.
+C6 — сопроцессор Wi-Fi 6 / BLE 5.3 (ESP32-C6-MINI-1) с отдельным LDO +3V3_C6,
+чтобы импульсные токи радио (до 240 мА) не просаживали +3V3 и +3V3_MCU.
+BL_20 V — boost MT3608 #3 для линейки подсветки LCD (19–22 В, 20-25 мА),
+на PANEL-2 идут только BL_ANODE / BL_CATHODE / BL_PWM.
 ```
 
 ## 2. Бюджеты рельсов (worst-case)
 
 | Рельс | Номинал | Источник | Преобразователь | Возможность, мА | Бюджет, мА | Запас | Нагрузки |
 |---|---|---|---|---|---|---|---|
-| VBUS_USB | 5.0 В | USB-C CHARGE 5 V | BQ24074 IN (ILIM 1.5 A) | 1500 | 1500 | — | charge 1.5 A (max) |
+| VBUS_USB | 5.0 В | USB-C 5 V (data+charge) | BQ24074 IN (ILIM 1.5 A) | 1500 | 1500 | — | charge 1.5 A (max) |
 | VSYS | 4.2 В | BQ24074 OUT (power path) | BQ24074 + 1S2P 18650 / BMS | 3000 | 2900 | 3 % | MT3608 #1 (12 V) input ~1.3 A<br>MT3608 #2 (5 V) input ~1.6 A |
-| +12V | 12.0 В | VSYS | MT3608 boost (2 A switch) | 520 | 330 | 36 % | bus ports 2 x 60 mA<br>audio op-amps (TL074/TL072) 30 mA<br>MC34063 -12 V converter input ~120 mA |
+| +12V | 12.0 В | VSYS | MT3608 boost #1 (2 A switch) | 520 | 330 | 36 % | bus ports 2 x 60 mA<br>audio op-amps (TL074/TL072) 30 mA<br>MC34063 -12 V converter input ~120 mA |
 | -12V | -12.0 В | +12V | MC34063 inverting (250 mA) | 250 | 95 | 62 % | bus ports 2 x 40 mA<br>op-amp V- 15 mA |
-| +5V | 5.1 В | VSYS | MT3608 boost #2 (2 A switch) | 1800 | 1000 | 44 % | WS2812 chain 74 LED: 550 mA (firmware cap)<br>LCD backlight 300 mA<br>PCM1808 VCC / audio 30 mA<br>MIDI 10 mA<br>panel 5 V logic 20 mA<br>3V3 LDOs input 90 mA |
+| +5V | 5.1 В | VSYS | MT3608 boost #2 (2 A switch) | 1800 | 1000 | 44 % | WS2812 chain 74 LED: 550 mA (firmware cap)<br>PCM1808 VCC / audio 30 mA<br>MIDI 10 mA<br>panel 5 V logic 20 mA<br>3V3 LDOs input 90 mA<br>BL boost #3 input ~80 mA<br>C6 LDO input 60 mA |
 | +3V3 | 3.3 В | +5V | AP2112K-3.3 (600 mA LDO) | 450 | 150 | 67 % | LCD logic 60 mA<br>MCP23017 x3 3 mA<br>MCP4728 x2 2 mA<br>MCP3208 1 mA<br>24C32 1 mA<br>PCM5102A 20 mA<br>PCM1808 VDD 15 mA<br>74HCT1G125 / misc 10 mA<br>panel sensors 20 mA |
+| +3V3_C6 | 3.3 В | +5V | AP2112K-3.3 dedicated LDO (600 mA) | 450 | 250 | 44 % | ESP32-C6-MINI-1 Wi-Fi/BLE peak 240 mA<br>module/IO 10 mA |
 | +3V3_MCU | 3.3 В | +5V | MP1584 buck module (3 A) | 2400 | 700 | 71 % | ESP32-P4 module + PSRAM 600 mA (peak)<br>MCU decoupling/IO 100 mA |
+| BL_20V | 20.0 В | +5V | MT3608 boost #3 (2 A switch) | 100 | 30 | 70 % | LCD backlight LED string 20-25 mA |
 
 ### Проверка запаса ≥25 %
 
@@ -40,12 +48,14 @@ LDO/DC-DC входы и выходы развязаны ферритами FB1..
 | -12V | 95 / 250 мА | 62 % | OK |
 | +5V | 1000 / 1800 мА | 44 % | OK |
 | +3V3 | 150 / 450 мА | 67 % | OK |
+| +3V3_C6 | 250 / 450 мА | 44 % | OK |
 | +3V3_MCU | 700 / 2400 мА | 71 % | OK |
+| BL_20V | 30 / 100 мА | 70 % | OK |
 
 ## 3. Расчёт токов
 
 **+5 В (MT3608 #2, 2 A switch).** Бюджет 1000 мА (WS2812 550 мА при прошивочном
-лимите яркости + подсветка 300 мА + аудио/MIDI/логика 150 мА).
+лимите яркости + BL-boost вход 80 мА + C6 LDO 60 мА + аудио/MIDI/логика 310 мА).
 Входной ток буста с VSYS=3.7 В: `Iin = 5.1*1.0/(0.88*3.7) = 1.57 А` — 
 78 % от предела 2 А. Без прошивочного лимита 74×WS2812 на полной яркости = 4.4 А —
 поэтому **аппаратный polyfuse 2.5 А + firmware cap обязательны**.

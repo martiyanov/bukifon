@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "audio/engine.hpp"
+#include "core/device_mode.hpp"
 #include "io/sequencer.hpp"
 #include "sim/event_log.hpp"
 #include "ui/ui800.hpp"
@@ -57,6 +58,8 @@ class Simulator : public SequencerSink {
   void setPartParam(int part, int paramId, float value);
   void setGlobalParam(int paramId, float value);
   void selectParam(int index) { selectedParam_ = index < 0 ? 0 : (index > 7 ? 7 : index); }
+  bool setDeviceMode(DeviceMode mode);
+  DeviceMode deviceMode() const { return modeManager_.mode(); }
 
   // --- sequencer demo pattern -------------------------------------------------
   // 4 tracks x 16 steps, deterministic notes/velocities, one p-lock on track 1,
@@ -113,6 +116,7 @@ class Simulator : public SequencerSink {
   size_t pendingIndex_ = 0;
   EventLog observation_;
   ui::UiSnapshot cachedSnapshot_;
+  DeviceModeManager modeManager_;
   Stats stats_{};
   uint64_t frame_ = 0;
   int selectedParam_ = 0;

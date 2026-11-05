@@ -29,6 +29,7 @@ void Simulator::init(const Options& options) {
   if (options_.blockFrames <= 0 || options_.blockFrames > kAudioBlockMax) {
     options_.blockFrames = 128;
   }
+  modeManager_.init(DeviceMode::Synth);
   engine_.init(options_.sampleRate);
   sequencer_.init(options_.sampleRate);
   sequencer_.setSink(this);
@@ -132,6 +133,12 @@ void Simulator::setPartParam(int part, int paramId, float value) {
   engine_.setPartParam(part, paramId, value);
   observe(SimEventType::PartParam, static_cast<uint8_t>(part), static_cast<uint8_t>(paramId),
           value);
+}
+
+bool Simulator::setDeviceMode(DeviceMode mode) {
+  const bool changed = modeManager_.setMode(mode);
+  observe(SimEventType::Marker, 10, static_cast<uint8_t>(mode), changed ? 1.0f : 0.0f);
+  return changed;
 }
 
 void Simulator::setGlobalParam(int paramId, float value) {
@@ -459,6 +466,8 @@ void Simulator::buildSnapshot(ui::UiSnapshot* snapshot, ui::Screen screen) const
   snapshot->playing = playing();
   copyString(snapshot->status, sizeof(snapshot->status), playing() ? "PLAY" : "STOP");
   snapshot->activeStep = sequencer_.currentStep(0);
+  std::snprintf(snapshot->deviceMode, sizeof(snapshot->deviceMode), "%s",
+                deviceModeShortName(modeManager_.mode()));
   snapshot->fill = sequencer_.fill();
   snapshot->trackCount = kSeqTracks;
   snapshot->stepCount = kSeqSteps;
@@ -499,8 +508,8 @@ void Simulator::buildSnapshot(ui::UiSnapshot* snapshot, ui::Screen screen) const
   }
   fillParamsForScreen(snapshot, screen);
   std::snprintf(snapshot->footer, sizeof(snapshot->footer),
-                "16 bars | 4 tracks | p-lock track1 step5 | %d voices | %.1f s",
-                engine_.activeVoices(), seconds());
+                "16 bars | 4 tracks | p-lock t1 s5 | %d voices | %.1f s | MODE %s",
+                engine_.activeVoices(), seconds(), deviceModeName(modeManager_.mode()));
 }
 
 ui::UiSnapshot Simulator::snapshot(ui::Screen screen) const {

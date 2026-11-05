@@ -19,8 +19,8 @@ import board_def as B
 ERR, WARN, INFO = [], [], []
 RES = {g: why for g, why in B.RESERVED}
 STRAP = {35: 'boot mode', 36: 'boot mode', 37: 'UART0/strap', 38: 'UART0/strap'}
-RES_SIG = {'USB_JTAG_DP', 'USB_JTAG_DM', 'USB_FS_DP', 'USB_FS_DM', 'STRAP36'}
-FREE_SIG = {'FREE_IO54'}
+RES_SIG = {'STRAP36'}
+FREE_SIG = {'FREE_IO54', 'FREE_GPIO50'}
 POWER_NETS = {'5V', '3V3', 'DGND', 'AGND', 'PGND'}
 
 def main():
@@ -62,13 +62,20 @@ def main():
                 elif 'PU' not in r[5]:
                     ERR.append('GPIO35/BOOT needs pull-up (has %r)' % r[5])
             elif g == 36:
-                ERR.append('GPIO36 (boot strap) must stay reserved/PD, used by %s' % r[0])
+                if r[0] != 'STRAP36':
+                    ERR.append('GPIO36 (boot strap) used by %s, expected STRAP36' % r[0])
+                elif 'PU' not in r[5]:
+                    ERR.append('GPIO36/STRAP36 needs 10k PU (download boot), has %r' % r[5])
             elif g in (37, 38) and not r[0].startswith('UART0'):
                 ERR.append('GPIO%d is UART0/strap, used by %s' % (g, r[0]))
         if r[6] == 'low' and r[4] == 'out' and g in STRAP:
             ERR.append('output %s drives strapping GPIO%d low at boot' % (r[0], g))
     if 36 not in RES:
-        ERR.append('GPIO36 must be reserved with 10k PD')
+        ERR.append('GPIO36 must be reserved with 10k PU (download boot)')
+    # joint download boot reachability: GPIO35 can be pulled low, GPIO36 can be 1
+    err36 = [r for r in B.PINMAP if r[1] == 36]
+    if not err36 or 'PU' not in err36[0][5]:
+        ERR.append('joint download boot not reachable: GPIO36 must have PU')
     # 4 connector conflicts
     for cname, pins_ in [('J-PANEL', B.J_PANEL), ('J-LCD', B.J_LCD),
                          ('J-BUS1/2', B.J_BUS), ('J-DIG', B.J_DIG)]:

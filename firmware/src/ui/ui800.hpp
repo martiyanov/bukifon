@@ -59,6 +59,7 @@ struct UiSnapshot {
   int pattern = 1;
   bool playing = false;
   char status[10] = "STOP";
+  char deviceMode[16] = "SYNTH";
   int bar = 0;
   int activeStep = 0;
   bool fill = false;

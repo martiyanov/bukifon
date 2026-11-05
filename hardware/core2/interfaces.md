@@ -23,7 +23,9 @@ DSI/PPA (требование «развязка клоков от DSI/USB»). �
 c автодетектом 256/384/512 fs (MD0=MD1=0).
 
 **PCM5102A (DAC):** PCM5102A, I2S, 24-bit, SCK = shared MCLK; FMT=0 (I2S), DEMP=0, FLT=0, XSMT=1 (unmute via 10k PU). Выходы OUTL/OUTR — 2.1 В rms, AC-развязка 10 uF,
-TL072-буфер + 100 Ом -> LINE OUT / PHONES (TB1). SCK = MCLK (не GND), т.к. MCLK есть.
+TL072-буфер + 100 Ом -> задняя панель CORE-2: LINE OUT L/R + PHONES (3.5 мм, TB1).
+Аудиовходы AUDIO IN L/R — тоже на задней панели (TB1.7/8 -> PCM1808). SCK = MCLK.
+На верхней панели (PANEL-2) остаются только 10 CV/GATE-джеков.
 DEMP=0 (de-emphasis off), FLT=0 (normal latency), FMT=0 (I2S).
 
 **PCM1808 (ADC):** PCM1808, I2S slave, 24-bit, MD0=MD1=0 (slave, 256/384/512fs auto), FMT=0 (I2S); VCC=5 V, VDD=3.3 V, VREF 0.1uF+10uF. Питание: VCC=5 V, VDD=3.3 V, VREF 0.1uF+10uF.
@@ -43,16 +45,42 @@ RC 1k/100pF на входе, защита BAT54S. MD0=MD1=0, FMT=0.
 | esd | USBLC6-2SC6 |
 | cc | 5.1k UFP resistors (CC1/CC2) |
 | diff | 90 ohm differential pair, matched +-0.5 mm, GND guard |
-| connector | USB-C 16P (USB 2.0 only) |
-| power | VBUS -> BQ24074 charger input |
+| connector | USB-C 16P (USB 2.0 only) - single connector: data + charge |
+| power | VBUS -> USBLC6 -> polyfuse 1.5 A -> BQ24074 (power-path) |
+| composite | TinyUSB: HID keyboard + MIDI class + UAC2 audio (2 in / 2 out) + CDC debug; one USB-C cable for data, MIDI, audio and charging |
+| vbus_detect | GPIO54 via 100k/100k divider (device role / host detect) |
+| c6 | ESP32-C6-MINI-1 coprocessor for Wi-Fi 6 + BLE 5.3 (P4 has no radio); link: esp-hosted over SPI2 (shared with MCP3208, CS1) + handshake/data-ready + reset; separate +3V3_C6 LDO; DNP for ESP32-S3 build (native radio) |
 
 - USB HS PHY у P4 — **выделенные выводы** USB_DM/USB_DP (pin 49/50); через GPIO
   matrix HS-пара не выводится. Поэтому в слоте J-MCU это отдельные контакты 6/7.
 - ESD: USBLC6-2SC6 на D+/D- и VBUS; последовательных резисторов на HS-паре нет.
 - CC1/CC2: 5.1 к на GND (UFP, device). VBUS -> USBLC6 -> polyfuse 1.5 А -> BQ24074.
 - Диффпара: 90 Ом, длина ±0.5 мм, без стабов, GND-полигон под парой.
-- USB Serial/JTAG (GPIO24/25) — отдельный 4-pin header `J-DBG` для прошивки/логов;
-  альтернативный USB 2.0 FS OTG (GPIO26/27) — зарезервирован, не разведён.
+- **USB composite (TinyUSB, прошивка):** HID-клавиатура + MIDI class-compliant +
+  UAC2 аудио (2 in / 2 out) + CDC debug — одновременно на одном USB-C. Схема
+  обеспечивает: ESD (USBLC6-2SC6), CC 5.1 к (UFP), HS-пары с 90 Ом, VBUS-детект
+  (GPIO54, делитель 100к/100к), питание/заряд (BQ24074). Скорость: HS 480 Мбит/с.
+- USB Serial/JTAG (GPIO24/25) больше **не** используется: эти GPIO отданы
+  сопроцессору C6. Прошивка/даунлоад — через USB HS (ROM joint download boot,
+  кнопка BOOT: GPIO35=0 при GPIO36=1). UART0 (GPIO37/38) выведен на `J-UART`.
+
+## 2a. Wi-Fi 6 / BLE 5.3: сопроцессор ESP32-C6-MINI-1
+
+| Параметр | Значение |
+|---|---|
+| Модуль | ESP32-C6-MINI-1 (Wi-Fi 6 802.11ax + BLE 5.3, PCB-антенна) |
+| Связь с P4 | esp-hosted по **SPI2** (общая шина с MCP3208, отдельный CS1) + handshake + data-ready + reset |
+| GPIO P4 | C6_CS=GPIO26, C6_HS=GPIO24, C6_DR=GPIO25, C6_RST=GPIO27 |
+| Питание | отдельный LDO **+3V3_C6** (AP2112K-3.3, 600 мА) от +5 В, 22 uF + 100 nF у модуля |
+| Антенна | keep-out ≥15 мм от металла, батареи, стенок и шлейфов; модуль у края платы |
+| Согласование | MINI-1 — внутренняя PCB-антенна (согласование не требуется);
+  для варианта MINI-1U (внешняя антенна) — pi-матч 0R/NM + U.FL |
+| Вариант S3 | ESP32-S3 имеет радио нативно: C6 **DNP**, площадка не паяется (см. BOM) |
+
+SPI esp-hosted throughput (расчётно) 10–20 Мбит/с — достаточно для Wi-Fi 6 + BLE
+управления/телеметрии; аудио-стриминг по Wi-Fi не входит в v1.0 (проверить на P1).
+Альтернатива по ТЗ — SDIO (6 GPIO) — невозможна без отказа от части LCD/энкодеров:
+SDIO-slots у P4 два, но GPIO-бюджет уже исчерпан (см. pinmap.md §1).
 
 ## 3. CV
 
@@ -82,12 +110,12 @@ MCP3208 CH0/CH1. Вход защищён по ±12 В внешним после�
 
 | Канал | Цепь | Назначение |
 |---|---|---|
-| CH0 | `CVIN1` | CV IN 1 jack (100k/16.5k + 1.65 V offset) |
-| CH1 | `CVIN2` | CV IN 2 jack |
-| CH2 | `FADER1` | panel fader 1 (RC 1k/100nF) |
-| CH3 | `FADER2` | panel fader 2 |
-| CH4 | `SPARE_ADC1` | reserve / expansion (testpoint) |
-| CH5 | `SPARE_ADC2` | reserve / expansion (testpoint) |
+| CH0 | `CVIN1_ADC` | CV IN 1 (panel jack; 100k/16.5k + 1.65 V offset) |
+| CH1 | `CVIN2_ADC` | CV IN 2 (panel jack) |
+| CH2 | `FADER1_ADC` | panel fader 1 (RC 1k/100nF) |
+| CH3 | `FADER2_ADC` | panel fader 2 (RC 1k/100nF) |
+| CH4 | `EXPR_ADC` | EXPRESSION pedal (rear jack, 3V3 divider) |
+| CH5 | `SPARE_ADC` | reserve / expansion (RC to AGND, testpad) |
 | CH6 | `BATT_MON` | battery 100k/47k divider, ADC battery monitor |
 | CH7 | `TEMP_MON` | NTC 10k/10k divider (pack temperature) |
 
@@ -181,7 +209,8 @@ SPI CS — отдельный от MCP3208 (CS1..CS2 GP-SPI2) в ревизии;
 | 10 mini-jack | CV OUT1..4, CV IN1..2, GATE1..2, AUDIO IN L/R (см. §3/§4) |
 | Экран 5.0" 800×480 | RGB565, 16 data + PCLK/DE/HSYNC/VSYNC (20 GPIO), BL (LEDC PWM), DISP |
 | LED-цепочка | LED_DATA 5 В (74HCT1G125 + 330 Ом), 74 LED (42 клавиши + 16 ручек + статус) |
-| Питание панели | +5V (LED/подсветка), +3V3 (логика/экран), 4 линии GND |
+| Питание панели | +5V (LED/логика), +3V3 (логика/экран), +20 V BL_ANODE, линии GND |
+| Коннекторы PANEL-2 | J12 FFC-40 (LCD+I2C+INT+BL), J13 IDC-16 (дека, на панели), J14 IDC-26 (control/аналог); на CORE-2 — J-LCD (FFC-40) и J-PANEL (IDC-26) |
 
 LCD timing (расчётно): 800×480 RGB565, PCLK 30–40 МГц при 60 Гц с blanking
 (H: 800+80 fp/bp, V: 480+20); P4 LCD_CAM выдаёт PCLK из PLL, не делит USB/DSI.

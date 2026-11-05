@@ -11,11 +11,11 @@ I2S_BCK;16;I2S0 BCK out;3.3;out;none;low;31;U9.BCK / U10.BCK;64fs = 3.072 MHz @4
 I2S_LRCK;17;I2S0 WS/LRCK out;3.3;out;none;low;32;U9.LRCK / U10.LRCK;48 kHz
 I2S_DAC_DIN;18;I2S0 SD out;3.3;out;none;low;33;U9.DIN;to PCM5102A
 I2S_ADC_DOUT;19;I2S0 SD in;3.3;in;none;high;34;U10.DOUT;from PCM1808
-I2C0_SDA;21;I2C0 SDA;3.3;bidir;2.2k PU;high;35;J-PANEL.5 / U4/U5/U12/U13/U14;shared bus, see addresses
-I2C0_SCL;22;I2C0 SCL;3.3;out;2.2k PU;high;36;J-PANEL.7 / U4/U5/U12/U13/U14;400 kHz
-SPI2_SCK;6;GP-SPI2 SCK;3.3;out;none;low;37;U6.CLK;10 MHz max
-SPI2_MOSI;7;GP-SPI2 MOSI;3.3;out;none;low;38;U6.DIN;
-SPI2_MISO;8;GP-SPI2 MISO;3.3;in;none;high;39;U6.DOUT;
+I2C0_SDA;21;I2C0 SDA;3.3;bidir;2.2k PU;high;35;J-PANEL.5 / J-LCD.34 / U4/U5/U11/U12;MCP4728 x2, 24C32, MCP23017 x3
+I2C0_SCL;22;I2C0 SCL;3.3;out;2.2k PU;high;36;J-PANEL.7 / J-LCD.35 / U4/U5/U11/U12;400 kHz
+SPI2_SCK;6;GP-SPI2 SCK;3.3;out;none;low;37;U6.CLK / U-C6.SCK;shared bus, per-device CS
+SPI2_MOSI;7;GP-SPI2 MOSI;3.3;out;none;low;38;U6.DIN / U-C6.MOSI;
+SPI2_MISO;8;GP-SPI2 MISO;3.3;in;none;high;39;U6.DOUT / U-C6.MISO;
 MCP3208_CS;9;GP-SPI2 CS0;3.3;out;10k PU;high;40;U6.CS;active low
 MIDI_TX;10;UART1 TX;3.3;out;none;high;41;U11.2 (74HCT125 A);via 74HCT125 to TRS OUT
 MIDI_RX;11;UART1 RX;3.3;in;4.7k PU;high;42;U7.VO (6N137);from TRS IN
@@ -41,25 +41,25 @@ LCD_R1;33;LCD_CAM data R1;3.3;out;none;low;59;J-LCD.27;
 LCD_R2;34;LCD_CAM data R2;3.3;out;none;low;60;J-LCD.28;
 LCD_R3;46;LCD_CAM data R3;3.3;out;none;low;61;J-LCD.29;
 LCD_R4;47;LCD_CAM data R4;3.3;out;none;low;62;J-LCD.30;
-LED_DATA;48;RMT TX (WS2812);5.0 (via 74HCT1G125);out;none;low;15;J-PANEL.11;3.3->5 V level shifter U15 + 330R
-LCD_BL;49;LEDC PWM;3.3;out;none;low;16;J-LCD.31;backlight enable/PWM (driver on panel)
-LCD_DISP;50;GPIO out;3.3;out;none;low;17;J-LCD.32;display power/enable
-PANEL_IRQ;51;GPIO in;3.3;in;10k PU;high;18;J-PANEL.9;MCP23017 INTA (open drain)
-GATE1;52;GPIO out (2N7000);5.0 (open drain);out;none;low;19;J-PANEL.25 / BUS;0/5 V gate, pull-up 4.7k to +5V_BUS
+BL_PWM;49;LEDC PWM;3.3;out;none;low;16;J-LCD.31;backlight PWM -> panel BL driver
+LED_GPIO;48;RMT TX (WS2812);3.3 -> 5 V;out;none;low;15;U-1G125.A;level shifter + 330R -> J-PANEL.11 LED_DATA
+PANEL_IRQ;51;GPIO in;3.3;in;10k PU;high;18;J-PANEL.9 / J-LCD.36;MCP23017 INTA (open drain)
+GATE1;52;GPIO out (2N7000);5.0 (open drain);out;none;low;19;J-PANEL.25 / BUS;0/5 V gate, 4.7k PU to +5V_BUS
 GATE2;53;GPIO out (2N7000);5.0 (open drain);out;none;low;20;J-PANEL.26 / BUS;0/5 V gate
-BOOT;35;boot strapping (GPIO35);3.3;in (strap);10k PU + button to GND;high (SPI boot);8;SW-BOOT;low at reset = joint download boot
-STRAP36;36;boot strapping (GPIO36);3.3;in (strap);10k PD;low;9;R96 to GND;kept low -> cannot enter download accidentally
-USB_JTAG_DP;24;USB Serial/JTAG D+;3.3 (USB PHY);bidir;USB internal;USB;10;J-DBG.3;reserved: flashing/debug console
-USB_JTAG_DM;25;USB Serial/JTAG D-;3.3 (USB PHY);bidir;USB internal;USB;11;J-DBG.2;reserved
-USB_FS_DP;26;USB 2.0 FS OTG D+;3.3 (USB PHY);bidir;USB internal;USB;12;NC (header option);reserved alternative USB
-USB_FS_DM;27;USB 2.0 FS OTG D-;3.3 (USB PHY);bidir;USB internal;USB;13;NC (header option);reserved alternative USB
-FREE_IO54;54;GPIO reserve;3.3;bidir;none;high;14;TP;free GPIO (reserve, 1 of 55)
-USB_HS_DP;;USB 2.0 HS OTG D+ (dedicated pin 50);USB;bidir;USB internal;USB;6;J-USB.6/A6/B6;through USBLC6-2SC6
-USB_HS_DM;;USB 2.0 HS OTG D- (dedicated pin 49);USB;bidir;USB internal;USB;7;J-USB.7/A7/B7;through USBLC6-2SC6
-CHIP_PU;;reset (CHIP_PU);3.3;in;10k PU + 100nF;high;5;SW-RESET;power-on reset, RC 10k/100nF
-3V3_MCU;;MCU/PSRAM supply;3.3;power;-;-;3;U3 out;MP1584 buck, separate rail
-3V3_MCU;;MCU/PSRAM supply;3.3;power;-;-;4;U3 out;
+C6_CS;26;GP-SPI2 CS1;3.3;out;10k PU;high;10;U-C6.SPI_CS;C6 select (shared SPI2)
+C6_HS;24;GPIO (handshake);3.3;bidir;10k PU;high;11;U-C6.HANDSHAKE;esp-hosted SPI handshake
+C6_DR;25;GPIO (data ready IRQ);3.3;in;10k PU;high;12;U-C6.DATA_READY;GPIO25 has USB_PU strap at reset (kept high)
+C6_RST;27;GPIO out (C6 reset);3.3;out;10k PD;low;13;U-C6.EN;"resets C6 at power-up; released by firmware"
+BOOT;35;boot strapping (GPIO35);3.3;in (strap);10k PU + button to GND;high (SPI boot);8;SW-BOOT;low at reset = joint download boot (USB HS / UART0)
+STRAP36;36;boot strapping (GPIO36);3.3;in (strap);10k PU;high;9;R96;"needs 1 for joint download boot; 10k PU allows BOOT-button flashing"
+VBUS_DET;54;GPIO in (VBUS detect);3.3;in;100k/100k divider;low;14;D1/R;USB-C attach detect (100k/100k + 100nF)
+USB_HS_DP;;USB 2.0 HS OTG D+ (dedicated pin 50);USB;bidir;USB internal;USB;6;J-USB.A6/B6;through USBLC6-2SC6
+USB_HS_DM;;USB 2.0 HS OTG D- (dedicated pin 49);USB;bidir;USB internal;USB;7;J-USB.A7/B7;through USBLC6-2SC6
+CHIP_PU;;reset (CHIP_PU);3.3;in;10k PU + 100nF;high;5;SW-RESET;power-on reset, RC
+3V3_MCU;;MCU/PSRAM supply;3.3;power;-;-;3;U26 out;MP1584 buck, separate rail
+3V3_MCU;;MCU/PSRAM supply;3.3;power;-;-;4;U26 out;
 GND;;ground;0;power;-;-;1;GND;
 GND;;ground;0;power;-;-;2;GND;
+GND;;ground;0;power;-;-;17;GND;
 GND;;ground;0;power;-;-;63;GND;
 GND;;ground;0;power;-;-;64;GND;

@@ -142,6 +142,7 @@ TEST(SimulatorEventReplay) {
   for (int t = 0; t < kSeqTracks; ++t) {
     for (int st = 0; st < kSeqSteps; ++st) loaded.sequencer().step(t, st).active = false;
   }
+  loaded.engine().setPartParam(0, Env1R, 0.01f);  // short release for the test
   CHECK(loaded.loadEvents(path));
   CHECK(loaded.pendingEventCount() == 4);
   loaded.runSamples(12000);

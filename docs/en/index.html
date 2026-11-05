@@ -76,7 +76,7 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
   <nav><a href="#about">About</a><a href="#modes">Modes</a><a href="#hardware">Hardware</a><a href="#status">Status</a><a href="#docs">Docs</a><a href="../" hreflang="ru">Русский</a></nav>
   <h1>Bukifon <span style="color:var(--mut);font-weight:400">/ Букифон</span></h1>
   <p class="sub">An open-source desktop <strong>synthesizer + sampler + module platform</strong>. 3D-printed case, open KiCad schematics, open C++ firmware.<br><strong>A people's instrument:</strong> kits from <strong>≤ $200</strong> (S3) to <strong>≤ $400</strong> (full P4 + cartridges).</p>
-  <span class="badge">v0.4.0</span><span class="badge">CERN-OHL-S-2.0</span><span class="badge">GPL-3.0-or-later</span><span class="badge">380 × 210 × 63 mm</span>
+  <span class="badge">v0.6.0-dev</span><span class="badge">CERN-OHL-S-2.0</span><span class="badge">GPL-3.0-or-later</span><span class="badge">8° wedge · 380×210×61.5</span><span class="badge">Wi-Fi + BT</span><span class="badge">USB HID + MIDI + UAC2</span>
   <p style="margin-top:20px">
     <a class="cta" href="https://github.com/martiyanov/bukifon">GitHub</a>
     <a class="cta alt" href="https://github.com/martiyanov/bukifon/blob/main/docs/12-roadmap.md">Roadmap</a>
@@ -100,7 +100,7 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
     <div class="card"><h3>Ergonomics</h3><p>Two Lapka-42 keyboard halves splayed outward (±18°) with thumb clusters facing the centre, and two 60 mm faders between them. Hands rest like on a console, not on a laptop.</p></div>
     <div class="card"><h3>Sound</h3><p>4 parts, 8 voices, 4-operator FM, wavetable, ZDF filters, Moog-style ladder (AS3320), Polyvox character, 3D modulation matrix with 16 slots.</p></div>
     <div class="card"><h3>Sequencer</h3><p>Elektron-style workflow: p-locks, trig conditions, microtiming, sound locks, macros and ctrl-all.</p></div>
-    <div class="card"><h3>Modules</h3><p>26-pin bus for analog cartridges (VCO, filters, PT2399), software modules through an SDK, and swappable input decks: 18 pads or 42 keys.</p></div>
+    <div class="card"><h3>Keyboard &amp; DAW</h3><p>Works as a USB keyboard: 42 Lapka-42 keys as a typing layout with layers, 16 encoders as CC controllers, transport. Plus BLE MIDI and BLE HID.</p></div><div class="card"><h3>Modules</h3><p>26-pin bus for analog cartridges (VCO, filters, PT2399), software modules through an SDK, and swappable input decks: 18 pads or 42 keys.</p></div>
   </div>
 </section>
 
@@ -116,19 +116,22 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
 
 <section id="hardware">
   <h2>Hardware</h2>
+  <p><strong>Case v0.5-B — 8° wedge:</strong> front edge 32 mm, rear 61.5 mm, 29.5 mm rise, R4 chamfer, display at 35° to the panel. Support-free print: 279 g / 18.3 h. Verified with a 1:1 cardboard profile.</p>
   <p><img src="../assets/panel-ru.jpg" alt="Bukifon panel 380×210 mm: 42 Lapka-42 keys, 16 encoders, 5-inch display, 10 mini-jacks, two faders" loading="lazy"></p>
   <table>
     <tr><th>Parameter</th><th>Value</th></tr>
-    <tr><td>Case</td><td>380 × 210 × 63 mm, PETG, support-free printing (panel splits into 193 + 190 mm with a dovetail)</td></tr>
+    <tr><td>Case</td><td>v0.5-B: 380 × 210 × 61.5 mm, <strong>8° wedge</strong> (front 32 / rear 61.5), PETG, support-free; panel splits 193 + 190 mm with a dovetail</td></tr>
     <tr><td>Keyboard</td><td>2 × 21 = 42 Lapka-42 keys, Choc 18 × 17 mm, halves at ±18°</td></tr>
     <tr><td>Encoders</td><td>16 × Ø14 mm, two 4 × 2 blocks</td></tr>
     <tr><td>Display</td><td>5.0″ 800×480, cutout 108 × 64.8 mm, bezel-less</td></tr>
     <tr><td>Connectors</td><td>10 × 3.5 mm mini-jacks on top, USB-C, MIDI TRS, CV/Gate</td></tr>
     <tr><td>Audio</td><td>PCM5102A DAC + PCM1808 ADC (sampling input)</td></tr>
     <tr><td>Power</td><td>1S2P 18650 / LiPo battery, USB-C charging</td></tr>
-    <tr><td>MCU</td><td>under evaluation: ESP32-P4 (32 MB PSRAM) favoured, STM32H743 control candidate; RP2040 is the prototype and CV coprocessor</td></tr>
+    <tr><td>MCU</td><td>ESP32-S3 (people&rsquo;s version, native Wi-Fi/BT) or ESP32-P4 + ESP32-C6 (Wi-Fi 6 / BLE 5.3)</td></tr><tr><td>USB</td><td>single-port composite: HID keyboard + MIDI + UAC2 + CDC</td></tr>
   </table>
   <p><img src="../assets/case-iso.jpg" alt="Bukifon 3D case render: 16 knobs, display, faders, two keyboard halves" loading="lazy"></p>
+  <p><img src="../assets/case-wedge8.jpg" alt="Case v0.5-B: 8-degree wedge, 16 knobs, two Lapka-42 halves" loading="lazy"></p>
+  <p><img src="../assets/profile8.jpg" alt="Case side profile: front 32 mm, rear 61.5 mm, 8-degree slope, R4 chamfer" loading="lazy"></p>
 </section>
 
 <section id="status">

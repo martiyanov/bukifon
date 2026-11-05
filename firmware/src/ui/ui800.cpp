@@ -75,14 +75,14 @@ void drawHeader(ICanvas& c, const UiSnapshot& s) {
   c.drawText(430, 28, buf, colors::kGrey);
 
   const uint16_t statusColor = s.playing ? colors::kGreen : colors::kRed;
-  c.fillRect(560, 10, 10, 10, statusColor);
-  c.drawText(578, 10, s.status, statusColor);
-  if (s.fill) c.drawText(578, 28, "FILL", colors::kValue);
-  if (s.transportRecord) c.drawText(650, 28, "REC", colors::kRed);
-
+  c.fillRect(540, 10, 10, 10, statusColor);
+  c.drawText(556, 10, s.status, statusColor);
+  if (s.fill) c.drawText(540, 28, "FILL", colors::kValue);
+  if (s.transportRecord) c.drawText(590, 28, "REC", colors::kRed);
+  std::snprintf(buf, sizeof(buf), "MODE %s", s.deviceMode);
+  c.drawText(630, 10, buf, colors::kValue);
   std::snprintf(buf, sizeof(buf), "VOICES %d", s.activeVoices);
-  c.drawText(650, 10, buf, colors::kAccent);
-  drawTextScaled(c, 700, 34, s.moduleApi, colors::kGrey, 1);
+  c.drawText(630, 28, buf, colors::kAccent);
 }
 
 void drawFooter(ICanvas& c, const UiSnapshot& s) {
@@ -295,6 +295,7 @@ void uiSnapshotDemo(UiSnapshot* snapshot, Screen screen) {
   snapshot->pattern = 1;
   snapshot->playing = true;
   std::snprintf(snapshot->status, sizeof(snapshot->status), "PLAY");
+  std::snprintf(snapshot->deviceMode, sizeof(snapshot->deviceMode), "SYNTH");
   snapshot->bar = 3;
   snapshot->activeStep = 7;
   snapshot->activeVoices = 6;
