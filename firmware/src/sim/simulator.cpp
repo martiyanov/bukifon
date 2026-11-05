@@ -458,9 +458,10 @@ void Simulator::buildSnapshot(ui::UiSnapshot* snapshot, ui::Screen screen) const
   if (!snapshot) return;
   ui::uiSnapshotInit(snapshot);
   snapshot->screen = screen;
-  static const char* pages[] = {"MAIN", "SEQUENCER", "MIXER", "MODULES"};
+  static const char* pages[] = {"MAIN", "SEQUENCER", "MIXER", "MODULES", "GEN"};
+  const int screenIndex = static_cast<int>(screen);
   copyString(snapshot->page, sizeof(snapshot->page),
-             pages[static_cast<int>(screen) < 4 ? static_cast<int>(screen) : 0]);
+             pages[screenIndex >= 0 && screenIndex < 5 ? screenIndex : 0]);
   snapshot->bpm = sequencer_.bpm();
   snapshot->pattern = sequencer_.patternIndex() + 1;
   snapshot->playing = playing();
@@ -507,6 +508,27 @@ void Simulator::buildSnapshot(ui::UiSnapshot* snapshot, ui::Screen screen) const
     copyString(snapshot->moduleApi, sizeof(snapshot->moduleApi), "MODULE API v0 (EXP)");
   }
   fillParamsForScreen(snapshot, screen);
+  if (screen == ui::Screen::Gen) {
+    // The GEN page is display-only in the host demo: use the curated demo
+    // values (the real engine GenParams are covered by tests and the CLI).
+    ui::UiSnapshot genDemo;
+    ui::uiSnapshotGenDemo(&genDemo);
+    for (int t = 0; t < kSeqTracks; ++t) {
+      snapshot->gen[t] = genDemo.gen[t];
+      snapshot->genPartSelected[t] = genDemo.genPartSelected[t];
+    }
+    snapshot->euclidMask = genDemo.euclidMask;
+    snapshot->scaleName[sizeof(snapshot->scaleName) - 1] = '\0';
+    copyString(snapshot->scaleName, sizeof(snapshot->scaleName), genDemo.scaleName);
+    copyString(snapshot->arpRateText, sizeof(snapshot->arpRateText), genDemo.arpRateText);
+    copyString(snapshot->arpModeText, sizeof(snapshot->arpModeText), genDemo.arpModeText);
+    for (int i = 0; i < 8; ++i) copyString(snapshot->presetNames[i], sizeof(snapshot->presetNames[i]), genDemo.presetNames[i]);
+    for (int i = 0; i < kNumParams; ++i) snapshot->paramModulated[i] = genDemo.paramModulated[i];
+    snapshot->abCompare = genDemo.abCompare;
+    snapshot->abShowB = genDemo.abShowB;
+    snapshot->presetSlot = genDemo.presetSlot;
+    for (int i = 0; i < kNumHints; ++i) copyString(snapshot->hints[i], sizeof(snapshot->hints[i]), genDemo.hints[i]);
+  }
   std::snprintf(snapshot->footer, sizeof(snapshot->footer),
                 "16 bars | 4 tracks | p-lock t1 s5 | %d voices | %.1f s | MODE %s",
                 engine_.activeVoices(), seconds(), deviceModeName(modeManager_.mode()));

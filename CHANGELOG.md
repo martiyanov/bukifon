@@ -2,6 +2,19 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.17.0] — 2025-11-06 — «Генеративность в прошивке»
+
+### Добавлено
+- **GEN-движок** `firmware/src/io/gen.*`: PROB 0–100 %, EUCLID 0–16 (Бьорклунд, акценты
+  1/5/9/13), MUTATE ±0–12 (детерминированный hash(seed,part,step)), SCALE LOCK
+  (OFF/MINOR/MAJOR/PENTA/DORIAN), EVOLVE на границе бара, SEED, ARP 1/8…1/32 × UP/DOWN/UPDOWN;
+  дефолты нейтральные — регрессий нет.
+- **UI GEN** (5-я вкладка): поля GEN, Euclid ring, 8 preset slots, A/B compare, мультивыбор
+  партий, «M»-маркер модуляции; `firmware/artifacts/ui/gen.png`.
+- **Пресеты** `firmware/src/storage/preset_bank.*`: 8 слотов, per-part GEN, versioned host-файл
+  с CRC32; CLI `bukifon_sim --preset`.
+- **docs/66**: таблица «паттерн docs/65 → реализация → тест»; **248/248 тестов** (+22).
+
 ## [0.16.1] — 2025-11-06 — «Готовность и отчёт»
 
 ### Добавлено

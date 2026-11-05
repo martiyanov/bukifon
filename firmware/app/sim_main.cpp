@@ -16,6 +16,7 @@
 
 #include "bukifon_ui_theme.h"
 #include "sim/simulator.hpp"
+#include "storage/preset_bank.hpp"
 #include "ui/ui800.hpp"
 
 using namespace bukifon;
@@ -27,6 +28,7 @@ struct Args {
   std::string logPath = "tests/out/sim_event_log.txt";
   std::string theme;
   std::string themeConfig;  // empty: no auto-load; pass --theme-config explicitly
+  std::string presetPath;   // optional 8-slot GEN preset bank (host file)
   int bars = 16;
   bool determinism = true;
 };
@@ -44,12 +46,15 @@ Args parseArgs(int argc, char** argv) {
       args.theme = argv[++i];
     } else if (std::strcmp(argv[i], "--theme-config") == 0 && i + 1 < argc) {
       args.themeConfig = argv[++i];
+    } else if (std::strcmp(argv[i], "--preset") == 0 && i + 1 < argc) {
+      args.presetPath = argv[++i];
     } else if (std::strcmp(argv[i], "--no-determinism") == 0) {
       args.determinism = false;
     } else if (std::strcmp(argv[i], "--help") == 0) {
       std::printf(
           "usage: bukifon_sim [--out DIR] [--log FILE] [--bars N] [--no-determinism]\n"
-          "                   [--theme Night|Amber|Phosphor|Cream] [--theme-config PATH]\n");
+          "                   [--theme Night|Amber|Phosphor|Cream] [--theme-config PATH]\n"
+          "                   [--preset PATH]\n");
       std::exit(0);
     }
   }
@@ -64,11 +69,11 @@ bool writeScreens(sim::Simulator& simulator, const std::string& outDir) {
     std::printf("ERROR: cannot allocate 800x480 framebuffer\n");
     return false;
   }
-  const ui::Screen screens[4] = {ui::Screen::Main, ui::Screen::Sequencer, ui::Screen::Mixer,
-                                 ui::Screen::Modules};
-  const char* names[4] = {"main", "sequencer", "mixer", "modules"};
+  const ui::Screen screens[5] = {ui::Screen::Main, ui::Screen::Sequencer, ui::Screen::Mixer,
+                                 ui::Screen::Modules, ui::Screen::Gen};
+  const char* names[5] = {"main", "sequencer", "mixer", "modules", "gen"};
   bool ok = true;
-  for (int i = 0; i < 4; ++i) {
+  for (int i = 0; i < 5; ++i) {
     framebuffer.clear(colors::kBlack);
     const ui::UiSnapshot snapshot = simulator.snapshot(screens[i]);
     ui::drawUi800(framebuffer, snapshot);
@@ -115,6 +120,27 @@ int main(int argc, char** argv) {
   }
   std::printf("Bukifon host demo\n");
   std::printf("theme: %s\n", bukifon_ui_theme_name(bukifon_ui_theme_current()));
+  if (!args.presetPath.empty()) {
+    PresetBank bank;
+    if (!bank.load(args.presetPath.c_str())) {
+      // First run: create a demo bank (8 GEN slots) so the demo/CLI is usable.
+      GenParams gen[kSeqTracks];
+      for (int slot = 0; slot < PresetBank::kSlots; ++slot) {
+        for (int p = 0; p < kSeqTracks; ++p) {
+          gen[p].seed = static_cast<uint32_t>(1 + slot * 10 + p);
+          gen[p].probability = static_cast<uint8_t>(40 + slot * 5);
+          gen[p].euclid = static_cast<uint8_t>(slot % 6);
+          gen[p].scale = static_cast<GenScale>(slot % static_cast<int>(GenScale::kNumScales));
+        }
+        char name[24];
+        std::snprintf(name, sizeof(name), "GEN%d", slot + 1);
+        bank.writeSlot(slot, name, gen, kSeqTracks, 0b0101u);
+      }
+      bank.save(args.presetPath.c_str());
+    }
+    std::printf("presets: %d/%d slots (%s)\n", bank.usedCount(), PresetBank::kSlots,
+                args.presetPath.c_str());
+  }
   std::printf("=================\n");
 
   sim::Simulator simulator;

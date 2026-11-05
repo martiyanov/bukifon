@@ -70,6 +70,7 @@ const char* screenName(Screen s) {
     case Screen::Sequencer: return "SEQUENCER";
     case Screen::Mixer: return "MIXER";
     case Screen::Modules: return "MODULES";
+    case Screen::Gen: return "GEN";
     default: return "?";
   }
 }
@@ -79,6 +80,13 @@ void drawHeader(ICanvas& c, const UiSnapshot& s) {
   c.fillRect(0, kHeaderH - 2, kUiWidth, 2, accentColor());
   drawTextScaled(c, 12, 8, s.title, accentColor(), 2);
   c.drawText(12, 38, s.page, mutedColor());
+  // 5-tab strip: MAIN / SEQ / MIX / MOD / GEN (docs/65 L2-L3 access budget).
+  const char* tabs[5] = {"MAIN", "SEQ", "MIX", "MOD", "GEN"};
+  for (int i = 0; i < 5; ++i) {
+    const int tx = 140 + i * 32;
+    const bool active = static_cast<int>(s.screen) == i;
+    c.drawText(tx, 38, tabs[i], active ? accentColor() : mutedColor());
+  }
 
   char buf[32];
   std::snprintf(buf, sizeof(buf), "BPM %d", static_cast<int>(std::lround(s.bpm)));
@@ -268,7 +276,88 @@ void drawParamPanel(ICanvas& c, const UiSnapshot& s) {
     c.drawText(x + 6, y + 5, s.params[i].label, mutedColor());
     drawTextScaled(c, x + 6, y + 16, s.params[i].value, orangeColor(), 1);
     drawBar(c, x + 100, y + 18, kParamCellW - 114, 8, s.params[i].norm, accentColor());
+    if (s.paramModulated[i]) c.drawText(x + kParamCellW - 18, y + 5, "M", accentColor());
+
   }
+}
+
+void drawGenScreen(ICanvas& c, const UiSnapshot& s) {
+  const GenParams& g = s.gen[0];
+  // Part selector with multi-select highlight.
+  for (int t = 0; t < kMaxTracks; ++t) {
+    const int x = 10 + t * 196;
+    const int y = kTracksY;
+    const int w = 186;
+    const int h = 40;
+    const bool selected = s.genPartSelected[t];
+    drawCard(c, x, y, w, h, selected ? activeCardColor() : cardColor(),
+             selected ? accentColor() : mutedColor());
+    char buf[32];
+    std::snprintf(buf, sizeof(buf), "PART %d%s", t + 1, selected ? " *" : "");
+    drawTextScaled(c, x + 8, y + 6, buf, selected ? textColor() : mutedColor(), 1);
+    std::snprintf(buf, sizeof(buf), "P%d E%d M%d", s.gen[t].probability, s.gen[t].euclid,
+                  s.gen[t].mutate);
+    c.drawText(x + 8, y + 24, buf, mutedColor());
+  }
+  // Eight GEN functions (params page).
+  const char* labels[kNumParams] = {"PROB", "EUCLID", "MUTATE", "SCALE",
+                                    "ARP RATE", "ARP MODE", "EVOLVE", "SEED"};
+  char values[kNumParams][12] = {};
+  std::snprintf(values[0], sizeof(values[0]), "%d%%", g.probability);
+  std::snprintf(values[1], sizeof(values[1]), "%d/16", g.euclid);
+  std::snprintf(values[2], sizeof(values[2]), "+-%d", g.mutate);
+  std::snprintf(values[3], sizeof(values[3]), "%s", s.scaleName);
+  std::snprintf(values[4], sizeof(values[4]), "%s", s.arpRateText);
+  std::snprintf(values[5], sizeof(values[5]), "%s", s.arpModeText);
+  std::snprintf(values[6], sizeof(values[6]), "%s", g.evolve ? "ON" : "OFF");
+  std::snprintf(values[7], sizeof(values[7]), "%u", static_cast<unsigned>(g.seed));
+  for (int i = 0; i < kNumParams; ++i) {
+    const int col = i % 4;
+    const int row = i / 4;
+    const int x = 10 + col * kParamCellW;
+    const int y = 110 + row * 46;
+    drawCard(c, x, y, kParamCellW - 6, 40, cardColor(), i == 0 ? accentColor() : mutedColor());
+    c.drawText(x + 6, y + 5, labels[i], mutedColor());
+    drawTextScaled(c, x + 6, y + 16, values[i], orangeColor(), 1);
+  }
+  // Euclid ring: 16 steps, gate = accent colour, accent steps orange.
+  c.drawText(10, 210, "EUCLID RING", mutedColor());
+  for (int step = 0; step < 16; ++step) {
+    const bool on = (s.euclidMask & (1u << step)) != 0;
+    const int x = 12 + step * 48;
+    c.fillRect(x, 224, 40, 18, on ? accentColor() : lineColor());
+    if (on && (step % 4) == 0) c.drawRect(x, 224, 40, 18, orangeColor());
+  }
+  // 8 preset slots (save/load in the host demo; NVS on device TODO).
+  c.drawText(10, 252, "PRESETS (8 slots, A/B compare)", mutedColor());
+  for (int slot = 0; slot < 8; ++slot) {
+    const int x = 10 + slot * 98;
+    drawCard(c, x, 264, 90, 32, slot == s.presetSlot ? activeCardColor() : cardColor(),
+             slot == s.presetSlot ? accentColor() : lineColor());
+    char label[16];
+    std::snprintf(label, sizeof(label), "%d %s", slot + 1, s.presetNames[slot]);
+    c.drawText(x + 4, 270, label, slot == s.presetSlot ? textColor() : mutedColor());
+  }
+  // A/B compare indicator.
+  c.drawText(10, 304, "A/B", mutedColor());
+  drawCard(c, 44, 300, 40, 22, s.abShowB ? cardColor() : activeCardColor(),
+           s.abShowB ? lineColor() : accentColor());
+  c.drawText(58, 304, "A", s.abShowB ? mutedColor() : textColor());
+  drawCard(c, 90, 300, 40, 22, s.abShowB ? activeCardColor() : cardColor(),
+           s.abShowB ? accentColor() : lineColor());
+  c.drawText(104, 304, "B", s.abShowB ? textColor() : mutedColor());
+  std::snprintf(values[0], sizeof(values[0]), "%s", s.abCompare ? "A/B READY" : "A/B OFF");
+  c.drawText(150, 304, values[0], mutedColor());
+  // Selected parts summary for group edits.
+  char selected[48] = "GROUP:";
+  for (int t = 0; t < kMaxTracks; ++t) {
+    if (s.genPartSelected[t]) {
+      char part[8];
+      std::snprintf(part, sizeof(part), " %d", t + 1);
+      std::strncat(selected, part, sizeof(selected) - std::strlen(selected) - 1);
+    }
+  }
+  c.drawText(300, 304, selected, accentColor());
 }
 
 void drawHints(ICanvas& c, const UiSnapshot& s) {
@@ -282,6 +371,28 @@ void drawHints(ICanvas& c, const UiSnapshot& s) {
     c.drawText(x + 20, kHintsY + 3, s.hints[i], selected ? textColor() : mutedColor());
     c.drawText(x + 20, kHintsY + 14, selected ? "< >" : "   ", orangeColor());
   }
+}
+
+void fillGenDefaults(UiSnapshot* snapshot) {
+  if (!snapshot) return;
+  const char* names[8] = {"INIT", "TECHNO", "AMBER", "PENTA", "EVOLVE", "B/D", "LEAD", "GEN"};
+  for (int i = 0; i < 8; ++i) {
+    std::snprintf(snapshot->presetNames[i], sizeof(snapshot->presetNames[i]), "%s", names[i]);
+  }
+  for (int t = 0; t < kMaxTracks; ++t) {
+    snapshot->gen[t] = GenParams{};
+    snapshot->gen[t].seed = 1u + static_cast<uint32_t>(t) * 17u;
+    snapshot->genPartSelected[t] = (t == 0);
+  }
+  snapshot->genPartSelected[0] = true;
+  for (int i = 0; i < kNumParams; ++i) snapshot->paramModulated[i] = false;
+  snapshot->abCompare = false;
+  snapshot->abShowB = false;
+  snapshot->presetSlot = 0;
+  snapshot->euclidMask = 0;
+  std::snprintf(snapshot->scaleName, sizeof(snapshot->scaleName), "%s", "OFF");
+  std::snprintf(snapshot->arpRateText, sizeof(snapshot->arpRateText), "%s", "1/16");
+  std::snprintf(snapshot->arpModeText, sizeof(snapshot->arpModeText), "%s", "UP");
 }
 
 }  // namespace
@@ -300,11 +411,18 @@ void uiSnapshotInit(UiSnapshot* snapshot) {
   for (int i = 0; i < kNumHints; ++i) {
     std::snprintf(snapshot->hints[i], sizeof(snapshot->hints[i]), "P%d", i + 1);
   }
+
+}
+
+void uiSnapshotGenDemo(UiSnapshot* snapshot) {
+  if (!snapshot) return;
+  uiSnapshotDemo(snapshot, Screen::Gen);
 }
 
 void uiSnapshotDemo(UiSnapshot* snapshot, Screen screen) {
   if (!snapshot) return;
   uiSnapshotInit(snapshot);
+  fillGenDefaults(snapshot);
   snapshot->screen = screen;
   std::snprintf(snapshot->page, sizeof(snapshot->page), "%s", screenName(screen));
   snapshot->bpm = 120.0f;
@@ -412,6 +530,42 @@ void uiSnapshotDemo(UiSnapshot* snapshot, Screen screen) {
                     seqValues[i]);
       snapshot->params[i].norm = 0.4f + 0.05f * static_cast<float>(i);
     }
+  }
+  if (screen == Screen::Gen) {
+    snapshot->gen[0].probability = 75;
+    snapshot->gen[0].euclid = 5;
+    snapshot->gen[0].mutate = 2;
+    snapshot->gen[0].scale = GenScale::Minor;
+    snapshot->gen[0].evolve = true;
+    snapshot->gen[0].arpOn = true;
+    snapshot->gen[0].arpRate = GenArpRate16;
+    snapshot->gen[0].arpMode = GenArpUpDown;
+    snapshot->gen[0].seed = 12345;
+    snapshot->gen[1].probability = 100;
+    snapshot->gen[1].euclid = 3;
+    snapshot->gen[1].scale = GenScale::Major;
+    snapshot->gen[2].probability = 50;
+    snapshot->gen[2].mutate = 4;
+    snapshot->gen[3].evolve = true;
+    snapshot->genPartSelected[0] = true;
+    snapshot->genPartSelected[2] = true;
+    snapshot->euclidMask = genEuclidMask(snapshot->gen[0].euclid, 16);
+    std::snprintf(snapshot->scaleName, sizeof(snapshot->scaleName), "%s",
+                  genScaleName(snapshot->gen[0].scale));
+    std::snprintf(snapshot->arpRateText, sizeof(snapshot->arpRateText), "%s",
+                  genArpRateName(snapshot->gen[0].arpRate));
+    std::snprintf(snapshot->arpModeText, sizeof(snapshot->arpModeText), "%s",
+                  genArpModeName(snapshot->gen[0].arpMode));
+    snapshot->paramModulated[0] = true;  // CUTOFF modulated by LFO (mod-visible)
+    snapshot->abCompare = true;
+    snapshot->presetSlot = 2;
+    const char* hints[8] = {"PROB", "EUCLID", "MUTATE", "SCALE",
+                            "ARP RATE", "ARP MODE", "EVOLVE", "SEED"};
+    for (int i = 0; i < kNumHints; ++i) {
+      std::snprintf(snapshot->hints[i], sizeof(snapshot->hints[i]), "%s", hints[i]);
+    }
+    std::snprintf(snapshot->footer, sizeof(snapshot->footer),
+                  "GEN | A/B compare | group edit parts 1+3 | 8 presets");
   }
 }
 
@@ -554,10 +708,12 @@ void drawUi800(ICanvas& canvas, const UiSnapshot& s) {
     drawMixer(canvas, s);
   } else if (s.screen == Screen::Modules) {
     drawModulesScreen(canvas, s);
+  } else if (s.screen == Screen::Gen) {
+    drawGenScreen(canvas, s);
   } else {
     drawTracks(canvas, s);
   }
-  drawParamPanel(canvas, s);
+  if (s.screen != Screen::Gen) drawParamPanel(canvas, s);
   drawHints(canvas, s);
   drawFooter(canvas, s);
 }

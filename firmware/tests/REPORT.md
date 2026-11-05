@@ -832,3 +832,40 @@ Pillow) installed in `/tmp/msvenv`; no system packages assumed.
 - `docs/62-screen-palette.md` status updated: firmware uses the same tokens;
   remaining: device NVS persistence, RGB565 banding/contrast on hardware, demo/
   site theme selector sync (values already match).
+
+---
+
+# Round 11 — GEN functions + GEN page + presets/UX (2026-11-05)
+
+- **GEN engine** (`src/io/gen.*`): deterministic PROB 0–100 %, EUCLID 0–16
+  (Euclidean/Bjorklund mask via bucket algorithm, accents on 1/5/9/13),
+  MUTATE ±0–12 semitones `hash(seed,part,step)`, SCALE LOCK
+  OFF/MINOR/MAJOR/PENTA/DORIAN (nearest note), EVOLVE at bar boundary, SEED, and
+  a simple ARP (1/8, 1/16, 1/32 × UP/DOWN/UPDOWN over held notes).  API:
+  `GenParams` per part + `Sequencer::setGenParams`; defaults are neutral.
+- **Sequencer integration**: `triggerStep` applies Euclid gate/accents,
+  probability, mutation, scale lock and ARP; bar wrap calls deterministic
+  evolve.  Same seed => identical event stream (tests); different seed differs.
+- **UI**: 5th tab **GEN** (header tabs MAIN/SEQ/MIX/MOD/GEN) with 8 function
+  fields, Euclid ring, scale/ARP names, 8 preset slots, A/B indicator,
+  multi-select part chips (group edit), and a mod-visible **M** marker on
+  modulated parameters (CUTOFF from LFO in the demo).  Snapshot holds
+  `gen[]`, `genPartSelected[]`, `paramModulated[]`, `abCompare/abShowB`,
+  `presetNames[8]`, `euclidMask`.
+- **Presets** (`src/storage/preset_bank.*`): 8 slots, per-part GenParams +
+  selection mask, versioned host file with magic/version/CRC32; on P4 NVS is
+  TODO(hw).  Host CLI `bukifon_sim --preset PATH` loads/creates the bank.
+- **Docs**: `docs/66-ux-implementation.md` maps each docs/65 UX pattern to the
+  implementation and test, lists remaining `TODO(hw)`.
+- **Tests**: **248/248 PASS** (226 pre-existing untouched; +12 GEN, +5 presets,
+  +5 GEN UI).  `run_tests.sh` → ALL HOST TESTS PASSED.
+- **Artifacts**: `run_sim_demo.sh` now renders **9** screenshots, including
+  `firmware/artifacts/ui/gen.png`; inspected visually (PROB/EUCLID/MUTATE/SCALE/
+  ARP/EVOLVE/SEED, preset row, group 1+3, Euclid ring).
+
+## Remaining (`TODO(hw)` / next)
+
+1. P4 NVS/flash backend for preset slots (host file exists).
+2. LED/WS2812 palette mapped to docs/62 tokens.
+3. Hardware pickup/undo gestures and 16-encoder/42-key mapping.
+4. P4 device run (toolchain docs/59) for real-time GEN/UI verification.

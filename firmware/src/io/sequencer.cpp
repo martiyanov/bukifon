@@ -197,6 +197,28 @@ void Sequencer::noteOffIfPending(int track) {
   rt.noteOffCountdown = 0.0;
 }
 
+void Sequencer::setGenParams(int track, const GenParams& params) {
+  if (track < 0 || track >= kMaxSeqTracks) return;
+  gen_[track] = params;
+  genArp_[track].setParams(params.arpRate, params.arpMode);
+}
+
+const GenParams& Sequencer::genParams(int track) const {
+  static const GenParams kNeutral;
+  return (track >= 0 && track < kMaxSeqTracks) ? gen_[track] : kNeutral;
+}
+
+GenParams& Sequencer::genParams(int track) {
+  static GenParams fallback;
+  if (track < 0 || track >= kMaxSeqTracks) return fallback;
+  return gen_[track];
+}
+
+void Sequencer::setGenSeed(int track, uint32_t seed) {
+  if (track < 0 || track >= kMaxSeqTracks) return;
+  gen_[track].seed = seed;
+}
+
 void Sequencer::triggerStep(int track) {
   SequenceTrack& tr = patterns_[patternIndex_].tracks[track];
   const int stepIndex = runtime_[track].step % (tr.length > 0 ? tr.length : kSeqSteps);
@@ -248,16 +270,44 @@ void Sequencer::triggerStep(int track) {
     note = math::clampInt(note, 0, 127);
     velocity = math::clampInt(velocity, 1, 127);
     gate = math::clampInt(gate, 1, 200);
-    if (sink_) sink_->onSeqNoteOn(track, note, velocity);
-    TrackRuntime& rt = runtime_[track];
-    rt.pendingNote = note;
-    rt.noteOffCountdown = static_cast<double>(stepLengthSamples(track)) * gate / 100.0;
+    // Generative layer: probability/Euclid/mutate/scale-lock/accent and ARP.
+    const GenParams& gp = gen_[track];
+    const int globalStep = static_cast<int>(pass) * (tr.length > 0 ? tr.length : kSeqSteps) +
+                           stepIndex;
+    GenStepResult generated = genApplyStep(gp, track, globalStep, note, velocity);
+    if (gp.arpOn) {
+      uint8_t held[16];
+      int heldCount = 0;
+      for (int h = 0; h < tr.length && h < kSeqSteps && heldCount < 16; ++h) {
+        if (tr.steps[h].active) held[heldCount++] = tr.steps[h].note;
+      }
+      const int arpNote = genArp_[track].noteAt(
+          held, heldCount,
+          static_cast<uint32_t>(globalStep) * 2u);
+      if (arpNote >= 0) {
+        generated.note = genScaleLockNote(arpNote, gp.scale);
+        generated.trigger = true;
+      }
+    }
+    if (generated.trigger) {
+      if (sink_) sink_->onSeqNoteOn(track, generated.note, generated.velocity);
+      TrackRuntime& rt = runtime_[track];
+      rt.pendingNote = generated.note;
+      rt.noteOffCountdown = static_cast<double>(stepLengthSamples(track)) * gate / 100.0;
+    }
   }
 
   runtime_[track].step = (runtime_[track].step + 1) % (tr.length > 0 ? tr.length : kSeqSteps);
   if (runtime_[track].step == 0) {
     ++runtime_[track].pass;
     if (track == 0 && chainLength_ > 0) advanceChain();
+    if (gen_[track].evolve) {
+      const int bar = static_cast<int>(runtime_[track].pass);
+      for (int h = 0; h < tr.length && h < kSeqSteps; ++h) {
+        tr.steps[h].note = static_cast<uint8_t>(genEvolveNote(
+            gen_[track].seed, track, bar, h, tr.steps[h].note, 2));
+      }
+    }
   }
 }
 

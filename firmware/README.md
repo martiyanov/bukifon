@@ -44,7 +44,7 @@ firmware/
   engine_unity.cpp / sim_unity.cpp  PlatformIO unity translation units
   Bukifon/      RP2040 Arduino sketch: Bukifon.ino + platformio.ini
   host/         native build (Makefile + CMakeLists.txt), WAV renderer
-  tests/        unit tests (226), FFT analysis, run_tests.sh, run_sim_demo.sh, REPORT.md
+  tests/        unit tests (248), FFT analysis, run_tests.sh, run_sim_demo.sh, REPORT.md
   tools/        wavetable/font generators, ppm_to_png.py, build_pico.sh
   artifacts/    generated 800x480 UI screenshots + demo logs (git-ignored)
 ```
@@ -52,7 +52,7 @@ firmware/
 ## v0.5 host prototype — what to run
 
 ```bash
-make -C firmware/host test          # 226 unit tests
+make -C firmware/host test          # 248 unit tests
 firmware/tests/run_tests.sh         # build + tests + WAV render + FFT report
 firmware/tests/run_sim_demo.sh      # 16-bar demo, event-log determinism, 4 PNG
 ```
@@ -95,7 +95,7 @@ firmware/tests/run_tests.sh         # full pipeline: build, tests, WAV render, F
 
 Latest measured results (see `tests/REPORT.md` and `tests/out/test_log.txt`):
 
-- **226 unit tests, 0 failures** (Apple clang 21, C++17, `-O2`)
+- **248 unit tests, 0 failures** (Apple clang 21, C++17, `-O2`)
 - line coverage **83.5 %** (4347/5204 lines, gcov, generated tables excluded)
 - host demo: 16 bars, 1024 note-ons, 32 p-locks, deterministic event log, 4 PNG screens
 - A4 = **440.0000 Hz** (error `-0.0000 %`, limit ±0.1 %)
@@ -144,6 +144,16 @@ export PLATFORMIO_CORE_DIR=/tmp/piocore
 RAM 87.7 % — запас ~32 KiB; при добавлении эффектов/модулей оптимизировать
 буферы (delay-линия, пресет-кэш, 8-дорожечный секвенсор) или перенести часть в
 PSRAM (RP2350).
+
+## Round 11 — GEN functions + GEN page + presets
+
+- GEN engine (`src/io/gen.*`): deterministic PROB/EUCLID/MUTATE/SCALE LOCK/
+  EVOLVE/SEED + ARP (1/8,1/16,1/32 × UP/DOWN/UPDOWN), applied per sequencer
+  step; neutral defaults keep old projects unchanged.
+- 5th UI tab **GEN** (ui800) with 8 function fields, Euclid ring, preset slots
+  (8, host file; P4 NVS TODO), A/B compare, multi-select group edit and a
+  mod-visible **M** marker; screenshot `artifacts/ui/gen.png`.
+- `docs/66-ux-implementation.md`: docs/65 UX pattern → implementation → test.
 
 ## Round 10 — UI palette tokens in firmware
 

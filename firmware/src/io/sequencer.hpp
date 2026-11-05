@@ -7,6 +7,7 @@
 #include <cstdint>
 
 #include "core/config.hpp"
+#include "io/gen.hpp"
 
 namespace bukifon {
 
@@ -149,6 +150,14 @@ class Sequencer {
   StepModulator& modulator(int track, int index);
   const StepModulator& modulator(int track, int index) const;
 
+  // --- Generative layer (docs/65) ---------------------------------------
+  // Per-part GEN parameters; default values are neutral (no effect on the
+  // existing sequencer behaviour).  Same seed => same sequence.
+  void setGenParams(int track, const GenParams& params);
+  const GenParams& genParams(int track) const;
+  GenParams& genParams(int track);
+  void setGenSeed(int track, uint32_t seed);
+
  private:
   struct TrackRuntime {
     double untilNext = 0.0;
@@ -158,6 +167,8 @@ class Sequencer {
     uint32_t pass = 0;
     uint8_t clockTicks = 0;
   };
+  GenParams gen_[kMaxSeqTracks];
+  GenArp genArp_[kMaxSeqTracks];
 
   void triggerStep(int track);
   void noteOffIfPending(int track);

@@ -9,6 +9,7 @@
 #include <cstdint>
 
 #include "core/device_mode.hpp"
+#include "io/gen.hpp"
 #include "ui/canvas.hpp"
 
 namespace bukifon {
@@ -19,6 +20,7 @@ enum class Screen : uint8_t {
   Sequencer,
   Mixer,
   Modules,
+  Gen,  // 5th tab: generative functions (PROB/EUCLID/MUTATE/SCALE/ARP/...)
   kNumScreens
 };
 
@@ -78,6 +80,18 @@ struct UiSnapshot {
   int activeVoices = 0;
   float masterLevel = 0.0f;
   bool transportRecord = false;
+  // --- GEN page / UX patterns (docs/65) -----------------------------------
+  GenParams gen[kMaxTracks];
+  bool genPartSelected[kMaxTracks] = {};  // multi-select for group edits
+  bool paramModulated[kNumParams] = {};   // "M" marker (LFO etc.)
+  bool abCompare = false;                 // A/B compare available
+  bool abShowB = false;                   // currently showing B
+  uint8_t presetSlot = 0;
+  char presetNames[8][16] = {};
+  char scaleName[10] = "OFF";
+  char arpRateText[8] = "1/16";
+  char arpModeText[8] = "UP";
+  uint16_t euclidMask = 0;
 };
 
 // Fill a snapshot with deterministic, screen-appropriate demo content.
@@ -85,6 +99,8 @@ void uiSnapshotDemo(UiSnapshot* snapshot, Screen screen);
 // Mode-specific panels for the 4 device modes (Synth / Sampler / DAW /
 // USB-keyboard).  The shell stays the same; status bar MODE and the panels differ.
 void uiSnapshotForDeviceMode(UiSnapshot* snapshot, DeviceMode mode);
+// GEN page demo content (5th tab) + presets/A-B/multi-select/mod markers.
+void uiSnapshotGenDemo(UiSnapshot* snapshot);
 void uiSnapshotInit(UiSnapshot* snapshot);
 
 void drawUi800(ICanvas& canvas, const UiSnapshot& snapshot);
