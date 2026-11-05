@@ -23,15 +23,16 @@
   </div>
 
   <section class="panel" aria-label="Виртуальная панель">
-    <div class="keys" id="keysLeft"></div>
+    <div class="keys" id="keysLeft" aria-label="Левая половина клавиатуры"></div>
     <div class="mid">
-      <div class="knobs" id="knobs"></div>
+      <div class="knobs" id="knobs" aria-label="8 энкодеров страницы"></div>
+        <div class="knobs macro" id="knobsMacro" aria-label="8 макро-энкодеров"></div>
       <div class="faders">
         <div class="fader" data-fader="0"><div class="cap"></div><span>FADER 1</span></div>
         <div class="fader" data-fader="1"><div class="cap"></div><span>FADER 2</span></div>
       </div>
     </div>
-    <div class="keys" id="keysRight"></div>
+    <div class="keys" id="keysRight" aria-label="Правая половина клавиатуры"></div>
   </section>
 
   <section class="jacks" id="jacks" aria-label="Джеки"></section>
@@ -39,10 +40,20 @@
   <section class="controls">
     <button id="btnPlay" class="primary">PLAY</button>
     <button id="btnStop">STOP</button>
+    <button id="btnRec" class="danger">REC</button>
     <button id="btnShare">Поделиться паттерном</button>
     <span id="shareState" class="badge"></span>
     <label>BPM <input id="bpm" type="number" min="40" max="220" value="120"></label>
     <label>VOL <input id="volume" type="range" min="0" max="100" value="70"></label>
+    <label>ТЕМА <select id="themeSel"></select></label>
+    <span class="fmodegrp">
+      <button data-fmode="TRACK" class="active">TRACK</button>
+      <button data-fmode="SCENE">SCENE</button>
+      <button data-fmode="DJ">DJ</button>
+    </span>
+    <button id="btnRandom">СЛУЧАЙНЫЙ ПАТТЕРН</button>
+    <button id="btnTransDown">−12</button>
+    <button id="btnTransUp">+12</button>
     <span id="midiState" class="badge">MIDI: ждём</span>
   </section>
 </main>

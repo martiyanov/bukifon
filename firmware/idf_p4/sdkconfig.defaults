@@ -1,0 +1,37 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Bukifon P4 first SKU — CORE-2 / ESP32-P4NRW32 (32 MB PSRAM in package).
+# Apply with: idf.py set-target esp32p4   (target is set separately)
+
+# --- target / CPU ----------------------------------------------------------
+CONFIG_IDF_TARGET="esp32p4"
+CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_400=y
+CONFIG_FREERTOS_HZ=1000
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=8192
+
+# --- PSRAM (32 MB, in-package; one 750 KiB RGB565 framebuffer + 4 MiB pool) -
+CONFIG_SPIRAM=y
+CONFIG_SPIRAM_USE_MALLOC=y
+CONFIG_SPIRAM_MALLOC_ALWAYSINTERNAL=16384
+CONFIG_SPIRAM_MALLOC_RESERVE_INTERNAL=32768
+# P4 PSRAM mode/speed options depend on the IDF version; set-target + P4
+# defaults pick the in-package octal PSRAM.  Verify with `idf.py menuconfig`
+# (Component config → ESP PSRAM) on the real devkit.
+
+# --- flash / partitions ----------------------------------------------------
+CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y
+CONFIG_PARTITION_TABLE_SINGLE_APP_LARGE=y
+# Production plan (docs/42 §4): OTA A/B + recovery + factory_data; the scaffold
+# keeps a single app partition until the bootloader/OTA layout is frozen.
+
+# --- USB HS ----------------------------------------------------------------
+# The P4 has a dedicated USB 2.0 HS PHY.  TinyUSB composite (UAC2 8x8 + MIDI +
+# HID + CDC) is a managed component (espressif/esp_tinyusb) added later; no
+# proprietary stack is required for this hello build.
+
+# --- logging / tools -------------------------------------------------------
+CONFIG_LOG_DEFAULT_LEVEL_INFO=y
+CONFIG_ESP_CONSOLE_UART_DEFAULT=y
+
+# --- C++ -------------------------------------------------------------------
+CONFIG_COMPILER_CXX_EXCEPTIONS=n
+CONFIG_COMPILER_CXX_RTTI=n

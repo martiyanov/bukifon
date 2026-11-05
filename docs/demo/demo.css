@@ -9,13 +9,21 @@ main{max-width:1040px;margin:18px auto 40px;padding:0 14px}
 canvas{width:100%;height:auto;display:block;border-radius:6px;background:#0a1a1d}
 .hint{font-size:11.5px;color:#6f969b;margin-top:8px;line-height:1.5}
 .panel{display:grid;grid-template-columns:1fr minmax(300px,1.15fr) 1fr;gap:10px;margin-top:14px;align-items:start}
-.keys{display:grid;gap:3px;padding:6px;background:#0b171a;border:1px solid var(--line);border-radius:10px}
-.keys .row{display:grid;gap:3px}
+.keys,.cluster{display:flex;flex-direction:column;gap:4px;padding:8px;background:#0b171a;border:1px solid var(--line);border-radius:10px;transform:rotate(var(--rot,0deg));transform-origin:center;will-change:transform}
+.cluster .krow{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cluster button.glabel{height:38px;border-radius:5px;border:1px solid #16383d;background:linear-gradient(#1b3236,#122427);color:#bfe6ea;cursor:pointer;touch-action:none;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0;line-height:1.05}
+.cluster button.glabel b{font-size:13px;font-weight:700}
+.cluster button.glabel i{font-size:7.5px;font-style:normal;color:#6f969b}
+.cluster button.glabel.on{background:linear-gradient(#38c172,#1f7a46);color:#04140b;border-color:#5ee69b;box-shadow:0 0 12px #38c17266}
+.cluster button.glabel.on i{color:#0b3d22}
 .keys button{height:100%;border-radius:4px;border:1px solid #16383d;background:linear-gradient(#1b3236,#122427);color:#bfe6ea;font-size:9px;cursor:pointer;touch-action:none;padding:0}
 .keys button.black{background:linear-gradient(#0b1416,#0e1c1f);color:#7fb6bc}
 .keys button.on{background:linear-gradient(#38c172,#1f7a46);color:#04140b;border-color:#5ee69b;box-shadow:0 0 12px #38c17266}
 .mid{display:flex;flex-direction:column;gap:10px}
 .knobs{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;background:#0b171a;border:1px solid var(--line);border-radius:10px;padding:10px 10px 6px}
+.knobs.macro{border-color:#2b5660}
+.knobs .k{position:relative}
+.knobs .k::after{content:attr(data-letter);position:absolute;top:-2px;left:2px;font-size:8px;color:#5f8d93}
 .knob{position:relative;width:100%;aspect-ratio:1;max-width:54px;margin:0 auto;border-radius:50%;background:conic-gradient(from 210deg,#17373c,#0c1a1d 70%);border:1px solid #1f474d;cursor:ns-resize;touch-action:none}
 .knob::after{content:"";position:absolute;left:50%;top:52%;width:3px;height:38%;background:var(--cyan);transform-origin:50% 0;transform:translate(-50%,0) rotate(var(--a,0deg));border-radius:2px;box-shadow:0 0 8px #4fd1e0aa}
 .knob span{position:absolute;left:50%;bottom:-15px;transform:translateX(-50%);font-size:8.5px;color:#7fb6bc;white-space:nowrap}
@@ -37,3 +45,14 @@ input[type=range]{vertical-align:middle;width:120px}
 .badge{font-size:11px;color:#7fb6bc;border:1px solid #245157;border-radius:99px;padding:4px 10px}
 footer{max-width:1040px;margin:0 auto 30px;padding:0 14px;color:#6f969b;font-size:12px}
 @media(max-width:820px){.panel{grid-template-columns:1fr}.keys{grid-template-columns:1fr}.jacks{grid-template-columns:repeat(5,1fr)}.knobs{grid-template-columns:repeat(8,1fr)}}
+
+/* capture-режим: только экран 800×480 (для скриншотов/сайта) */
+body.capture{background:#000}
+body.capture .top,body.capture .panel,body.capture .jacks,body.capture .controls,body.capture footer,body.capture .hint{display:none}
+body.capture main{max-width:none;margin:0;padding:0}
+body.capture .screen-wrap{border:0;border-radius:0;padding:0;box-shadow:none;background:#000;width:800px;height:480px}
+body.capture canvas{border-radius:0;width:800px;height:480px;display:block}
+
+.fmodegrp{display:inline-flex;gap:4px}
+.fmodegrp button{padding:6px 10px;font-size:11px}
+.fmodegrp button.active{background:#1f7a46;border-color:#38c172;color:#eaffee}

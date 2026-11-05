@@ -1,6 +1,6 @@
 # Букифон (Bukifon) — открытая платформа: сэмплер + синтезатор + модули
 
-**Версия: 0.14.1** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
+**Версия: 0.15.0** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
 
 **Букифон** — настольный музыкальный инструмент-платформа, который собирается из
 доступных компонентов, печатается на 3D-принтере, расширяется модулями и полностью
@@ -32,12 +32,14 @@ BLE HID, передача проектов). То есть Букифон — е
 аналоговый картридж на шине 26-pin или сменная панельная дека (18 пэдов / 42 клавиши).
 Подробнее — [spec/00-vision.md §12](spec/00-vision.md).
 
-## Текущее состояние (v0.14.1)
+## Текущее состояние (v0.15.0)
 
 | Блок | Состояние |
 |---|---|
 | **Панель v0.4** | 380 × 210 × 3 мм: 42 клавиши Lapka-42 (точная геометрия, ±18°), 16 энкодеров Ø14, экран 5.0″ 800×480 без рамки, 10 mini-jack, 2 фейдера 60 мм; пересечений 0 |
 | **Корпус v0.5-B** | **клин 8°**: 380 × 210 × 61.5 мм (перед 32 / зад 61.5), 6 деталей watertight, печать без поддержек 279 г / 18.3 ч, fitcheck 32/0, профиль 1:1 для картонной проверки |
+| **UI/UX** | 3 итерации, 16 энкодеров (8 страниц + 8 макросов), фейдеры TRACK/SCENE/DJ + Fn, REC-ресемплинг, 4 темы экрана 800×480 (`docs/61–64`) |
+| **P4 toolchain** | ESP-IDF scaffold `firmware/idf_p4/` (P4, 32 МБ PSRAM, I2C-скан, heartbeat) + docs/59: PlatformIO P4 не поддерживает, путь — IDF 5.5+ |
 | **Веб-демо** | интерактивная модель: [martiyanov.github.io/bukifon/demo](https://martiyanov.github.io/bukifon/demo/) — 42 клавиши, 16 энкодеров, секвенсор, FM-звук, 4 режима (`docs/58`) |
 | **Закупки** | единый лист: P1 $426 + PWR $276.92 + LCD-адаптер $72.8 + печать $42 ≈ **$784** с зачётом пересечений (`docs/54`) |
 | **Серийники/QR** | `tools/make_labels.py` (A4 3×8, 60×30 мм, QR+manifest), identity 114 B + двухслотовая flash-модель (`docs/55`); **216/216 тестов** |
@@ -102,6 +104,12 @@ BLE HID, передача проектов). То есть Букифон — е
 | [docs/56-p1-measurements.md](docs/56-p1-measurements.md) | протокол P1: P4 vs H743 |
 | [docs/57-usability-test.md](docs/57-usability-test.md) | тест эргономики на макете |
 | [docs/58-web-demo.md](docs/58-web-demo.md) | веб-демо интерфейса и звука |
+| [docs/59-p4-toolchain.md](docs/59-p4-toolchain.md) | P4: ESP-IDF scaffold и сборка |
+| [docs/60-module-distribution.md](docs/60-module-distribution.md) | упаковка и распространение модулей |
+| [docs/61-ui-design.md](docs/61-ui-design.md) | UI/UX: итерации и лучшие практики |
+| [docs/62-screen-palette.md](docs/62-screen-palette.md) | палитра экрана 800×480 (4 темы) |
+| [docs/63-resampling-looper.md](docs/63-resampling-looper.md) | ресемплинг (v1.0) и луппер (backlog) |
+| [docs/64-fader-modes.md](docs/64-fader-modes.md) | режимы фейдеров: Octatrack-сцены, DJ, Fn |
 | [docs/53-pwr-log.md](docs/51-pwr-log.md) | журнал 13 измерений PWR и go/no-go |
 | [docs/33-bom-s3.md](docs/33-bom-s3.md) | product BOM S3-base: COGS 1/10/25, опции, маржа |
 | [docs/34-assembly.md](docs/34-assembly.md) | пошаговая сборка S3-base (B-light) |
