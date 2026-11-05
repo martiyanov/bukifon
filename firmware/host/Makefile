@@ -9,7 +9,7 @@
 CXX      ?= /usr/bin/g++
 PYTHON   ?= /opt/homebrew/bin/python3
 CXXFLAGS ?= -std=c++17 -O2 -Wall -Wextra
-CPPFLAGS := -I../src -I../include -I../app -I. -MMD -MP
+CPPFLAGS := -I../src -I../include -I../app -I../bench/lib -I. -MMD -MP
 LDFLAGS  ?=
 
 SRC_DIR   := ../src
@@ -27,6 +27,10 @@ SIM_OBJ    := $(BUILD)/app/sim_main.o
 
 EXAMPLE_FILES := $(wildcard ../modules/examples/*.cpp)
 EXAMPLE_OBJ   := $(patsubst ../modules/examples/%.cpp,$(BUILD)/examples/%.o,$(EXAMPLE_FILES))
+
+BENCH_DIR   := ../bench/lib
+BENCH_FILES := $(wildcard $(BENCH_DIR)/*.cpp)
+BENCH_OBJ   := $(patsubst $(BENCH_DIR)/%.cpp,$(BUILD)/bench_obj/%.o,$(BENCH_FILES))
 
 TEST_BIN   := $(BUILD)/bukifon_tests
 RENDER_BIN := $(BUILD)/bukifon_render
@@ -56,9 +60,13 @@ $(BUILD)/examples/%.o: ../modules/examples/%.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
+$(BUILD)/bench_obj/%.o: $(BENCH_DIR)/%.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
 -include $(shell find $(BUILD) -name '*.d' 2>/dev/null)
 
-$(TEST_BIN): $(OBJ) $(TEST_OBJ) $(EXAMPLE_OBJ)
+$(TEST_BIN): $(OBJ) $(TEST_OBJ) $(EXAMPLE_OBJ) $(BENCH_OBJ)
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 

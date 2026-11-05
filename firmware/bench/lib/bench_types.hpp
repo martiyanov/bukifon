@@ -98,6 +98,14 @@ class IScenario {
   }
 };
 
+// Statistics and pass/fail evaluation (implemented in bench_criteria.cpp).
+bool criteriaPass(const Criteria& criteria, const TimingStats& stats, uint32_t overruns,
+                  const char** reason);
+void computeStats(const double* samples, uint32_t count, TimingStats* stats);
+
+// Runner (implemented in bench_runner.cpp).
+ScenarioResult runNamedScenario(const char* name, const RunConfig& config);
+
 // Registry (implemented in bench_scenarios.cpp).
 int scenarioCount();
 const char* scenarioNameAt(int index);

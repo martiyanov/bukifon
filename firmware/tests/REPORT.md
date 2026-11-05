@@ -300,3 +300,101 @@ deterministic budget injection/bypass, `frames>64` rejection.
    on P4 are TODO(hw).  Lua is not linked yet; instruction budget exists.
 7. **RP2040 prototype** remains the only hardware-verified build path; its RAM
    headroom (87.7 %) is the constraint to watch if more features are added.
+
+---
+
+# P1 benchmark (task-17, 2026-11-05)
+
+Frozen workload: [`docs/05-benchmark-workload.md`](../docs/05-benchmark-workload.md)
+(v1.0, schema `bukifon-bench-v1`).  Devkit procedure:
+[`docs/05a-benchmark-howto.md`](../docs/05a-benchmark-howto.md).
+Harness: [`firmware/bench/`](bench/README.md).
+
+## Commands
+
+```bash
+make -C firmware/bench host      # build + run host reference, writes results/host.{json,csv}
+make -C firmware/host test       # 120 tests (was 112; +8 bench tests, existing untouched)
+PLATFORMIO_CORE_DIR=/tmp/piocore pio run -d firmware -e bench_s3   # device skeleton build
+```
+
+## Host reference results (actual run, 2000 blocks, 100 warm-up)
+
+Apple clang 21, `-O2`, macOS arm64.  Host is a **workload sanity reference**,
+not a device verdict (see the note in docs/05 §2).
+
+| Scenario | mean µs | max µs | p99 µs | overruns | det. | criterion |
+|---|---:|---:|---:|---:|---|---|
+| `fm_voice` | 71.93 | **218.29** | 103.17 | 0 | yes | max ≤ 650 µs |
+| `granular_track` | 11.43 | 43.46 | 21.25 | 0 | yes | max ≤ 650 µs |
+| `mix_bus` | 5.09 | 31.00 | 5.46 | 0 | yes | max ≤ 650 µs |
+| `psram_stream` | 2.14 | 42.67 | 5.92 | 0 | yes | max ≤ 650 µs |
+| `ui_frame` | 53.50 | 143.83 | 102.38 | 0 | yes | ≤ 33.3 ms/frame |
+| `ui_frame_partial` | 20.64 | 70.00 | 43.33 | 0 | yes | ≤ 16.7 ms target |
+| `usb_descriptor` | 0.63 | 1.83 | 0.71 | 0 | yes | build only |
+
+- Deadline 1333.333 µs; criterion max block ≤ 650 µs.  Worst audio max on host:
+  **218.29 µs = 16.4 % of the deadline**, i.e. **431.7 µs of margin below the
+  frozen 650 µs criterion** (2.98× headroom to the criterion, 6.1× to the
+  deadline).  All seven scenarios PASS, all checksums deterministic (stored in
+  `firmware/bench/results/host.json`, timestamp 2026-11-05T21:26:39Z).
+- Measured semantics: `psram_stream` = 512 × 64-byte random line reads/block
+  (24.576 MB/s equivalent); `usb_descriptor` = HID 6KRO + MIDI + UAC2 + CDC
+  descriptor build, 2.304 MB/s UAC2 requirement flagged as HS-only
+  (`usb_fs_feasible=0`, `usb_hs_feasible=1`); `ui_frame` CPU draw time only
+  (host has no display bus).
+- `firmware/bench/results/host.json` + `host.csv` are the stored artifacts.
+
+## Harness tests (+8, all green)
+
+- frozen constants (64-frame block, 1.333 ms deadline, 650 µs criterion, 800×480
+  UI, UAC2 2.304 MB/s);
+- pass/fail criterion unit tests (max block, overruns, audio vs UI criteria);
+- scenario registry: 7 frozen names, unknown names rejected;
+- determinism: every scenario run twice → identical checksum;
+- **zero allocations in the audio path**: global allocation probe armed around
+  `processBlock()` for `fm_voice`, `granular_track`, `mix_bus` → 0 allocations;
+- JSON/CSV/table output, PSRAM/UI/USB metrics, full vs partial UI frames.
+
+Test count: **120 passed, 0 failed** (the 112 pre-existing tests are unchanged).
+
+## Device build status
+
+| Env | Result |
+|---|---|
+| `bench` (native PlatformIO) | prepared (same sources as the verified Makefile target) |
+| `bench_s3` | **SUCCESS** — Flash 590 901 / 3 342 336 B (**17.7 %**), RAM 22 144 / 327 680 B (6.8 %) |
+| `bench_p4` | **not built** — official `espressif32` 8.0.0 has no ESP32-P4 board/framework; env prepared/commented, switch instructions in docs/05a |
+| `bench_h743` | **not built here** — needs `pio platform install ststm32`; env prepared/commented, instructions in docs/05a |
+
+Device run output (table + JSON) is printed over USB serial at 115200 baud;
+24 h soak is enabled with `-DBUKIFON_BENCH_SOAK_HOURS=24` (device main loops the
+workload, counts overruns and reports every minute).
+
+## What the hardware runs will show (and the decision thresholds)
+
+Host numbers only prove that the workload/harness is sane; the MCU decision
+needs the same scenarios on P4/H743 at frozen clocks:
+
+- absolute max block time and p99 for `fm_voice`/`granular_track`/`mix_bus`
+  (criterion max ≤ 650 µs, 0 overruns, 24 h soak without xruns);
+- PSRAM/SDRAM random-read `ns/line` and MB/s for the granular working set
+  (host DRAM proxy is not representative);
+- real UI fps for full/partial redraw including display flush
+  (750 KiB/frame → 22.5 MB/s at 30 fps);
+- USB UAC2 8×8/24/48 (2.304 MB/s) with a HS PHY; SD worst case (768 KB/s +
+  4 KiB random read per block) on real cards.
+
+Thresholds/decision matrix are frozen in docs/05-benchmark-workload.md §9:
+audio-capable = all audio scenarios max ≤ 650 µs, p99 ≤ 500 µs and 24 h soak
+clean; then display + HS USB + PSRAM/SD gates decide P4 vs H743.  S3 is
+reference-only (Full-Speed cannot carry UAC2 8×8/24/48).
+
+## Bench limitations
+
+- Host has no PSRAM/SD/USB-PHY/display bus: PSRAM is a DRAM proxy, USB checks
+  descriptor bytes/bandwidth only, UI measures CPU draw time.
+- Device timer `micros()` has 1 µs resolution (fine for 70–650 µs blocks).
+- UI framebuffer is 750 KiB → needs PSRAM on S3/P4 (`prepare()` fails honestly
+  without it).
+- SD worst case and USB HS PHY are device-only extras (docs/05 §8, docs/05a §7).

@@ -145,6 +145,20 @@ RAM 87.7 % — запас ~32 KiB; при добавлении эффектов/
 буферы (delay-линия, пресет-кэш, 8-дорожечный секвенсор) или перенести часть в
 PSRAM (RP2350).
 
+## P1 benchmark (frozen workload, host + devkit harness)
+
+```bash
+make -C firmware/bench host     # frozen workload on host -> bench/results/host.{json,csv}
+make -C firmware/host test      # 120 tests (includes bench determinism/no-alloc/criteria)
+```
+
+Workload freeze: [docs/05-benchmark-workload.md](../docs/05-benchmark-workload.md);
+devkit howto: [docs/05a-benchmark-howto.md](../docs/05a-benchmark-howto.md);
+harness: [bench/README.md](bench/README.md).  Envs: `bench`/`bench_s3` build,
+`bench_p4`/`bench_h743` are prepared (P4 platform / ststm32 not available here).
+Host reference worst audio max is 218 µs (16.4 % of the 1.333 ms deadline,
+2.98× below the 650 µs criterion); device runs decide P4 vs H743.
+
 ## ESP32-P4 / S3 build (v0.5 skeleton)
 
 ```bash

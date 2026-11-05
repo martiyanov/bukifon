@@ -57,7 +57,7 @@ void operator delete[](void* p, std::size_t) noexcept { std::free(p); }
 void operator delete(void* p, const std::nothrow_t&) noexcept { std::free(p); }
 void operator delete[](void* p, const std::nothrow_t&) noexcept { std::free(p); }
 
-#if defined(__cpp_aligned_new)
+#if defined(__cpp_aligned_new) && !defined(ARDUINO)
 void* operator new(std::size_t size, std::align_val_t alignment) {
   bukifon::bench::noteAllocation();
   void* p = std::aligned_alloc(static_cast<std::size_t>(alignment), size ? size : 1);
