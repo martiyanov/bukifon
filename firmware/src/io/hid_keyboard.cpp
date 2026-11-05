@@ -20,7 +20,7 @@ const uint8_t kBaseMap[kNumKeys] = {
     K,      K,      K,                                // LCTRL LSHIFT LALT (mod only)
     // Right half
     A + 20, A + 8,  A + 14, A + 15, hid_usage::kLeftBracket, hid_usage::kRightBracket,  // U I O P [ ]
-    A + 9,  A + 10, A + 11, hid_usage::kSemicolon, hid_usage::kQuote, hid_usage::kBackslash,  // J K L ; ' \
+    A + 9,  A + 10, A + 11, hid_usage::kSemicolon, hid_usage::kQuote, hid_usage::kBackslash,  // J K L ; quote backslash
     A + 12, hid_usage::kComma, hid_usage::kPeriod, hid_usage::kSlash, K, K,  // M , . / RSHIFT RALT
     hid_usage::kSpace, hid_usage::kEnter, hid_usage::kBackspace,             // SPACE ENTER BSPC
 };

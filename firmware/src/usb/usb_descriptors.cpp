@@ -98,7 +98,7 @@ bool UsbCompositeBuilder::build() {
   if (cdc_) {
     appendCdcInterfaces(static_cast<uint8_t>(interface));
     interface += 2;
-    endpoints += 2;
+    endpoints += 3;
   }
   result_.interfaceCount = interface;
   result_.endpointCount = endpoints;

@@ -11,11 +11,16 @@ using namespace bukifon::usb;
 
 namespace {
 
+uint16_t u16(uint8_t lo, uint8_t hi) {
+  return static_cast<uint16_t>(lo | (hi << 8));
+}
+
 struct WalkResult {
   int interfaces = 0;
   int endpoints = 0;
   int hidDescriptors = 0;
   std::set<uint8_t> endpointAddresses;
+  std::set<uint8_t> interfaceNumbers;
   std::set<uint8_t> interfaceClasses;
   uint16_t totalLength = 0;
   bool valid = true;
@@ -37,7 +42,7 @@ WalkResult walkConfig(const std::vector<uint8_t>& config) {
       break;
     }
     if (type == 0x04 && length == kInterfaceDescriptorSize) {
-      ++r.interfaces;
+      r.interfaceNumbers.insert(config[pos + 2]);
       r.interfaceClasses.insert(config[pos + 5]);
     } else if (type == 0x05 && length == kEndpointDescriptorSize) {
       ++r.endpoints;
@@ -48,6 +53,7 @@ WalkResult walkConfig(const std::vector<uint8_t>& config) {
     pos += length;
   }
   if (pos != config.size()) r.valid = false;
+  r.interfaces = static_cast<int>(r.interfaceNumbers.size());
   return r;
 }
 
