@@ -3,7 +3,8 @@
 Цель P1 — ответить на единственный вопрос: **какой MCU тянет Букифон** (8 моно-дорожек
 + 8 голосов + экран 800×480 + USB UAC2) с запасом. Без стенда нельзя фиксировать ни MCU,
 ни PCB. Workload и критерии — [docs/05](05-benchmark-workload.md), как запускать —
-[docs/05a](05a-benchmark-howto.md), харнесс — [firmware/bench](../firmware/bench/).
+[docs/05a](05a-benchmark-howto.md), **протокол приёма стендов P4/H743 — [docs/56](56-p1-measurements.md)**,
+харнесс — [firmware/bench](../firmware/bench/).
 
 ## 1. Закупка (минимальный комплект)
 

@@ -44,7 +44,7 @@ firmware/
   engine_unity.cpp / sim_unity.cpp  PlatformIO unity translation units
   Bukifon/      RP2040 Arduino sketch: Bukifon.ino + platformio.ini
   host/         native build (Makefile + CMakeLists.txt), WAV renderer
-  tests/        unit tests (203), FFT analysis, run_tests.sh, run_sim_demo.sh, REPORT.md
+  tests/        unit tests (216), FFT analysis, run_tests.sh, run_sim_demo.sh, REPORT.md
   tools/        wavetable/font generators, ppm_to_png.py, build_pico.sh
   artifacts/    generated 800x480 UI screenshots + demo logs (git-ignored)
 ```
@@ -52,7 +52,7 @@ firmware/
 ## v0.5 host prototype — what to run
 
 ```bash
-make -C firmware/host test          # 203 unit tests
+make -C firmware/host test          # 216 unit tests
 firmware/tests/run_tests.sh         # build + tests + WAV render + FFT report
 firmware/tests/run_sim_demo.sh      # 16-bar demo, event-log determinism, 4 PNG
 ```
@@ -95,7 +95,7 @@ firmware/tests/run_tests.sh         # full pipeline: build, tests, WAV render, F
 
 Latest measured results (see `tests/REPORT.md` and `tests/out/test_log.txt`):
 
-- **203 unit tests, 0 failures** (Apple clang 21, C++17, `-O2`)
+- **216 unit tests, 0 failures** (Apple clang 21, C++17, `-O2`)
 - line coverage **83.5 %** (4347/5204 lines, gcov, generated tables excluded)
 - host demo: 16 bars, 1024 note-ons, 32 p-locks, deterministic event log, 4 PNG screens
 - A4 = **440.0000 Hz** (error `-0.0000 %`, limit ±0.1 %)
@@ -144,6 +144,17 @@ export PLATFORMIO_CORE_DIR=/tmp/piocore
 RAM 87.7 % — запас ~32 KiB; при добавлении эффектов/модулей оптимизировать
 буферы (delay-линия, пресет-кэш, 8-дорожечный секвенсор) или перенести часть в
 PSRAM (RP2350).
+
+## Round 9 — serials/QR labels + factory identity
+
+- **Labels**: `tools/make_labels.py` (CSV → `dist/labels/labels_<batch>.pdf`,
+  A4 3×8 / 60×30 mm, QR, manifest, `--preview` PNG, duplicate-SN validation,
+  `--selftest`).  Dev sheet: `dist/labels/labels_26A.pdf` + preview; rules in
+  [docs/55-labels-traceability.md](../docs/55-labels-traceability.md).
+- **Identity**: `src/factory/identity.*` — 114-byte record (serial/revs/date/
+  batch/MAC/calibration/CRC32), validator, two-slot store, CLI
+  `factory --identity <json>` / `--print-identity`; real flash/24C32 write is
+  TODO(hw).
 
 ## Round 8 — UAC2 8×8 HS + RGB565 + factory backend hooks
 

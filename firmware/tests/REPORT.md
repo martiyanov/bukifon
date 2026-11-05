@@ -751,3 +751,59 @@ backends).  `run_tests.sh` → ALL HOST TESTS PASSED (FFT unchanged).
 3. RGB565 backend is a host model; esp_lcd/DSI/PPA + bounce DMA are TODO(hw).
 4. Factory REAL backends are still TODO stubs; switching them on the bench will
    require implementing `P4FactoryHardware` (docs/46 §9 order).
+
+---
+
+# Round 9 — serials/QR labels + factory identity (2026-11-05)
+
+## Label generator (`tools/make_labels.py`)
+
+CSV → A4 **3×8** sheet, label **60×30 mm**, QR content
+`BKS3-26A-0001|core=2.p4|panel=2|pwr=1|batch=26A|date=2026-11-05`, plus manifest
+JSON and `--preview` PNG (first 6 labels).  QR library: **segno** (+ reportlab,
+Pillow) installed in `/tmp/msvenv`; no system packages assumed.
+
+- Validation: required columns, SN regex `BKS3-YYA-NNNN`, batch↔SN match, ISO
+  date, revision charset, `PASS/FAIL/RETEST`, one batch per sheet, ≤24 labels,
+  **duplicate SN rejection with line numbers**.
+- `--selftest` PASS (24-label PDF/manifest/preview + duplicate rejection).
+- Generated dev sheet: `dist/labels/labels_26A.pdf` (24 labels, 125 KB),
+  `labels_26A.json`, `labels_26A_preview.png` (300 dpi preview inspected: SN,
+  revs/date/batch/test, QR all legible).
+- Media/placement/RMA rules: [`docs/55-labels-traceability.md`](../docs/55-labels-traceability.md).
+
+## Factory identity (`firmware/src/factory/identity.*`)
+
+- 114-byte little-endian record: magic `BKID`, version 1, product, serial,
+  core/panel/pwr revisions, date, batch, MAC (6 B), calibration version, test
+  result, CRC32 over the preceding 110 bytes.
+- Validator: serial regex, batch↔serial, date, required revisions/MAC,
+  CRC; JSON roundtrip; explicit serialize/deserialize with bounds checks.
+- `IdentityStore` = host model of the flash `factory_data` two-copy layout:
+  alternating slots, CRC-checked reads, **duplicate SN rejected**, corrupt-slot
+  fallback, oldest copy replaced on third write.
+- CLI: `factory --identity <json>` validates+stores (prints identity JSON or
+  `IDENTITY FAIL`), `factory --print-identity` prints the stored identity; exit
+  codes 0 OK / 1 invalid / 2 usage / 3 empty store.  Real flash + 24C32 write are
+  explicit `TODO(hw)` (`p4_hardware.cpp`, docs/55 §8).
+- Tests: serial/date validation, magic/version/product/batch/MAC validation,
+  serialize roundtrip (114 B), CRC single-byte corruption, JSON roundtrip,
+  store write/read/rotate/duplicate/corrupt-slot fallback, CLI write/print,
+  empty store and invalid JSON rejection.
+
+## Tests
+
+**216 / 216 PASS** (203 pre-existing untouched; +13 identity tests).
+`run_tests.sh` → ALL HOST TESTS PASSED (FFT unchanged).  Label tool self-test:
+`/tmp/msvenv/bin/python3 tools/make_labels.py --selftest` → PASS.
+
+## What remains (honest)
+
+1. **Real identity write to flash `factory_data` / 24C32 is TODO(hw)** — the
+   format/store/CLI contract is ready, hardware programming is not implemented.
+2. Label durability (thermal transfer stock, isopropyl/heat/cycle) and QR scan
+   rate on the assembled unit must be validated on real labels.
+3. Production CSV/serial allocation is manual for the beta; manifest format is
+   ready for the factory station export.
+4. P4 firmware build is still blocked by the missing P4 PlatformIO platform;
+   identity CLI is host/mock-tested.

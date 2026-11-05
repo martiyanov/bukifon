@@ -2,7 +2,8 @@
 
 **Status:** frozen for the P1 MCU decision (ESP32-P4 vs STM32H743).
 **Owner:** firmware. **Related:** [roadmap](12-roadmap.md) §P1,
-[howto](05a-benchmark-howto.md), harness `firmware/bench/`, results
+[howto](05a-benchmark-howto.md), **P1 protocol P4/H743: [docs/56](56-p1-measurements.md)**, harness `firmware/bench/`,
+results
 `firmware/bench/results/host.json`.
 
 This document is the single source of truth for *what* is measured.  The

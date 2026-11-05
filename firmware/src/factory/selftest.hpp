@@ -14,6 +14,8 @@
 namespace bukifon {
 namespace factory {
 
+class IdentityStore;  // factory/identity.hpp
+
 constexpr int kTestCount = 14;
 
 enum class TestId : uint8_t {
@@ -179,9 +181,12 @@ Report runSelfTest(Hardware& hardware, bool stopOnFail = false);
 bool reportToJson(const Report& report, char* out, size_t capacity);
 const char* statusName(TestStatus status);
 
-// CLI: `factory [--json] [--out PATH] [--fail TEST_ID] [--stop-on-fail]`.
-// TEST_ID is 1..14 (docs/42 order) or a test name.  Returns 0 when PASS.
-int factoryCliMain(int argc, char** argv, Hardware& hardware, std::FILE* out);
+// CLI: `factory [--json] [--out PATH] [--stop-on-fail]
+//                [--identity PATH.json] [--print-identity]`.
+// Identity actions write/read the two-slot store (real flash is TODO(hw)).
+// Returns 0 when PASS / identity OK, 1 for FAIL, 2 usage, 3 no identity.
+int factoryCliMain(int argc, char** argv, Hardware& hardware, std::FILE* out,
+                   IdentityStore* identityStore = nullptr);
 
 }  // namespace factory
 }  // namespace bukifon

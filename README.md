@@ -1,6 +1,6 @@
 # Букифон (Bukifon) — открытая платформа: сэмплер + синтезатор + модули
 
-**Версия: 0.13.0** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
+**Версия: 0.14.0** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
 
 **Букифон** — настольный музыкальный инструмент-платформа, который собирается из
 доступных компонентов, печатается на 3D-принтере, расширяется модулями и полностью
@@ -32,12 +32,16 @@ BLE HID, передача проектов). То есть Букифон — е
 аналоговый картридж на шине 26-pin или сменная панельная дека (18 пэдов / 42 клавиши).
 Подробнее — [spec/00-vision.md §12](spec/00-vision.md).
 
-## Текущее состояние (v0.13.0)
+## Текущее состояние (v0.14.0)
 
 | Блок | Состояние |
 |---|---|
 | **Панель v0.4** | 380 × 210 × 3 мм: 42 клавиши Lapka-42 (точная геометрия, ±18°), 16 энкодеров Ø14, экран 5.0″ 800×480 без рамки, 10 mini-jack, 2 фейдера 60 мм; пересечений 0 |
 | **Корпус v0.5-B** | **клин 8°**: 380 × 210 × 61.5 мм (перед 32 / зад 61.5), 6 деталей watertight, печать без поддержек 279 г / 18.3 ч, fitcheck 32/0, профиль 1:1 для картонной проверки |
+| **Веб-демо** | интерактивная модель: [martiyanov.github.io/bukifon/demo](https://martiyanov.github.io/bukifon/demo/) — 42 клавиши, 16 энкодеров, секвенсор, FM-звук, 4 режима (`docs/58`) |
+| **Закупки** | единый лист: P1 $426 + PWR $276.92 + LCD-адаптер $72.8 + печать $42 ≈ **$784** с зачётом пересечений (`docs/54`) |
+| **Серийники/QR** | `tools/make_labels.py` (A4 3×8, 60×30 мм, QR+manifest), identity 114 B + двухслотовая flash-модель (`docs/55`); **216/216 тестов** |
+| **Протокол P1** | 8 сценариев, пороги, пустые таблицы, матрица P4/H743 + CSV-форма (`docs/56`) |
 | **LCD-адаптер** | FFC-40 breakout для HotLCD ST7262 (31×0R pinout-jumper, 35 TP, JST подсветки), ERC 0/0 — проверка экрана на стенде до PCB (`docs/49`) |
 | **Release bundle** | `tools/make_release_bundle.sh` → 339 файлов / 15 МБ, SHA256SUMS; `RELEASE_BUNDLE.md`, `docs/50` |
 | **Медиа** | PNG→JPEG (60 файлов, −83 МБ), SVG→.svg.gz (19, −46 МБ), дубликаты убраны; tracked **71 МБ** (`docs/52`) |
@@ -58,7 +62,7 @@ BLE HID, передача проектов). То есть Букифон — е
 | **P1-стенд** | `docs/26` — что купить (P4 EV, H743, S3, PCM5102A/1808, дисплей, SD, БП/нагрузка), схема стенда, протокол измерений и таблица решения; без стенда MCU не фиксируется |
 | **Cost-down / первый SKU** | `docs/27`: product BOM вместо «мастерской», S3-base **kit $199** (партия 10–25, direct-sale), P4 $299 после P1, full $399 bundle; батарея — не россыпь 18650 |
 | **Бумажный макет** | `renders/templates/bukifon_paperkit_1to1.pdf` (4 стр: панель 1:1 ×2, профиль 8°, карта 7 проверок) + `docs/28` |
-| **Бенчмарк P1** | workload freeze + харнесс `firmware/bench` (7 сценариев, JSON/CSV, детерминизм, 0 аллокаций): host worst **218 µs** = 16.4 % дедлайна, 431 µs запаса до критерия 650 µs; `bench_s3` собран, стенды P4/H743 — следующие |
+| **Бенчмарк P1** | workload freeze + харнесс `firmware/bench` (7 сценариев, JSON/CSV, детерминизм, 0 аллокаций): host worst **218 µs** = 16.4 % дедлайна, 431 µs запаса до критерия 650 µs; `bench_s3` собран; **протокол приёма стендов P4/H743 готов** (`docs/56`, CSV-форма), стенды — следующие |
 | **SDK модулей** | Module API v0 (10 функций, лимиты, WCET/bypass), каталог `modules/` (template + gain_fx C++ + LFO Lua), `tools/validate_module.py`, `tools/new_module.sh`, CI `modules.yml` |
 | **BOM (draft)** | 92 позиции: база ≈ 21 657 ₽ (~$271), полный ≈ 32 518 ₽ (~$406); «народная» цель ≤ $200 / стандарт ≤ $300 — cost-down план в spec/00 §13 |
 | **Безопасность** | история очищена от GPS EXIF и vendor-PDF с IP, санитизация путей, `SECURITY.md`, `tools/security_scan.sh` |
@@ -85,6 +89,7 @@ BLE HID, передача проектов). То есть Букифон — е
 | [docs/27-costdown.md](docs/27-costdown.md) | cost-down, product BOM, первый SKU S3-kit $199, батарея, дефицит |
 | [docs/28-paper-kit.md](docs/28-paper-kit.md) | бумажный макет 1:1 за 30 минут: 7 проверок эргономики |
 | [docs/29-p1-order.md](docs/29-p1-order.md) | точный список заказа P1-стенда (что, где, сколько) |
+| [docs/54-shopping-list.md](docs/54-shopping-list.md) | **единый закупочный лист**: P1 + PWR + LCD-адаптер + печать, итоги A–D, порядок |
 | [docs/30-security-purge.md](docs/30-security-purge.md) | запрос на purge старых PII-объектов GitHub (SHA) |
 | [docs/31-core-s3-constraints.md](docs/31-core-s3-constraints.md) | CORE-S3: GPIO 31, 1-bit SD, USB endpoint ceiling, RGB+1FB, TPS63802 |
 | [docs/32-progress-report.md](docs/32-progress-report.md) | сводный отчёт v0.4→v0.13.0: вехи, блокеры, следующий шаг |
@@ -92,6 +97,12 @@ BLE HID, передача проектов). То есть Букифон — е
 | [docs/50-downloads.md](docs/50-downloads.md) | где скачать STL/PDF/BOM/прошивку |
 | [docs/51-pwr-log.md](docs/51-pwr-log.md) | журнал 13 измерений PWR и матрица go/no-go |
 | [docs/52-media-policy.md](docs/52-media-policy.md) | форматы медиа и размер репозитория |
+| [docs/54-shopping-list.md](docs/54-shopping-list.md) | единый закупочный лист до PCB |
+| [docs/55-labels-traceability.md](docs/55-labels-traceability.md) | серийники, QR-метки, traceability |
+| [docs/56-p1-measurements.md](docs/56-p1-measurements.md) | протокол P1: P4 vs H743 |
+| [docs/57-usability-test.md](docs/57-usability-test.md) | тест эргономики на макете |
+| [docs/58-web-demo.md](docs/58-web-demo.md) | веб-демо интерфейса и звука |
+| [docs/53-pwr-log.md](docs/51-pwr-log.md) | журнал 13 измерений PWR и go/no-go |
 | [docs/33-bom-s3.md](docs/33-bom-s3.md) | product BOM S3-base: COGS 1/10/25, опции, маржа |
 | [docs/34-assembly.md](docs/34-assembly.md) | пошаговая сборка S3-base (B-light) |
 | [docs/35-print-first.md](docs/35-print-first.md) | что печатать первым и как проверить жёсткость |
@@ -99,6 +110,8 @@ BLE HID, передача проектов). То есть Букифон — е
 | [docs/37-compliance.md](docs/37-compliance.md) | RED/GPSR, батарея, EMC, SBOM, гарантия, SKU-экономика |
 | [docs/05-benchmark-workload.md](docs/05-benchmark-workload.md) | workload freeze P1 и критерии |
 | [docs/05a-benchmark-howto.md](docs/05a-benchmark-howto.md) | как запустить бенчмарк на S3/P4/H743 |
+| [docs/56-p1-measurements.md](docs/56-p1-measurements.md) | **протокол P1 P4 vs H743**: стенд, 8 сценариев, пороги, матрица решения, fallback H743 |
+| [docs/p1-results-template.csv](docs/p1-results-template.csv) | машиночитаемая форма результатов P1 (P4/H743 × 8 сценариев) |
 | [modules/](modules/) | каталог модулей: шаблон, примеры gain_fx и LFO |
 | [firmware/bench/](firmware/bench/) | харнесс P1 (fm/granular/mix/psram/ui/usb, JSON/CSV) |
 | [SECURITY.md](SECURITY.md) | политика безопасности и приватности |
@@ -126,7 +139,7 @@ BLE HID, передача проектов). То есть Букифон — е
 
 - STL/3MF: [`mechanical/stl_v04/`](mechanical/stl_v04/) — panel_L/panel_R, body_L/body_R, foot, keycap;
   сборка `bukifon_v04_assembly.3mf`;
-- рендеры: [`mechanical/preview_v04/`](mechanical/preview_v04/) (изометрия, вид сверху,
+- рендеры: [`mechanical/preview_v05_compare/`](mechanical/preview_v05_compare/) (сравнение вариантов, изометрия, вид сверху,
   наложение на 2D-эталон, разнесённый вид, close-up);
 - параметры печати и время: [mechanical/prints.md](mechanical/prints.md);
 - сборка: [mechanical/assembly.md](mechanical/assembly.md), проверки: [mechanical/fit_check.md](mechanical/fit_check.md).

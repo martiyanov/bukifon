@@ -79,3 +79,4 @@
 - DFM/TP/серийник/recovery: `hardware/core2/dfm.md` §1/§3/§4/§5.
 - Обзор DFM-пакета: `docs/38-dfm-testability.md`.
 - План rev.3 и fallback H743: `hardware/core2/rev3-plan.md`.
+- **Протокол P1 (P4 vs H743, 8 сценариев): [docs/56](56-p1-measurements.md)**.

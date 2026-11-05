@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Букифон — интерактивное демо интерфейса</title>
+<meta name="description" content="Виртуальный Букифон: интерфейс 800×480, 16 энкодеров, 42 клавиши Lapka-42 и FM-синтез в браузере. Демо для будущих пользователей.">
+<link rel="stylesheet" href="demo.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">БУКИФОН <span>demo</span></div>
+  <nav>
+    <a href="../index.html">← сайт</a>
+    <a href="https://github.com/martiyanov/bukifon" rel="noopener">github</a>
+  </nav>
+</header>
+
+<main>
+  <div class="screen-wrap">
+    <canvas id="screen" width="800" height="480" aria-label="Экран Букифона 800×480"></canvas>
+    <div class="hint" id="hint">Мышь/палец: клавиши, энкодеры, шаги секвенсора · QWERTY: A W S E D F T G Y H U J K O L P ; · MIDI-клавиатура подключается автоматически</div>
+  </div>
+
+  <section class="panel" aria-label="Виртуальная панель">
+    <div class="keys" id="keysLeft"></div>
+    <div class="mid">
+      <div class="knobs" id="knobs"></div>
+      <div class="faders">
+        <div class="fader" data-fader="0"><div class="cap"></div><span>FADER 1</span></div>
+        <div class="fader" data-fader="1"><div class="cap"></div><span>FADER 2</span></div>
+      </div>
+    </div>
+    <div class="keys" id="keysRight"></div>
+  </section>
+
+  <section class="jacks" id="jacks" aria-label="Джеки"></section>
+
+  <section class="controls">
+    <button id="btnPlay" class="primary">PLAY</button>
+    <button id="btnStop">STOP</button>
+    <label>BPM <input id="bpm" type="number" min="40" max="220" value="120"></label>
+    <label>VOL <input id="volume" type="range" min="0" max="100" value="70"></label>
+    <span id="midiState" class="badge">MIDI: ждём</span>
+  </section>
+</main>
+
+<footer>
+  <p>Это <strong>демо интерфейса и звука</strong>, а не прошивка: FM-движок упрощён, сэмплер/DAW показаны схематично.
+     Реальный инструмент — ESP32-P4, RGB565 800×480, 16 энкодеров EC11, 42 клавиши Lapka-42, 10 джеков.</p>
+</footer>
+<script src="demo.js"></script>
+</body>
+</html>

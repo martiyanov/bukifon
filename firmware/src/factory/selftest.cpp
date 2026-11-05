@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "factory/selftest.hpp"
 
+#include "factory/identity.hpp"
+
 #include <cmath>
 #include <cstdarg>
 #include <cstring>
@@ -496,11 +498,14 @@ bool reportToJson(const Report& report, char* out, size_t capacity) {
 }
 
 // --- CLI --------------------------------------------------------------------
-int factoryCliMain(int argc, char** argv, Hardware& hardware, std::FILE* out) {
+int factoryCliMain(int argc, char** argv, Hardware& hardware, std::FILE* out,
+                   IdentityStore* identityStore) {
   if (!out) return 2;
   bool jsonOnly = false;
   bool stopOnFail = false;
   const char* outPath = nullptr;
+  const char* identityPath = nullptr;
+  bool printIdentity = false;
   for (int i = 1; i < argc; ++i) {
     if (std::strcmp(argv[i], "--json") == 0) {
       jsonOnly = true;
@@ -508,18 +513,61 @@ int factoryCliMain(int argc, char** argv, Hardware& hardware, std::FILE* out) {
       stopOnFail = true;
     } else if (std::strcmp(argv[i], "--out") == 0 && i + 1 < argc) {
       outPath = argv[++i];
+    } else if (std::strcmp(argv[i], "--identity") == 0 && i + 1 < argc) {
+      identityPath = argv[++i];
+    } else if (std::strcmp(argv[i], "--print-identity") == 0) {
+      printIdentity = true;
     } else if (std::strcmp(argv[i], "--help") == 0) {
       std::fprintf(out,
                    "usage: factory [--json] [--out PATH] [--stop-on-fail]\n"
+                   "               [--identity PATH.json] [--print-identity]\n"
                    "  --json          machine-readable report only\n"
                    "  --out PATH      also write the JSON report to PATH\n"
-                   "  --stop-on-fail  stop at the first failed test\n");
+                   "  --stop-on-fail  stop at the first failed test\n"
+                   "  --identity PATH validate+store identity from JSON (two flash copies)\n"
+                   "  --print-identity print the stored identity JSON\n");
       return 0;
     } else {
       std::fprintf(out, "unknown argument: %s\n", argv[i]);
       return 2;
     }
   }
+
+  IdentityStore localStore;
+  IdentityStore& store = identityStore ? *identityStore : localStore;
+  if (identityPath) {
+    std::FILE* file = std::fopen(identityPath, "rb");
+    if (!file) {
+      std::fprintf(out, "ERROR: cannot open identity JSON %s\n", identityPath);
+      return 2;
+    }
+    char json[2048];
+    const size_t readBytes = std::fread(json, 1, sizeof(json) - 1, file);
+    json[readBytes] = '\0';
+    std::fclose(file);
+    Identity identity;
+    char error[96];
+    if (!identityFromJson(json, &identity, error, sizeof(error))) {
+      std::fprintf(out, "IDENTITY FAIL: %s\n", error);
+      return 1;
+    }
+    if (!store.write(identity, error, sizeof(error))) {
+      std::fprintf(out, "IDENTITY FAIL: %s\n", error);
+      return 1;
+    }
+    std::fprintf(out, "IDENTITY OK: %s\n%s\n", identity.serial,
+                 identityToJson(identity).c_str());
+  }
+  if (printIdentity) {
+    Identity identity;
+    if (!store.read(&identity)) {
+      std::fprintf(out, "IDENTITY FAIL: no stored identity\n");
+      return 3;
+    }
+    std::fprintf(out, "%s\n", identityToJson(identity).c_str());
+    if (!identityPath) return 0;
+  }
+  if (identityPath || printIdentity) return 0;
 
   const Report report = runSelfTest(hardware, stopOnFail);
   char json[4096];
