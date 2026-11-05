@@ -24,18 +24,16 @@ VARIANTS = [
 
 
 def contour(front, rear, r=4.0):
-    pts = [(0.0, 0.0)]
-    if abs(rear - front) > 0.1:
-        # наклонная верхняя линия с фаской R4 у передней кромки
-        pts += [(0.0, rear), (DEPTH - r, front + r * (rear - front) / DEPTH)]
-    else:
-        pts += [(0.0, rear), (DEPTH - r, front)]
-    # дуга R4: от верхней линии к передней стенке
-    cx, cy = DEPTH - r, front - r * 0.35
+    """Профиль: низ → передняя стенка с фаской R4 → верхняя линия → задняя стенка."""
+    k = (rear - front) / DEPTH
+    zc = front + r * k - r * math.sqrt(1.0 + k * k)
+    cx, cy = DEPTH - r, zc
+    a_end = math.pi / 2 - math.atan(k)
+    pts = [(0.0, 0.0), (DEPTH, 0.0), (DEPTH, zc)]
     for i in range(1, 13):
-        a = math.pi / 2 * i / 12
+        a = a_end * i / 12
         pts.append((cx + r * math.cos(a), cy + r * math.sin(a)))
-    pts += [(DEPTH, 0.0)]
+    pts.append((0.0, rear))
     return pts
 
 
@@ -45,7 +43,7 @@ def main():
         pts = contour(front, rear)
         ax.plot([p[0] for p in pts], [p[1] for p in pts], color=color, lw=2.4, ls=ls,
                 label=f"{label}: перед {front:.0f} / зад {rear:.0f} мм")
-        ax.annotate(f"{ang:.0f}°", xy=(18, rear - 2.0), fontsize=10, color=color,
+        ax.annotate(f"{ang:.0f}°", xy=(24, rear - 4.0), fontsize=9.5, color=color,
                     fontweight="bold")
     ax.axhline(0, color="#444", lw=0.8)
     ax.text(4, -6, "стол (Z=0)", fontsize=7, color="#444")
@@ -61,7 +59,7 @@ def main():
                 color="#c0392b")
     ax.annotate("Δ44.6 мм (210·tan12°)", xy=(208, 54), xytext=(218, 66), fontsize=8,
                 color="#2c6fbb")
-    ax.text(196, 12, "все варианты: глубина 210, ширина 380,\nпанель 193+190 с шипом, R4",
+    ax.text(55, 8, "все варианты: глубина 210, ширина 380, панель 193+190 с шипом, R4",
             fontsize=7.2, color="#333")
     fig.tight_layout()
     fig.savefig(OUT)

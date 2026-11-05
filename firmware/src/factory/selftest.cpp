@@ -530,7 +530,7 @@ int factoryCliMain(int argc, char** argv, Hardware& hardware, std::FILE* out) {
     std::fprintf(out, " #  test                status   time/nominal  detail\n");
     for (uint8_t i = 0; i < report.count; ++i) {
       const TestResult& test = report.tests[i];
-      std::fprintf(out, "%2u  %-18s  %-7s %5u/%-5u  %s\n", static_cast<unsigned>(test.id + 1),
+      std::fprintf(out, "%2u  %-18s  %-7s %5u/%-5u  %s\n", static_cast<unsigned>(static_cast<int>(test.id) + 1),
                    testName(test.id), statusName(test.status),
                    static_cast<unsigned>(test.durationMs), static_cast<unsigned>(test.nominalMs),
                    test.detail);
