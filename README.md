@@ -1,6 +1,6 @@
 # Букифон (Bukifon) — открытая платформа: сэмплер + синтезатор + модули
 
-**Версия: 0.9.1** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
+**Версия: 0.10.0** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
 
 **Букифон** — настольный музыкальный инструмент-платформа, который собирается из
 доступных компонентов, печатается на 3D-принтере, расширяется модулями и полностью
@@ -32,12 +32,15 @@ BLE HID, передача проектов). То есть Букифон — е
 аналоговый картридж на шине 26-pin или сменная панельная дека (18 пэдов / 42 клавиши).
 Подробнее — [spec/00-vision.md §12](spec/00-vision.md).
 
-## Текущее состояние (v0.9.1)
+## Текущее состояние (v0.10.0)
 
 | Блок | Состояние |
 |---|---|
 | **Панель v0.4** | 380 × 210 × 3 мм: 42 клавиши Lapka-42 (точная геометрия, ±18°), 16 энкодеров Ø14, экран 5.0″ 800×480 без рамки, 10 mini-jack, 2 фейдера 60 мм; пересечений 0 |
 | **Корпус v0.5-B** | **клин 8°**: 380 × 210 × 61.5 мм (перед 32 / зад 61.5), 6 деталей watertight, печать без поддержек 279 г / 18.3 ч, fitcheck 32/0, профиль 1:1 для картонной проверки |
+| **Product BOM S3** | `BOM-s3.csv` + `docs/33`: kit COGS **$189 / $166 / $149** на 1/10/25 шт; $199 — founders beta (COGS ≤$125–135 для нормального SKU), S3 Complete $249–269 |
+| **Сборка** | `renders/templates/bukifon_assembly_map_1to1.pdf` (4 стр: слои, панель 1:1, крепёж/шлейфы), `docs/34`, `docs/35` print-first, 3D exploded |
+| **Прошивка v0.6** | S3 HAL `s3base` — сборка SUCCESS (flash 11.3 %, RAM 62.7 %), 146/146 тестов, UI 4 режимов, P1 S3-профиль PASS (max block 192 µs; SPI full 13 fps — риск D-51), Module API v0.1 (12 колбэков, события, host services) |
 | **CORE-S3 rev.0** | «народная» плата: ESP32-S3-N16R8, USB FS стерео UAC2, 1-bit SD, **SPI-дисплей** (RGB565 не влезает: 31 доступная линия), TPS63000 placeholder; **ERC 0/0**, GPIO 27/31 занято; PRE-FREEZE |
 | **Корпус B-light** | **230 г / 11.1 ч** (−17 % массы, −39 % времени): стенки 2.0/дно 1.8, 3 периметра + локальные рёбра, панели-оболочки; 6 STL watertight, fitcheck 32/0 |
 | **CORE-2 rev.2** | схема внесена: J17/J18, входы 12V_EXT/N12_EXT/+5V_EXT/5V_LED, EN-развязки, CV IN3/4 на MCP3208, re-pin J14/J15/J16, DNP 46; **ERC 0/0**, pinmap PASS |
@@ -78,6 +81,11 @@ BLE HID, передача проектов). То есть Букифон — е
 | [docs/30-security-purge.md](docs/30-security-purge.md) | запрос на purge старых PII-объектов GitHub (SHA) |
 | [docs/31-core-s3-constraints.md](docs/31-core-s3-constraints.md) | CORE-S3: GPIO 31, 1-bit SD, USB endpoint ceiling, RGB+1FB, TPS63802 |
 | [docs/32-progress-report.md](docs/32-progress-report.md) | сводный отчёт v0.4→v0.9.1: вехи, блокеры, следующий шаг |
+| [docs/33-bom-s3.md](docs/33-bom-s3.md) | product BOM S3-base: COGS 1/10/25, опции, маржа |
+| [docs/34-assembly.md](docs/34-assembly.md) | пошаговая сборка S3-base (B-light) |
+| [docs/35-print-first.md](docs/35-print-first.md) | что печатать первым и как проверить жёсткость |
+| [docs/36-rc-definition.md](docs/36-rc-definition.md) | Definition of Done для v1.0-rc (S3-base) |
+| [docs/37-compliance.md](docs/37-compliance.md) | RED/GPSR, батарея, EMC, SBOM, гарантия, SKU-экономика |
 | [docs/05-benchmark-workload.md](docs/05-benchmark-workload.md) | workload freeze P1 и критерии |
 | [docs/05a-benchmark-howto.md](docs/05a-benchmark-howto.md) | как запустить бенчмарк на S3/P4/H743 |
 | [modules/](modules/) | каталог модулей: шаблон, примеры gain_fx и LFO |

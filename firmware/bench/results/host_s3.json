@@ -4,7 +4,7 @@
   "platform": "macOS arm64",
   "host": "host",
   "compiler": "clang 21.0.0 (clang-2100.4.1.1)",
-  "timestamp": "2026-11-05T22:18:50Z",
+  "timestamp": "2026-11-05T22:22:01Z",
   "build": "host-native",
   "notes": "Host timings are a reference for workload sanity, not a device verdict",
   "block_frames": 64,
@@ -25,7 +25,7 @@
       "fail_reason": "",
       "overruns": 0,
       "checksum": 894414921837501835,
-      "times_us": {"min": 52.0830, "max": 177.0420, "mean": 60.3507, "p50": 54.6045, "p95": 85.7982, "p99": 116.8132},
+      "times_us": {"min": 51.1660, "max": 192.1250, "mean": 56.7419, "p50": 53.0830, "p95": 86.5184, "p99": 111.8426},
       "metrics": [{"name": "pool_mib", "value": 4.0000, "unit": "MiB"}, {"name": "framebuffer_kib", "value": 750.0000, "unit": "KiB"}, {"name": "bounce_kib", "value": 25.0000, "unit": "KiB"}, {"name": "spi_full_fps", "value": 13.0208, "unit": "fps"}, {"name": "spi_partial_updates_s", "value": 32.5521, "unit": "updates/s"}, {"name": "rgb_full_fps", "value": 52.0833, "unit": "fps"}, {"name": "usb_stereo_mb_s", "value": 0.2880, "unit": "MB/s"}]
     }
   ]

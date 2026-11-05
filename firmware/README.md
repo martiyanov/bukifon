@@ -44,7 +44,7 @@ firmware/
   engine_unity.cpp / sim_unity.cpp  PlatformIO unity translation units
   Bukifon/      RP2040 Arduino sketch: Bukifon.ino + platformio.ini
   host/         native build (Makefile + CMakeLists.txt), WAV renderer
-  tests/        unit tests (112), FFT analysis, run_tests.sh, run_sim_demo.sh, REPORT.md
+  tests/        unit tests (146), FFT analysis, run_tests.sh, run_sim_demo.sh, REPORT.md
   tools/        wavetable/font generators, ppm_to_png.py, build_pico.sh
   artifacts/    generated 800x480 UI screenshots + demo logs (git-ignored)
 ```
@@ -52,7 +52,7 @@ firmware/
 ## v0.5 host prototype — what to run
 
 ```bash
-make -C firmware/host test          # 112 unit tests
+make -C firmware/host test          # 146 unit tests
 firmware/tests/run_tests.sh         # build + tests + WAV render + FFT report
 firmware/tests/run_sim_demo.sh      # 16-bar demo, event-log determinism, 4 PNG
 ```
@@ -95,7 +95,7 @@ firmware/tests/run_tests.sh         # full pipeline: build, tests, WAV render, F
 
 Latest measured results (see `tests/REPORT.md` and `tests/out/test_log.txt`):
 
-- **112 unit tests, 0 failures** (Apple clang 21, C++17, `-O2`)
+- **146 unit tests, 0 failures** (Apple clang 21, C++17, `-O2`)
 - line coverage **83.5 %** (4347/5204 lines, gcov, generated tables excluded)
 - host demo: 16 bars, 1024 note-ons, 32 p-locks, deterministic event log, 4 PNG screens
 - A4 = **440.0000 Hz** (error `-0.0000 %`, limit ±0.1 %)
@@ -145,6 +145,27 @@ RAM 87.7 % — запас ~32 KiB; при добавлении эффектов/
 буферы (delay-линия, пресет-кэш, 8-дорожечный секвенсор) или перенести часть в
 PSRAM (RP2350).
 
+## S3-base firmware (CORE-S3 rev.0, ESP32-S3-N16R8)
+
+```bash
+PLATFORMIO_CORE_DIR=/tmp/piocore pio run -d firmware -e s3base   # SUCCESS, see REPORT.md
+firmware/tests/run_sim_demo.sh    # 8 screenshots: 4 pages + 4 device modes
+```
+
+Board HAL `src/hal/board_cores3.*` follows `hardware/cores3/pinmap.csv` (SPI2 800×480,
+1-bit SDMMC, I2S0, I2C0, MIDI UART1, USB FS, BL_PWM).  Measured build: Flash 11.3 %
+(16 MB module, 6.25 MB app partition), RAM 62.7 %.  Display/I2S/SD/USB data paths are
+explicit `TODO(hw)` — the HAL compiles and reports status, nothing is claimed as
+hardware-verified.  D-51 risk: modelled SPI full refresh is 13 fps (< D-46's 15).
+
+Device modes have their own UI panels (status-bar `MODE`): see
+[artifacts/ui/synth.png](artifacts/ui/synth.png),
+[sampler.png](artifacts/ui/sampler.png), [daw.png](artifacts/ui/daw.png),
+[usb_kbd.png](artifacts/ui/usb_kbd.png).  Module API v0.1 adds host services
+(time/log), note/gate/transport events and host-side parameter smoothing; ABI major 0
+stays backward compatible — see `docs/24-module-sdk.md` and the new examples
+`grain_fx.cpp`, `svf_filter.cpp`.
+
 ## P1 benchmark (frozen workload, host + devkit harness)
 
 ```bash
@@ -156,6 +177,9 @@ Workload freeze: [docs/05-benchmark-workload.md](../docs/05-benchmark-workload.m
 devkit howto: [docs/05a-benchmark-howto.md](../docs/05a-benchmark-howto.md);
 harness: [bench/README.md](bench/README.md).  Envs: `bench`/`bench_s3` build,
 `bench_p4`/`bench_h743` are prepared (P4 platform / ststm32 not available here).
+S3-base profile: `make -C firmware/bench host_s3` → `bench/results/host_s3.json`
+(4 MiB pool + 750 KiB framebuffer + bounce; SPI 13.02 fps full / 32.55 partial/s,
+RGB model 52.08 fps, USB FS stereo 0.288 MB/s).
 Host reference worst audio max is 218 µs (16.4 % of the 1.333 ms deadline,
 2.98× below the 650 µs criterion); device runs decide P4 vs H743.
 

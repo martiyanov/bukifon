@@ -2,6 +2,27 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.10.0] — 2025-11-06 — «RC-контур»
+
+### Добавлено
+- **Product BOM S3-base** `BOM-s3.csv` + `docs/33`: 68 позиций (61 kit + 7 опций),
+  COGS **$189 / $166 / $149** на 1/10/25 шт; $199 — founders beta, S3 Complete $249–269,
+  P4 $299, full $399; опции (аккум-пак 1S2P+NTC, БП, SD, картриджи, DECK-PAD) вне kit.
+- **Сборочный комплект**: `renders/templates/bukifon_assembly_map_1to1.pdf` (4 стр: слои,
+  панель 1:1, крепёж и шлейфы), `docs/34-assembly.md` (пошагово, моменты затяжки, чек-лист),
+  `docs/35-print-first.md` (body_L 70 г/3.4 ч → приёмка → комплект), 3D exploded.
+- **Прошивка v0.6**: S3 HAL `board_cores3` по pinmap, env `s3base` — сборка **SUCCESS**
+  (flash 11.3 %, RAM 62.7 %); UI 4 режимов (synth/sampler/daw/usb_kbd); P1 S3-профиль
+  в bench (`host_s3.json` PASS: max block 192 µs; SPI full 13 fps < 15 — риск D-51,
+  partial 32.5/с, RGB-модель 52 fps); **Module API v0.1** (12 колбэков, host services,
+  события, smoothing; 2 новых примера); **146/146 тестов**.
+- **RC Definition of Done** `docs/36` (8 критериев приёмки, S3-ветка 10–14 недель)
+  и **compliance** `docs/37` (RED/GPSR, батарея, EMC, SBOM, гарантия, метрики).
+- Решения D-53…D-57; открытые O-17…O-19 (TL074 qty, TPS63802, display MPN).
+
+### Изменено
+- README/сайт: SKU-линейка (beta/complete/P4/full), 4 режима UI, ссылки на docs/33–37.
+
 ## [0.9.1] — 2025-11-06 — «Сводный отчёт»
 
 ### Добавлено

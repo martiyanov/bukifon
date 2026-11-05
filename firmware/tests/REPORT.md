@@ -398,3 +398,108 @@ reference-only (Full-Speed cannot carry UAC2 8×8/24/48).
 - UI framebuffer is 750 KiB → needs PSRAM on S3/P4 (`prepare()` fails honestly
   without it).
 - SD worst case and USB HS PHY are device-only extras (docs/05 §8, docs/05a §7).
+
+---
+
+# Round 5 — S3-base HAL, UI modes, P1 S3 profile, Module API v0.1 (2026-11-05)
+
+## Builds
+
+| Build | Command | Result |
+|---|---|---|
+| Host tests | `make -C firmware/host test` | **146 / 146 passed** (was 120; +26 new tests, the 120 pre-existing are unchanged) |
+| Host pipeline | `firmware/tests/run_tests.sh` | **ALL HOST TESTS PASSED** (146 tests + WAV/FFT checks) |
+| Host demo | `firmware/tests/run_sim_demo.sh` | **DEMO OK** — 16 bars, deterministic log, **8 PNG** 800×480 |
+| **S3-base firmware** | `PLATFORMIO_CORE_DIR=/tmp/piocore pio run -d firmware -e s3base` | **SUCCESS** — Flash 738 635 / 6 553 600 B (**11.3 %** of the 6.25 MB app partition; 16 MB flash), RAM 205 356 / 327 680 B (**62.7 %**). Board HAL + engine + UI + 4 modules compile for ESP32-S3-N16R8. |
+| Native PlatformIO | `pio run -d firmware -e native` | SUCCESS (host simulator build, same sources) |
+| Bench host | `make -C firmware/bench host` / `host_s3` | PASS; results `bench/results/host.json` + `host_s3.json` |
+| ESP32-P4 | — | **not built**: official espressif32 8.0.0 has no P4 board/framework (documented in `platformio.ini`, no false claim) |
+
+## S3-base board HAL
+
+`firmware/src/hal/board_cores3.*` encodes `hardware/cores3/pinmap.csv` (rev.0):
+
+- SPI2 display 800×480 RGB565: SCK 12 / MOSI 11 / CS 10 / DC 9 / RST 8, BL_PWM 21;
+- SPI3 (MCP3208): 4/5/6, CS 7; 1-bit SDMMC: CLK 15 / CMD 14 / D0 13;
+- I2C0: SDA 16 / SCL 17 (400 kHz); I2S0: MCLK 18 / BCK 1 / LRCK 2 / DAC 38 / ADC 39;
+- MIDI UART1: TX 40 / RX 41; WS2812 42; PANEL_IRQ 47; GATE1 48; PWR_GOOD 3; BOOT 0.
+- 27 functional GPIOs, uniqueness enforced by `pinsUnique()`; config 240 MHz CPU / octal
+  PSRAM 80 MHz / SPI2 80 MHz / USB FS stereo UAC2 (D-48); RAM profile one 750 KiB
+  framebuffer + 8–16-line bounce buffers (D-51), no double buffering.
+- `begin()` configures pins/I2C/UART/SDMMC and reports `displayReady=false`,
+  `i2sReady=false`, `usbFsReady=false` on the host (explicit `TODO(hw)`); the board app
+  (`app/s3base_main.cpp`) prints the real status on the devkit. **No hardware-verified
+  display/I2S/USB/TinyUSB path yet — this is a compiling HAL skeleton, not a finished BSP.**
+
+## UI: 4 device-mode panels
+
+`uiSnapshotForDeviceMode()` produces mode-specific snapshots (same shell, different
+panels + `MODE` in the status bar):
+
+| Screenshot | MODE | Panel content |
+|---|---|---|
+| `artifacts/ui/synth.png` | SYN | CUTOFF/RES/ENV/DRIVE/ADSR, PART 1–4 patches |
+| `artifacts/ui/sampler.png` | SMP | SAMPLE/START/END/GRAIN/PITCH/RATE/FILTER/MIX, TRACK 1–4 samples |
+| `artifacts/ui/daw.png` | DAW | BANK / CC16–CC31 / transport notes, ENC 1–16 banks, MCU stub |
+| `artifacts/ui/usb_kbd.png` | KBD | LAYER/KEYMAP/MACRO/SHIFT/HID/REPORT, Lapka-42 key ranges |
+
+`run_sim_demo.sh` now generates all **8** screenshots (4 pages + 4 modes) and verifies
+their sizes. New tests render each mode, check the status-bar short name, mode-specific
+panel vocabulary and distinct framebuffer checksums.
+
+## P1 S3 profile (`s3_profile` benchmark)
+
+`firmware/bench/lib/scenario_s3.cpp`; results in `bench/results/host_s3.json`
+(host reference, 2000 blocks, 100 warm-up):
+
+| Metric | Value |
+|---|---|
+| Memory profile | 4 MiB sample pool + 750 KiB framebuffer + 25 KiB bounce (16 rows) |
+| Compute | 6 FM voices + 4 granular tracks + limiter, 64-frame block, dirty stripe + periodic full UI redraw |
+| max block time (host) | **192.1 µs** (mean 56.7 µs, p99 111.8 µs), overruns 0 |
+| SPI full refresh (D-51 model, 80 MHz) | **13.02 fps** → **does NOT meet D-46's ≥15 fps** |
+| SPI partial updates (40 % area) | **32.55 updates/s** → meets D-46 ≥30 |
+| RGB565 target model (20 MHz pixel clock) | **52.08 fps** full → meets D-46 ≥15 |
+| USB | stereo UAC2 24/48 = **0.288 MB/s** (FS feasible; 8×8 is P4/H743 only) |
+
+Criterion wiring: `max block ≤650 µs` + D-46 partial ≥30 + RGB full ≥15 (pass); the
+SPI full-refresh shortfall is recorded as a metric and called out as the D-51 risk (the
+S3-base decision must move to RGB565 per `docs/31`, whose GPIO budget does not fit on
+N16R8 — open hardware decision).
+
+## Module API v0.1 (experimental, ABI major 0)
+
+Header `firmware/include/bukifon_module.h`; docs `docs/24-module-sdk.md`.
+
+- **12 callbacks** (v0 table + `attach_host` + `on_event`), backward compatible:
+  v0 modules (gain_fx, lfo_mod) keep working unchanged (new pointers `NULL`).
+- **Host services**: `now_us()` (monotonic) and `log()`; logging from `process()` is
+  forbidden — the host wrapper counts violations, drops the message and exposes
+  `logViolations()` / `lastLogMessage()`.
+- **Events**: NOTE_ON/OFF, GATE_ON/OFF, TRANSPORT START/STOP/CONTINUE, TEMPO, PATTERN,
+  PITCH_BEND with channel/id/value/frame_offset; `sendEvent()` + `eventsSent()`.
+- **Parameter smoothing**: `setParamSmoothed(id, value, timeMs)` with per-block
+  interpolation at ABI boundaries (≤64 frames); module receives smoothed values via
+  `set_param` — no allocation/locks in the audio path.
+- **New examples**: `modules/examples/grain_fx.cpp` (granular insert, events + services),
+  `modules/examples/svf_filter.cpp` (TPT SVF, NOTE_ON keytrack, state save/load).
+- Tests: lifecycle both examples, host services, event delivery/legacy rejection,
+  log violation, smoothing ramp, budget bypass, state roundtrip, v0 compatibility.
+- **v0.1 is still experimental/unstable** — no third-party modules should target it.
+
+## S3 risks (explicit)
+
+1. **D-51 SPI display**: modelled full refresh 13.0 fps < D-46's 15 fps. S3-base as
+   specified in docs/31 needs RGB565, but N16R8 has only 31 usable GPIO and the RGB565
+   variant needs 38–40 — unresolved hardware decision; SPI partial redraw (32.5/s) is
+   the fallback.
+2. **No hardware verification**: board HAL compiles and reports status, but SPI panel,
+   I2S codec, SDMMC, TinyUSB composite and PSRAM performance are `TODO(hw)` stubs.
+3. **CPU headroom on S3**: host profile max is 177 µs for the modelled workload, but the
+   240 MHz LX7 has no DSP accelerators; real device numbers (bench_s3 device run) are
+   required before committing to the S3-base SKU.
+4. **PSRAM contention**: 4 MiB pool + 750 KiB framebuffer share octal PSRAM with
+   cache/display traffic; random-read latency must be measured on the devkit.
+5. **USB**: FS only → stereo UAC2 (D-48); 8×8 UAC2 stays P4/H743-only. TinyUSB glue and
+   descriptor binding are not implemented yet.
+6. **P4**: still not buildable with the installed PlatformIO platform; no false success.

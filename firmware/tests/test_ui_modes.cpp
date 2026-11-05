@@ -68,7 +68,7 @@ TEST(UiModesPanelsDiffer) {
   bool dawBank = false;
   bool kbdKeymap = false;
   bool synthCutoff = false;
-  for (int p = 0; p < kNumParams; ++p) {
+  for (int p = 0; p < ui::kNumParams; ++p) {
     samplerGrain = samplerGrain || std::strcmp(sampler.params[p].label, "GRAIN") == 0;
     dawBank = dawBank || std::strcmp(daw.params[p].label, "BANK") == 0;
     kbdKeymap = kbdKeymap || std::strcmp(kbd.params[p].label, "KEYMAP") == 0;

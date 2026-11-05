@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // CORE-S3 board HAL tests: pin map contract (hardware/cores3/pinmap.csv),
 // uniqueness, bus shapes, host-side begin/status behaviour and config.
+#include <cstring>
+
 #include "hal/board_cores3.hpp"
 #include "test_framework.hpp"
 
@@ -57,8 +59,8 @@ TEST(BoardCores3PinsUnique) {
   CHECK(BoardCores3::kDisplayPins + BoardCores3::kSdPins + BoardCores3::kI2sPins +
             BoardCores3::kI2cPins + BoardCores3::kMidiPins + BoardCores3::kPanelPins +
             BoardCores3::kMemoryProfilePins + 1 /*GATE1*/ + 1 /*PWR_GOOD*/ + 1 /*BOOT*/ +
-            4 /*SPI3*/ + 1 /*BL*/ ==
-        27);
+            4 /*SPI3*/ ==
+        27);  /* BL_PWM is already counted in kDisplayPins */
   INFO("CORE-S3 pin map: 27 functional GPIOs, no duplicates");
 }
 
