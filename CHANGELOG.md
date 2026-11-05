@@ -2,6 +2,19 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.21.1] — 2025-11-06 — «EXT в прошивке»
+
+### Добавлено
+- `firmware/src/io/ext_sequencer.*`: 8 внешних MIDI-треков (channel/PC/note/velocity/length,
+  mute, 1 CC p-lock на шаг), GEN на внешних, общий транспорт/clock 24 ppqn (out/in),
+  live record с квантизацией, save/load `EXTP` v1 + CRC32, MIDI-роутер DIN+USB без дублей.
+- UI-вкладка **EXT** (6-я): 8 строк T1…T8, сетка 16 шагов, p-lock/mute-индикаторы,
+  поля CH/PROG/VEL/LEN/CC#/CC VAL/SWING/CLK + макросы И–П; `firmware/artifacts/ui/ext.png`.
+- **288/288 тестов** (+25: движок, роутер, clock, serialize, UI EXT); docs/70 §7–8.
+
+### Изменено
+- README/сайт: внешний секвенсор и EXT-вкладка; скриншот демо.
+
 ## [0.21.0] — 2025-11-06 — «Внешний секвенсор»
 
 ### Добавлено

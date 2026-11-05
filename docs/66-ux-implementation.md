@@ -107,3 +107,16 @@ between engine/demo/UI (`UiSnapshot::gen`, `paramModulated`, `genPartSelected`,
 
 Осталось (TODO(hw)): реальная палитра LED/WS2812, NVS-хранение темы/пресетов,
 проверка читаемости на 1:1 печати с 40/50/60 см и на реальном P4-экране.
+
+---
+
+## 7. EXT — внешний MIDI-секвенсор (docs/70, раунд 14)
+
+Добавлена 6-я вкладка **EXT** (`MAIN/SEQ/MIX/MOD/GEN/EXT`): 8 внешних MIDI-треков
+строками `T1 CH1 PC0`, сетка 16 шагов, выбранный трек/шаг, p-lock-индикаторы,
+поля CH/PROG/VEL/LEN/CC#/CC VAL/SWING/CLK (левые 8 ячеек) + макросы И–П
+(правые 8) — зеркальная карта docs/68/69. Движок: `firmware/src/io/ext_sequencer.*`
+(8 треков, каналы/PC, note/vel/length, 1 CC p-lock, GEN, транспорт, clock 24 ppqn
+master/slave, live record, versioned CRC32 payload, DIN+USB без дублей).
+Скриншот `firmware/artifacts/ui/ext.png`. Тесты: 288/288 (25 новых).
+Детали и TODO(hw) — в docs/70 §7–8.

@@ -71,6 +71,7 @@ const char* screenName(Screen s) {
     case Screen::Mixer: return "MIXER";
     case Screen::Modules: return "MODULES";
     case Screen::Gen: return "GEN";
+    case Screen::Ext: return "EXT";
     default: return "?";
   }
 }
@@ -90,10 +91,10 @@ void drawHeader(ICanvas& c, const UiSnapshot& s) {
   drawTextRole(c, 620, 2, status, statusColor, UiTextRole::Critical);
   // Page label + 12 px tabs (L2 access, docs/68).
   drawTextRole(c, 12, 44, s.page, mutedColor(), UiTextRole::Caption);
-  const char* tabs[5] = {"MAIN", "SEQ", "MIX", "MOD", "GEN"};
-  for (int i = 0; i < 5; ++i) {
+  const char* tabs[6] = {"MAIN", "SEQ", "MIX", "MOD", "GEN", "EXT"};
+  for (int i = 0; i < 6; ++i) {
     const bool active = static_cast<int>(s.screen) == i;
-    drawTextRole(c, 140 + i * 50, 44, tabs[i], active ? accentColor() : mutedColor(),
+    drawTextRole(c, 140 + i * 44, 44, tabs[i], active ? accentColor() : mutedColor(),
                  UiTextRole::Caption);
   }
   std::snprintf(buf, sizeof(buf), "BAR %03d", s.bar + 1);
@@ -381,6 +382,36 @@ void drawGenScreen(ICanvas& c, const UiSnapshot& s) {
   drawTextRole(c, 300, 304, selected, accentColor(), UiTextRole::Caption);;
 }
 
+void drawExtScreen(ICanvas& c, const UiSnapshot& s) {
+  // 8 external MIDI tracks as rows: T1 CH1 PC0 + 16-step grid (docs/70 §3).
+  const int rowH = 24;
+  const int gridX = 110;
+  const int stepW = 42;
+  for (int t = 0; t < 8; ++t) {
+    const UiExtTrack& track = s.extTracks[t];
+    const int y = kTracksY + t * rowH;
+    const bool selected = t == s.extSelectedTrack;
+    drawCard(c, 8, y, 784, rowH - 2, selected ? activeCardColor() : cardColor(),
+             selected ? accentColor() : lineColor());
+    char label[32];
+    std::snprintf(label, sizeof(label), "T%d CH%d PC%d", t + 1, track.channel, track.program);
+    drawTextRole(c, 12, y + 3, label, track.muted ? mutedColor() : textColor(),
+                 UiTextRole::Caption);
+    if (track.muted) drawTextRole(c, 92, y + 3, "M", redColor(), UiTextRole::Caption);
+    for (int step = 0; step < 16; ++step) {
+      const int x = gridX + step * stepW;
+      const bool on = track.stepActive[step];
+      const bool sel = selected && step == s.extSelectedStep;
+      const uint16_t fill = on ? greenColor() : lineColor();
+      c.fillRect(x, y + 3, stepW - 4, rowH - 8, fill);
+      if (track.stepPlocked[step]) {
+        c.fillRect(x + 2, y + rowH - 7, stepW - 8, 2, orangeColor());
+      }
+      if (sel) c.drawRect(x - 1, y + 2, stepW - 2, rowH - 6, accentColor());
+    }
+  }
+}
+
 void drawHints(ICanvas& c, const UiSnapshot& s) {
   for (int i = 0; i < kNumHints; ++i) {
     const int x = 10 + i * 98;
@@ -450,6 +481,11 @@ void uiSnapshotInit(UiSnapshot* snapshot) {
 void uiSnapshotGenDemo(UiSnapshot* snapshot) {
   if (!snapshot) return;
   uiSnapshotDemo(snapshot, Screen::Gen);
+}
+
+void uiSnapshotExtDemo(UiSnapshot* snapshot) {
+  if (!snapshot) return;
+  uiSnapshotDemo(snapshot, Screen::Ext);
 }
 
 void uiSnapshotDemo(UiSnapshot* snapshot, Screen screen) {
@@ -600,6 +636,33 @@ void uiSnapshotDemo(UiSnapshot* snapshot, Screen screen) {
     }
     std::snprintf(snapshot->footer, sizeof(snapshot->footer),
                   "GEN | A/B compare | group edit parts 1+3 | 8 presets");
+  }
+  if (screen == Screen::Ext) {
+    const char* labels[8] = {"CH", "PROG", "VEL", "LEN", "CC#", "CC VAL", "SWING", "CLK"};
+    const char* values[8] = {"1", "0", "100", "50%", "74", "64", "54%", "INT"};
+    for (int i = 0; i < kNumParams; ++i) {
+      std::snprintf(snapshot->params[i].label, sizeof(snapshot->params[i].label), "%s", labels[i]);
+      std::snprintf(snapshot->params[i].value, sizeof(snapshot->params[i].value), "%s", values[i]);
+      snapshot->params[i].norm = 0.2f + 0.08f * static_cast<float>(i);
+    }
+    for (int t = 0; t < 8; ++t) {
+      UiExtTrack& ext = snapshot->extTracks[t];
+      std::snprintf(ext.name, sizeof(ext.name), "T%d", t + 1);
+      ext.channel = static_cast<uint8_t>(t + 1);
+      ext.program = static_cast<uint8_t>(t);
+      ext.ccNumber = 74;
+      ext.muted = (t == 6);
+      ext.selected = (t == 0);
+      for (int st = 0; st < 16; ++st) {
+        ext.stepActive[st] = ((st + t) % 3) != 2;
+        ext.stepPlocked[st] = (st == 4 || st == 12);
+      }
+    }
+    snapshot->extSelectedTrack = 0;
+    snapshot->extSelectedStep = 4;
+    std::snprintf(snapshot->selectedLabel, sizeof(snapshot->selectedLabel), "%s", "T1");
+    std::snprintf(snapshot->footer, sizeof(snapshot->footer),
+                  "EXT | 8 MIDI tracks | clock out 24 ppqn | p-lock step 5");
   }
 }
 
@@ -883,6 +946,8 @@ void drawUi800(ICanvas& canvas, const UiSnapshot& s) {
     drawModulesScreen(canvas, s);
   } else if (s.screen == Screen::Gen) {
     drawGenScreen(canvas, s);
+  } else if (s.screen == Screen::Ext) {
+    drawExtScreen(canvas, s);
   } else {
     drawTracks(canvas, s);
   }

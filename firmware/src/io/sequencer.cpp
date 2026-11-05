@@ -42,6 +42,7 @@ float StepModulator::eval(int step, uint32_t pass) const {
 
 void Sequencer::init(float sampleRate) {
   sampleRate_ = sampleRate;
+  ext_.init(sampleRate);
   for (int p = 0; p < kNumPatterns; ++p) {
     for (int t = 0; t < kMaxSeqTracks; ++t) {
       SequenceTrack& track = patterns_[p].tracks[t];
@@ -84,6 +85,7 @@ const Pattern& Sequencer::pattern(int index) const {
 void Sequencer::setPatternIndex(int index) { patternIndex_ = math::clampInt(index, 0, kNumPatterns - 1); }
 
 void Sequencer::setPlaying(bool playing) {
+  ext_.setPlaying(playing);
   playing_ = playing;
   if (playing) {
     // Start from step 0 immediately (like Elektron PLAY).
@@ -312,6 +314,7 @@ void Sequencer::triggerStep(int track) {
 }
 
 void Sequencer::process(int samples) {
+  ext_.process(samples);
   if (!playing_) return;
   if (externalClock_) return;  // driven by onClockTick()
   for (int i = 0; i < samples; ++i) {
@@ -344,14 +347,17 @@ void Sequencer::onClockTick() {
 }
 
 void Sequencer::onStart() {
+  ext_.start();
   for (int t = 0; t < kSeqTracks; ++t) {
     runtime_[t] = TrackRuntime{};
     runtime_[t].untilNext = 0.0;  // step 0 on the first clock tick
   }
   playing_ = true;
 }
-void Sequencer::onStop() { setPlaying(false); }
-void Sequencer::onContinue() { playing_ = true; }
+void Sequencer::onStop() {
+  ext_.stop(); setPlaying(false); }
+void Sequencer::onContinue() {
+  ext_.continuePlay(); playing_ = true; }
 
 SequenceStep& Sequencer::step(int track, int index) {
   track = math::clampInt(track, 0, kSeqTracks - 1);

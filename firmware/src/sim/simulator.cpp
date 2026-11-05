@@ -458,10 +458,10 @@ void Simulator::buildSnapshot(ui::UiSnapshot* snapshot, ui::Screen screen) const
   if (!snapshot) return;
   ui::uiSnapshotInit(snapshot);
   snapshot->screen = screen;
-  static const char* pages[] = {"MAIN", "SEQUENCER", "MIXER", "MODULES", "GEN"};
+  static const char* pages[] = {"MAIN", "SEQUENCER", "MIXER", "MODULES", "GEN", "EXT"};
   const int screenIndex = static_cast<int>(screen);
   copyString(snapshot->page, sizeof(snapshot->page),
-             pages[screenIndex >= 0 && screenIndex < 5 ? screenIndex : 0]);
+             pages[screenIndex >= 0 && screenIndex < 6 ? screenIndex : 0]);
   snapshot->bpm = sequencer_.bpm();
   snapshot->pattern = sequencer_.patternIndex() + 1;
   snapshot->playing = playing();
@@ -528,6 +528,21 @@ void Simulator::buildSnapshot(ui::UiSnapshot* snapshot, ui::Screen screen) const
     snapshot->abShowB = genDemo.abShowB;
     snapshot->presetSlot = genDemo.presetSlot;
     for (int i = 0; i < kNumHints; ++i) copyString(snapshot->hints[i], sizeof(snapshot->hints[i]), genDemo.hints[i]);
+  }
+  if (screen == ui::Screen::Ext) {
+    ui::UiSnapshot extDemo;
+    ui::uiSnapshotExtDemo(&extDemo);
+    for (int t = 0; t < 8; ++t) snapshot->extTracks[t] = extDemo.extTracks[t];
+    snapshot->extSelectedTrack = extDemo.extSelectedTrack;
+    snapshot->extSelectedStep = extDemo.extSelectedStep;
+    for (int i = 0; i < kNumParams; ++i) {
+      copyString(snapshot->params[i].label, sizeof(snapshot->params[i].label), extDemo.params[i].label);
+      copyString(snapshot->params[i].value, sizeof(snapshot->params[i].value), extDemo.params[i].value);
+      snapshot->params[i].norm = extDemo.params[i].norm;
+    }
+    for (int i = 0; i < kNumHints; ++i) copyString(snapshot->hints[i], sizeof(snapshot->hints[i]), extDemo.hints[i]);
+    copyString(snapshot->selectedLabel, sizeof(snapshot->selectedLabel), extDemo.selectedLabel);
+    copyString(snapshot->footer, sizeof(snapshot->footer), extDemo.footer);
   }
   std::snprintf(snapshot->footer, sizeof(snapshot->footer),
                 "16 bars | 4 tracks | p-lock t1 s5 | %d voices | %.1f s | MODE %s",

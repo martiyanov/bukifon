@@ -95,3 +95,50 @@
 - CV/GATE — 4+1, для большего — модули/мультиплексор (backlog).
 - Jitter DIN ~0.3–1 мс; clock + transport; аудио-latency не влияет на MIDI-тайминг.
 - Всё это не требует новых кнопок: 16 энкодеров/42 клавиши/2 фейдера/10 джеков (docs/68).
+
+---
+
+## 7. Реализация в прошивке (v1.0-rc, раунд 14)
+
+**Готово (host-тесты):**
+
+| Требование docs/70 §4 | Реализация | Где |
+|---|---|---|
+| 8 внешних треков, канал 1–16, PC 0–127 | `ExtTrack`/`ExtSequencer` (kExtTracks=8, kExtSteps=16) | `firmware/src/io/ext_sequencer.*` |
+| note/velocity/length (gate %) | `ExtStep` + note-on/off sink, gate в % шага | там же |
+| p-lock CC на шаг (1 CC# на трек) | `ExtStep.ccPlocked/ccValue`, `ExtTrack.ccNumber`; CC отправляется на p-locked шагах | там же |
+| mute | `setTrackMuted`, PC на старте только для unmuted | там же |
+| GEN на внешних | `setGenParams()` + `genApplyStep` (prob/euclid/mutate/scale) и ARP на внешних | `io/gen.*` + ext |
+| транспорт start/stop/continue | `start/stop/continuePlay`, общий с `Sequencer` (`external()`) | ext + `io/sequencer.*` |
+| clock out 24 ppqn | master clock в `process()`, sink `onExtClock`, jitter-модель (≤1 мс в модели) | ext |
+| clock in (slave) | `setClockSlave(true)` + `onClockIn()` (6 MIDI clock = 1/16) | ext |
+| live record | `liveRecordNoteOn/Off` с квантизацией на шаг/длиной | ext |
+| save/load внешних треков | versioned payload (magic `EXTP`, v1, CRC32), `serialize/deserialize` | ext |
+| MIDI out DIN+USB без дублей | `MidiOutRouter` + `RouterExtSink`: каждое логическое сообщение ровно один раз в DIN и USB | ext |
+| UI EXT | 6-я вкладка MAIN/SEQ/MIX/MOD/GEN/**EXT**: 8 строк `T1 CH1 PC0`, сетка 16 шагов, выбранный трек/шаг, p-lock-полоски, поля CH/PROG/VEL/LEN/CC#/CC VAL/SWING/CLK + макросы И–П | `ui/ui800.*` |
+
+**MIDI-сообщения:** note on/off (0x90/0x80), CC (0xB0), PC (0xC0), clock (0xF8),
+start (0xFA), stop (0xFC), continue (0xFB); на старте отправляются PC всех
+unmuted-треков, затем start.
+
+**Скриншот:** [`firmware/artifacts/ui/ext.png`](../firmware/artifacts/ui/ext.png)
+(8 внешних треков, 16 шагов, выбранный T1/шаг 5, p-lock bars, CH/PROG/... поля).
+
+**Тесты:** 288/288 host (25 новых в этом раунде: 16 engine/router/serialize,
+5 UI EXT, 4 GEN/clock/arp; см. `tests/test_ext_sequencer.cpp`,
+`tests/test_ui_ext.cpp`).
+
+## 8. Что осталось на железе (TODO(hw))
+
+1. **Реальный MIDI-шлюз**: DIN TRS (UART1 + 74HCT125/6N137) и USB-MIDI
+   (TinyUSB composite) одновременно; сейчас `MidiOutRouter` — host/device
+   модель без дублей, реальный транспорт TODO. Приём MIDI-in/clock-in/CC learn
+   — на реальном UART/USB.
+2. **Интеграция в .bkfp project v2**: payload `EXTP` (version+CRC32) готов и
+   тестируется отдельно; запись в общий project/preset формат — отдельный шаг
+   (старый project v1 не ломаем).
+3. **CC learn** и 4 CC на трек — v1.1; сейчас 1 CC p-lock на трек.
+4. **Hardware latency/jitter** DIN ~0.3–1 мс: измерить на CORE-2, компенсация
+   задержки; USB-MIDI host на P4 — будущий режим (rev.3 option).
+5. **UI p-lock жестом** «удержать шаг + энкодер» — в host-демо показана
+   визуализация, обработка жеста на 42 клавишах/энкодерах — bring-up.

@@ -7,6 +7,7 @@
 #include <cstdint>
 
 #include "core/config.hpp"
+#include "io/ext_sequencer.hpp"
 #include "io/gen.hpp"
 
 namespace bukifon {
@@ -103,9 +104,12 @@ class Sequencer {
   void setPatternIndex(int index);
   int patternIndex() const { return patternIndex_; }
 
-  void setBpm(float bpm) { bpm_ = bpm; }
+  void setBpm(float bpm) { bpm_ = bpm; ext_.setBpm(bpm); }
   float bpm() const { return bpm_; }
-  void setSwing(float swing) { swing_ = swing; }
+  void setSwing(float swing) {
+    swing_ = swing;
+    ext_.setSwing(swing);
+  }
   float swing() const { return swing_; }
   void setPlaying(bool playing);
   bool playing() const { return playing_; }
@@ -158,6 +162,10 @@ class Sequencer {
   GenParams& genParams(int track);
   void setGenSeed(int track, uint32_t seed);
 
+  // Shared transport/tempo with the 8 external MIDI tracks (docs/70).
+  ExtSequencer& external() { return ext_; }
+  const ExtSequencer& external() const { return ext_; }
+
  private:
   struct TrackRuntime {
     double untilNext = 0.0;
@@ -169,6 +177,7 @@ class Sequencer {
   };
   GenParams gen_[kMaxSeqTracks];
   GenArp genArp_[kMaxSeqTracks];
+  ExtSequencer ext_;
 
   void triggerStep(int track);
   void noteOffIfPending(int track);

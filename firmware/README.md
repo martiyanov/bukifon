@@ -44,7 +44,7 @@ firmware/
   engine_unity.cpp / sim_unity.cpp  PlatformIO unity translation units
   Bukifon/      RP2040 Arduino sketch: Bukifon.ino + platformio.ini
   host/         native build (Makefile + CMakeLists.txt), WAV renderer
-  tests/        unit tests (263), FFT analysis, run_tests.sh, run_sim_demo.sh, REPORT.md
+  tests/        unit tests (288), FFT analysis, run_tests.sh, run_sim_demo.sh, REPORT.md
   tools/        wavetable/font generators, ppm_to_png.py, build_pico.sh
   artifacts/    generated 800x480 UI screenshots + demo logs (git-ignored)
 ```
@@ -52,7 +52,7 @@ firmware/
 ## v0.5 host prototype — what to run
 
 ```bash
-make -C firmware/host test          # 263 unit tests
+make -C firmware/host test          # 288 unit tests
 firmware/tests/run_tests.sh         # build + tests + WAV render + FFT report
 firmware/tests/run_sim_demo.sh      # 16-bar demo, event-log determinism, 4 PNG
 ```
@@ -95,7 +95,7 @@ firmware/tests/run_tests.sh         # full pipeline: build, tests, WAV render, F
 
 Latest measured results (see `tests/REPORT.md` and `tests/out/test_log.txt`):
 
-- **263 unit tests, 0 failures** (Apple clang 21, C++17, `-O2`)
+- **288 unit tests, 0 failures** (Apple clang 21, C++17, `-O2`)
 - line coverage **83.5 %** (4347/5204 lines, gcov, generated tables excluded)
 - host demo: 16 bars, 1024 note-ons, 32 p-locks, deterministic event log, 4 PNG screens
 - A4 = **440.0000 Hz** (error `-0.0000 %`, limit ±0.1 %)
@@ -144,6 +144,16 @@ export PLATFORMIO_CORE_DIR=/tmp/piocore
 RAM 87.7 % — запас ~32 KiB; при добавлении эффектов/модулей оптимизировать
 буферы (delay-линия, пресет-кэш, 8-дорожечный секвенсор) или перенести часть в
 PSRAM (RP2350).
+
+## Round 14 — external MIDI sequencer v1.0-rc
+
+- **8 external MIDI tracks** (`src/io/ext_sequencer.*`): ch 1–16, PC,
+  note/vel/length, 1 CC p-lock/step, mute, GEN (prob/Euclid/mutate/scale/ARP),
+  shared transport, clock out 24 ppqn + clock-in slave, live record with
+  quantization, versioned CRC32 payload; DIN+USB router model without duplicates.
+- **EXT page** (6th tab): 8 rows T1 CH1 PC0, 16-step grid, CH/PROG/VEL/LEN/CC#/
+  CC VAL/SWING/CLK + macros, p-lock/mute marks; screenshot `artifacts/ui/ext.png`.
+- `docs/70` §7–8 implementation/TODO(hw).
 
 ## Round 13 — UI readability (docs/68/69)
 

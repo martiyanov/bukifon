@@ -22,6 +22,7 @@ enum class Screen : uint8_t {
   Mixer,
   Modules,
   Gen,  // 5th tab: generative functions (PROB/EUCLID/MUTATE/SCALE/ARP/...)
+  Ext,  // 6th tab: 8 external MIDI tracks (docs/70)
   kNumScreens
 };
 
@@ -73,6 +74,17 @@ struct UiParam {
   float norm = 0.0f;
 };
 
+struct UiExtTrack {
+  char name[8] = "T1";
+  uint8_t channel = 1;
+  uint8_t program = 0;
+  uint8_t ccNumber = 74;
+  bool muted = false;
+  bool selected = false;
+  bool stepActive[kMaxSteps] = {};
+  bool stepPlocked[kMaxSteps] = {};
+};
+
 struct UiSnapshot {
   Screen screen = Screen::Main;
   char title[12] = "BUKIFON";
@@ -118,6 +130,10 @@ struct UiSnapshot {
   char arpRateText[8] = "1/16";
   char arpModeText[8] = "UP";
   uint16_t euclidMask = 0;
+  // --- EXT page: 8 external MIDI tracks (docs/70) -------------------------
+  UiExtTrack extTracks[8];
+  int extSelectedTrack = 0;
+  int extSelectedStep = 0;
 };
 
 // Fill a snapshot with deterministic, screen-appropriate demo content.
@@ -127,6 +143,8 @@ void uiSnapshotDemo(UiSnapshot* snapshot, Screen screen);
 void uiSnapshotForDeviceMode(UiSnapshot* snapshot, DeviceMode mode);
 // GEN page demo content (5th tab) + presets/A-B/multi-select/mod markers.
 void uiSnapshotGenDemo(UiSnapshot* snapshot);
+// EXT page demo content: 8 external tracks / 16 steps / CH,PC,VEL,LEN,CC,...
+void uiSnapshotExtDemo(UiSnapshot* snapshot);
 
 // UX helpers (docs/68/69):
 // Build the always-visible context line (PART · SELECTED · PAGE · FADERS · REC · UNSAVED).

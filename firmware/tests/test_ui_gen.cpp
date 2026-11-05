@@ -123,6 +123,6 @@ TEST(UiGenTabDispatch) {
   ui::drawUi800(main, snapshot);
   CHECK(checksum(gen) != checksum(main));
   CHECK(static_cast<int>(ui::Screen::Gen) == 4);  // 5th tab (0-based 4)
-  CHECK(static_cast<int>(ui::Screen::kNumScreens) == 5);
+  CHECK(static_cast<int>(ui::Screen::kNumScreens) == 6);
   INFO("GEN is the 5th screen/tab and dispatches to drawGenScreen");
 }

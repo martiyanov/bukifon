@@ -902,3 +902,28 @@ Pillow) installed in `/tmp/msvenv`; no system packages assumed.
 - **Docs**: `docs/66-ux-implementation.md` §6 maps docs/68/69 philosophy to
   implementation/tests; known TODO: LED palette, NVS theme/preset persistence,
   1:1 print readability and real P4 screen.
+
+---
+
+# Round 14 — external MIDI sequencer v1.0-rc (2026-11-06)
+
+- **Engine** `src/io/ext_sequencer.*`: 8 external MIDI tracks (channels 1–16,
+  PC, note/velocity/length, 1 CC p-lock per step, mute), GEN (prob/Euclid/
+  mutate/scale/ARP) applied to external tracks, transport start/stop/continue,
+  **24 ppqn clock out** (master) with ≤1 ms jitter model and **clock-in slave**
+  (6 clocks per 16th), live record (quantized note on/off + gate length),
+  versioned CRC32 payload (`EXTP`, v1) for save/load, and `MidiOutRouter` +
+  `RouterExtSink` modelling DIN+USB output **without duplicates**.
+- **Shared sequencer**: `Sequencer::external()` shares tempo/swing/transport and
+  processes external tracks in the same timeline as the 4 internal parts.
+- **UI**: 6th tab **EXT** (`MAIN/SEQ/MIX/MOD/GEN/EXT`): 8 rows `T1 CH1 PC0`,
+  16-step grid, selected track/step, p-lock bars, mute marker, CH/PROG/VEL/LEN/
+  CC#/CC VAL/SWING/CLK cells (left) + macros И–П (right), mirrored layout;
+  screenshot `artifacts/ui/ext.png`.
+- **Tests**: **288/288 PASS** (263 pre-existing untouched; +25: 16 engine/
+  router/serialize/GEN/clock/arp, 5 UI EXT, 4 GEN/clock/arp edge cases).
+  `run_tests.sh` → ALL HOST TESTS PASSED; `run_sim_demo.sh` → **10** PNG.
+- **Docs**: `docs/70` §7–8 (implementation + TODO(hw)); `docs/66` §7 EXT row.
+- **TODO(hw)**: real DIN/USB-MIDI gateway, MIDI-in clock/CC learn, project v2
+  integration of the `EXTP` payload, 4 CC per track (v1.1), hardware latency
+  and USB-MIDI host.
