@@ -86,6 +86,11 @@ firmware/README). Этот файл фиксирует актуальные тр
 | D-24 | 06.11 | Module API — **v0 experimental**, стабильный ABI только после бенчмарка P1 | firmware |
 | D-25 | 06.11 | «Народная» версия — ESP32-S3 (Wi-Fi/BT нативно), P4+C6 — «стандарт/pro» | spec/00 §13, BOM |
 | D-26 | 06.11 | Публичный репозиторий: PII/секреты запрещены, обязательные проверки `tools/security_scan.sh` + `tools/sanitize_paths.sh` | SECURITY.md / AGENTS.md |
+| D-27 | 06.11 | Бюджет шины: +12 В ≈ 330 мА, −12 В ≈ 95 мА (не 300 мА на каждый) | консультация GPT, docs/25 |
+| D-28 | 06.11 | PWR-2: без MC34063/charge-pump; sync boost + inverting buck-boost или push-pull ±14 В + LDO, π-фильтры | docs/25 |
+| D-29 | 06.11 | Питание PWR-2 только от BQ24074 OUT/VSYS; батарея через fuse+BMS; NTC→TS; ideal-diode не нужен; master load-switch + EN рельсов | docs/25 |
+| D-30 | 06.11 | MAX17048 остаётся, ADC-делитель — только резервный контроль | docs/25 |
+| D-31 | 06.11 | После P1 — сначала PCB rev.1, затем SDK v0.1, cost-down последним | консультация GPT |
 
 ## 5. Подпись
 
