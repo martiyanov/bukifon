@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""Замер эталонного рендера заказчика: центры 42 колпачков → преобразование
-из геометрии Lapka-42 (подобие, опционально зеркало) → желаемый угол/положение."""
+"""Замер эталона заказчика v2: 21+21 колпачков, перебор угла + Прокруст."""
 import os
 import sys
 
@@ -14,105 +13,115 @@ import lapka42_geometry as L
 REF = "~/.zcode/cli/image-cache/sess_2a9e5206-3359-479d-9f72-d9f7e3203971/image-637f5da3ade50873dfde9062dff83aa1.png"
 img = cv2.imread(REF)
 H, W = img.shape[:2]
-gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+th = cv2.threshold(g, 200, 255, cv2.THRESH_BINARY)[1]
+cnts, _ = cv2.findContours(th, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
 
-# колпачки светлые на тёмной панели
-th = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)[1]
-th = cv2.morphologyEx(th, cv2.MORPH_OPEN, np.ones((3, 3), np.uint8))
-cnts, _ = cv2.findContours(th, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-blobs = []
+caps = []
 for c in cnts:
-    x, y, w, h = cv2.boundingRect(c)
     a = cv2.contourArea(c)
-    if a < 100 or not (0.6 < w / max(h, 1) < 1.7):
-        continue
-    blobs.append((x + w / 2, y + h / 2, a, w * h))
-if len(blobs) < 42:
-    print(f"найдено только {len(blobs)} блобов — фильтр слабый, беру крупные")
-areas = np.array([b[2] for b in blobs])
-med = np.median(areas)
-caps = [b for b in blobs if 0.35 * med < b[2] < 3.0 * med]
-print(f"блобы: {len(blobs)}, похоже на колпачки: {len(caps)}")
+    if 9000 < a < 14000:
+        m = cv2.moments(c)
+        caps.append([m["m10"] / m["m00"], m["m01"] / m["m00"], a])
+print(f"детект: {len(caps)} блобов 9000–14000 px²")
 
-pts = np.array([(b[0], b[1]) for b in caps])
-# панель = вся ширина кадра? Оценим по разбросу: возьмём min/max x колпачков не годится.
-# Масштаб: ширина панели 380 мм ≈ ширина изображения (рендер почти вплотную).
 scale = 380.0 / W
-pts_mm = pts * scale
-pts_mm[:, 1] = pts_mm[:, 1]  # y вниз, как в нашей системе
-
-# делим на половины: кластеризация по x относительно самого большого разрыва
-xs = np.sort(pts_mm[:, 0])
+pts = np.array([(p[0] * scale, p[1] * scale) for p in caps])
+xs = np.sort(pts[:, 0])
 gaps = np.diff(xs)
-cut = xs[np.argmax(gaps)] + gaps.max() / 2
-left = pts_mm[pts_mm[:, 0] < cut]
-right = pts_mm[pts_mm[:, 0] >= cut]
-print(f"левая: {len(left)} клавиш, правая: {len(right)}")
-
-# углы рядов по PCA каждой половины
-for name, p in (("L", left), ("R", right)):
-    c = p.mean(axis=0)
-    u, s, vt = np.linalg.svd(p - c)
-    ang = np.degrees(np.arctan2(vt[0, 1], vt[0, 0]))
-    print(f"{name}: главная ось {ang:+.1f}° (row-dir), размер {s[0]*2:.0f}×{s[1]*2:.0f} мм")
+i = int(np.argmax(gaps))
+cut = (xs[i] + xs[i + 1]) / 2
+li = pts[:, 0] < cut
+left, right = pts[li], pts[~li]
+print(f"левая {len(left)} / правая {len(right)}")
+# если не 21 — выбросить самый нетипичный по площади
+if len(left) != 21 or len(right) != 21:
+    areas = np.array([p[2] for p in caps])
+    med = np.median(areas)
+    bad = np.argsort(abs(areas - med))[-1]
+    print("лишний блоб (площадь %.0f):" % areas[bad],
+          "x=%.0f y=%.0f" % (pts[bad, 0], pts[bad, 1]))
+    keep = np.ones(len(pts), bool)
+    keep[bad] = False
+    pts = pts[keep]
+    li = pts[:, 0] < cut
+    left, right = pts[li], pts[~li]
+    print(f"после отбраковки: левая {len(left)} / правая {len(right)}")
 
 tmpl = np.array([(x, y) for x, y, _ in L.LAPKA42_LEFT])
 
 
-def procrustes(src, dst, allow_reflect=True):
-    """подобие src→dst: [s·R | t] (+опц. отражение), returns params, rms."""
-    sc, dc = src.mean(0), dst.mean(0)
-    A, B = src - sc, dst - dc
+def rot(p, deg):
+    a = np.radians(deg)
+    c, s = np.cos(a), np.sin(a)
+    return p @ np.array([[c, s], [-s, c]])
+
+
+def procrustes(A, B):
+    """подобие A→B (без отражения); s, R, t, rms."""
+    ca, cb = A.mean(0), B.mean(0)
+    P, Q = A - ca, B - cb
+    U, S, Vt = np.linalg.svd(P.T @ Q)
+    d = 1.0 if np.linalg.det(U @ Vt) > 0 else -1.0
+    R = U @ np.diag([1.0, d]) @ Vt
+    s = (S * np.array([1.0, d])).sum() / (P ** 2).sum()
+    t = cb - s * (R @ ca)
+    rms = np.sqrt((((s * (R @ A.T).T + t) - B) ** 2).sum(1).mean())
+    return s, R, t, rms
+
+
+def best_fit(det, reflect):
+    T0 = tmpl * np.array([-1.0, 1.0]) if reflect else tmpl.copy()
     best = None
-    for refl in ((False, True) if allow_reflect else (False,)):
-        M = A.copy()
-        if refl:
-            M = M * np.array([-1.0, 1.0])
-        U, S, Vt = np.linalg.svd(M.T @ B)
-        d = np.sign(np.linalg.det(U @ Vt))
-        D = np.diag([1, d])
-        R = U @ D @ Vt
-        s = (S * np.diag(D)).sum() / (M ** 2).sum()
-        t = dc - s * (R @ M.T).T.mean(0)
-        pred = (s * (R @ M.T).T + t)
-        rms = np.sqrt(((pred - B) ** 2).sum(1).mean())
+    for ang in np.arange(-60, 60.25, 0.25):
+        T = rot(T0, ang)
+        cT, cD = T.mean(0), det.mean(0)
+        s0 = np.sqrt(((det - cD) ** 2).sum(1).mean() / ((T - cT) ** 2).sum(1).mean())
+        P = (T - cT) * s0 + cD
+        try:
+            for _ in range(12):
+                d2 = ((P[:, None, :] - det[None, :, :]) ** 2).sum(-1)
+                idx = d2.argmin(1)
+                if len(np.unique(idx)) < 18:
+                    raise ValueError
+                s, R, t, _ = procrustes(T, det[idx])
+                P = s * (R @ T.T).T + t
+            rms = np.sqrt(((P - det[idx]) ** 2).sum(1).mean())
+        except ValueError:
+            continue
         if best is None or rms < best[0]:
-            best = (rms, s, R, t, refl)
+            _, R, _, _ = procrustes(T, det[idx])
+            angR = np.degrees(np.arctan2(R[1, 0], R[0, 0]))
+            best = (rms, s, angR, idx)
     return best
 
 
-def icp_match(tpl, det, iters=40):
-    """соответствие точек шаблона детектам через ICP-подобие."""
-    cur = tpl.copy()
-    rms = s = None
-    R = np.eye(2)
-    t = det.mean(0) - tpl.mean(0)
-    for _ in range(iters):
-        pred = (cur - cur.mean(0)) + det.mean(0)
-        rms, s, R, t, refl = procrustes(tpl, pred)  #粗
-        # nearest neighbor: каждую точку tpl при текущем преобразовании → ближайший детект
-        Ti = (s * (R @ (tpl - tpl.mean(0)).T).T + t)
-        d2 = ((Ti[:, None, :] - det[None, :, :]) ** 2).sum(-1)
-        idx = d2.argmin(1)
-        cur = det[idx]
-        # пересчёт на прямое соответствие
-        rms2, s2, R2, t2, refl2 = procrustes(tpl, det[idx], allow_reflect=True)
-        rms, s, R, t, refl = rms2, s2, R2, t2, refl2
-    ang = np.degrees(np.arctan2(R[1, 0], R[0, 0]))
-    return rms, s, ang, refl
+print("\n== Подгонка (перебор угла + ICP-Прокруст) ==")
+res = {}
+for name, det in (("L", left), ("R", right)):
+    for refl in (False, True):
+        out = best_fit(det, refl)
+        tag = "зеркало" if refl else "прямо "
+        if out is None:
+            print(f"{name} {tag}: сходства нет")
+            res[(name, refl)] = None
+            continue
+        rms, s, ang, idx = out
+        print(f"{name} {tag}: RMS {rms:6.2f} мм, масштаб {s:.3f}, угол {ang:+7.2f}°")
+        res[(name, refl)] = (rms, s, ang)
 
-
-for name, det in (("ЛЕВОЙ", left), ("ПРАВОЙ", right)):
-    if len(det) < 15:
-        print(f"{name}: мало точек ({len(det)})")
-        continue
-    rms, s, ang, refl = icp_match(tmpl, det)
-    print(f"{name} половины: подобие Lapka-сырца: угол {ang:+.1f}°, масштаб {s:.3f}, "
-          f"зеркало={refl}, RMS={rms:.2f} мм")
+print("\n== Положения половин на эталоне (мм; y от верхнего края) ==")
+for name, p in (("L", left), ("R", right)):
+    print(f"  {name}: x {p[:,0].min():6.1f}…{p[:,0].max():6.1f}  "
+          f"y {p[:,1].min():6.1f}…{p[:,1].max():6.1f}")
+    c = p.mean(0)
+    _, sv, vt = np.linalg.svd(p - c)
+    print(f"     PCA ось {np.degrees(np.arctan2(vt[0,1], vt[0,0])):+.1f}°, "
+          f"разброс {sv[0]*2:.0f}×{sv[1]*2:.0f} мм")
 
 dbg = img.copy()
-for (x, y, a, wh) in caps:
-    cv2.circle(dbg, (int(x), int(y)), 6, (0, 0, 255), 2)
-cv2.imwrite("<repo>/renders/templates/v1_7_ref_detect.png", dbg)
-print("детект-оверлей: renders/templates/v1_7_ref_detect.png")
+for x, y, a in caps:
+    cv2.circle(dbg, (int(x / scale), int(y / scale)), 8, (0, 0, 255), 2)
+cv2.imwrite(os.path.join(os.path.dirname(HERE), "renders", "templates",
+                         "v1_7_ref_detect.png"), dbg)
+print("\nоверлей: renders/templates/v1_7_ref_detect.png")

@@ -1,0 +1,75 @@
+id,kind,center_X_mm,center_Y_mm,width_mm,height_mm,angle_deg,nominal_cutout_mm,source
+L_K01,keycap_photo_ref,73.7,95.6,17.5,16.5,13.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+R_K01,keycap_photo_ref,306.3,95.6,17.5,16.5,-13.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+L_K02,keycap_photo_ref,95.9,96.5,17.5,16.5,17.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+R_K02,keycap_photo_ref,284.1,96.5,17.5,16.5,-17.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+L_K03,keycap_photo_ref,115.6,106.8,17.5,16.5,22.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+R_K03,keycap_photo_ref,264.4,106.8,17.5,16.5,-22.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+L_K04,keycap_photo_ref,136.2,114.3,17.5,16.5,24.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+R_K04,keycap_photo_ref,243.8,114.3,17.5,16.5,-24.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+L_K05,keycap_photo_ref,50.0,103.8,17.5,16.5,8.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+R_K05,keycap_photo_ref,330.0,103.8,17.5,16.5,-8.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+L_K06,keycap_photo_ref,69.9,112.7,17.5,16.5,13.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+R_K06,keycap_photo_ref,310.1,112.7,17.5,16.5,-13.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+L_K07,keycap_photo_ref,91.4,113.8,17.5,16.5,17.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+R_K07,keycap_photo_ref,288.6,113.8,17.5,16.5,-17.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+L_K08,keycap_photo_ref,109.7,123.7,17.5,16.5,22.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+R_K08,keycap_photo_ref,270.3,123.7,17.5,16.5,-22.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+L_K09,keycap_photo_ref,128.0,130.0,17.5,16.5,24.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+R_K09,keycap_photo_ref,252.0,130.0,17.5,16.5,-24.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+L_K10,keycap_photo_ref,31.8,101.0,17.5,16.5,8.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+R_K10,keycap_photo_ref,348.2,101.0,17.5,16.5,-8.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+L_K11,keycap_photo_ref,46.9,121.9,17.5,16.5,8.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+R_K11,keycap_photo_ref,333.1,121.9,17.5,16.5,-8.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+L_K12,keycap_photo_ref,65.8,130.6,17.5,16.5,13.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+R_K12,keycap_photo_ref,314.2,130.6,17.5,16.5,-13.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+L_K13,keycap_photo_ref,85.2,130.9,17.5,16.5,17.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+R_K13,keycap_photo_ref,294.8,130.9,17.5,16.5,-17.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+L_K14,keycap_photo_ref,103.5,141.2,17.5,16.5,22.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+R_K14,keycap_photo_ref,276.5,141.2,17.5,16.5,-22.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+L_K15,keycap_photo_ref,121.9,147.1,17.5,16.5,24.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+R_K15,keycap_photo_ref,258.1,147.1,17.5,16.5,-24.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+L_K16,keycap_photo_ref,28.6,119.9,17.5,16.5,8.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+R_K16,keycap_photo_ref,351.4,119.9,17.5,16.5,-8.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+L_K17,keycap_photo_ref,43.9,140.0,17.5,16.5,8.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+R_K17,keycap_photo_ref,336.1,140.0,17.5,16.5,-8.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+L_K18,keycap_photo_ref,101.8,166.6,17.5,16.5,21.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+R_K18,keycap_photo_ref,278.2,166.6,17.5,16.5,-21.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+L_K19,keycap_photo_ref,25.3,138.3,17.5,16.5,8.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+R_K19,keycap_photo_ref,354.7,138.3,17.5,16.5,-8.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+L_K20,keycap_photo_ref,120.5,176.4,17.5,16.5,35.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+R_K20,keycap_photo_ref,259.5,176.4,17.5,16.5,-35.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+L_K21,keycap_photo_ref,138.5,190.2,17.5,16.5,44.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+R_K21,keycap_photo_ref,241.5,190.2,17.5,16.5,-44.0,"NO cutout, cap reference only",PHOTO_TRACED / NOT_KICAD
+L_ENC_A,encoder,22.0,30.5,14.0,14.0,0.0,D7.2 (bushing; CONFIRM EC11 model),layout proposal / verify mating part
+L_ENC_B,encoder,49.0,30.5,14.0,14.0,0.0,D7.2 (bushing; CONFIRM EC11 model),layout proposal / verify mating part
+L_ENC_C,encoder,76.0,30.5,14.0,14.0,0.0,D7.2 (bushing; CONFIRM EC11 model),layout proposal / verify mating part
+L_ENC_D,encoder,103.0,30.5,14.0,14.0,0.0,D7.2 (bushing; CONFIRM EC11 model),layout proposal / verify mating part
+L_ENC_E,encoder,22.0,57.5,14.0,14.0,0.0,D7.2 (bushing; CONFIRM EC11 model),layout proposal / verify mating part
+L_ENC_F,encoder,49.0,57.5,14.0,14.0,0.0,D7.2 (bushing; CONFIRM EC11 model),layout proposal / verify mating part
+L_ENC_G,encoder,76.0,57.5,14.0,14.0,0.0,D7.2 (bushing; CONFIRM EC11 model),layout proposal / verify mating part
+L_ENC_H,encoder,103.0,57.5,14.0,14.0,0.0,D7.2 (bushing; CONFIRM EC11 model),layout proposal / verify mating part
+R_ENC_A,encoder,277.0,30.5,14.0,14.0,0.0,D7.2 (bushing; CONFIRM EC11 model),layout proposal / verify mating part
+R_ENC_B,encoder,304.0,30.5,14.0,14.0,0.0,D7.2 (bushing; CONFIRM EC11 model),layout proposal / verify mating part
+R_ENC_C,encoder,331.0,30.5,14.0,14.0,0.0,D7.2 (bushing; CONFIRM EC11 model),layout proposal / verify mating part
+R_ENC_D,encoder,358.0,30.5,14.0,14.0,0.0,D7.2 (bushing; CONFIRM EC11 model),layout proposal / verify mating part
+R_ENC_E,encoder,277.0,57.5,14.0,14.0,0.0,D7.2 (bushing; CONFIRM EC11 model),layout proposal / verify mating part
+R_ENC_F,encoder,304.0,57.5,14.0,14.0,0.0,D7.2 (bushing; CONFIRM EC11 model),layout proposal / verify mating part
+R_ENC_G,encoder,331.0,57.5,14.0,14.0,0.0,D7.2 (bushing; CONFIRM EC11 model),layout proposal / verify mating part
+R_ENC_H,encoder,358.0,57.5,14.0,14.0,0.0,D7.2 (bushing; CONFIRM EC11 model),layout proposal / verify mating part
+J01,mini_jack,140.5,11.0,10.0,10.0,0.0,D6.0,layout proposal / verify mating part
+J02,mini_jack,151.5,11.0,10.0,10.0,0.0,D6.0,layout proposal / verify mating part
+J03,mini_jack,162.5,11.0,10.0,10.0,0.0,D6.0,layout proposal / verify mating part
+J04,mini_jack,173.5,11.0,10.0,10.0,0.0,D6.0,layout proposal / verify mating part
+J05,mini_jack,184.5,11.0,10.0,10.0,0.0,D6.0,layout proposal / verify mating part
+J06,mini_jack,195.5,11.0,10.0,10.0,0.0,D6.0,layout proposal / verify mating part
+J07,mini_jack,206.5,11.0,10.0,10.0,0.0,D6.0,layout proposal / verify mating part
+J08,mini_jack,217.5,11.0,10.0,10.0,0.0,D6.0,layout proposal / verify mating part
+J09,mini_jack,228.5,11.0,10.0,10.0,0.0,D6.0,layout proposal / verify mating part
+J10,mini_jack,239.5,11.0,10.0,10.0,0.0,D6.0,layout proposal / verify mating part
+LCD,display_active,190.0,61.4,108.0,64.8,0.0,108.0 x 64.8,manufacturer dimensions + nominal positions
+LCD_body,display_body_envelope,190.0,61.4,120.7,75.8,0.0,"rear envelope, no through-cut",manufacturer dimensions + nominal positions
+F1_env,fader_rear_envelope,180.0,149.0,16.0,75.0,0.0,"rear envelope, no through-cut",manufacturer dimensions + nominal positions
+F1_slot,fader_slot,180.0,149.0,2.5,63.0,0.0,2.5 x 63.0,layout proposal / verify mating part
+F2_env,fader_rear_envelope,200.0,149.0,16.0,75.0,0.0,"rear envelope, no through-cut",manufacturer dimensions + nominal positions
+F2_slot,fader_slot,200.0,149.0,2.5,63.0,0.0,2.5 x 63.0,layout proposal / verify mating part

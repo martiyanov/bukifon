@@ -1,0 +1,39 @@
+{
+  "status": "PASS_for_photo_traced_approximation_only_NOT_KiCad_source",
+  "unit": "mm",
+  "panel": [
+    380.0,
+    210.0
+  ],
+  "input_accuracy_target_mm": 0.5,
+  "geometric_min_gap_mm": 0.855,
+  "min_pair": [
+    "R_K12",
+    "R_K13"
+  ],
+  "collisions": [],
+  "key_to_display_body_mm": 3.898,
+  "key_to_fader_envelope_mm": 21.82,
+  "display_body_to_jack_nut_mm": 7.5,
+  "display_body_to_encoder_knob_mm": 19.65,
+  "fader_to_fader_envelope_mm": 4.0,
+  "notes": [
+    "All 21 individual key positions and rotations traced from provided photo (image error estimated 1–2mm); source KiCad not retrieved.",
+    "Column splay and thumb rotations retained from photo; exact KiCad footprint coordinates still UNVERIFIED.",
+    "LCD 120.7x75.8 body assumes active area centered; actual FPC/driver offsets must be verified.",
+    "Jack nut Ø10 and rear envelope are provisional. Fader house 75x9 confirmed; clearance checked using 75x16.",
+    "M3 backplate mounting and PCB/chassis interface need detailed engineering."
+  ],
+  "key_L_AABB_mm": [
+    15.49,
+    85.59,
+    150.53,
+    202.25
+  ],
+  "key_R_AABB_mm": [
+    229.47,
+    85.59,
+    364.51,
+    202.25
+  ]
+}

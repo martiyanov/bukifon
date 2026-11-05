@@ -1,0 +1,1053 @@
+{
+ "schema": "bukifon.panel_layout.v1",
+ "revision": "v0.4-lapka-exact-layout-concept-tilt19",
+ "date": "2026-11-05",
+ "units": "mm",
+ "coordinate_system": {
+  "view": "top",
+  "origin": "top-left corner of panel",
+  "x_positive": "right",
+  "y_positive": "down",
+  "element_position": "center",
+  "angle_unit": "deg",
+  "angle_positive": "clockwise on top view",
+  "rotate_each_element_around": "own center",
+  "panel_bounds_mm": [
+   380.0,
+   210.0
+  ]
+ },
+ "panel": {
+  "width_mm": 380.0,
+  "height_mm": 210.0,
+  "front_panel_thickness_mm": 3.0,
+  "overall_depth_mm": 63.0,
+  "material": "PETG",
+  "max_print_area_mm": [
+   220,
+   220
+  ],
+  "shape": "rectangle",
+  "no_speakers": true,
+  "no_jacks_below_screen": true
+ },
+ "source": {
+  "basis": "ТОЧНАЯ геометрия Lapka-42 (tools/lapka42_geometry.py) + раскладка и углы по концепт-изображению refs/concept-panel.jpg",
+  "lapka_note": "Относительная геометрия клавиш не искажена: 21 клавиша на половину, шаг 18 × 17 мм, splay как в оригинале.",
+  "accuracy_mm": 0.5
+ },
+ "controls": {
+  "keyboard_left": [
+   {
+    "id": "L_K01",
+    "key_number": 1,
+    "half": "L",
+    "center_mm": [
+     85.01,
+     110.12
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": 13.0
+   },
+   {
+    "id": "L_K02",
+    "key_number": 2,
+    "half": "L",
+    "center_mm": [
+     104.37,
+     120.67
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": 18.0
+   },
+   {
+    "id": "L_K03",
+    "key_number": 3,
+    "half": "L",
+    "center_mm": [
+     121.49,
+     126.23
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": 18.0
+   },
+   {
+    "id": "L_K04",
+    "key_number": 4,
+    "half": "L",
+    "center_mm": [
+     62.99,
+     111.13
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": 8.0
+   },
+   {
+    "id": "L_K05",
+    "key_number": 5,
+    "half": "L",
+    "center_mm": [
+     81.19,
+     126.69
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": 13.0
+   },
+   {
+    "id": "L_K06",
+    "key_number": 6,
+    "half": "L",
+    "center_mm": [
+     99.12,
+     136.84
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": 18.0
+   },
+   {
+    "id": "L_K07",
+    "key_number": 7,
+    "half": "L",
+    "center_mm": [
+     116.24,
+     142.4
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": 18.0
+   },
+   {
+    "id": "L_K08",
+    "key_number": 8,
+    "half": "L",
+    "center_mm": [
+     40.78,
+     121.03
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": 3.0
+   },
+   {
+    "id": "L_K09",
+    "key_number": 9,
+    "half": "L",
+    "center_mm": [
+     60.63,
+     127.96
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": 8.0
+   },
+   {
+    "id": "L_K10",
+    "key_number": 10,
+    "half": "L",
+    "center_mm": [
+     22.8,
+     120.09
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": 3.0
+   },
+   {
+    "id": "L_K11",
+    "key_number": 11,
+    "half": "L",
+    "center_mm": [
+     77.37,
+     143.25
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": 13.0
+   },
+   {
+    "id": "L_K12",
+    "key_number": 12,
+    "half": "L",
+    "center_mm": [
+     93.86,
+     153.01
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": 18.0
+   },
+   {
+    "id": "L_K13",
+    "key_number": 13,
+    "half": "L",
+    "center_mm": [
+     110.98,
+     158.57
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": 18.0
+   },
+   {
+    "id": "L_K14",
+    "key_number": 14,
+    "half": "L",
+    "center_mm": [
+     39.89,
+     138.0
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": 3.0
+   },
+   {
+    "id": "L_K15",
+    "key_number": 15,
+    "half": "L",
+    "center_mm": [
+     58.26,
+     144.79
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": 8.0
+   },
+   {
+    "id": "L_K16",
+    "key_number": 16,
+    "half": "L",
+    "center_mm": [
+     21.91,
+     137.06
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": 3.0
+   },
+   {
+    "id": "L_K17",
+    "key_number": 17,
+    "half": "L",
+    "center_mm": [
+     39.0,
+     154.98
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": 3.0
+   },
+   {
+    "id": "L_K18",
+    "key_number": 18,
+    "half": "L",
+    "center_mm": [
+     95.93,
+     175.76
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": 18.0
+   },
+   {
+    "id": "L_K19",
+    "key_number": 19,
+    "half": "L",
+    "center_mm": [
+     21.02,
+     154.04
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": 3.0
+   },
+   {
+    "id": "L_K20",
+    "key_number": 20,
+    "half": "L",
+    "center_mm": [
+     113.8,
+     183.35
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": 28.0
+   },
+   {
+    "id": "L_K21",
+    "key_number": 21,
+    "half": "L",
+    "center_mm": [
+     130.08,
+     193.92
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": 38.0
+   }
+  ],
+  "keyboard_right": [
+   {
+    "id": "R_K01",
+    "key_number": 1,
+    "half": "R",
+    "center_mm": [
+     294.99,
+     110.12
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": -13.0
+   },
+   {
+    "id": "R_K02",
+    "key_number": 2,
+    "half": "R",
+    "center_mm": [
+     275.63,
+     120.67
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": -18.0
+   },
+   {
+    "id": "R_K03",
+    "key_number": 3,
+    "half": "R",
+    "center_mm": [
+     258.51,
+     126.23
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": -18.0
+   },
+   {
+    "id": "R_K04",
+    "key_number": 4,
+    "half": "R",
+    "center_mm": [
+     317.01,
+     111.13
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": -8.0
+   },
+   {
+    "id": "R_K05",
+    "key_number": 5,
+    "half": "R",
+    "center_mm": [
+     298.81,
+     126.69
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": -13.0
+   },
+   {
+    "id": "R_K06",
+    "key_number": 6,
+    "half": "R",
+    "center_mm": [
+     280.88,
+     136.84
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": -18.0
+   },
+   {
+    "id": "R_K07",
+    "key_number": 7,
+    "half": "R",
+    "center_mm": [
+     263.76,
+     142.4
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": -18.0
+   },
+   {
+    "id": "R_K08",
+    "key_number": 8,
+    "half": "R",
+    "center_mm": [
+     339.22,
+     121.03
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": -3.0
+   },
+   {
+    "id": "R_K09",
+    "key_number": 9,
+    "half": "R",
+    "center_mm": [
+     319.37,
+     127.96
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": -8.0
+   },
+   {
+    "id": "R_K10",
+    "key_number": 10,
+    "half": "R",
+    "center_mm": [
+     357.2,
+     120.09
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": -3.0
+   },
+   {
+    "id": "R_K11",
+    "key_number": 11,
+    "half": "R",
+    "center_mm": [
+     302.63,
+     143.25
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": -13.0
+   },
+   {
+    "id": "R_K12",
+    "key_number": 12,
+    "half": "R",
+    "center_mm": [
+     286.14,
+     153.01
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": -18.0
+   },
+   {
+    "id": "R_K13",
+    "key_number": 13,
+    "half": "R",
+    "center_mm": [
+     269.02,
+     158.57
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": -18.0
+   },
+   {
+    "id": "R_K14",
+    "key_number": 14,
+    "half": "R",
+    "center_mm": [
+     340.11,
+     138.0
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": -3.0
+   },
+   {
+    "id": "R_K15",
+    "key_number": 15,
+    "half": "R",
+    "center_mm": [
+     321.74,
+     144.79
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": -8.0
+   },
+   {
+    "id": "R_K16",
+    "key_number": 16,
+    "half": "R",
+    "center_mm": [
+     358.09,
+     137.06
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": -3.0
+   },
+   {
+    "id": "R_K17",
+    "key_number": 17,
+    "half": "R",
+    "center_mm": [
+     341.0,
+     154.98
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": -3.0
+   },
+   {
+    "id": "R_K18",
+    "key_number": 18,
+    "half": "R",
+    "center_mm": [
+     284.07,
+     175.76
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": -18.0
+   },
+   {
+    "id": "R_K19",
+    "key_number": 19,
+    "half": "R",
+    "center_mm": [
+     358.98,
+     154.04
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": -3.0
+   },
+   {
+    "id": "R_K20",
+    "key_number": 20,
+    "half": "R",
+    "center_mm": [
+     266.2,
+     183.35
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": -28.0
+   },
+   {
+    "id": "R_K21",
+    "key_number": 21,
+    "half": "R",
+    "center_mm": [
+     249.92,
+     193.92
+    ],
+    "size_mm": [
+     17.5,
+     16.5
+    ],
+    "angle_deg": -38.0
+   }
+  ],
+  "encoders_left": [
+   {
+    "id": "L_ENC_A",
+    "center_mm": [
+     25.2,
+     35.7
+    ],
+    "angle_deg": 0.0,
+    "shape": "circle",
+    "knob_outer_diameter_mm": 14.0,
+    "nominal_panel_hole_diameter_mm": 7.2,
+    "hole_size_confirmed": false
+   },
+   {
+    "id": "L_ENC_E",
+    "center_mm": [
+     25.2,
+     68.5
+    ],
+    "angle_deg": 0.0,
+    "shape": "circle",
+    "knob_outer_diameter_mm": 14.0,
+    "nominal_panel_hole_diameter_mm": 7.2,
+    "hole_size_confirmed": false
+   },
+   {
+    "id": "L_ENC_B",
+    "center_mm": [
+     54.1,
+     35.7
+    ],
+    "angle_deg": 0.0,
+    "shape": "circle",
+    "knob_outer_diameter_mm": 14.0,
+    "nominal_panel_hole_diameter_mm": 7.2,
+    "hole_size_confirmed": false
+   },
+   {
+    "id": "L_ENC_F",
+    "center_mm": [
+     54.1,
+     68.5
+    ],
+    "angle_deg": 0.0,
+    "shape": "circle",
+    "knob_outer_diameter_mm": 14.0,
+    "nominal_panel_hole_diameter_mm": 7.2,
+    "hole_size_confirmed": false
+   },
+   {
+    "id": "L_ENC_C",
+    "center_mm": [
+     82.6,
+     35.7
+    ],
+    "angle_deg": 0.0,
+    "shape": "circle",
+    "knob_outer_diameter_mm": 14.0,
+    "nominal_panel_hole_diameter_mm": 7.2,
+    "hole_size_confirmed": false
+   },
+   {
+    "id": "L_ENC_G",
+    "center_mm": [
+     82.6,
+     68.5
+    ],
+    "angle_deg": 0.0,
+    "shape": "circle",
+    "knob_outer_diameter_mm": 14.0,
+    "nominal_panel_hole_diameter_mm": 7.2,
+    "hole_size_confirmed": false
+   },
+   {
+    "id": "L_ENC_D",
+    "center_mm": [
+     111.4,
+     35.7
+    ],
+    "angle_deg": 0.0,
+    "shape": "circle",
+    "knob_outer_diameter_mm": 14.0,
+    "nominal_panel_hole_diameter_mm": 7.2,
+    "hole_size_confirmed": false
+   },
+   {
+    "id": "L_ENC_H",
+    "center_mm": [
+     111.4,
+     68.5
+    ],
+    "angle_deg": 0.0,
+    "shape": "circle",
+    "knob_outer_diameter_mm": 14.0,
+    "nominal_panel_hole_diameter_mm": 7.2,
+    "hole_size_confirmed": false
+   }
+  ],
+  "encoders_right": [
+   {
+    "id": "R_ENC_A",
+    "center_mm": [
+     269.3,
+     35.7
+    ],
+    "angle_deg": 0.0,
+    "shape": "circle",
+    "knob_outer_diameter_mm": 14.0,
+    "nominal_panel_hole_diameter_mm": 7.2,
+    "hole_size_confirmed": false
+   },
+   {
+    "id": "R_ENC_E",
+    "center_mm": [
+     269.3,
+     68.5
+    ],
+    "angle_deg": 0.0,
+    "shape": "circle",
+    "knob_outer_diameter_mm": 14.0,
+    "nominal_panel_hole_diameter_mm": 7.2,
+    "hole_size_confirmed": false
+   },
+   {
+    "id": "R_ENC_B",
+    "center_mm": [
+     297.8,
+     35.7
+    ],
+    "angle_deg": 0.0,
+    "shape": "circle",
+    "knob_outer_diameter_mm": 14.0,
+    "nominal_panel_hole_diameter_mm": 7.2,
+    "hole_size_confirmed": false
+   },
+   {
+    "id": "R_ENC_F",
+    "center_mm": [
+     297.8,
+     68.5
+    ],
+    "angle_deg": 0.0,
+    "shape": "circle",
+    "knob_outer_diameter_mm": 14.0,
+    "nominal_panel_hole_diameter_mm": 7.2,
+    "hole_size_confirmed": false
+   },
+   {
+    "id": "R_ENC_C",
+    "center_mm": [
+     326.6,
+     35.7
+    ],
+    "angle_deg": 0.0,
+    "shape": "circle",
+    "knob_outer_diameter_mm": 14.0,
+    "nominal_panel_hole_diameter_mm": 7.2,
+    "hole_size_confirmed": false
+   },
+   {
+    "id": "R_ENC_G",
+    "center_mm": [
+     326.6,
+     68.5
+    ],
+    "angle_deg": 0.0,
+    "shape": "circle",
+    "knob_outer_diameter_mm": 14.0,
+    "nominal_panel_hole_diameter_mm": 7.2,
+    "hole_size_confirmed": false
+   },
+   {
+    "id": "R_ENC_D",
+    "center_mm": [
+     355.8,
+     35.7
+    ],
+    "angle_deg": 0.0,
+    "shape": "circle",
+    "knob_outer_diameter_mm": 14.0,
+    "nominal_panel_hole_diameter_mm": 7.2,
+    "hole_size_confirmed": false
+   },
+   {
+    "id": "R_ENC_H",
+    "center_mm": [
+     355.8,
+     68.5
+    ],
+    "angle_deg": 0.0,
+    "shape": "circle",
+    "knob_outer_diameter_mm": 14.0,
+    "nominal_panel_hole_diameter_mm": 7.2,
+    "hole_size_confirmed": false
+   }
+  ],
+  "jacks": [
+   {
+    "id": "J01",
+    "center_mm": [
+     129.9,
+     10.5
+    ],
+    "angle_deg": 0.0,
+    "shape": "circle",
+    "panel_hole_diameter_mm": 6.0,
+    "outer_nut_diameter_mm": 8.0,
+    "verify_actual_part": true
+   },
+   {
+    "id": "J02",
+    "center_mm": [
+     143.0,
+     10.5
+    ],
+    "angle_deg": 0.0,
+    "shape": "circle",
+    "panel_hole_diameter_mm": 6.0,
+    "outer_nut_diameter_mm": 8.0,
+    "verify_actual_part": true
+   },
+   {
+    "id": "J03",
+    "center_mm": [
+     156.1,
+     10.5
+    ],
+    "angle_deg": 0.0,
+    "shape": "circle",
+    "panel_hole_diameter_mm": 6.0,
+    "outer_nut_diameter_mm": 8.0,
+    "verify_actual_part": true
+   },
+   {
+    "id": "J04",
+    "center_mm": [
+     169.2,
+     10.5
+    ],
+    "angle_deg": 0.0,
+    "shape": "circle",
+    "panel_hole_diameter_mm": 6.0,
+    "outer_nut_diameter_mm": 8.0,
+    "verify_actual_part": true
+   },
+   {
+    "id": "J05",
+    "center_mm": [
+     182.3,
+     10.5
+    ],
+    "angle_deg": 0.0,
+    "shape": "circle",
+    "panel_hole_diameter_mm": 6.0,
+    "outer_nut_diameter_mm": 8.0,
+    "verify_actual_part": true
+   },
+   {
+    "id": "J06",
+    "center_mm": [
+     195.4,
+     10.5
+    ],
+    "angle_deg": 0.0,
+    "shape": "circle",
+    "panel_hole_diameter_mm": 6.0,
+    "outer_nut_diameter_mm": 8.0,
+    "verify_actual_part": true
+   },
+   {
+    "id": "J07",
+    "center_mm": [
+     208.5,
+     10.5
+    ],
+    "angle_deg": 0.0,
+    "shape": "circle",
+    "panel_hole_diameter_mm": 6.0,
+    "outer_nut_diameter_mm": 8.0,
+    "verify_actual_part": true
+   },
+   {
+    "id": "J08",
+    "center_mm": [
+     221.6,
+     10.5
+    ],
+    "angle_deg": 0.0,
+    "shape": "circle",
+    "panel_hole_diameter_mm": 6.0,
+    "outer_nut_diameter_mm": 8.0,
+    "verify_actual_part": true
+   },
+   {
+    "id": "J09",
+    "center_mm": [
+     234.7,
+     10.5
+    ],
+    "angle_deg": 0.0,
+    "shape": "circle",
+    "panel_hole_diameter_mm": 6.0,
+    "outer_nut_diameter_mm": 8.0,
+    "verify_actual_part": true
+   },
+   {
+    "id": "J10",
+    "center_mm": [
+     247.8,
+     10.5
+    ],
+    "angle_deg": 0.0,
+    "shape": "circle",
+    "panel_hole_diameter_mm": 6.0,
+    "outer_nut_diameter_mm": 8.0,
+    "verify_actual_part": true
+   }
+  ],
+  "lcd": {
+   "active_cutout": {
+    "id": "LCD",
+    "center_mm": [
+     190.0,
+     58.7
+    ],
+    "angle_deg": 0.0,
+    "shape": "rectangle",
+    "opening_size_mm": [
+     108.0,
+     64.8
+    ],
+    "screen_pixels": [
+     800,
+     480
+    ],
+    "bezel": "no decorative frame"
+   },
+   "body_envelope": {
+    "id": "LCD_body",
+    "center_mm": [
+     190.0,
+     58.7
+    ],
+    "angle_deg": 0.0,
+    "shape": "rectangle",
+    "rear_envelope_size_mm": [
+     120.7,
+     75.8
+    ],
+    "verify_display_mounting_and_connector": true
+   }
+  },
+  "faders": [
+   {
+    "id": "F1",
+    "rear_envelope": {
+     "id": "F1_env",
+     "center_mm": [
+      175.1,
+      150.0
+     ],
+     "angle_deg": 0.0,
+     "shape": "rectangle",
+     "rear_envelope_size_mm": [
+      16.0,
+      75.0
+     ]
+    },
+    "slot": {
+     "id": "F1_slot",
+     "center_mm": [
+      175.1,
+      150.0
+     ],
+     "angle_deg": 0.0,
+     "shape": "rectangle",
+     "slot_size_mm": [
+      2.5,
+      63.0
+     ],
+     "stroke_length_nominal_mm": 60
+    }
+   },
+   {
+    "id": "F2",
+    "rear_envelope": {
+     "id": "F2_env",
+     "center_mm": [
+      204.0,
+      150.0
+     ],
+     "angle_deg": 0.0,
+     "shape": "rectangle",
+     "rear_envelope_size_mm": [
+      16.0,
+      75.0
+     ]
+    },
+    "slot": {
+     "id": "F2_slot",
+     "center_mm": [
+      204.0,
+      150.0
+     ],
+     "angle_deg": 0.0,
+     "shape": "rectangle",
+     "slot_size_mm": [
+      2.5,
+      63.0
+     ],
+     "stroke_length_nominal_mm": 60
+    }
+   }
+  ]
+ },
+ "notes": [
+  "Половины клавиатур развёрнуты наружу на ±18° (по концепту).",
+  "Экран 5.0\" 800×480: вырез = активная область 108 × 64.8, без рамки.",
+  "Динамиков нет; разъёмов под экраном нет.",
+  "Точность: относительная геометрия клавиш — точная (KiCad Lapka-42); положение кластеров и остальных элементов — по концепту (±0.5 мм по картинке)."
+ ]
+}
