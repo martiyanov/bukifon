@@ -76,7 +76,7 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
   <nav><a href="#about">About</a><a href="#modes">Modes</a><a href="#hardware">Hardware</a><a href="#status">Status</a><a href="#kit">Kit</a><a href="#bench">Benchmark</a><a href="#modules">Modules</a><a href="#docs">Docs</a><a href="../" hreflang="ru">Русский</a></nav>
   <h1>Bukifon <span style="color:var(--mut);font-weight:400">/ Букифон</span></h1>
   <p class="sub">An open-source desktop <strong>synthesizer + sampler + module platform</strong>. 3D-printed case, open KiCad schematics, open C++ firmware.<br><strong>A people's instrument:</strong> kits from <strong>≤ $200</strong> (S3) to <strong>≤ $400</strong> (full P4 + cartridges).</p>
-  <span class="badge">v0.8.0</span><span class="badge">CERN-OHL-S-2.0</span><span class="badge">GPL-3.0-or-later</span><span class="badge">8° wedge · 380×210×61.5</span><span class="badge">Wi-Fi + BT</span><span class="badge">USB HID + MIDI + UAC2</span>
+  <span class="badge">v0.8.1</span><span class="badge">CERN-OHL-S-2.0</span><span class="badge">GPL-3.0-or-later</span><span class="badge">8° wedge · 380×210×61.5</span><span class="badge">Wi-Fi + BT</span><span class="badge">USB HID + MIDI + UAC2</span>
   <p style="margin-top:20px">
     <a class="cta" href="https://github.com/martiyanov/bukifon">GitHub</a>
     <a class="cta alt" href="https://github.com/martiyanov/bukifon/blob/main/docs/12-roadmap.md">Roadmap</a>
@@ -136,13 +136,14 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
 </section>
 
 <section id="status">
-  <h2>Status (v0.8.0)</h2>
+  <h2>Status (v0.8.1)</h2>
   <p><strong>The host demo already runs:</strong> 800×480 UI, 4 tracks × 16 steps, play/stop, BPM, mute, p-lock, CRC save/load, Module API v0 — 112 host tests, 83.5 % coverage. ESP32-S3 build passes. Case v0.5-B (8° wedge) is modelled; CORE-2/PANEL-2 are pre-freeze (ERC 0 errors).</p>
   <p><img src="../assets/ui-main.jpg" alt="Bukifon 800×480 host demo UI: status bar, 4 tracks, parameter panel, transport" loading="lazy"></p>
   <ul>
     <li>✅ panel v0.4: 42 keys, 16 encoders, 5″ display, 10 jacks, 2 faders — zero overlaps;</li>
     <li>✅ case v0.5-B: <strong>8° wedge</strong>, 380×210×61.5, 6 watertight STLs, fitcheck 32/0, 1:1 profile;</li>
     <li>✅ host demo: 800×480 UI, 4×16 sequencer, save/load, Module API v0 — <strong>112/112 tests</strong>, 83.5 % coverage; S3 and RP2040 builds pass;</li>
+    <li>✅ CORE-2 rev.2 (ERC 0/0, 46 DNP) and PANEL-2 rev.2 (ERC 0 err) — schematics landed; <strong>pre-freeze</strong>;</li>
     <li>✅ CORE-2 rev.1 (ERC 0/0, pinmap PASS, 54/55 GPIO, ESP32-C6 over SPI) and PANEL-2 rev.1 (ERC 0 errors, 3 ribbons, 4× MCP23017) — <strong>pre-freeze, do not fabricate</strong>;</li>
     <li>✅ case v0.4: 380 × 210 × 63 mm, 6 parts, watertight, 83 cutouts, fitcheck — 0 conflicts;</li>
     <li>✅ v1.0 schematics (ERC clean) and RP2040 firmware prototype (host tests 67/67);</li>

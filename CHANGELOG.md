@@ -2,6 +2,20 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.8.1] — 2025-11-06 — «Rev.2 плат»
+
+### Добавлено
+- **CORE-2 rev.2** — схема внесена: J17 IDC-20/J18 IDC-12 к PWR-2, входы `12V_EXT`/`N12_EXT`/`+5V_EXT`/`5V_LED`,
+  D19/D20/C112–C119/FB7, EN-развязки R94–R96, **CV IN3/4 → MCP3208 CH4/CH5** (U45 TL074),
+  re-pin J14/J15/J16; **DNP 46 позиций**; ERC **0/0**, pinmap PASS, BOM 241 строка.
+- **PANEL-2 rev.2** — J13/J14 (5V_LED, LED_RET, EN_RAILS на 0x23 GPA7, EN_LED5 на GPB6),
+  re-pin по канону CORE-2, CVIN3/4 → MCP3208, GATE_IN на 0x23 GPB7, LED_DATA 3.3 В + level shifter;
+  ERC 0 errors / 6 warnings, verify 1290/0.
+
+### Изменено
+- Реестр: O-13/O-14 закрыты, O-15/O-16 добавлены; решения D-44 (EXPRESSION убран, CV OUT 5/6 — rev.3),
+  D-45 (J3 прототип IDC, rev.2 Micro-Fit).
+
 ## [0.8.0] — 2025-11-06 — «Стенд, цена, бумага»
 
 ### Добавлено
