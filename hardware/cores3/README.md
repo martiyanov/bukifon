@@ -86,6 +86,11 @@ PCM5102A + PCM1808 + microSD + макет PWR-2 (VSYS 3.0-4.4 В, 3 А).
 **Fail любого критерия → PCB CORE-S3 не заказывать**, скорректировать (модуль RGB vs
 SPI, TPS63802 vs TPS63020, 31 vs 38 GPIO).
 
+## DFM/testability (lite later)
+
+S3-base — «lite later»; сокращённый DFM — [`dfm.md`](dfm.md), полный P4-пакет —
+[`hardware/core2/dfm.md`](../core2/dfm.md) + [`docs/38`](../../docs/38-dfm-testability.md).
+
 ## Файлы
 
 `CORE-S3.kicad_sch` (+`.kicad_pro`), `CORE-S3.pdf`, `CORE-S3.svg`, `netlist.net/xml`,

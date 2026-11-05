@@ -241,8 +241,12 @@ struct SpikeLogParser {
     ok = extractDouble(line, "panel_max_us", &v.panelMaxUs) && ok;
     ok = extractU64(line, "panel_errors", &v.panelErrors) && ok;
     ok = extractU64(line, "lcd_drift", &v.lcdDrift) && ok;
-    ok = extractU64(line, "heap_free", &v.heapFree) && ok;
-    ok = extractU64(line, "psram_free", &v.psramFree) && ok;
+    uint64_t heapFree = 0;
+    uint64_t psramFree = 0;
+    ok = extractU64(line, "heap_free", &heapFree) && ok;
+    ok = extractU64(line, "psram_free", &psramFree) && ok;
+    v.heapFree = static_cast<uint32_t>(heapFree);
+    v.psramFree = static_cast<uint32_t>(psramFree);
     if (!ok) return false;
     v.seenAudio = true;
     v.seenDisplay = true;

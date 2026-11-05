@@ -136,3 +136,7 @@ grep "ERC messages" erc/erc.rpt               # → Errors 0  Warnings 0
 4. Разъём J3 (IDC-20 vs Micro-Fit 3.0) при 3 А.
 5. Точка подключения +12 В (12V_EXT с D2, падение 0.45 В) и −12 В (без диод-ИЛИ на CORE-2).
 6. Уточнить семантику MAX17048 `QSTRT`/`CTG` по datasheet (сейчас QSTRT=GND, CTG=NC).
+
+## DFM/testability
+
+До разводки: [`dfm.md`](dfm.md) — TP рельсов/EN, self-test БП/гейджа, DFM 3 А/J3, чек-лист 15.
