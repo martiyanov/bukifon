@@ -13,5 +13,5 @@ tree=$(git write-tree)
 commit=$(git commit-tree "$tree" -m "site: publish $(cat VERSION) from docs/")
 git branch -f gh-pages "$commit"
 git reset -q --hard HEAD
-git push origin gh-pages
+git push --force origin gh-pages
 echo "Опубликовано: https://martiyanov.github.io/bukifon/ (commit $commit)"
