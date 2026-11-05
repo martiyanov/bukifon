@@ -1,6 +1,6 @@
 # Букифон (Bukifon) — открытая платформа: сэмплер + синтезатор + модули
 
-**Версия: 0.9.0** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
+**Версия: 0.9.1** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
 
 **Букифон** — настольный музыкальный инструмент-платформа, который собирается из
 доступных компонентов, печатается на 3D-принтере, расширяется модулями и полностью
@@ -32,7 +32,7 @@ BLE HID, передача проектов). То есть Букифон — е
 аналоговый картридж на шине 26-pin или сменная панельная дека (18 пэдов / 42 клавиши).
 Подробнее — [spec/00-vision.md §12](spec/00-vision.md).
 
-## Текущее состояние (v0.9.0)
+## Текущее состояние (v0.9.1)
 
 | Блок | Состояние |
 |---|---|
@@ -77,6 +77,7 @@ BLE HID, передача проектов). То есть Букифон — е
 | [docs/29-p1-order.md](docs/29-p1-order.md) | точный список заказа P1-стенда (что, где, сколько) |
 | [docs/30-security-purge.md](docs/30-security-purge.md) | запрос на purge старых PII-объектов GitHub (SHA) |
 | [docs/31-core-s3-constraints.md](docs/31-core-s3-constraints.md) | CORE-S3: GPIO 31, 1-bit SD, USB endpoint ceiling, RGB+1FB, TPS63802 |
+| [docs/32-progress-report.md](docs/32-progress-report.md) | сводный отчёт v0.4→v0.9.1: вехи, блокеры, следующий шаг |
 | [docs/05-benchmark-workload.md](docs/05-benchmark-workload.md) | workload freeze P1 и критерии |
 | [docs/05a-benchmark-howto.md](docs/05a-benchmark-howto.md) | как запустить бенчмарк на S3/P4/H743 |
 | [modules/](modules/) | каталог модулей: шаблон, примеры gain_fx и LFO |
