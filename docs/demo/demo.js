@@ -8,7 +8,7 @@ const cv = document.getElementById("screen");
 const ctx = cv.getContext("2d");
 const $ = (id) => document.getElementById(id);
 
-const MODES = ["SYNTH", "SAMPLER", "DAW", "USB-KBD"];
+const MODES = ["SYNTH", "SAMPLER", "DAW", "USB-KBD", "EXT"];
 const PAGES = ["MAIN", "FM", "ENV", "FX", "GEN"];
 const PAGE_PARAMS = [
   ["CUTOFF", "RESON", "ENV AMT", "DRIVE", "ATK", "DEC", "SUS", "REL"],
@@ -30,10 +30,12 @@ const SCALES = [[0,0,7,12,3,10,5,7],[0,12,7,16,19,24,14,21],[0,7,12,16,19,21,24,
 const NOTE_SCALES=[[0,2,3,5,7,8,10],[0,2,4,5,7,9,11],[0,2,4,7,9],[0,2,3,5,7,9,10]];
 const SCALE_NAMES=["OFF","MINOR","MAJOR","PENTA","DORIAN"];
 const ARP_RATES=[0.5,0.25,0.125]; const ARP_MODES=["UP","DOWN","UPDOWN"];
+const EXT_PARAMS=["CH","PROG","VEL","LEN","CC#","CC VAL","SWING","CLK"];
+const EXT_MIN=[1,0,1,1,0,0,50,0], EXT_MAX=[16,127,127,16,127,127,75,1];
 const JACKS = ["CV OUT 1","CV OUT 2","CV OUT 3","CV OUT 4","CV IN 1","CV IN 2","GATE OUT","GATE IN","CLK OUT","CLK IN"];
 const CC_BASE = [[74,71,73,91,73,75,76,72],[20,21,22,23,24,25,26,27],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0]];
 
-const state = { mode:0, page:0, theme:"night", faderMode:"TRACK", selParts:new Set([0]), modOn:true, seed:7, bpm:120, playing:false, step:0, selPart:0, volume:0.7, delayMix:0.25, cables:new Set(), parts:[], capture:false, pads:[], recording:false, recStarted:0 };
+const state = { mode:0, page:0, theme:"night", faderMode:"TRACK", selParts:new Set([0]), modOn:true, seed:7, extSel:0, extStep:0, extTracks:[], extClock:false, bpm:120, playing:false, step:0, selPart:0, volume:0.7, delayMix:0.25, cables:new Set(), parts:[], capture:false, pads:[], recording:false, recStarted:0 };
 function defaultPart(i) {
   return {
     name: PART_NAMES[i], active: i < 2, mute:false, level: 0.85, sceneX: 0,
@@ -49,6 +51,7 @@ function defaultPart(i) {
   };
 }
 state.parts = [0,1,2,3].map(defaultPart);
+state.extTracks = Array.from({length:8},(_,i)=>({ch:i+1, prog:i, ccNum:74+i, steps:Array.from({length:16},(_,s2)=>({on:s2%4===0, note:[0,7,12,3][s2%4], vel:100, cc:64}))}));
 let T = THEMES[state.theme];
 const COLOR = [T.green, T.orange, T.blue, T.purple];
 const undoStack = [];
@@ -61,6 +64,9 @@ function pmin(page,i){ return PAGE_MIN[page][i]; }
 function pmax(page,i){ return PAGE_MAX[page][i]; }
 function pval(){ return state.parts[state.selPart].pages[state.page]; }
 function selectedParts(){ return [...state.selParts].filter(i=>state.parts[i]); }
+function extTrack(){ return state.extTracks[state.extSel]; }
+function extVal(i){ const t=extTrack(); return [t.ch,t.prog,100,t.len||4,t.ccNum,t.steps[state.extStep].cc,state.extSwing??50,state.extClock?1:0][i]; }
+function extSet(i,v){ const t=extTrack(); if(i===0)t.ch=clamp(Math.round(v),1,16); else if(i===1)t.prog=clamp(Math.round(v),0,127); else if(i===3)t.len=clamp(Math.round(v),1,16); else if(i===4)t.ccNum=clamp(Math.round(v),0,127); else if(i===5)t.steps[state.extStep].cc=clamp(Math.round(v),0,127); else if(i===6)state.extSwing=clamp(Math.round(v),50,75); else if(i===7)state.extClock=!!Math.round(v); }
 function applyParam(page,i,val){ for(const pi of selectedParts()) state.parts[pi].pages[page][i]=val; }
 function snapshot(){ try { undoStack.push(JSON.stringify(state.parts)); if (undoStack.length>30) undoStack.shift(); } catch(e){} }
 function undo(){ const s=undoStack.pop(); if(!s) return; try { state.parts=JSON.parse(s); paintKnobs(); save(); flashMsg("undo"); } catch(e){} }
@@ -190,10 +196,22 @@ function evolvePart(part){
 /* ---------- sequencer ---------- */
 let seqTimer=null, nextStepTime=0, lookahead=0.1;
 const stepDur=()=>60/state.bpm/4;
-function startSeq(){ audioInit(); if(AC.state==="suspended")AC.resume(); state.playing=true; nextStepTime=AC.currentTime+0.05; state.step=0; if(seqTimer)clearInterval(seqTimer); seqTimer=setInterval(scheduler,25); save(); }
-function stopSeq(){ state.playing=false; if(seqTimer){clearInterval(seqTimer);seqTimer=null;} voices.forEach(v=>killVoice(v,0.08)); save(); }
+let midiClockTimer=null;
+function startMidiClock(){ if(!midiOut||midiClockTimer) return; try{ midiOut.send([0xFA]); }catch(e){} midiClockTimer=setInterval(()=>{ if(!state.playing) return; try{ midiOut.send([0xF8]); }catch(e){} }, 60000/state.bpm/24); }
+function stopMidiClock(){ if(midiClockTimer){ clearInterval(midiClockTimer); midiClockTimer=null; } if(midiOut){ try{ midiOut.send([0xFC]); }catch(e){} } }
+function startSeq(){ audioInit(); startMidiClock(); if(midiOut){ state.extTracks.forEach(t=>{ try{ midiOut.send([0xC0|((t.ch-1)&0xF), t.prog&0x7F]); }catch(e){} }); } if(AC.state==="suspended")AC.resume(); state.playing=true; nextStepTime=AC.currentTime+0.05; state.step=0; if(seqTimer)clearInterval(seqTimer); seqTimer=setInterval(scheduler,25); save(); }
+function stopSeq(){ state.playing=false; stopMidiClock(); if(seqTimer){clearInterval(seqTimer);seqTimer=null;} voices.forEach(v=>killVoice(v,0.08)); save(); }
 function scheduler(){ if(!state.playing) return; while(nextStepTime<AC.currentTime+lookahead){ scheduleStep(state.step,nextStepTime); nextStepTime+=stepDur(); state.step=(state.step+1)%16; } }
 function scheduleStep(step,when){
+  // внешние MIDI-треки
+  if(midiOut){
+    state.extTracks.forEach((t,ti)=>{
+      const st=t.steps[step]; if(!st.on) return;
+      try{ midiOut.send([0xB0|((t.ch-1)&0xF), t.ccNum&0x7F, st.cc&0x7F]); }catch(e){}
+      try{ midiOut.send([0x90|((t.ch-1)&0xF), clamp(t.root??60,0,127), clamp(st.vel,0,127)]); }catch(e){}
+      setTimeout(()=>{ try{ midiOut.send([0x80|((t.ch-1)&0xF), clamp(t.root??60,0,127), 0]); }catch(e){} }, Math.max(30,(60/state.bpm/4)*500));
+    });
+  }
   for (const part of state.parts){
     if(!part.active||part.mute) continue;
     const s=part.steps[step]; if(!s.on) continue;
@@ -274,7 +292,8 @@ addEventListener("keydown",(e)=>{
   if(n>=0 && !e.metaKey && !e.ctrlKey){ const midi=48+n; noteOn(midi,0.8); pressed.set(e.code,midi); markKey(midi,true); e.preventDefault(); }
   if(e.code==="Space"){ state.playing?stopSeq():startSeq(); e.preventDefault(); }
   if(e.code==="KeyR" && !e.metaKey && !e.ctrlKey){ toggleRec(); e.preventDefault(); }
-  if(["Digit1","Digit2","Digit3","Digit4"].includes(e.code)){ playPad(+e.code.slice(-1)-1); e.preventDefault(); }
+  if(["Digit1","Digit2","Digit3","Digit4"].includes(e.code)){ if(state.mode===4){ state.extSel=+e.code.slice(-1)-1; paintKnobs(); save(); } else playPad(+e.code.slice(-1)-1); e.preventDefault(); }
+  if(state.mode===4 && ["Digit5","Digit6","Digit7","Digit8"].includes(e.code)){ state.extSel=+e.code.slice(-1)-1; paintKnobs(); save(); e.preventDefault(); }
   if(e.code==="KeyM" && !e.metaKey && !e.ctrlKey){ state.modOn=!state.modOn; save(); flashMsg(state.modOn?"MOD ON":"MOD OFF"); e.preventDefault(); }
   if(e.code==="Home" && !e.metaKey && !e.ctrlKey){ goHome(); e.preventDefault(); }
   if(e.code==="PageUp"){ state.page=(state.page+4)%5; paintKnobs(); syncPageChips(); e.preventDefault(); }
@@ -330,6 +349,14 @@ function buildKnobs(){
 }
 function paintKnobs(){
   const p=pval(), page=state.page;
+  if(state.mode===4){
+    knobEls.forEach((k,i)=>{ const v=extVal(i), frac=(v-EXT_MIN[i])/(EXT_MAX[i]-EXT_MIN[i]);
+      k.style.setProperty("--a",(frac*260-130).toFixed(1)+"deg");
+      const lab=k.parentElement.querySelector("span"); if(lab) lab.textContent=(k.parentElement.dataset.letter?k.parentElement.dataset.letter+" · ":"")+EXT_PARAMS[i];
+    });
+    macroEls.forEach((k,i)=>{ const m=MACRO[i], frac=(m.get()-m.min)/(m.max-m.min); k.style.setProperty("--a",(frac*260-130).toFixed(1)+"deg"); const lab=k.parentElement.querySelector("span"); if(lab) lab.textContent=(k.parentElement.dataset.letter?k.parentElement.dataset.letter+" · ":"")+m.label; });
+    return;
+  }
   const names=["CUT","RES","ENV","DRV","ATK","DEC","SUS","REL"];
   knobEls.forEach((k,i)=>{
     const frac=(p[i]-pmin(page,i))/(pmax(page,i)-pmin(page,i));
@@ -486,6 +513,7 @@ function draw(){
   if(state.recording){ const a=0.5+0.5*Math.sin(Date.now()/180); ctx.fillStyle=`rgba(255,92,92,${a.toFixed(2)})`; ctx.beginPath(); ctx.arc(372,62,6,0,Math.PI*2); ctx.fill(); ctx.fillStyle=T.red; ctx.font="700 10px Inter"; ctx.fillText("REC",384,66); }
 
   if(state.mode===0) drawSynth();
+  else if(state.mode===4) drawExt();
   else if(state.mode===1) drawSampler();
   else if(state.mode===2) drawDaw();
   else drawUsbKbd();
@@ -580,6 +608,40 @@ function fmtParam(page,i,v){
   if(state.page===3&&i===0) return Math.round(v)+"%";
   return Math.round(v);
 }
+function drawExt(){
+  ctx.fillStyle=T.accent; ctx.font="700 17px Inter"; ctx.fillText("EXT MIDI · 8 ВНЕШНИХ ТРЕКОВ",16,104);
+  ctx.fillStyle=T.muted; ctx.font="600 11px Inter"; ctx.fillText(state.extClock?"CLOCK OUT 24 ppqn":"CLOCK OFF — включите ENC П/CLK",16,120);
+  const top=132,rowH=23;
+  for(let ti=0;ti<8;ti++){
+    const t=state.extTracks[ti], y=top+ti*rowH;
+    const sel=ti===state.extSel;
+    ctx.fillStyle=sel?T.card:T.bg; roundRect(8,y,W-16,rowH-3,4); ctx.fill();
+    if(sel){ ctx.strokeStyle=T.accent; ctx.lineWidth=1.5; roundRect(8,y,W-16,rowH-3,4); ctx.stroke(); }
+    ctx.fillStyle=T.muted; ctx.font="700 12px Inter"; ctx.fillText(`T${ti+1}`,14,y+15);
+    ctx.fillStyle=sel?T.accent:T.text; ctx.font="600 11px Inter"; ctx.fillText(`CH${t.ch} PC${t.prog}`,46,y+15);
+    for(let s2=0;s2<16;s2++){
+      const x=140+s2*34, st=t.steps[s2];
+      ctx.fillStyle=st.on?(s2%4===0?T.green:T.orange):T.line; roundRect(x,y+5,30,16,3); ctx.fill();
+      if(s2===state.extStep&&sel){ ctx.strokeStyle=T.accent; ctx.lineWidth=1.5; roundRect(x-1,y+4,32,18,4); ctx.stroke(); }
+    }
+  }
+  // параметры: левые 8 = EXT, правые 8 = макросы (зеркально ручкам)
+  const gy=326, cellH=44, cellW=(W-24-16)/8;
+  const lettersL=["А","Б","В","Г","Д","Е","Ж","З"], lettersR=["И","Й","К","Л","М","Н","О","П"];
+  for(let i=0;i<16;i++){
+    const row=Math.floor(i/8), col=i%8, x=12+col*cellW, y=gy+row*cellH, w=cellW-6;
+    ctx.fillStyle=T.card; roundRect(x,y,w,cellH-6,5); ctx.fill();
+    let label,val,frac,letter;
+    if(col<4){ label=EXT_PARAMS[row*4+col]; val=String(Math.round(extVal(row*4+col))); frac=(extVal(row*4+col)-EXT_MIN[row*4+col])/(EXT_MAX[row*4+col]-EXT_MIN[row*4+col]); letter=lettersL[row*4+col]; }
+    else { const mi=row*4+(col-4), m=MACRO[mi]; label=m.label; val=String(Math.round(m.get())); frac=(m.get()-m.min)/(m.max-m.min); letter=lettersR[mi]; }
+    ctx.fillStyle=T.muted; ctx.font="600 12px Inter"; ctx.fillText(`${letter} · ${label}`,x+5,y+13);
+    ctx.fillStyle=T.text; ctx.font="700 18px Inter"; ctx.fillText(val,x+5,y+32);
+    ctx.fillStyle=T.line; ctx.fillRect(x+5,y+cellH-13,w-10,4);
+    ctx.fillStyle=T.accent; ctx.fillRect(x+5,y+cellH-13,(w-10)*clamp(frac,0,1),4);
+  }
+  ctx.fillStyle=T.line; ctx.fillRect(12+4*cellW-3,gy-2,2,cellH*2-8);
+  ctx.fillStyle=T.muted; ctx.font="600 9px Inter"; ctx.fillText("EXT-ТРЕК",12+cellW*1.1,gy-5); ctx.fillText("МАКРОСЫ",12+cellW*4.6,gy-5);
+}
 function drawSampler(){
   ctx.fillStyle=T.accent; ctx.font="700 16px Inter"; ctx.fillText("SAMPLER · SD + RESAMPLE",20,110);
   const recTxt = state.recording ? `● REC ${(AC? (AC.currentTime-state.recStarted):0).toFixed(1)} с / 30 с` : "REC — кнопка или клавиша R: запись выхода, затем PAD";
@@ -636,7 +698,11 @@ function analyseLevel(){ if(!analyser) return 0; analyser.getByteTimeDomainData(
 function canvasPos(e){ const r=cv.getBoundingClientRect(); return {x:(e.clientX-r.left)*(W/r.width), y:(e.clientY-r.top)*(H/r.height)}; }
 cv.addEventListener("pointerdown",(e)=>{
   const {x,y}=canvasPos(e);
-  if(y<44){ const i=Math.floor((x-196)/104); if(i>=0&&i<4){ state.mode=i; save(); } return; }
+  if(y<44){ const i=Math.floor((x-196)/104); if(i>=0&&i<5){ state.mode=i; save(); } return; }
+  if(state.mode===4){
+    if(y>126&&y<322&&x>8&&x<W-8){ const ti=Math.floor((y-132)/23); if(ti>=0&&ti<8){ state.extSel=ti; const s2=Math.floor((x-140)/34); if(s2>=0&&s2<16&&x>=140){ state.extStep=s2; snapshot(); const t=state.extTracks[ti], st=t.steps[s2]; st.on=!st.on; } paintKnobs(); save(); } }
+    return;
+  }
   if(state.mode===1){
     if(y>140&&y<310&&x>18&&x<786){ const i=Math.floor((x-18)/192); if(i>=0&&i<4){ lastPadClick = lastPadClick && (Date.now()-lastPadClick.t<350) && lastPadClick.i===i ? {i,t:Date.now(),dbl:true} : {i,t:Date.now(),dbl:false};
         if(lastPadClick.dbl){ if(state.pads[i]) state.pads[i].loop=!state.pads[i].loop; } else playPad(i); } }
@@ -712,7 +778,7 @@ load(); if(loadFromHash()) {}
 const params = new URLSearchParams(location.search);
 if (params.get("theme") && THEMES[params.get("theme")]) state.theme = params.get("theme");
 if (params.get("page") != null) state.page = clamp(+params.get("page")||0, 0, 4);
-if (params.get("mode") != null) state.mode = clamp(+params.get("mode")||0, 0, 3);
+if (params.get("mode") != null) state.mode = clamp(+params.get("mode")||0, 0, 4);
 if (params.get("capture") === "1") document.body.classList.add("capture");
 setTheme(state.theme); buildKeys(); buildKnobs(); buildFaders(); buildJacks(); bindUI(); paintKnobs(); midiInit();
 

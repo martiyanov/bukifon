@@ -2,6 +2,17 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.21.0] — 2025-11-06 — «Внешний секвенсор»
+
+### Добавлено
+- **Внешний MIDI-секвенсор** `docs/70`: 8 внешних треков + 4 внутренние партии; канал/PC/
+  velocity/length, p-lock CC, clock out/in 24 ppqn, transport, GEN на внешних, live record,
+  save/load; паритет-таблица с Octatrack; архитектура (DIN+USB MIDI, CV/GATE как отдельные
+  голоса), UX-страница **EXT** без новых кнопок; этапы v1.0/v1.1/v1.2.
+- **Демо**: режим **EXT** — 8 треков (CH/PC), сетка шагов, p-lock CC, clock out, Web MIDI out;
+  поля CH/PROG/VEL/LEN/CC#/CC VAL/SWING/CLK слева (зеркально ручкам) + макросы справа.
+- Реестр: **R-33…R-36**, **D-87…D-90**.
+
 ## [0.20.1] — 2025-11-06 — «Прошивка = философия»
 
 ### Добавлено
