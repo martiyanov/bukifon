@@ -399,6 +399,117 @@ void uiSnapshotDemo(UiSnapshot* snapshot, Screen screen) {
   }
 }
 
+
+void uiSnapshotForDeviceMode(UiSnapshot* snapshot, DeviceMode mode) {
+  if (!snapshot) return;
+  uiSnapshotDemo(snapshot, Screen::Main);
+  std::snprintf(snapshot->deviceMode, sizeof(snapshot->deviceMode), "%s",
+                deviceModeShortName(mode));
+  const char* modeName = deviceModeName(mode);
+  std::snprintf(snapshot->footer, sizeof(snapshot->footer), "%s", modeName);
+  auto setParam = [&](int i, const char* label, const char* value, float norm) {
+    std::snprintf(snapshot->params[i].label, sizeof(snapshot->params[i].label), "%s", label);
+    std::snprintf(snapshot->params[i].value, sizeof(snapshot->params[i].value), "%s", value);
+    snapshot->params[i].norm = norm;
+  };
+  switch (mode) {
+    case DeviceMode::Sampler:
+      std::snprintf(snapshot->page, sizeof(snapshot->page), "SAMPLER");
+      setParam(0, "SAMPLE", "KICK 01", 0.20f);
+      setParam(1, "START", "0.0%", 0.0f);
+      setParam(2, "END", "100%", 1.0f);
+      setParam(3, "GRAIN", "64ms", 0.32f);
+      setParam(4, "PITCH", "+0st", 0.5f);
+      setParam(5, "RATE", "1.00x", 0.5f);
+      setParam(6, "FILTER", "2.4k", 0.60f);
+      setParam(7, "MIX", "80%", 0.80f);
+      for (int i = 0; i < kNumHints; ++i) {
+        static const char* hints[kNumHints] = {"SAMPLE", "START", "END", "GRAIN",
+                                               "PITCH", "RATE", "FILTER", "MIX"};
+        std::snprintf(snapshot->hints[i], sizeof(snapshot->hints[i]), "%s", hints[i]);
+      }
+      for (int t = 0; t < kMaxTracks; ++t) {
+        static const char* names[kMaxTracks] = {"TRACK 1", "TRACK 2", "TRACK 3", "TRACK 4"};
+        static const char* samples[kMaxTracks] = {"KICK 01", "SNARE 02", "VOX AH", "GRAIN PAD"};
+        std::snprintf(snapshot->tracks[t].name, sizeof(snapshot->tracks[t].name), "%s", names[t]);
+        std::snprintf(snapshot->tracks[t].patch, sizeof(snapshot->tracks[t].patch), "%s",
+                      samples[t]);
+        snapshot->tracks[t].voices = 0;
+        snapshot->tracks[t].level = 0.55f - 0.08f * static_cast<float>(t);
+      }
+      std::snprintf(snapshot->footer, sizeof(snapshot->footer),
+                    "SAMPLER | 4 MiB pool | 8 tracks | mono 16-bit");
+      break;
+    case DeviceMode::DawController:
+      std::snprintf(snapshot->page, sizeof(snapshot->page), "DAW");
+      setParam(0, "BANK", "1", 0.10f);
+      setParam(1, "CC 1", "CC16", 0.20f);
+      setParam(2, "CC 2", "CC17", 0.30f);
+      setParam(3, "CC 3", "CC18", 0.40f);
+      setParam(4, "TRANSPORT", "PLAY", 0.60f);
+      setParam(5, "PLAY", "NOTE 24", 0.50f);
+      setParam(6, "STOP", "NOTE 25", 0.50f);
+      setParam(7, "REC", "NOTE 26", 0.50f);
+      for (int i = 0; i < kNumHints; ++i) {
+        static const char* hints[kNumHints] = {"BANK", "CC1", "CC2", "CC3",
+                                               "PLAY", "STOP", "REC", "LOOP"};
+        std::snprintf(snapshot->hints[i], sizeof(snapshot->hints[i]), "%s", hints[i]);
+      }
+      for (int t = 0; t < kMaxTracks; ++t) {
+        static const char* names[kMaxTracks] = {"ENC 1-4", "ENC 5-8", "ENC 9-12", "ENC 13-16"};
+        static const char* banks[kMaxTracks] = {"BANK1 CC16-19", "BANK1 CC20-23",
+                                                "BANK1 CC24-27", "BANK1 CC28-31"};
+        std::snprintf(snapshot->tracks[t].name, sizeof(snapshot->tracks[t].name), "%s", names[t]);
+        std::snprintf(snapshot->tracks[t].patch, sizeof(snapshot->tracks[t].patch), "%s",
+                      banks[t]);
+        snapshot->tracks[t].voices = 0;
+        snapshot->tracks[t].level = 0.0f;
+        for (int st = 0; st < kMaxSteps; ++st) snapshot->tracks[t].stepActive[st] = false;
+      }
+      std::snprintf(snapshot->footer, sizeof(snapshot->footer),
+                    "DAW-CONTROLLER | 4 banks x 16 CC | USB FS MIDI+HID | MCU stub");
+      break;
+    case DeviceMode::UsbKeyboard:
+      std::snprintf(snapshot->page, sizeof(snapshot->page), "USB-KBD");
+      setParam(0, "LAYER", "BASE", 0.10f);
+      setParam(1, "KEYMAP", "LAPKA42", 0.20f);
+      setParam(2, "MACRO", "CUT 2400", 0.30f);
+      setParam(3, "SHIFT", "OFF", 0.0f);
+      setParam(4, "HID", "6KRO", 0.5f);
+      setParam(5, "REPORT", "8B", 0.5f);
+      setParam(6, "USB", "FS", 0.5f);
+      setParam(7, "MIDI", "ON", 0.5f);
+      for (int i = 0; i < kNumHints; ++i) {
+        static const char* hints[kNumHints] = {"LAYER", "KEYMAP", "MACRO", "SHIFT",
+                                               "ENTER", "SPACE", "BSPC", "RUN"};
+        std::snprintf(snapshot->hints[i], sizeof(snapshot->hints[i]), "%s", hints[i]);
+      }
+      for (int t = 0; t < kMaxTracks; ++t) {
+        static const char* names[kMaxTracks] = {"KEY 1-11", "KEY 12-21", "KEY 22-32",
+                                                "KEY 33-42"};
+        static const char* layers[kMaxTracks] = {"BASE QWERTY", "SHIFT", "SYMBOLS", "MACRO"};
+        std::snprintf(snapshot->tracks[t].name, sizeof(snapshot->tracks[t].name), "%s", names[t]);
+        std::snprintf(snapshot->tracks[t].patch, sizeof(snapshot->tracks[t].patch), "%s",
+                      layers[t]);
+        snapshot->tracks[t].voices = 0;
+        snapshot->tracks[t].level = 0.0f;
+        for (int st = 0; st < kMaxSteps; ++st) {
+          snapshot->tracks[t].stepActive[st] = (t == 0 && st < 6);
+          snapshot->tracks[t].note[st] = static_cast<uint8_t>(0x14 + st);
+        }
+      }
+      std::snprintf(snapshot->footer, sizeof(snapshot->footer),
+                    "USB-KEYBOARD | 42-key Lapka-42 | HID 6KRO | layers+macros");
+      break;
+    case DeviceMode::Synth:
+    default:
+      std::snprintf(snapshot->page, sizeof(snapshot->page), "SYNTH");
+      std::snprintf(snapshot->footer, sizeof(snapshot->footer),
+                    "SYNTH | 8 voices | 4 parts | 3D mod matrix");
+      break;
+  }
+}
+
 void drawTextScaled(ICanvas& canvas, int x, int y, const char* text, uint16_t color, int scale) {
   if (!text || scale <= 0) return;
   int cx = x;

@@ -8,6 +8,7 @@
 
 #include <cstdint>
 
+#include "core/device_mode.hpp"
 #include "ui/canvas.hpp"
 
 namespace bukifon {
@@ -81,6 +82,9 @@ struct UiSnapshot {
 
 // Fill a snapshot with deterministic, screen-appropriate demo content.
 void uiSnapshotDemo(UiSnapshot* snapshot, Screen screen);
+// Mode-specific panels for the 4 device modes (Synth / Sampler / DAW /
+// USB-keyboard).  The shell stays the same; status bar MODE and the panels differ.
+void uiSnapshotForDeviceMode(UiSnapshot* snapshot, DeviceMode mode);
 void uiSnapshotInit(UiSnapshot* snapshot);
 
 void drawUi800(ICanvas& canvas, const UiSnapshot& snapshot);

@@ -104,98 +104,124 @@ def page1_exploded(pdf):
     ax.set_aspect("equal"); ax.axis("off")
     ax.add_patch(Rectangle((4, 4), A4L[0] - 8, A4L[1] - 8, fc="white", ec="#ddd", lw=0.4))
     ax.text(A4L[0] / 2, A4L[1] - 9,
-            "БУКИФОН v0.5-B-light · СБОРОЧНАЯ КАРТА (разнесённая схема, 1:2.5)",
-            ha="center", fontsize=12, fontweight="bold")
+            "БУКИФОН v0.5-B-light · СБОРОЧНАЯ КАРТА: ПОРЯДОК СЛОЁВ",
+            ha="center", fontsize=11.5, fontweight="bold")
     ax.text(A4L[0] / 2, A4L[1] - 14.5,
-            "Печать A4 100 %. Слои снизу вверх; точки крепежа и шлейфы — по выноскам. "
-            "1:1 — панельные листы стр.2–3.",
-            ha="center", fontsize=5.8, color="#444")
+            "Разнесённая схема (условный масштаб 1:2.5; линейка 50 мм — контроль печати). "
+            "Панель 1:1 — стр.2–3. Сборка снизу вверх, слои 1→7.",
+            ha="center", fontsize=5.6, color="#444")
 
-    # ---------- слои (снизу вверх), центр панели (190,105) ----------
-    S = 0.62
-    # 1 корпус (2 половины)
-    rrect_iso(ax, 95, 105, 188, 208, 0, color="#4a4f55", ec="#222", label="body_L")
-    rrect_iso(ax, 285, 105, 188, 208, 0, color="#4a4f55", ec="#222", label="body_R")
-    leader(ax, *iso(95, 105, 0), 14, 24,
-           "1. КОРПУС B-light: body_L + body_R (193+190 с шипом), дно 1.8, стенки 2.0",
-           fs=4.8)
-    # 2 батарея (опция) справа внутри
-    rrect_iso(ax, 330, 88, 80, 62, 10, color="#c9d6e8", ec="#2c6fbb", ls=(0, (2, 1.5)),
-              label="2×18650")
-    leader(ax, *iso(330, 88, 10), 214, 24,
-           "2. Батарея 1S2P 18650 (опция) — ложемент справа X300…340",
-           fs=4.6, color="#2c6fbb")
-    # 3 PWR-2
-    rrect_iso(ax, 190, 100, 90, 70, 28, color="#c33", ec="#600", label="PWR-2",
-              alpha=0.9)
-    leader(ax, *iso(190, 100, 28), 14, 42,
-           "3. PWR-2 rev.1 90×70 (Z6, 4×M2.5): ±12 В / +5 В / 5V_LED",
-           fs=4.6, color="#900")
-    # 4 CORE-S3
-    rrect_iso(ax, 190, 105, 200, 108, 48, color="#2f7d4f", ec="#174", label="CORE-S3",
-              alpha=0.92)
-    leader(ax, *iso(190, 105, 48), 14, 58,
-           "4. CORE-S3 rev.0 200×108 (Z12, 4×M3): J14/J15/J16 ↔ PANEL-2, J17/J18 ↔ PWR-2",
-           fs=4.6, color="#174")
-    # 5 PANEL-2
-    rrect_iso(ax, 190, 105, 360, 190, 74, color="#2a5f9e", ec="#123", ls=(0, (3, 2)),
-              label="PANEL-2", alpha=0.75)
-    leader(ax, *iso(190, 105, 74), 214, 58,
-           "5. PANEL-2 rev.2 360×190 (8 мм под панелью, 6×M3×6): J12 FFC-40, "
-           "J13 IDC-16, J14 IDC-26", fs=4.6, color="#123")
-    # 6 дисплей
-    rrect_iso(ax, 190, 58, 121, 76, 94, color="#0b2a4a", ec="#89a", label="LCD 5\"")
-    leader(ax, *iso(190, 58, 94), 214, 76,
-           "6. Дисплей 5\" 800×480 (120.7×75.8) — FFC-40, стекло в окно 108×64.8",
-           fs=4.6, color="#123")
-    # 7 панель L/R (сверху), с эскизом органов
-    rrect_iso(ax, 95, 105, 188, 208, 116, color="#222", ec="#000", label="")
-    rrect_iso(ax, 285, 105, 188, 208, 116, color="#222", ec="#000", label="")
-    for k in C["keyboard_left"]:
-        x, y = k["center_mm"]
-        px, py = iso(x, y, 116, S)
-        ax.add_patch(Rectangle((px - 4, py - 3), 8, 6, fc="#e8e2d6", ec="#777", lw=0.2,
-                               zorder=30, angle=-k["angle_deg"]))
-    for k in C["keyboard_right"]:
-        x, y = k["center_mm"]
-        px, py = iso(x, y, 116, S)
-        ax.add_patch(Rectangle((px - 4, py - 3), 8, 6, fc="#e8e2d6", ec="#777", lw=0.2,
-                               zorder=30, angle=-k["angle_deg"]))
+    S = 0.36
+    X0, Z0 = 150.0, 40.0
+    LEV = {1: 0.0, 2: 10.0, 3: 22.0, 4: 36.0, 5: 52.0, 6: 70.0, 7: 88.0}
+
+    def iso(x, y, lev):
+        px = (x - y) * math.cos(math.radians(30)) * S + X0
+        py = Z0 + LEV[lev] + (x + y) * math.sin(math.radians(30)) * S * 0.55
+        return px, py
+
+    def rect(cx, cy, w, d, lev, color, ec, ls="-", alpha=1.0, lw=0.7):
+        pts = [iso(cx - w/2, cy - d/2, lev), iso(cx + w/2, cy - d/2, lev),
+               iso(cx + w/2, cy + d/2, lev), iso(cx - w/2, cy + d/2, lev)]
+        ax.add_patch(Polygon(pts, closed=True, fc=color, ec=ec, lw=lw, ls=ls,
+                             alpha=alpha, zorder=2 + lev))
+        return pts
+
+    def badge(lev, num, cx=0.0, cy=0.0):
+        px, py = iso(cx, cy, lev)
+        ax.add_patch(Circle((px, py), 4.2, fc="#fff", ec="#000", lw=0.7, zorder=50))
+        ax.text(px, py, str(num), fontsize=5.0, ha="center", va="center",
+                fontweight="bold", zorder=51)
+
+    # слои
+    rect(95, 105, 188, 206, 1, "#4a4f55", "#222")
+    rect(285, 105, 188, 206, 1, "#4a4f55", "#222")
+    badge(1, 1, 95, 190)
+    rect(330, 88, 76, 60, 2, "#c9d6e8", "#2c6fbb", ls=(0, (2, 1.4)))
+    badge(2, 2, 330, 88)
+    rect(190, 100, 90, 70, 3, "#d33", "#700")
+    badge(3, 3, 190, 100)
+    rect(190, 105, 200, 108, 4, "#2f7d4f", "#174")
+    badge(4, 4, 190, 105)
+    rect(190, 105, 360, 190, 5, "#2a5f9e", "#123", ls=(0, (3, 2)), alpha=0.85)
+    badge(5, 5, 190, 105)
+    rect(190, 58, 121, 76, 6, "#0b2a4a", "#89a")
+    badge(6, 6, 190, 58)
+    for cx in (95, 285):
+        rect(cx, 105, 188, 206, 7, "#262626", "#000")
+    for src in (C["keyboard_left"], C["keyboard_right"]):
+        for k in src:
+            x, y = k["center_mm"]
+            px, py = iso(x, y, 7)
+            ax.add_patch(Rectangle((px - 2.6, py - 2.0), 5.2, 4.0, angle=-k["angle_deg"],
+                                   fc="#e8e2d6", ec="#777", lw=0.15, zorder=60))
     for e in C["encoders_left"] + C["encoders_right"]:
-        px, py = iso(*e["center_mm"], 116, S)
-        ax.add_patch(Circle((px, py), 2.6, fc="#111", ec="#888", lw=0.2, zorder=31))
+        px, py = iso(*e["center_mm"], 7)
+        ax.add_patch(Circle((px, py), 2.0, fc="#111", ec="#999", lw=0.2, zorder=61))
     for j in C["jacks"]:
-        px, py = iso(*j["center_mm"], 116, S)
-        ax.add_patch(Circle((px, py), 1.6, fc="#ddd", ec="#666", lw=0.2, zorder=31))
+        px, py = iso(*j["center_mm"], 7)
+        ax.add_patch(Circle((px, py), 1.2, fc="#ddd", ec="#666", lw=0.2, zorder=61))
     for f in C["faders"]:
-        px, py = iso(*f["slot"]["center_mm"], 116, S)
-        ax.add_patch(Rectangle((px - 1, py - 6), 2, 12, fc="#000", ec="#999", lw=0.2,
-                               zorder=31))
-    leader(ax, *iso(285, 105, 116), 214, 94,
-           "7. ПАНЕЛЬ v0.4 193+190 (1:1 на стр.2–3): 42 клавиши, 16 энкодеров, "
-           "2 фейдера, 10 джеков, 4×M3×8", fs=4.8, color="#000")
-    ax.text(148, 6, "ПОРЯДОК СБОРКИ — СНИЗУ ВВЕРХ (1→7); шлейфы — после установки PANEL-2 "
-                    "и CORE-S3; дисплей — до закрытия панели", fontsize=5.4,
-            ha="center", color="#333")
+        px, py = iso(*f["slot"]["center_mm"], 7)
+        ax.add_patch(Rectangle((px - 0.8, py - 4.5), 1.6, 9.0, fc="#000", ec="#999",
+                               lw=0.2, zorder=61))
+    badge(7, 7, 285, 190)
 
-    # стрелки «вверх» и легенда
-    ax.annotate("", xy=(278, 150), xytext=(278, 30),
-                arrowprops=dict(arrowstyle="->", lw=1.2, color="#666"))
-    ax.text(281, 90, "сборка\nснизу\nвверх", fontsize=5.2, color="#666", va="center")
+    # легенда слева сверху
+    ax.text(8, 190, "СЛОИ СНИЗУ ВВЕРХ", fontsize=6.4, fontweight="bold")
+    legend = [
+        "1. Корпус B-light (body_L + body_R,",
+        "    шип 3×1.2; дно 1.8, стенки 2.0)",
+        "2. Батарея 1S2P 18650 (опция)",
+        "3. PWR-2 rev.1 90×70, Z6 — 4×M2.5",
+        "4. CORE-S3 rev.0 200×108, Z12 — 4×M3",
+        "5. PANEL-2 rev.2 360×190 — 6×M3",
+        "6. Дисплей 5\" 120.7×75.8 — FFC-40",
+        "7. Панель 193+190 — 4×M3×8; 42 Choc,",
+        "    16 ENC, 2 фейдера, 10 джеков",
+    ]
+    for i, t in enumerate(legend):
+        ax.text(9, 184 - i * 4.4, t, fontsize=4.9, color="#222")
 
-    # точки крепежа
+    # крепёж
+    ax.text(8, 118, "КРЕПЁЖ (по выноскам)", fontsize=6.0, fontweight="bold")
+    ax.text(8, 113, "○ красные — 4×M3×8 панель", fontsize=4.8, color="#c00")
+    ax.text(8, 108.5, "○ жёлтые — 6×M3×6 PANEL-2", fontsize=4.8, color="#990")
+    ax.text(8, 104, "4×M3×6 CORE-S3; 4×M2.5×6 дисплей;", fontsize=4.8, color="#333")
+    ax.text(8, 99.5, "8×M2.5×8 фейдеры; 4×M3×16 стяжка", fontsize=4.8, color="#333")
+    ax.text(8, 95, "половин корпуса (опция)", fontsize=4.8, color="#333")
     for (x, y) in PANEL_SCREWS:
-        px, py = iso(x, y, 116, S)
-        ax.add_patch(plt.Circle((px, py), 3.0, fc="none", ec="#c00", lw=0.9,
-                                zorder=40))
-    ax.text(20, 128, "○ 4×M3×8 — панель по углам", fontsize=4.8, color="#c00")
+        px, py = iso(x, y, 7)
+        ax.add_patch(Circle((px, py), 2.4, fc="none", ec="#c00", lw=0.9, zorder=70))
     for (x, y) in PANEL_POSTS:
-        px, py = iso(x, y, 116, S)
-        ax.add_patch(plt.Circle((px, py), 2.2, fc="none", ec="#ff0", lw=0.8,
-                                zorder=40, ls=(0, (1, 1))))
-    ax.text(20, 123, "○ 6×M3×6 — PANEL-2 (жёлтые) + 4×M3×6 CORE-S3 / 4×M2.5 PWR-2",
-            fontsize=4.6, color="#990")
-    ruler(ax, 20, 8)
+        px, py = iso(x, y, 7)
+        ax.add_patch(Circle((px, py), 1.9, fc="none", ec="#aa0", lw=0.8,
+                            ls=(0, (1, 1)), zorder=70))
+
+    # шлейфы
+    def cable(p1, p2, label, color="#8a4b00", off=(0, 0)):
+        ax.annotate("", xy=p2, xytext=p1,
+                    arrowprops=dict(arrowstyle="<->", lw=0.8, color=color))
+        mx = (p1[0] + p2[0]) / 2 + off[0]
+        my = (p1[1] + p2[1]) / 2 + off[1]
+        ax.text(mx, my, label, fontsize=4.4, color=color, ha="center",
+                bbox=dict(fc="white", ec="none", pad=0.3), zorder=80)
+
+    cable(iso(250, 60, 6), iso(250, 60, 4), "FFC-40", "#003", (16, 0))
+    cable(iso(120, 150, 5), iso(120, 150, 4), "IDC-26/16", "#420", (-17, 0))
+    cable(iso(260, 145, 4), iso(260, 145, 3), "IDC-20/12", "#500", (18, 0))
+
+    # низ: порядок и шлейфы
+    ax.text(A4L[0] / 2, 22,
+            "ПОРЯДОК: корпус → PANEL-2 → PWR-2 → CORE-S3 → дисплей → шлейфы → панель; "
+            "энкодеры/клавиши/джеки — ПОСЛЕ панели.", fontsize=5.1, color="#222",
+            ha="center")
+    ax.text(A4L[0] / 2, 17, "Шлейфы: FFC-40 (дисплей↔CORE-S3), IDC-26 (PANEL-2 J14↔CORE), "
+                            "IDC-16 (J13↔CORE), IDC-20/IDC-12 (PWR-2↔CORE).",
+            fontsize=4.7, color="#555", ha="center")
+    ax.text(A4L[0] / 2, 12, "Подробно — docs/34-assembly.md. Легенда крепежа/шлейфов — стр.4.",
+            fontsize=4.7, color="#555", ha="center")
+    ruler(ax, 214, 6)
 
     fig.savefig(pdf, format="pdf")
     fig.savefig(os.path.join(PREV, "asm_map_p1.png"), dpi=130)
@@ -242,8 +268,10 @@ def _panel_half_page(pdf, side):
         ax.add_patch(Rectangle((ox + x - 8.75, oy + 210 - y - 8.25), 17.5, 16.5,
                                angle=-k["angle_deg"], rotation_point="center",
                                fc="#e8e2d6", ec="#777", lw=0.3))
-        ax.text(ox + x, oy + 210 - y, f"{i+1}", fontsize=3.4, ha="center", va="center",
-                color="#333")
+
+    ax.text(ox + (x0 + x1) / 2, oy + 210 - 196,
+            f"клавиши Lapka-42 — {'21 шт' if side == 'L' else '21 шт'} (номера по spec)",
+            fontsize=4.6, color="#eee", ha="center")
     # энкодеры
     enc = C["encoders_left"] if side == "L" else C["encoders_right"]
     names = "ABCDEFGH"
@@ -393,8 +421,8 @@ def page4_legend(pdf):
     for i, t in enumerate(checks):
         ax.text(16, 72 - i * 4.6, t, fontsize=5.4)
 
-    ax.text(14, 30, "НЕ ЗАБЫТЬ: энкодеры ставить ДО панели? — нет: панель лежит сверху, "
-                    "энкодеры/клавиши/джеки — после панели (гайки сверху).",
+    ax.text(14, 30, "НЕ ЗАБЫТЬ: PANEL-2 и дисплей — ДО панели; энкодеры/клавиши/джеки/"
+                    "фейдеры — ПОСЛЕ укладки панели (гайки сверху).",
             fontsize=5.2, color="#333")
     ax.text(14, 25, "Порядок сборки и предупреждения — docs/34-assembly.md.", fontsize=5.2,
             color="#333")
