@@ -29,3 +29,5 @@ refs/attach/
 *.key
 id_rsa*
 .DS_Store
+refs/sketch4-panel.jpg
+refs/s4_*.jpg

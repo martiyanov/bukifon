@@ -77,7 +77,7 @@ def mcu_symbol():
         return 'IO%d' % gpio
     rows = {r[7]: r for r in B.PINMAP}
     pins = []
-    top = 40.0
+    top = 39.37
     for n in range(1, 33):
         r = rows[n]
         pins.append((str(n), disp(r), -27.94, top - (n - 1) * 2.54, 0, 2.54, 'passive'))
@@ -133,7 +133,7 @@ def build_custom_lib():
          ('3', 'EN', -12.7, 5.08, 0, 2.54, 'input'),
          ('4', 'SPI_SCK', -12.7, 2.54, 0, 2.54, 'input'),
          ('5', 'SPI_MOSI', -12.7, 0, 0, 2.54, 'input'),
-         ('6', 'SPI_MISO', -12.7, -2.54, 0, 2.54, 'output'),
+         ('6', 'SPI_MISO', -12.7, -2.54, 0, 2.54, 'tri_state'),
          ('7', 'SPI_CS', -12.7, -5.08, 0, 2.54, 'input'),
          ('8', 'HANDSHAKE', 12.7, 2.54, 180, 2.54, 'bidirectional'),
          ('9', 'DATA_READY', 12.7, 0, 180, 2.54, 'bidirectional'),
@@ -206,7 +206,7 @@ add('U22', ('Battery_Management','BQ24074RGT'), 'BQ24074RGT',
     {'1':'TS','2':'BATT_P','3':'BATT_P','4':'PGND','5':'VBUS_CHG','6':'VBUS_CHG',
      '7':'NC','8':'PGND','9':'CHG','10':'VSYS','11':'VSYS','12':'ILIM','13':'VBUS_F',
      '14':'TMR','15':'ITERM','16':'ISET','17':'PGND'},
-    'Package_DFN_QFN:QFN-16-1EP_3x3mm_P0.5mm_EP1.6x1.6mm', 'charger + power-path (1.5 A)', P)
+    '', 'charger + power-path (1.5 A)', P)
 add('R1', ('Device','R'), '1.5k', {'1':'ILIM','2':'PGND'}, FP['R'], 'ILIM 1.5 A', P)
 add('R2', ('Device','R'), '1.5k', {'1':'ISET','2':'PGND'}, FP['R'], 'charge current ~1 A', P)
 add('R3', ('Device','R'), '2k', {'1':'ITERM','2':'PGND'}, FP['R'], 'termination', P)
@@ -579,4 +579,226 @@ add('TB2', ('Connector_Generic','Conn_01x10'), 'Rear MIDI/DC/EXPR terminal block
 # ---------------------------- test points + power flags -------------------
 for i, (tp, net, why) in enumerate(B.TPS):
     add(tp, ('Connector','TestPoint'), net, {'1': net}, '', why, 'TP', on_board=True)
-FLAGS = ['VBUS_CHG', 'BATT_N', 'PGND', '12V', '-12V', '5V', '3V3_MCU', 'DGND', 'AGND']
+FLAGS = ['VBUS_CHG', 'VBUS_F', 'BATT_N', 'PGND', '12V', '-12V', '5V', 'VREF33', '3V3_MCU', 'DGND', 'AGND']
+
+# ==========================================================================
+# layout + generation
+# ==========================================================================
+def pin_span(lib, unit):
+    return [p for p in k.pins(*lib) if p[6] in (0, unit)]
+
+def comp_size(lib, unit):
+    ps = pin_span(lib, unit)
+    if not ps:
+        return 1, 1
+    xs = [p[2] for p in ps]; ys = [p[3] for p in ps]
+    left = any(p[4] == 0 for p in ps); right = any(p[4] == 180 for p in ps)
+    top = any(p[4] == 270 for p in ps); bot = any(p[4] == 90 for p in ps)
+    w = max(xs) - min(xs); h = max(ys) - min(ys)
+    w += (LABEL_PAD if left else 0) + (LABEL_PAD if right else 0)
+    h += 4.0 if top else 0.0
+    h += 4.0 if bot else 0.0
+    return max(1, int(math.ceil(w / SW))), max(1, int(math.ceil(h / SH)))
+
+class Section:
+    def __init__(self, sch, name, x0, y0, cols=6):
+        self.sch = sch; self.name = name; self.x0 = x0; self.y0 = y0
+        self.cols = cols; self.col = 0; self.row = 0; self.shelf = 0
+        sch.text(name, (x0, y0 - 3.0), size=4.0)
+    def place(self, comp, unit=1):
+        w, h = comp_size(comp['lib'], unit)
+        if self.col + w > self.cols:
+            self.col = 0; self.row += self.shelf; self.shelf = 0
+        x = self.x0 + (self.col + w/2.0) * SW
+        y = self.y0 + 12.0 + (self.row + h/2.0) * SH
+        c = self.sch.sym(comp['lib'][0], comp['lib'][1], comp['ref'], comp['val'],
+                         x, y, footprint=comp['fp'], unit=unit,
+                         on_board=comp['on_board'],
+                         ref_off=(-w*SW/2 + 4, -h*SH/2 + 3.0),
+                         val_off=(-w*SW/2 + 4, -h*SH/2 + 6.0))
+        c['note'] = comp['note']; c['section'] = comp['section']
+        self.shelf = max(self.shelf, h); self.col += w
+        return c
+    def end_y(self):
+        return self.y0 + 12.0 + (self.row + self.shelf) * SH
+
+def make_schematic():
+    sch = k.Sch(os.path.join(HERE, PROJECT + '.kicad_sch'),
+                'CORE-2 PRE-FREEZE / DO NOT FABRICATE - rev.1 ESP32-P4 (not for fabrication)',
+                paper=PAPER, project=PROJECT)
+    # banner
+    sch.text('PRE-FREEZE / DO NOT FABRICATE', (28, 20), size=7.0)
+    sch.text('CORE-2 rev.1 research schematic - ESP32-P4 + ESP32-C6. Do not order boards '
+             'before P1 benchmark and spec/90 sign-off.', (28, 26), size=3.0)
+    sch.text('Project files: README.md, pinmap.md, power-tree.md, interfaces.md. '
+             'GPIO conflicts: 0 (check_pinmap.py).', (28, 30), size=2.5)
+    colA, colB, colC = 22.0, 407.0, 792.0
+    top = 46.0
+    order = {'POWER': (colA, 0), 'MCU': (colB, 0), 'AUDIO': (colC, 0),
+             'CV': (colC, 1), 'MIDI': (colB, 1), 'BUS': (colC, 2),
+             'PANEL': (colB, 2), 'TP': (colB, 3)}
+    comps = {}
+    sections = {}
+    ypos = {colA: top, colB: top, colC: top}
+    # create sections in order of columns: POWER, MCU, AUDIO, CV, MIDI, BUS, PANEL, TP
+    for secname in ['POWER', 'MCU', 'AUDIO', 'CV', 'MIDI', 'BUS', 'PANEL', 'TP']:
+        x0, _ = order[secname]
+        sec = Section(sch, SEC_TITLES.get(secname, secname), x0, ypos[x0])
+        sections[secname] = sec
+        for comp in C:
+            if comp['sec'] != secname:
+                continue
+            c = sec.place(comp, unit=comp['unit'])
+            comps.setdefault(comp['ref'], []).append((c, comp))
+        ypos[x0] = sec.end_y() + 12.0
+    # power flags in column B under TP section
+    fy = sections['TP'].end_y() + 14.0
+    sch.text('POWER FLAGS (net drivers for ERC)', (colB, fy - 4), size=3.0)
+    flags = []
+    for i, net in enumerate(FLAGS):
+        fx = colB + (i % 5) * 20.0
+        fyy = fy + 10.0 + (i // 5) * 20.0
+        fc = sch.sym('power', 'PWR_FLAG', '#FLG%02d' % (i+1), 'PWR_FLAG', fx, fyy,
+                     hide_ref=True, ref_off=(2, -3), val_off=(2, 3))
+        sch.net(fc, net, num='1')
+        flags.append(fc)
+    # wire all pins by labels
+    for ref, lst in comps.items():
+        for c, comp in lst:
+            unit = comp['unit']
+            for p in pin_span(comp['lib'], unit):
+                net = comp['nets'].get(p[0])
+                if net is None:
+                    continue
+                if net == 'NC':
+                    sch.nc_pin(c, num=p[0])
+                else:
+                    sch.net(c, net, num=p[0])
+    for ref, lst in comps.items():
+        for c, comp in lst:
+            unit = comp['unit']
+            for p in pin_span(comp['lib'], unit):
+                if p[0] not in comp['nets']:
+                    sch.nc_pin(c, num=p[0])
+    sch.write()
+    return sch, comps, sections
+
+SEC_TITLES = {
+ 'POWER': 'POWER: USB-C, BQ24074 charge/path, BMS 1S, MT3608 x3 (+12/+5/BL20), MP1584 3V3_MCU, AP2112 x2, MC34063 -12V',
+ 'MCU': 'MCU: ESP32-P4 module slot, ESP32-C6 Wi-Fi/BLE (SPI esp-hosted), USB-C HS, microSD SDIO',
+ 'AUDIO': 'AUDIO: PCM5102A DAC + PCM1808 ADC (I2S), TL072 LINE/PHONES, rear jacks',
+ 'CV': 'CV: 2x MCP4728 (0x60/0x61), 6x TL074 x4.9, CV IN level shift, MCP3208 + chains',
+ 'MIDI': 'MIDI TRS-A: 6N137 IN / 74HCT125 OUT; GATE drivers 2N7000; LED level shifter',
+ 'BUS': 'MODULE BUS: 2x IDC-26 analog bus (+-12V, CV1..4, GATE, audio), per-port protection',
+ 'PANEL': 'PANEL-2 + REAR I/O: J14 IDC-26 control, J15 FFC-40 LCD, J16 IDC-16 digital exp, rear jacks TB1/TB2',
+ 'TP': 'TEST POINTS (TP1..TP22)',
+}
+
+# ==========================================================================
+# exports / reports
+# ==========================================================================
+def run(cmd):
+    print('+', ' '.join(cmd))
+    r = subprocess.run(cmd, capture_output=True, text=True)
+    if r.stdout.strip(): print(r.stdout.strip()[:1500])
+    if r.returncode != 0: print('STDERR:', r.stderr.strip()[:2000])
+    return r
+
+def exports():
+    schfile = os.path.join(HERE, PROJECT + '.kicad_sch')
+    os.makedirs(os.path.join(HERE, 'erc'), exist_ok=True)
+    run([KICAD_CLI, 'sch', 'erc', '--severity-all', '--format', 'report',
+         '-o', os.path.join(HERE, 'erc', 'erc.rpt'), schfile])
+    run([KICAD_CLI, 'sch', 'erc', '--severity-all', '--format', 'json',
+         '-o', os.path.join(HERE, 'erc', 'erc.json'), schfile])
+    run([KICAD_CLI, 'sch', 'export', 'pdf', '-o', os.path.join(HERE, PROJECT + '.pdf'), schfile])
+    run([KICAD_CLI, 'sch', 'export', 'svg', '--output', os.path.join(HERE, 'svg'), schfile])
+    import shutil
+    src = os.path.join(HERE, 'svg', PROJECT + '.svg')
+    if os.path.exists(src):
+        shutil.copy(src, os.path.join(HERE, PROJECT + '.svg'))
+    run([KICAD_CLI, 'sch', 'export', 'netlist', '--format', 'kicadsexpr',
+         '-o', os.path.join(HERE, 'netlist.net'), schfile])
+    run([KICAD_CLI, 'sch', 'export', 'netlist', '--format', 'kicadxml',
+         '-o', os.path.join(HERE, 'netlist.xml'), schfile])
+
+MPN = {
+ 'U22': 'BQ24074RGT', 'U23': 'BQ29700DSER', 'U24': 'MT3608', 'U25': 'MT3608',
+ 'U29': 'MT3608', 'U26': 'MP1584EN module', 'U27': 'AP2112K-3.3', 'U30': 'AP2112K-3.3',
+ 'U28': 'MC34063AP', 'A1': 'ESP32-P4NRW32 (+32MB PSRAM, module TBD)',
+ 'U31': 'ESP32-C6-MINI-1 (DNP if ESP32-S3 build)', 'U32': 'PCM5102A',
+ 'U34': 'PCM1808PWR', 'U35': 'MCP4728A0-E/UN', 'U36': 'MCP4728A1-E/UN',
+ 'U40': 'MCP3208-CI/P', 'U41': '24LC32A-I/P', 'U42': '6N137', 'U43': '74HCT125',
+ 'U44': '74HCT1G125', 'U20': 'USBLC6-2SC6', 'J1': 'USB-C 16P (USB2.0)',
+ 'J5': 'microSD socket (Hirose DM3AT)', 'J15': 'FFC-40 0.5mm', 'J14': 'IDC-26',
+ 'J16': 'IDC-16',
+}
+
+def write_bom():
+    import csv, re
+    def rk(r):
+        m = re.match(r'([A-Za-z#]+)(\d*)', r)
+        return (m.group(1), int(m.group(2) or 0), r)
+    groups = {}
+    seen = set()
+    for c in C:
+        if c['ref'] in seen: continue
+        seen.add(c['ref'])
+        groups.setdefault((c['val'], c['fp'], c['note'], c['on_board']), []).append(c['ref'])
+    rows = []
+    n = 0
+    for (val, fp, note, onb), refs in groups.items():
+        n += 1
+        refs = sorted(refs, key=rk)
+        mpns = sorted({MPN[r] for r in refs if r in MPN})
+        nm = []
+        if not onb: nm.append('off-board (rear/panel part)')
+        if note: nm.append(note)
+        if any(r == 'U31' for r in refs): nm.append('DNP for ESP32-S3 build')
+        rows.append(dict(code='PM-C2-%03d' % n, mpn='/'.join(mpns), val=val,
+                         qty=len(refs), refs=' '.join(refs), fp=fp, note='; '.join(nm)))
+    rows.sort(key=lambda r: r['code'])
+    with open(os.path.join(HERE, 'BOM-core2.csv'), 'w', newline='', encoding='utf-8') as fh:
+        w = csv.writer(fh, delimiter=';')
+        w.writerow(['Артикул', 'MPN (draft)', 'Номинал/Тип', 'Кол-во', 'Позиции', 'Корпус', 'Примечание'])
+        for r in rows:
+            w.writerow([r['code'], r['mpn'], r['val'], r['qty'], r['refs'], r['fp'], r['note']])
+    print('BOM rows:', len(rows))
+    return rows
+
+def parse_erc():
+    p = os.path.join(HERE, 'erc', 'erc.rpt')
+    if not os.path.exists(p): return None
+    txt = open(p, encoding='utf-8').read()
+    import re
+    m = re.search(r'Errors (\d+)\s+Warnings (\d+)', txt)
+    return {'errors': int(m.group(1)) if m else -1,
+            'warnings': int(m.group(2)) if m else -1, 'text': txt}
+
+if __name__ == '__main__':
+    custom = build_custom_lib()
+    libpath = os.path.join(HERE, 'picomod.kicad_sym')
+    with open(libpath, 'w', encoding='utf-8') as fh:
+        fh.write('(kicad_symbol_lib\n\t(version 20241209)\n\t(generator "gen_core2_sch.py")\n'
+                 '\t(generator_version "9.0")\n')
+        for nm in sorted(custom):
+            body = '\n'.join('\t' + ln for ln in custom[nm].split('\n'))
+            fh.write(body + '\n')
+        fh.write(')\n')
+    src = '/Applications/KiCad/KiCad.app/Contents/SharedSupport/template/sym-lib-table'
+    tbl = open(src, encoding='utf-8').read().rstrip()
+    tbl = tbl[:-1].rstrip() + '\n\t(lib (name "picomod") (type "KiCad") (uri "${KIPRJMOD}/picomod.kicad_sym") (options "") (descr "PicoMod CORE-2 project symbols"))\n)\n'
+    open(os.path.join(HERE, 'sym-lib-table'), 'w', encoding='utf-8').write(tbl)
+    pro = {'board': {'design_settings': {}}, 'meta': {'filename': PROJECT + '.kicad_pro', 'version': 1},
+           'schematic': {'legacy_lib_dir': '', 'legacy_lib_list': []},
+           'sheets': [[PROJECT + '.kicad_sch', '']],
+           'libraries': {'pinned_footprint_libs': [], 'pinned_symbol_libs': []}}
+    open(os.path.join(HERE, PROJECT + '.kicad_pro'), 'w', encoding='utf-8').write(json.dumps(pro, indent=2))
+    sch, comps, sections = make_schematic()
+    print('placed entries:', sum(len(v) for v in comps.values()), 'symbols:', len(sch.comps))
+    if '--no-export' not in sys.argv:
+        exports()
+        erc = parse_erc()
+        if erc:
+            print('ERC: errors=%d warnings=%d' % (erc['errors'], erc['warnings']))
+        write_bom()
