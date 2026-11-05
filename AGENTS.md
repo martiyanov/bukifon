@@ -58,6 +58,13 @@ cd firmware/host && make test        # или: make -C firmware/host
 `archive/README.md` и `STRUCTURE.md`. В `renders/templates/`, `mechanical/`, `spec/` — только
 текущая версия. Старые файлы доступны через историю/теги.
 
+## 4b. Медиа и размер репозитория
+
+Рендеры/превью — **JPEG q85** (≤1600 px, ≤300 КБ), UI-скриншоты — PNG (мал), схемы — PDF +
+`.svg.gz` (не `.svg`), старые версии — в `archive/`. Перед коммитом:
+`bash tools/optimize_images.sh --dry-run` и `bash tools/check_repo_size.sh`;
+подробно — `docs/52-media-policy.md`. Правило действует с v0.13.0.
+
 ## 5. Документы, которые нельзя удалять
 
 `docs/00-context-transfer.md` (контекст для внешних агентов), `docs/03-second-opinion-mcu.md`,

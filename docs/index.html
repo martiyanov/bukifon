@@ -76,7 +76,7 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
   <nav><a href="#about">О проекте</a><a href="#modes">Режимы</a><a href="#hardware">Железо</a><a href="#status">Статус</a><a href="#kit">Комплект</a><a href="#cases">Корпуса</a><a href="#bench">Бенчмарк</a><a href="#modules">Модули</a><a href="#docs">Документы</a><a href="en/" hreflang="en">English</a></nav>
   <h1>Букифон <span style="color:var(--mut);font-weight:400">/ Bukifon</span></h1>
   <p class="sub">Открытый настольный <strong>синтезатор + сэмплер + платформа модулей</strong>. 3D-печатный корпус, открытые схемы KiCad, открытая прошивка C++.<br><strong>Народный инструмент:</strong> комплект от <strong>≤ $200</strong> (S3) до <strong>≤ $400</strong> (полный с P4 и картриджами).</p>
-  <span class="badge">v0.12.1</span><span class="badge">CERN-OHL-S-2.0</span><span class="badge">GPL-3.0-or-later</span><span class="badge">клин 8° · 380×210×61.5</span><span class="badge">Wi-Fi + BT</span><span class="badge">USB HID + MIDI + UAC2</span>
+  <span class="badge">v0.13.0</span><span class="badge">CERN-OHL-S-2.0</span><span class="badge">GPL-3.0-or-later</span><span class="badge">клин 8° · 380×210×61.5</span><span class="badge">Wi-Fi + BT</span><span class="badge">USB HID + MIDI + UAC2</span>
   <p style="margin-top:20px">
     <a class="cta" href="https://github.com/martiyanov/bukifon">GitHub</a>
     <a class="cta alt" href="https://github.com/martiyanov/bukifon/blob/main/docs/12-roadmap.md">Дорожная карта</a>
@@ -136,13 +136,15 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
 </section>
 
 <section id="status">
-  <h2>Статус (v0.12.1)</h2>
+  <h2>Статус (v0.13.0)</h2>
   <p><strong>Host-демо уже работает:</strong> интерфейс 800×480, 4 дорожки × 16 шагов, play/stop, BPM, mute, p-lock, save/load с CRC, Module API v0 — 112 host-тестов, 83.5 % покрытия. Сборка ESP32-S3 проходит. Корпус v0.5-B (клин 8°) напечатан в модели, CORE-2/PANEL-2 — pre-freeze (ERC 0 ошибок).</p>
   <p><img src="assets/ui-main.jpg" alt="Host-демо интерфейса Букифона 800×480: статус-бар, 4 дорожки, панель параметров, transport" loading="lazy"></p>
   <ul>
     <li>✅ панель v0.4: 42 клавиши, 16 энкодеров, экран 5″, 10 джеков, 2 фейдера — пересечений 0;</li>
     <li>✅ корпус v0.5-B: <strong>клин 8°</strong>, 380×210×61.5, 6 STL watertight, fitcheck 32/0, профиль 1:1;</li>
     <li>✅ host-демо: UI 800×480, секвенсор 4×16, save/load, Module API v0 — <strong>112/112 тестов</strong>, покрытие 83.5 %; сборки S3 и RP2040 проходят;</li>
+    <li>✅ <strong>LCD-адаптер</strong> FFC-40 для HotLCD ST7262 (ERC 0/0) и <strong>release bundle</strong> 339 файлов/15 МБ с SHA256;</li>
+    <li>✅ <strong>USB HS UAC2 8×8</strong> дескрипторы, factory self-test 14 тестов, <strong>203/203 тестов</strong>;</li>
     <li>✅ <strong>Product BOM S3</strong>: COGS $189/$166/$149 на 1/10/25 шт; $199 — founders beta; S3 Complete $249–269;</li>
     <li>✅ сборка: карта 4 стр (слои, панель 1:1, шлейфы), гайд, print-first; B-light 230 г/11.1 ч;</li>
     <li>✅ прошивка: <strong>146/146 тестов</strong>, S3 HAL сборка SUCCESS, UI 4 режимов, Module API v0.1;</li>
@@ -166,7 +168,7 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
      <strong>A</strong> — плоский 302 г (студия/стол), <strong>B</strong> — клин 8° 277 г,
      <strong>B-light</strong> — 230 г / 11.1 ч (народная версия), <strong>C</strong> — 12° 314 г
      с закрытым отсеком 1S2P, складной подставкой и кабельным каналом. Fitcheck — 0 конфликтов.</p>
-  <p><a href="https://github.com/martiyanov/bukifon/blob/main/docs/45-case-variants.md">docs/45-case-variants</a> · <a href="https://github.com/martiyanov/bukifon/blob/main/renders/templates/bukifon_assembly_map_1to1.pdf">сборочная карта</a></p>
+  <p><a href="https://github.com/martiyanov/bukifon/blob/main/docs/50-downloads.md">скачать STL/PDF/BOM</a> · <a href="https://github.com/martiyanov/bukifon/blob/main/docs/45-case-variants.md">docs/45-case-variants</a> · <a href="https://github.com/martiyanov/bukifon/blob/main/renders/templates/bukifon_assembly_map_1to1.pdf">сборочная карта</a></p>
 </section>
 
 <section id="modes-showcase">

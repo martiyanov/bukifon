@@ -154,3 +154,89 @@ station with `--out`.
    that are still stubs in the spike/firmware (see docs/39).
 5. Production fixture still needs the resistive fixture-ID signature and
    calibrations written to 24C32; not modelled in the host CLI.
+
+---
+
+## 9. Enabling real backends on the bench (bring-up order)
+
+Host/CI runs all backends as **MOCK**.  On the stand, real drivers are enabled
+**one backend at a time**; after every step run the self-test and only proceed
+when the newly real tests PASS.  Compile-time defaults live in
+`firmware/src/factory/hw_backends.hpp` (`BUKIFON_HW_<NAME>` = `BUKIFON_HW_MOCK`
+or `BUKIFON_HW_REAL`), runtime switching uses `HwConfig` + `HybridHardware`.
+
+Build with individual backends real (repeat `-D` per subsystem):
+
+```bash
+# example: first I2C only (everything else stays MOCK)
+pio run -d firmware -e p4 \
+  -D BUKIFON_HW_I2C=BUKIFON_HW_REAL
+# next: panel/controls + I2C
+  ... -D BUKIFON_HW_CONTROLS=BUKIFON_HW_REAL
+# codec, display, SD, USB, CV/MIDI in that order
+  ... -D BUKIFON_HW_I2S=BUKIFON_HW_REAL
+  ... -D BUKIFON_HW_DISPLAY=BUKIFON_HW_REAL
+  ... -D BUKIFON_HW_SD=BUKIFON_HW_REAL
+  ... -D BUKIFON_HW_USB=BUKIFON_HW_REAL
+  ... -D BUKIFON_HW_CV=BUKIFON_HW_REAL -D BUKIFON_HW_MIDI=BUKIFON_HW_REAL
+```
+
+Runtime equivalent (station firmware; `HybridHardware` picks per method):
+
+```cpp
+factory::P4FactoryHardware real;   // TODO(hw) implementations on P4
+factory::MockHardware mock;
+factory::HwConfig config;          // defaults from BUKIFON_HW_* macros
+config.set(factory::HwBackend::I2c, factory::HwMode::Real);
+factory::HybridHardware hardware(real, mock, config);
+factory::factoryCliMain(argc, argv, hardware, stdout);
+```
+
+Mapping (which factory tests use which backend):
+
+| Backend flag | Tests affected |
+|---|---|
+| `BUKIFON_HW_I2C` | 1 power-on, 2 I²C scan, 3 MCP23017, 10 MAX17048 |
+| `BUKIFON_HW_ADC` | 4 MCP3208 vector |
+| `BUKIFON_HW_DAC` | 5 MCP4728→MCP3208/CV loopback |
+| `BUKIFON_HW_I2S` | 6 codec loopback |
+| `BUKIFON_HW_SD` | 7 SD scratch |
+| `BUKIFON_HW_DISPLAY` | 8 display patterns, 9 WS2812 current |
+| `BUKIFON_HW_USB` | 11 USB composite |
+| `BUKIFON_HW_CONTROLS` | 12 controls |
+| `BUKIFON_HW_CV` | 13 CV/GATE loopback |
+| `BUKIFON_HW_MIDI` | 14 MIDI loopback |
+
+**Order and safety (follow exactly):**
+
+1. **I2C** (rails, 24C32, MCP23017, MAX17048).  Bench PSU 5 V with **current
+   limit 100–200 mA** for the first power-up; check 3.3 V (3.0–3.6 V), PWR_GOOD,
+   no brownout; `factory --json --stop-on-fail` → tests 1–3,10 PASS.  If I²C
+   fails: stop, check pull-ups (2.2 kΩ) and addresses; do not enable more.
+2. **PANEL / controls** (`BUKIFON_HW_CONTROLS`): MCP23017 expanders + keys/
+   encoders/faders; test 12.  Current limit may be raised to 300 mA; check no
+   reset when scanning all 16 encoders.
+3. **CODEC** (`BUKIFON_HW_I2S`): PCM5102A/PCM1808; loopback plug; test 6
+   (1 kHz/−12 dBFS, THD<−60 dB).  Watch for pops/DC offset; keep volume low.
+4. **DISPLAY** (`BUKIFON_HW_DISPLAY`): RGB565/DSI panel + backlight; tests 8–9
+   (patterns + WS2812 current).  Increase current limit only after the display
+   rails are verified.
+5. **SD** (`BUKIFON_HW_SD`): 1-bit/4-bit card; test 7 (1 MiB CRC32 ≥0.7 MB/s).
+   Pull-card test: remove during write — project must not be lost (docs/36 #5).
+6. **USB** (`BUKIFON_HW_USB`): HS composite enumeration on the PC (CDC+MIDI+
+   HID+UAC2); test 11.  Reconnect without reboot.
+7. **CV / MIDI** (`BUKIFON_HW_CV`, `BUKIFON_HW_MIDI`): loopback plug; tests 13–14.
+   Check gate voltage divider and 0–4 V CV accuracy before connecting external
+   gear.
+
+**Protection rules:** current-limited PSU at every step; series 100–220 Ω on
+first bring-up prototypes; never hot-plug the FPC/IDC with power on; ESD wrist
+strap; keep the loopback plug's CV path 10 kΩ (no direct 5 V into ADC); stop
+immediately on brownout (`brownoutCount != 0`), 3.3 V outside 3.0–3.6 V, or
+temperature >60 °C on the bench board.  A failed step is rolled back by setting
+that backend back to MOCK — the remaining tests stay meaningful.
+
+**Expected factory behavior:** a REAL backend whose driver is a TODO stub returns
+false and the mapped test FAILs (no fabricated PASS); MOCK backends keep working
+independently.  This is covered by `tests/test_hw_backends.cpp` (all-MOCK PASS,
+all-REAL-stub 14/14 FAIL, one-by-one mapping).

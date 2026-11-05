@@ -93,7 +93,7 @@ S3-base — «lite later»; сокращённый DFM — [`dfm.md`](dfm.md), �
 
 ## Файлы
 
-`CORE-S3.kicad_sch` (+`.kicad_pro`), `CORE-S3.pdf`, `CORE-S3.svg`, `netlist.net/xml`,
+`CORE-S3.kicad_sch` (+`.kicad_pro`), `CORE-S3.pdf`, `CORE-S3.svg.gz`, `netlist.net/xml`,
 `erc/erc.rpt` (**0 errors / 0 warnings**), `BOM-cores3.csv`, `pinmap.md/.csv`,
 `power-tree.md`, `interfaces.md`, `sym-lib-table`, `picomod.kicad_sym`,
 `gen_cores3_sch.py`, `tools/board_s3.py`, `tools/gen_docs_s3.py`.

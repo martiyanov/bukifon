@@ -369,7 +369,7 @@ cd hardware/power && /opt/homebrew/bin/python3 gen_batt_sch.py     # схема 
 | `gen_batt_sch.py` | генератор схемы + ERC + PDF/SVG/netlist/BOM |
 | `tools/kicad_sch.py` | писатель `.kicad_sch` (копия `hardware/panel/tools/`, автор hw-panel) |
 | `erc/erc.rpt`, `erc/erc.json` | ERC-отчёт (`--severity-all`) |
-| `PWR-BATT-1.pdf`, `svg/PWR-BATT-1.svg` | экспорт схемы (A2, 1 лист) |
+| `PWR-BATT-1.pdf`, `svg/PWR-BATT-1.svg.gz` | экспорт схемы (A2, 1 лист) |
 | `netlist.net`, `netlist.xml` | netlist (s-expr и XML) |
 | `BOM-power.csv` | BOM: артикул, позиция, номинал, корпус, MPN/замены, примечание |
 | `availability.md` | доступность ключевых позиций (веб, с датой и ссылками) |
@@ -377,7 +377,7 @@ cd hardware/power && /opt/homebrew/bin/python3 gen_batt_sch.py     # схема 
 ```bash
 # проверка артефактов
 cd hardware/power
-ls PWR-BATT-1.kicad_sch PWR-BATT-1.kicad_pro erc/erc.rpt PWR-BATT-1.pdf svg/PWR-BATT-1.svg \
+ls PWR-BATT-1.kicad_sch PWR-BATT-1.kicad_pro erc/erc.rpt PWR-BATT-1.pdf svg/PWR-BATT-1.svg.gz \
    netlist.net netlist.xml BOM-power.csv README.md availability.md
 grep -E "ERC messages" erc/erc.rpt
 ```

@@ -1,6 +1,6 @@
 # Букифон (Bukifon) — открытая платформа: сэмплер + синтезатор + модули
 
-**Версия: 0.12.2** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
+**Версия: 0.13.0** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
 
 **Букифон** — настольный музыкальный инструмент-платформа, который собирается из
 доступных компонентов, печатается на 3D-принтере, расширяется модулями и полностью
@@ -32,12 +32,15 @@ BLE HID, передача проектов). То есть Букифон — е
 аналоговый картридж на шине 26-pin или сменная панельная дека (18 пэдов / 42 клавиши).
 Подробнее — [spec/00-vision.md §12](spec/00-vision.md).
 
-## Текущее состояние (v0.12.2)
+## Текущее состояние (v0.13.0)
 
 | Блок | Состояние |
 |---|---|
 | **Панель v0.4** | 380 × 210 × 3 мм: 42 клавиши Lapka-42 (точная геометрия, ±18°), 16 энкодеров Ø14, экран 5.0″ 800×480 без рамки, 10 mini-jack, 2 фейдера 60 мм; пересечений 0 |
 | **Корпус v0.5-B** | **клин 8°**: 380 × 210 × 61.5 мм (перед 32 / зад 61.5), 6 деталей watertight, печать без поддержек 279 г / 18.3 ч, fitcheck 32/0, профиль 1:1 для картонной проверки |
+| **LCD-адаптер** | FFC-40 breakout для HotLCD ST7262 (31×0R pinout-jumper, 35 TP, JST подсветки), ERC 0/0 — проверка экрана на стенде до PCB (`docs/49`) |
+| **Release bundle** | `tools/make_release_bundle.sh` → 339 файлов / 15 МБ, SHA256SUMS; `RELEASE_BUNDLE.md`, `docs/50` |
+| **Медиа** | PNG→JPEG (60 файлов, −83 МБ), SVG→.svg.gz (19, −46 МБ), дубликаты убраны; tracked **71 МБ** (`docs/52`) |
 | **Дисплей** | RGB565 поверх RGB888 FPC-40: **TFT-H050A1SVIST4R40** (HotLCD/ST7262, 40-pin, 1000 нит, $18–25), резерв NHD/EJ050NA; DSI — rev.3.1 (`docs/47`) |
 | **PWR-стенд** | 13 измерений до PCB (`docs/44`); BOM: база $123.92 + EVM $153 = **$276.92** (вариант A, D-79); breadboard запрещён |
 | **Корпуса** | A flat 302 г · B 8° 277 г · **B-light 230 г / 11.1 ч** · C 12° 314 г (батарейный отсек, подставка) — `docs/45` |
@@ -84,7 +87,11 @@ BLE HID, передача проектов). То есть Букифон — е
 | [docs/29-p1-order.md](docs/29-p1-order.md) | точный список заказа P1-стенда (что, где, сколько) |
 | [docs/30-security-purge.md](docs/30-security-purge.md) | запрос на purge старых PII-объектов GitHub (SHA) |
 | [docs/31-core-s3-constraints.md](docs/31-core-s3-constraints.md) | CORE-S3: GPIO 31, 1-bit SD, USB endpoint ceiling, RGB+1FB, TPS63802 |
-| [docs/32-progress-report.md](docs/32-progress-report.md) | сводный отчёт v0.4→v0.9.1: вехи, блокеры, следующий шаг |
+| [docs/32-progress-report.md](docs/32-progress-report.md) | сводный отчёт v0.4→v0.13.0: вехи, блокеры, следующий шаг |
+| [docs/49-lcd-adapter.md](docs/49-lcd-adapter.md) | LCD FFC-40 адаптер и pinout J12 |
+| [docs/50-downloads.md](docs/50-downloads.md) | где скачать STL/PDF/BOM/прошивку |
+| [docs/51-pwr-log.md](docs/51-pwr-log.md) | журнал 13 измерений PWR и матрица go/no-go |
+| [docs/52-media-policy.md](docs/52-media-policy.md) | форматы медиа и размер репозитория |
 | [docs/33-bom-s3.md](docs/33-bom-s3.md) | product BOM S3-base: COGS 1/10/25, опции, маржа |
 | [docs/34-assembly.md](docs/34-assembly.md) | пошаговая сборка S3-base (B-light) |
 | [docs/35-print-first.md](docs/35-print-first.md) | что печатать первым и как проверить жёсткость |
@@ -113,7 +120,7 @@ BLE HID, передача проектов). То есть Букифон — е
 | Разъёмы под экраном | **нет** (по ТЗ) |
 
 Превью: [renders/templates/bukifon_v04_render.png](renders/templates/bukifon_v04_render.png),
-сравнение с концептом заказчика: [renders/templates/bukifon_v04_vs_concept.png](renders/templates/bukifon_v04_vs_concept.png).
+сравнение с концептом заказчика: [renders/templates/bukifon_v04_vs_concept.jpg](renders/templates/bukifon_v04_vs_concept.jpg).
 
 ## 3D-печать (корпус v0.4)
 

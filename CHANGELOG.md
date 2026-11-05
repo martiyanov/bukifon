@@ -2,6 +2,26 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.13.0] — 2025-11-06 — «Стенд-адаптер, USB HS, лёгкий репозиторий»
+
+### Добавлено
+- **LCD-адаптер FFC-40** `hardware/panel2/adapter-lcd/` (HotLCD ST7262): 31×0R pinout-jumper,
+  35 тест-поинтов, JST для внешней подсветки 18–22 В, ERC **0/0**; `docs/49` — таблица
+  J12↔FPC-40↔панель, проверки мультиметром, правила FFC; O-15 «ждёт образец».
+- **USB HS UAC2 8×8** `firmware/src/usb/uac2_8x8.*`: дескрипторы 300 B, 8 интерфейсов,
+  9 endpoints (агрегация каналов; per-channel 8×8 = 23/15 невозможно), JSON для анализатора;
+  **RGB565 backend** (52 full/130 partial fps модель) и **factory REAL/MOCK хуки** (14 тестов,
+  mock не фабрикует PASS); **203/203 тестов**.
+- **Release bundle** `tools/make_release_bundle.sh`, `RELEASE_BUNDLE.md`, `docs/50`: 339 файлов,
+  15 МБ, SHA256SUMS, SBOM; страница загрузок.
+- **Журнал PWR** `docs/51`: 13 измерений T1–T13 + матрица go/no-go для PCB.
+
+### Изменено (размер репозитория)
+- **60 PNG → JPEG** (`tools/optimize_images.sh`) — экономия **~83 МБ**;
+- **19 KiCad SVG → .svg.gz** (`tools/compress_svg.sh`) — экономия **~46 МБ**;
+- удалены дубликаты SVG; tracked **71 МБ** вместо ~218 МБ; политика — `docs/52`;
+- `docs/41`: при пересоздании репозитория — свежая история (`.git` 134 МБ → ~71 МБ).
+
 ## [0.12.2] — 2025-11-06 — «PWR-стенд закрыт»
 
 ### Исправлено

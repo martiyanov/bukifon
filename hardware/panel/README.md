@@ -21,9 +21,9 @@ X 0…315 вправо, Y 0…145 вперёд, мм).
 
 ```
 hardware/panel/
-├── panel-1/     panel-1.kicad_sch  panel-1.pdf  panel-1.svg/  panel-1.net
-├── deck-pad/    deck-pad.kicad_sch deck-pad.pdf deck-pad.svg/ deck-pad.net
-├── deck-keys/   deck-keys.kicad_sch deck-keys.pdf deck-keys.svg/ deck-keys.net
+├── panel-1/     panel-1.kicad_sch  panel-1.pdf  panel-1.svg.gz/  panel-1.net
+├── deck-pad/    deck-pad.kicad_sch deck-pad.pdf deck-pad.svg.gz/ deck-pad.net
+├── deck-keys/   deck-keys.kicad_sch deck-keys.pdf deck-keys.svg.gz/ deck-keys.net
 ├── erc/         <плата>-erc.rpt  (ERC-отчёты KiCad), <плата>-bom.csv (BOM KiCad)
 ├── matrix-tables.md   таблицы: 48 бит 74HC165, матрица пэдов 3×6, матрица клавиш 6×7,
 │                      каналы 74HC4067/FSR, LED-цепочки, координаты ↔ цепи, DECK_ID

@@ -35,6 +35,7 @@ BENCH_OBJ   := $(patsubst $(BENCH_DIR)/%.cpp,$(BUILD)/bench_obj/%.o,$(BENCH_FILE
 TEST_BIN   := $(BUILD)/bukifon_tests
 RENDER_BIN := $(BUILD)/bukifon_render
 FACTORY_BIN := $(BUILD)/bukifon_factory
+USB_DUMP_BIN := $(BUILD)/usb_dump
 SIM_BIN    := $(BUILD)/bukifon_sim
 
 .PHONY: all test render sim demo clean
@@ -74,6 +75,18 @@ $(TEST_BIN): $(OBJ) $(TEST_OBJ) $(EXAMPLE_OBJ) $(BENCH_OBJ)
 $(BUILD)/factory_main.o: ../app/factory_main.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+$(BUILD)/usb_dump_main.o: ../app/usb_dump_main.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+$(USB_DUMP_BIN): $(OBJ) $(BUILD)/usb_dump_main.o
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
+usbdump: $(USB_DUMP_BIN)
+	@mkdir -p ../artifacts/usb
+	./$(USB_DUMP_BIN)
 
 $(FACTORY_BIN): $(OBJ) $(BUILD)/factory_main.o
 	@mkdir -p $(dir $@)

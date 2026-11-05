@@ -33,7 +33,7 @@
 - Принят и сохранён машиночитаемый пакет заказчика v0.3: `refs/handoff_v03/` (JSON, DXF,
   SVG, CSV, OpenSCAD, HANDOFF.md), `spec/panel-spec-v0.3.json`.
 - Печатные листы 1:1: `renders/templates/bukifon_v04_panel_1to1.pdf` (2 × A4 с перекрытием).
-- Сравнение с концептом: `renders/templates/bukifon_v04_vs_concept.png`.
+- Сравнение с концептом: `renders/templates/bukifon_v04_vs_concept.jpg`.
 
 ## Как проверить
 

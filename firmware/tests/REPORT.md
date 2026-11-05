@@ -678,3 +678,76 @@ pipeline `run_tests.sh` → ALL HOST TESTS PASSED (FFT unchanged).
 4. Identity/QR writing to flash `factory_data` + 24C32 calibrations is `TODO(hw)`.
 5. Factory tests depend on TinyUSB/I2S/display backends that are still stubs
    (docs/39) — enable them before the first real EOL run.
+
+---
+
+# Round 8 — UAC2 8x8 HS descriptors, RGB565 backend, factory hooks (2026-11-05)
+
+## USB HS UAC2 8x8 (`firmware/src/usb/uac2_8x8.*`)
+
+Descriptor builder for the P4 first SKU: 8-in/8-out, 24 bit / 48 kHz, explicit
+feedback, MIDI+HID+CDC alongside.
+
+- **Measured (host)**: config **300 B**, **8 interfaces**, **9 endpoints**,
+  `wTotalLength` matches the descriptor walk; device descriptor is 18 B with
+  bcdUSB 2.00.
+- **Endpoint budget**: USB 2.0 HS has 16 addresses (EP0 + 15).  UAC2 aggregates
+  8 channels into **one ISO endpoint per direction**, so the budget is
+  `2 ISO + 1 feedback + 2 MIDI + 3 CDC + 1 HID = 9/15 → fits`.
+  A per-channel layout (`16 ISO + feedback + MIDI2 + CDC3 + HID1 = 23/15`) is
+  impossible; the builder reports it honestly and provides
+  `maxPerChannelChannelsForFit() = 4`.  Mitigation: UAC2 channel aggregation
+  (standard) or ≤4 channels per-channel; **alt settings do not free endpoint
+  addresses** (they reuse the same endpoints), so they are not a fix by
+  themselves.
+- **Format/clock**: internal fixed 48 kHz clock source descriptor (UAC2 CS
+  subtype 0x0A), AS interfaces with 8 channels, format type I 24-bit/3-byte
+  subslot, ISO packet **144 B/microframe** (8ch×3B×6), feedback endpoint 0x82
+  (4 B, interval 4), 6KRO HID report 45 B.
+- **JSON dump** for the USB analyser: `make -C firmware/host usbdump` →
+  [`firmware/artifacts/usb/uac2_8x8.json`](artifacts/usb/uac2_8x8.json)
+  (hex device/config + budget + lengths).  This is a byte-level reference, not a
+  real enumeration test (TinyUSB glue is still TODO(hw)).
+- Tests: wTotalLength/walk consistency, unique endpoint addresses, budget both
+  modes, clock/format, feedback sizing, JSON, per-channel diagnostic build.
+
+## RGB565 display backend (`firmware/src/hal/display_rgb565.*`)
+
+Interface `init / attachFramebuffer / flushRows / flushFull / flushPartial /
+beginFrame / addDirtyRect`; bounded dirty-rect list (8), 16-row bounce, host
+frame simulation.  Model from `host_p4`: **52.08 fps full**, **130.21 fps
+partial** at 800×480, 20 MHz pixel clock (full flush ≈19.2 ms).  Host simulation
+is allocation-free (alloc probe around flush path = 0).  Real esp_lcd / DSI /
+PPA path is an explicit `TODO(hw)`; backend name says so.
+
+## Factory backend enable hooks (`firmware/src/factory/hw_backends.*`)
+
+`BUKIFON_HW_{I2C,ADC,DAC,I2S,SD,DISPLAY,USB,CONTROLS,CV,MIDI}` = REAL/MOCK
+(default MOCK in host builds; override with `-D...=BUKIFON_HW_REAL`), runtime
+`HwConfig` + `HybridHardware` delegating per subsystem.  Mapping: I2C covers
+power/I²C/MCP23017/MAX17048, ADC→MCP3208, DAC→CV DAC loopback, I2S→codec,
+SD→scratch, DISPLAY→patterns+WS2812, USB→composite, CONTROLS→keys/encoders/
+faders, CV→CV/GATE loopback, MIDI→DIN loopback.  Tests prove: all-MOCK 14/14
+PASS; all-REAL with P4 stubs 14/14 FAIL (**mock never fabricates PASS**); each
+backend switched individually fails exactly its mapped tests while mock-backed
+tests stay PASS; runtime flags independent.  Bench enable order and protection
+rules are in [docs/46-factory-test.md](../docs/46-factory-test.md) §9
+(I2C → panel/controls → codec → display → SD → USB → CV/MIDI).
+
+## Tests
+
+**203 / 203 PASS** (183 pre-existing untouched; +20: 9 UAC2, 5 display, 6 hw
+backends).  `run_tests.sh` → ALL HOST TESTS PASSED (FFT unchanged).
+`make -C firmware/host usbdump` produces the descriptor JSON artifact.
+
+## Risks / limits
+
+1. Descriptors are byte-checked on the host; **no real USB analyser/TinyUSB
+   enumeration** yet.  UAC2 8x8 requires the P4 HS PHY (P4 build still
+   unavailable — no P4 PlatformIO board).
+2. Per-channel 8×8 endpoint layout is impossible on HS (23>15); the product must
+   use UAC2 channel aggregation (implemented) or ≤4 channels if per-channel is
+   ever required.
+3. RGB565 backend is a host model; esp_lcd/DSI/PPA + bounce DMA are TODO(hw).
+4. Factory REAL backends are still TODO stubs; switching them on the bench will
+   require implementing `P4FactoryHardware` (docs/46 §9 order).

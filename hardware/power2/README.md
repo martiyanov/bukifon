@@ -72,7 +72,7 @@ freeze-пакет — [`docs/schema/pwr2.md`](../../docs/schema/pwr2.md).
 | Файл | Что это |
 |---|---|
 | `PWR-2.kicad_sch` + `PWR-2.kicad_pro` | схема KiCad 10 (S-expr 20250114, 1 лист A0), 128 компонентов, 59 цепей |
-| `PWR-2.pdf`, `svg/PWR-2.svg` | экспорт схемы (баннер PRE-FREEZE на листе) |
+| `PWR-2.pdf`, `svg/PWR-2.svg.gz` | экспорт схемы (баннер PRE-FREEZE на листе) |
 | `erc/erc.rpt`, `erc/erc.json` | ERC (`kicad-cli sch erc --severity-all`): **0 errors / 0 warnings** |
 | `netlist.net`, `netlist.xml` | netlist (s-expr и XML, относительные пути в `<source>`) |
 | `BOM-power2.csv` | BOM: артикул PM-PWR2-NNN; MPN (draft); номинал; кол-во; позиции; корпус; примечание |

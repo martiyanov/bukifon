@@ -1,0 +1,10 @@
+Номинал;Позиционное обозначение;Корпус / footprint;Артикул (черновой);Кол-во;Примечание;DNP
+0R;R1 R10 R11 R12 R13 R14 R15 R16 R17 R18 R19 R2 R20 R21 R22 R23 R24 R25 R26 R27 R28 R29 R3 R30 R31 R33 R34 R35 R4 R5 R6 R7 R8 R9;Resistor_SMD:R_0603_1608Metric;RC0603FR-070RL;34;перемычки пин-аута (DNP/замена = переназначение линии);
+100n;C2 C3;Capacitor_SMD:C_0603_1608Metric;CC0603KRX7R9BB104;2;bypass 3V3 панели;
+10k;R32;Resistor_SMD:R_0603_1608Metric;RC0603FR-0710KL;1;подтяжка DISP (DISP по умолчанию ON);
+10u;C1;Capacitor_SMD:C_0603_1608Metric;CL10A106KP8NNNC;1;bulk 3V3 панели;
+FFC40_ZIF;J1 J2;Connector_FFC-FPC:Hirose_FH12-40S-0.5SH_1x40-1MP_P0.50mm_Horizontal;Hirose FH12-40S-0.5SH (ZIF, 0.5 мм, нижний контакт);2;ZIF FFC-40 0.5 мм (Hirose FH12-40S-0.5SH);
+JST2;J3;Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical;JST PH 2-pin (B2B-PH-K) — вход внешнего boost подсветки 18…22 В;1;вход внешнего boost подсветки 18…22 В;
+M3;H1 H2 H3 H4;MountingHole:MountingHole_3.2mm_M3;Винт M3 + гайка (крепление панели);4;крепление панели M3;
+TP;TP1 TP10 TP11 TP12 TP13 TP14 TP15 TP16 TP17 TP18 TP19 TP2 TP20 TP21 TP22 TP23 TP24 TP25 TP26 TP27 TP28 TP29 TP3 TP30 TP31 TP32 TP33 TP34 TP35 TP4 TP5 TP6 TP7 TP8 TP9;TestPoint:TestPoint_Pad_D1.5mm;Test point pad 1.5 мм;35;тестпоинт;
+ИТОГО;;;;80;8 уникальных позиций;

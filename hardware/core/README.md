@@ -38,7 +38,7 @@
 | `tools/kicad_sch.py` | минимальный писатель `.kicad_sch` (адаптирован из `hardware/panel/tools/`, автор hw-panel) |
 | `tools/gen_blocks.py` | генератор блок-диаграммы |
 | `erc/erc.rpt`, `erc/erc.json` | отчёт ERC (`kicad-cli sch erc --severity-all`) |
-| `CORE-1.pdf`, `CORE-1.svg` | экспорт схемы (A0, 1 лист) |
+| `CORE-1.pdf`, `CORE-1.svg.gz` | экспорт схемы (A0, 1 лист) |
 | `netlist.net`, `netlist.xml` | netlist (KiCad S-expr и XML) |
 | `BOM-core.csv` | BOM: артикул (внутренний код), номинал, кол-во, позиции, корпус, примечание |
 | `wiring-jacks.md` | таблицы: джеки → цепь → клеммник → шина/PANEL, карты MCP3208/MCP4728/Pico |
@@ -145,7 +145,7 @@ cd hardware/core
 
 ```bash
 cd hardware/core
-ls CORE-1.kicad_sch CORE-1.kicad_pro erc/erc.rpt CORE-1.pdf CORE-1.svg \
+ls CORE-1.kicad_sch CORE-1.kicad_pro erc/erc.rpt CORE-1.pdf CORE-1.svg.gz \
    netlist.net BOM-core.csv wiring-jacks.md README.md
 head -5 BOM-core.csv
 grep -c '|' wiring-jacks.md
