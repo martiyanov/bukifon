@@ -97,10 +97,10 @@ def build_C():
             continue  # SD pullups not needed in SPI mode
     # TPS63000 3V3 buck-boost from VSYS (D-41)
     C.extend([
-     dict(ref='U46', lib=('Regulator_Switching','TPS63000'), val='TPS63000 (3.3 V buck-boost)',
+     dict(ref='U46', lib=('Regulator_Switching','TPS63000'), val='TPS63000 (placeholder; replace with TPS63802/TPS63020, O-18)',
           nets={'1':'3V3','2':'LX2','3':'PGND','4':'LX1','5':'VSYS','6':'VSYS',
                 '7':'VSYS','8':'VSYS','9':'PGND','10':'FB3V3','11':'PGND'},
-          fp='Package_SON:VSON-10-1EP_3x3mm_P0.5mm_EP1.65x2.4mm', note='D-41: 3V3 from VSYS (3.0-4.4 V), 1 A',
+          fp='Package_SON:VSON-10-1EP_3x3mm_P0.5mm_EP1.65x2.4mm', note='D-41/O-18: 3V3 1 A cont / >=1.5 A transient from VSYS; symbol/footprint must be replaced before PCB (TPS63802 or TPS63020)',
           sec=P, section=P, unit=1, on_board=True),
      dict(ref='L5', lib=('Device','L'), val='1.5uH', nets={'1':'LX1','2':'LX2'},
           fp='Inductor_SMD:L_1210_3225Metric', note='TPS63000 inductor', sec=P, section=P, unit=1, on_board=True),

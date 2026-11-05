@@ -96,7 +96,7 @@ PM-S3-094;;SMAJ5.0A;1;D1;Diode_SMD:D_SMA;TVS по VBUS
 PM-S3-095;;SS34;7;D18 D19 D2 D21 D22 D28 D7;Diode_SMD:D_SMA;"40 V Schottky; diode-OR external 12 V (PWR-2); rev.2: N12_EXT series back-feed protection; reverse protection; reverse p"
 PM-S3-096;;TL072;1;U33;Package_DIP:DIP-8_W7.62mm;"LINE/PHONES buffer L; LINE/PHONES buffer R; power"
 PM-S3-097;;TL074;4;U37 U38 U39 U45;Package_DIP:DIP-14_W7.62mm;"1.65 V reference buffer; CV IN1 level shift; CV IN2 level shift; CV IN3 level shift; CV IN4 level shift; CV1 x4.9 buffer"
-PM-S3-098;;TPS63000 (3.3 V buck-boost);1;U46;Package_SON:VSON-10-1EP_3x3mm_P0.5mm_EP1.65x2.4mm;D-41: 3V3 from VSYS (3.0-4.4 V), 1 A
+PM-S3-098;;"TPS63000 (placeholder; replace with TPS63802/TPS63020, O-18)";1;U46;Package_SON:VSON-10-1EP_3x3mm_P0.5mm_EP1.65x2.4mm;"D-41/O-18: 3V3 1 A cont / >=1.5 A transient from VSYS; symbol/footprint must be replaced before PCB (TPS63802 or TPS6302"
 PM-S3-099;;USB-C 16P (data+charge);1;J1;Connector_USB:USB_C_Receptacle_HRO_TYPE-C-31-M-12;"USB 2.0 HS composite: HID+MIDI+UAC2+CDC (TinyUSB); rear wall"
 PM-S3-100;;USBLC6-2SC6;1;U20;Package_TO_SOT_SMD:SOT-23-6;ESD/клэмп USB HS пары
 PM-S3-101;;USB_HS_DM;1;TP12;-;USB D-

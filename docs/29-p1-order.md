@@ -1,4 +1,4 @@
-# P1: точный список заказа (стенд бенчмарка)
+# P1: точный список заказа (стенд бенчмарка) — **УТВЕРЖДЁН заказчиком 06.11.2025 (D-60)**
 
 Цель — за минимальные деньги получить ответ «какой MCU тянет Букифон».
 Контекст и протокол измерений: [docs/26-p1-bench-kit.md](26-p1-bench-kit.md),
@@ -8,10 +8,10 @@ workload: [docs/05](05-benchmark-workload.md), howto: [docs/05a](05a-benchmark-h
 
 | # | Позиция (точный тип) | Где искать | Кол-во | Цена, $ |
 |---|---|---|---:|---:|
-| 1 | **ESP32-P4-Function-EV-Board** (ESP32-P4 + 32 МБ PSRAM, USB HS, DSI) | Mouser/Espressif store, LCSC | 1 | 55–70 |
-| 2 | **NUCLEO-H743ZI2** (STM32H743, LTDC, HS USB через ULPI) | Mouser 511-NUCLEO-H743ZI2, ST store | 1 | 27–33 |
-| 3 | **PCM5102A DAC module** (I2S, 3.3 В) | AliExpress «PCM5102A DAC board», LCSC | 1 | 3–5 |
-| 4 | **PCM1808 ADC module** (I2S in) | AliExpress «PCM1808 ADC board» | 1 | 3–6 |
+| 1 | **ESP32-P4-Function-EV-Board** (ESP32-P4, 32 МБ PSRAM, USB HS, DSI) — Mouser **356-ESP32P4FNEVBRD** | [Mouser](https://www.mouser.com/c/?q=356-ESP32P4FNEVBRD), Espressif store | 1 | 55–70 |
+| 2 | **NUCLEO-H743ZI2** (STM32H743, LTDC, HS USB) — Mouser **511-NUCLEO-H743ZI2** (в части регионов «obsolete» → NUCLEO-H753ZI как аналог) | [Mouser](https://www.mouser.com/ProductDetail/STMicroelectronics/NUCLEO-H743ZI2) | 1 | 27–40 |
+| 3 | **PCM5102A DAC module** (I2S, 3.3 В, GY-PCM5102) | AliExpress/LCSC «PCM5102A DAC module» | 1 | 2–6 |
+| 4 | **PCM1808 ADC module** (I2S in) | AliExpress «PCM1808 ADC board» / LCSC PCM1808EVM (C17384468) | 1 | 3–8 |
 | 5 | USB-C кабель данных (USB 2.0, 480 Мбит/с) ×2 | любой | 2 | 3–6 |
 | 6 | USB-C хаб с внешним питанием (для HS + заряд) | любой | 1 | 10–15 |
 | 7 | Лабораторный БП 0–30 В / ≥3 А с ограничением тока | местный магазин/Amazon | 1 | 40–70 |
