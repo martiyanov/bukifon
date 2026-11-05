@@ -230,14 +230,21 @@ def exports():
     sanitize()
 
 def write_bom():
+    # O-17: multi-unit symbols (TL074/TL072) appear once per unit in C; a BOM row
+    # must count physical packages, so refs are de-duplicated and qty = #packages.
     groups = {}
     for c in C:
         key = (c['val'], c['fp'])
-        groups.setdefault(key, []).append(c['ref'])
+        g = groups.setdefault(key, {'refs': {}, 'notes': set()})
+        g['refs'][c['ref']] = True
+        if c.get('note'):
+            g['notes'].add(c['note'])
     rows = []
-    for i, ((val, fp), refs) in enumerate(sorted(groups.items(), key=lambda kv: kv[0][0])):
-        rows.append(['PM-S3-%03d' % (i+1), '', val, str(len(refs)), ' '.join(sorted(refs)),
-                     fp or '-', ''])
+    for i, ((val, fp), g) in enumerate(sorted(groups.items(), key=lambda kv: kv[0][0])):
+        refs = sorted(g['refs'])
+        notes = '; '.join(sorted(g['notes']))[:120]
+        rows.append(['PM-S3-%03d' % (i+1), '', val, str(len(refs)), ' '.join(refs),
+                     fp or '-', notes])
     with open(os.path.join(HERE, 'BOM-cores3.csv'), 'w', newline='', encoding='utf-8') as fh:
         w = csv.writer(fh, delimiter=';')
         w.writerow(['Артикул', 'MPN (draft)', 'Номинал/Тип', 'Кол-во', 'Позиции', 'Корпус', 'Примечание'])
