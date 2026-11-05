@@ -11,10 +11,10 @@
 | card | `#0e2024` | `#1f1710` | `#12261a` | `#f2ede2` |
 | line | `#1e3a3f` | `#3a2a16` | `#23402c` | `#b9ae9a` |
 | text | `#d7ecef` | `#f2e6d2` | `#d8f5dc` | `#2a241c` |
-| muted | `#7fb6bc` | `#b99b74` | `#7fbf92` | `#6e6253` |
-| accent | `#4fd1e0` | `#ffb347` | `#5cff8a` | `#c8452c` |
-| green | `#38c172` | `#7fbf5f` | `#38c172` | `#4f8a3d` |
-| orange | `#f6993f` | `#f08a24` | `#c9d96b` | `#d97724` |
+| muted | `#7fb6bc` | `#b99b74` | `#7fbf92` | `#5f5548` |
+| accent | `#4fd1e0` | `#ffb347` | `#5cff8a` | `#a8321f` |
+| green | `#38c172` | `#7fbf5f` | `#38c172` | `#3f6f2e` |
+| orange | `#f6993f` | `#f08a24` | `#c9d96b` | `#9a4a10` |
 | blue | `#4aa3ff` | `#5fa8d3` | `#6fd3c0` | `#3d6e8f` |
 | red | `#ff5c5c` | `#e5544b` | `#ff6b5c` | `#b0301f` |
 | purple | `#b07cff` | `#c9a0dc` | `#9ccf7a` | `#8a5a9e` |

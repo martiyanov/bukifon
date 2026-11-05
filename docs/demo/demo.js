@@ -23,7 +23,7 @@ const THEMES = {
   night:  { name:"Night",   bg:"#0a1a1d", panel:"#0d2428", card:"#0e2024", line:"#1e3a3f", text:"#d7ecef", muted:"#7fb6bc", accent:"#4fd1e0", green:"#38c172", orange:"#f6993f", blue:"#4aa3ff", red:"#ff5c5c", purple:"#b07cff" },
   amber:  { name:"Amber",   bg:"#0e0b08", panel:"#1a130c", card:"#1f1710", line:"#3a2a16", text:"#f2e6d2", muted:"#b99b74", accent:"#ffb347", green:"#7fbf5f", orange:"#f08a24", blue:"#5fa8d3", red:"#e5544b", purple:"#c9a0dc" },
   green:  { name:"Phosphor",bg:"#0a140c", panel:"#102016", card:"#12261a", line:"#23402c", text:"#d8f5dc", muted:"#7fbf92", accent:"#5cff8a", green:"#38c172", orange:"#c9d96b", blue:"#6fd3c0", red:"#ff6b5c", purple:"#9ccf7a" },
-  cream:  { name:"Cream",   bg:"#e8e2d4", panel:"#dcd4c4", card:"#f2ede2", line:"#b9ae9a", text:"#2a241c", muted:"#6e6253", accent:"#c8452c", green:"#4f8a3d", orange:"#d97724", blue:"#3d6e8f", red:"#b0301f", purple:"#8a5a9e" },
+  cream:  { name:"Cream",   bg:"#e8e2d4", panel:"#dcd4c4", card:"#f2ede2", line:"#b9ae9a", text:"#2a241c", muted:"#5f5548", accent:"#a8321f", green:"#3f6f2e", orange:"#9a4a10", blue:"#3d6e8f", red:"#9c2a1a", purple:"#8a5a9e" },
 };
 const PART_NAMES = ["FAT SAW", "FM BELL", "POLY VOX", "LADDER LEAD"];
 const SCALES = [[0,0,7,12,3,10,5,7],[0,12,7,16,19,24,14,21],[0,7,12,16,19,21,24,28],[0,2,5,7,12,14,17,19]];
@@ -473,16 +473,16 @@ function draw(){
   ctx.clearRect(0,0,W,H); ctx.fillStyle=T.bg; ctx.fillRect(0,0,W,H);
   // header
   ctx.fillStyle=T.panel; ctx.fillRect(0,0,W,44);
-  ctx.fillStyle=T.accent; ctx.font="700 24px Inter, system-ui, sans-serif"; ctx.fillText("БУКИФОН",14,30);
+  ctx.fillStyle=T.accent; ctx.font="700 26px Inter, system-ui, sans-serif"; ctx.fillText("БУКИФОН",14,32);
   MODES.forEach((m,i)=>{
     const x=196+i*104,y=8;
     ctx.fillStyle=i===state.mode?T.accent:T.card; roundRect(x,y,96,22,5); ctx.fill();
-    ctx.fillStyle=i===state.mode?"#04140b":T.muted; ctx.font="700 11px Inter"; ctx.textAlign="center"; ctx.fillText(m,x+48,y+15); ctx.textAlign="left";
+    ctx.fillStyle=i===state.mode?"#04140b":T.muted; ctx.font="700 12px Inter"; ctx.textAlign="center"; ctx.fillText(m,x+48,y+15); ctx.textAlign="left";
   });
   // info
   const info=[["BPM",String(state.bpm)],["STEP",String(state.step).padStart(2,"0")],["PAGE",PAGES[state.page]],["THEME",T.name]];
-  info.forEach(([k,v],i)=>{ ctx.fillStyle=T.muted; ctx.font="600 10px Inter"; ctx.fillText(k,20+i*70,62); ctx.fillStyle=T.text; ctx.font="700 14px Inter"; ctx.fillText(v,20+i*70,78); });
-  if(state.playing){ ctx.fillStyle=T.green; ctx.fillRect(300,58,8,8); ctx.fillStyle=T.muted; ctx.font="600 10px Inter"; ctx.fillText("PLAY",312,66); }
+  info.forEach(([k,v],i)=>{ ctx.fillStyle=T.muted; ctx.font="600 11px Inter"; ctx.fillText(k,20+i*70,62); ctx.fillStyle=T.text; ctx.font="700 16px Inter"; ctx.fillText(v,20+i*70,80); });
+  if(state.playing){ ctx.fillStyle=T.green; ctx.fillRect(300,58,8,8); ctx.fillStyle=T.muted; ctx.font="600 11px Inter"; ctx.fillText("PLAY",312,66); }
   if(state.recording){ const a=0.5+0.5*Math.sin(Date.now()/180); ctx.fillStyle=`rgba(255,92,92,${a.toFixed(2)})`; ctx.beginPath(); ctx.arc(372,62,6,0,Math.PI*2); ctx.fill(); ctx.fillStyle=T.red; ctx.font="700 10px Inter"; ctx.fillText("REC",384,66); }
 
   if(state.mode===0) drawSynth();
@@ -513,65 +513,60 @@ function drawShiftOverlay(){
 function drawStatusBar(){
   const lvl=analyser?analyseLevel():0;
   ctx.fillStyle=T.panel; ctx.fillRect(0,444,W,36);
-  ctx.fillStyle=T.muted; ctx.font="600 10px Inter"; ctx.fillText("MASTER",14,466);
+  ctx.fillStyle=T.muted; ctx.font="600 11px Inter"; ctx.fillText("MASTER",14,466);
   ctx.fillStyle=T.line; ctx.fillRect(70,456,220,10);
   ctx.fillStyle=T.green; ctx.fillRect(70,456,220*clamp(lvl,0,1),10);
-  ctx.fillStyle=T.muted; ctx.font="600 10px Inter"; ctx.fillText(`FADERS: ${state.faderMode} · SHIFT+ФЕЙДЕР = ГРОМКОСТЬ · SPACE = PLAY · Ctrl+Z = UNDO`,306,466);
+  ctx.fillStyle=T.muted; ctx.font="600 11px Inter"; ctx.fillText(`FADERS: ${state.faderMode} · SHIFT+ФЕЙДЕР = ГРОМКОСТЬ · SPACE = PLAY · Ctrl+Z = UNDO`,306,466);
 }
 function drawSynth(){
-  const top=96, rowH=66;
+  // 4 партии × 16 шагов (компактно), затем 16 параметров зеркально ручкам панели:
+  // левые 4 колонки = А–З (страница), правые 4 = И–П (макросы).
+  const top=96, rowH=56;
   for(let pi=0;pi<4;pi++){
     const part=state.parts[pi], y=top+pi*rowH, color=partColor(pi);
     ctx.fillStyle=T.card; roundRect(8,y,W-16,rowH-6,6); ctx.fill();
     if(state.selParts.has(pi)){ ctx.strokeStyle=T.accent; ctx.lineWidth=1.5; roundRect(8,y,W-16,rowH-6,6); ctx.stroke(); }
-    if(pi===state.selPart){ ctx.fillStyle=T.accent; ctx.beginPath(); ctx.arc(W-24,y+16,4,0,Math.PI*2); ctx.fill(); }
-    ctx.fillStyle=color; ctx.font="700 12px Inter"; ctx.fillText(`PART ${pi+1}`,18,y+18);
-    ctx.fillStyle=part.mute?T.red:T.muted; ctx.font="600 10px Inter";
-    ctx.fillText(part.name+(part.mute?" · MUTE":"")+(part.active?"":" · OFF"),18,y+34);
-    ctx.fillStyle=color; ctx.fillRect(18,y+42,70*clamp(part.pages[0][0]/12000,0,1),4);
-    for(let s=0;s<16;s++){
-      const x=128+s*40, sy=y+12, sw=36, sh=rowH-44, st=part.steps[s];
-      ctx.fillStyle=state.playing&&state.step===s?T.line:T.bg; roundRect(x,sy,sw,sh,4); ctx.fill();
-      if(st.on){ ctx.fillStyle=st.accent?T.orange:(s%4===0?color:T.green); roundRect(x+2,sy+2,sw-4,sh-4,3); ctx.fill(); }
-      if(state.playing&&state.step===s){ ctx.strokeStyle=T.accent; ctx.lineWidth=2; roundRect(x-1,sy-1,sw+2,sh+2,5); ctx.stroke(); }
-      ctx.fillStyle=T.muted; ctx.font="9px Inter"; ctx.fillText(String(s+1),x+2,sy-3);
+    if(pi===state.selPart){ ctx.fillStyle=T.accent; ctx.beginPath(); ctx.arc(W-20,y+14,4,0,Math.PI*2); ctx.fill(); }
+    ctx.fillStyle=color; ctx.font="700 13px Inter"; ctx.fillText(`PART ${pi+1}`,16,y+18);
+    ctx.fillStyle=part.mute?T.red:T.muted; ctx.font="600 11px Inter";
+    ctx.fillText(part.name+(part.mute?" · MUTE":"")+(part.active?"":" · OFF"),16,y+34);
+    ctx.fillStyle=color; ctx.fillRect(16,y+42,60*clamp(part.pages[0][0]/12000,0,1),4);
+    for(let s2=0;s2<16;s2++){
+      const x=112+s2*42, sy=y+10, sw=38, sh=rowH-30, st=part.steps[s2];
+      ctx.fillStyle=state.playing&&state.step===s2?T.line:T.bg; roundRect(x,sy,sw,sh,4); ctx.fill();
+      if(st.on){ ctx.fillStyle=st.accent?T.orange:(s2%4===0?color:T.green); roundRect(x+2,sy+2,sw-4,sh-4,3); ctx.fill(); }
+      if(state.playing&&state.step===s2){ ctx.strokeStyle=T.accent; ctx.lineWidth=2; roundRect(x-1,sy-1,sw+2,sh+2,5); ctx.stroke(); }
+      ctx.fillStyle=T.muted; ctx.font="600 10px Inter"; ctx.fillText(String(s2+1),x+2,sy-2);
     }
   }
-  // page tabs
+  // --- 16 параметров: зеркально 16 ручкам (левые 4 колонки А–З, правые 4 И–П) ---
+  const gy=326, cellH=44;
+  const lettersL=["А","Б","В","Г","Д","Е","Ж","З"], lettersR=["И","Й","К","Л","М","Н","О","П"];
+  const leftNames=["CUTOFF","RESON","ENV AMT","DRIVE","ATK","DEC","SUS","REL"];
+  const macros=[["CUT","cut"],["RES","res"],["ATK","atk"],["REL","rel"],["DLY","dly"],["DRV","drv"],["CRSH","crsh"],["MST","mst"]];
+  const cellW=(W-24-16)/8;
+  for(let i=0;i<16;i++){
+    const row=Math.floor(i/8), col=i%8;
+    const x=12+col*cellW, y=gy+row*cellH, w=cellW-6;
+    ctx.fillStyle=T.card; roundRect(x,y,w,cellH-6,5); ctx.fill();
+    let label, val, frac, letter, isMacro=col>=4;
+    if(!isMacro){ const p=pval(); const pi=row*4+col; label=leftNames[pi]; val=fmtParam(state.page,pi,p[pi]); frac=clamp((p[pi]-pmin(state.page,pi))/(pmax(state.page,pi)-pmin(state.page,pi)),0,1); letter=lettersL[row*4+col]; }
+    else { const mi=(row*4)+(col-4); const m=MACRO[mi]; label=m.label; const v=m.get(); val=fmtParam(0, mi<8? [0,1,3,4,5,6,7,2][mi] : 0, v); frac=clamp((v-m.min)/(m.max-m.min),0,1); letter=lettersR[row*4+(col-4)]; }
+    ctx.fillStyle=T.muted; ctx.font="600 12px Inter"; ctx.fillText(`${letter} · ${label}`,x+5,y+13);
+    ctx.fillStyle=T.text; ctx.font="700 18px Inter"; ctx.fillText(val,x+5,y+32);
+    ctx.fillStyle=T.line; ctx.fillRect(x+5,y+cellH-13,w-10,4);
+    ctx.fillStyle=T.accent; ctx.fillRect(x+5,y+cellH-13,(w-10)*frac,4);
+  }
+  // разделитель «страница | макросы»
+  ctx.fillStyle=T.line; ctx.fillRect(12+4*cellW-3,gy-2,2,cellH*2-8);
+  ctx.fillStyle=T.muted; ctx.font="600 9px Inter"; ctx.fillText("СТРАНИЦА",12+cellW*1.1,gy-5); ctx.fillText("МАКРОСЫ",12+cellW*4.6,gy-5);
+  // табы страниц
   PAGES.forEach((pg,i)=>{
-    const x=18+i*92,y=372;
-    ctx.fillStyle=i===state.page?T.accent:T.line; roundRect(x,y,84,18,4); ctx.fill();
-    ctx.fillStyle=i===state.page?"#04140b":T.muted; ctx.font="700 10px Inter"; ctx.textAlign="center"; ctx.fillText(pg,x+42,y+13); ctx.textAlign="left";
+    const x=12+i*84,y=412;
+    ctx.fillStyle=i===state.page?T.accent:T.line; roundRect(x,y,78,20,4); ctx.fill();
+    ctx.fillStyle=i===state.page?"#04140b":T.muted; ctx.font="700 12px Inter"; ctx.textAlign="center"; ctx.fillText(pg,x+39,y+15); ctx.textAlign="left";
   });
-  // params
-  const p=pval();
-  for(let i=0;i<8;i++){
-    const x=18+i*97, y=400;
-    ctx.fillStyle=T.muted; ctx.font="600 9px Inter"; ctx.fillText(PAGE_PARAMS[state.page][i],x,y+10);
-    ctx.fillStyle=T.line; ctx.fillRect(x,y+16,86,5);
-    ctx.fillStyle=T.accent; ctx.fillRect(x,y+16,86*clamp((p[i]-pmin(state.page,i))/(pmax(state.page,i)-pmin(state.page,i)),0,1),5);
-    ctx.fillStyle=T.text; ctx.font="700 11px Inter"; ctx.fillText(fmtParam(state.page,i,p[i]),x,y+40);
-    ctx.fillStyle=T.line; ctx.font="600 8px Inter"; ctx.fillText(`E${i+1}`,x+70,y+40);
-  }
-  if(state.page===4){
-    const gp=genParams(state.parts[state.selPart]);
-    const dens=Math.round(gp[1]), ring=euclidPattern(dens);
-    ctx.fillStyle=T.card; roundRect(470,368,300,32,6); ctx.fill();
-    ctx.fillStyle=T.muted; ctx.font="600 10px Inter";
-    ctx.fillText(`GEN · ${SCALE_NAMES[Math.round(gp[3])]||"OFF"} · prob ${Math.round(gp[0])}% · mut ${Math.round(gp[2])} · evolve ${Math.round(gp[6])?"ON":"OFF"} · seed ${state.seed}`,478,382);
-    for(let i=0;i<16;i++){ ctx.beginPath(); ctx.arc(700+i*4.2,406,3,0,Math.PI*2); ctx.fillStyle=ring[i]?T.accent:T.line; ctx.fill(); }
-  }
-  // mod-visible: LFO-маркер на cutoff
-  if(state.page===0){
-    const t=Date.now()/700, lfo=Math.sin(t)*(state.modOn?20:0);
-    const x=18+92*clamp((state.parts[state.selPart].pages[0][0]/12000),0,1);
-    ctx.beginPath(); ctx.arc(clamp(x+lfo,12,790),415,4,0,Math.PI*2); ctx.fillStyle=state.modOn?T.orange:T.muted; ctx.fill();
-  }
-  // theme switcher (small swatches bottom-right)
-  const names=Object.keys(THEMES);
-  names.forEach((n,i)=>{
-    const x=690-i*0, y=0;
-  });
+  // темы — кружки в шапке
   Object.keys(THEMES).forEach((n,i)=>{
     const x=W-74+i*18, y=22;
     ctx.beginPath(); ctx.arc(x,y,7,0,Math.PI*2); ctx.fillStyle=THEMES[n].bg; ctx.fill();
