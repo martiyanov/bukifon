@@ -4,7 +4,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 TMP=$(mktemp -d); IDX=$(mktemp)
 trap 'rm -rf "$TMP" "$IDX"' EXIT
-cp -R docs/index.html docs/en docs/assets docs/sitemap.xml docs/robots.txt docs/llms.txt "$TMP"/
+cp -R docs/index.html docs/en docs/assets docs/demo docs/sitemap.xml docs/robots.txt docs/llms.txt "$TMP"/
 [ -f docs/.nojekyll ] && cp docs/.nojekyll "$TMP"/.nojekyll
 GIT_INDEX_FILE="$IDX" git read-tree --empty
 GIT_INDEX_FILE="$IDX" git --work-tree="$TMP" add -A -- .
