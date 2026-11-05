@@ -73,10 +73,10 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
 </head>
 <body>
 <header><div class="wrap">
-  <nav><a href="#about">About</a><a href="#modes">Modes</a><a href="#hardware">Hardware</a><a href="#status">Status</a><a href="#bench">Benchmark</a><a href="#modules">Modules</a><a href="#docs">Docs</a><a href="../" hreflang="ru">Русский</a></nav>
+  <nav><a href="#about">About</a><a href="#modes">Modes</a><a href="#hardware">Hardware</a><a href="#status">Status</a><a href="#kit">Kit</a><a href="#bench">Benchmark</a><a href="#modules">Modules</a><a href="#docs">Docs</a><a href="../" hreflang="ru">Русский</a></nav>
   <h1>Bukifon <span style="color:var(--mut);font-weight:400">/ Букифон</span></h1>
   <p class="sub">An open-source desktop <strong>synthesizer + sampler + module platform</strong>. 3D-printed case, open KiCad schematics, open C++ firmware.<br><strong>A people's instrument:</strong> kits from <strong>≤ $200</strong> (S3) to <strong>≤ $400</strong> (full P4 + cartridges).</p>
-  <span class="badge">v0.7.0</span><span class="badge">CERN-OHL-S-2.0</span><span class="badge">GPL-3.0-or-later</span><span class="badge">8° wedge · 380×210×61.5</span><span class="badge">Wi-Fi + BT</span><span class="badge">USB HID + MIDI + UAC2</span>
+  <span class="badge">v0.8.0</span><span class="badge">CERN-OHL-S-2.0</span><span class="badge">GPL-3.0-or-later</span><span class="badge">8° wedge · 380×210×61.5</span><span class="badge">Wi-Fi + BT</span><span class="badge">USB HID + MIDI + UAC2</span>
   <p style="margin-top:20px">
     <a class="cta" href="https://github.com/martiyanov/bukifon">GitHub</a>
     <a class="cta alt" href="https://github.com/martiyanov/bukifon/blob/main/docs/12-roadmap.md">Roadmap</a>
@@ -136,7 +136,7 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
 </section>
 
 <section id="status">
-  <h2>Status (v0.7.0)</h2>
+  <h2>Status (v0.8.0)</h2>
   <p><strong>The host demo already runs:</strong> 800×480 UI, 4 tracks × 16 steps, play/stop, BPM, mute, p-lock, CRC save/load, Module API v0 — 112 host tests, 83.5 % coverage. ESP32-S3 build passes. Case v0.5-B (8° wedge) is modelled; CORE-2/PANEL-2 are pre-freeze (ERC 0 errors).</p>
   <p><img src="../assets/ui-main.jpg" alt="Bukifon 800×480 host demo UI: status bar, 4 tracks, parameter panel, transport" loading="lazy"></p>
   <ul>
@@ -151,6 +151,15 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
     <li>🔄 next: audio core, sampler, module SDK, pilot run of 10–20 units, v1.0 release.</li>
   </ul>
   <p><img src="../assets/compare.jpg" alt="Approved concept versus v0.4 layout comparison" loading="lazy"></p>
+</section>
+
+<section id="kit">
+  <h2>First kit: S3-base kit — <strong>$199</strong></h2>
+  <p>“People’s instrument” is not about cutting controls: it is an honest product BOM and volume purchasing. The kit includes CORE-S3, PANEL-2, simplified PWR-2, a 5″ display, case and fasteners, 42 hot-swap Choc keys, 16 encoders, 2 faders, 10 jacks, CV/GATE, printed knobs and basic keycaps. Options: cartridges, microSD, PSU, battery pack, premium keycaps.</p>
+  <p>Batch 10–25, direct sale, limited DIY/beta. P4 standard ($299) after the P1 benchmark; full ($399) as a cartridge bundle. Details — <a href="https://github.com/martiyanov/bukifon/blob/main/docs/27-costdown.md">docs/27-costdown</a>.</p>
+  <p><a href="https://github.com/martiyanov/bukifon/blob/main/docs/26-p1-bench-kit.md">P1 bench</a> ·
+     <a href="https://github.com/martiyanov/bukifon/blob/main/docs/28-paper-kit.md">1:1 paper kit</a> ·
+     <a href="https://github.com/martiyanov/bukifon/raw/main/renders/templates/bukifon_paperkit_1to1.pdf">paperkit PDF</a></p>
 </section>
 
 <section id="bench">

@@ -1,6 +1,6 @@
 # Букифон (Bukifon) — открытая платформа: сэмплер + синтезатор + модули
 
-**Версия: 0.7.0** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
+**Версия: 0.8.0** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
 
 **Букифон** — настольный музыкальный инструмент-платформа, который собирается из
 доступных компонентов, печатается на 3D-принтере, расширяется модулями и полностью
@@ -32,7 +32,7 @@ BLE HID, передача проектов). То есть Букифон — е
 аналоговый картридж на шине 26-pin или сменная панельная дека (18 пэдов / 42 клавиши).
 Подробнее — [spec/00-vision.md §12](spec/00-vision.md).
 
-## Текущее состояние (v0.7.0)
+## Текущее состояние (v0.8.0)
 
 | Блок | Состояние |
 |---|---|
@@ -41,6 +41,9 @@ BLE HID, передача проектов). То есть Букифон — е
 | **PWR-2 rev.1** | батарея 1S2P + BMS BQ297 + **MAX17048** + рельсы шины: +12 В 330 мА (TPS61088), −12 В 95 мА (LMR33630 IBB), +5 В 1.6 А, +5V_LED; master load-switch, EN рельсов, питание только от BQ24074 OUT/VSYS; ERC **0/0**, PRE-FREEZE |
 | **Электроника rev.1** | **CORE-2** (ESP32-P4 + ESP32-C6 Wi-Fi/BLE по SPI, USB HS composite, аудио PCM5102A/PCM1808, CV, MIDI, шина) — ERC **0/0**, pinmap PASS (54/55 GPIO), **PRE-FREEZE**; **PANEL-2** (16 энкодеров + 42 клавиши через 4× MCP23017, LCD, 10 джеков, 2 фейдера, 3 шлейфа) — ERC 0 errors / 6 warnings, **PRE-FREEZE**. Не заказывать до бенчмарка P1 |
 | **Прошивка v0.6** | host-демо UI 800×480, секвенсор 4×16 (хранение 8 дорожек), save/load с CRC16, Module API v0, режимы Synth/Sampler/DAW/USB-keyboard, каркасы USB composite и BLE/Wi-Fi; **120/120 тестов**; сборки ESP32-S3 и RP2040; P4 — toolchain пока нет |
+| **P1-стенд** | `docs/26` — что купить (P4 EV, H743, S3, PCM5102A/1808, дисплей, SD, БП/нагрузка), схема стенда, протокол измерений и таблица решения; без стенда MCU не фиксируется |
+| **Cost-down / первый SKU** | `docs/27`: product BOM вместо «мастерской», S3-base **kit $199** (партия 10–25, direct-sale), P4 $299 после P1, full $399 bundle; батарея — не россыпь 18650 |
+| **Бумажный макет** | `renders/templates/bukifon_paperkit_1to1.pdf` (4 стр: панель 1:1 ×2, профиль 8°, карта 7 проверок) + `docs/28` |
 | **Бенчмарк P1** | workload freeze + харнесс `firmware/bench` (7 сценариев, JSON/CSV, детерминизм, 0 аллокаций): host worst **218 µs** = 16.4 % дедлайна, 431 µs запаса до критерия 650 µs; `bench_s3` собран, стенды P4/H743 — следующие |
 | **SDK модулей** | Module API v0 (10 функций, лимиты, WCET/bypass), каталог `modules/` (template + gain_fx C++ + LFO Lua), `tools/validate_module.py`, `tools/new_module.sh`, CI `modules.yml` |
 | **BOM (draft)** | 92 позиции: база ≈ 21 657 ₽ (~$271), полный ≈ 32 518 ₽ (~$406); «народная» цель ≤ $200 / стандарт ≤ $300 — cost-down план в spec/00 §13 |
@@ -64,6 +67,9 @@ BLE HID, передача проектов). То есть Букифон — е
 | [docs/23-nightly-report.md](docs/23-nightly-report.md) | отчёт ночи: что готово/симулируется/нельзя заказывать |
 | [docs/24-module-sdk.md](docs/24-module-sdk.md) | SDK модулей: Module API v0, упаковка, ограничения |
 | [docs/25-power-architecture.md](docs/25-power-architecture.md) | питание: ±12 В, BQ24074, MAX17048, земля, стенд до PCB |
+| [docs/26-p1-bench-kit.md](docs/26-p1-bench-kit.md) | P1-стенд: закупка, схема, протокол измерений, таблица решения MCU |
+| [docs/27-costdown.md](docs/27-costdown.md) | cost-down, product BOM, первый SKU S3-kit $199, батарея, дефицит |
+| [docs/28-paper-kit.md](docs/28-paper-kit.md) | бумажный макет 1:1 за 30 минут: 7 проверок эргономики |
 | [docs/05-benchmark-workload.md](docs/05-benchmark-workload.md) | workload freeze P1 и критерии |
 | [docs/05a-benchmark-howto.md](docs/05a-benchmark-howto.md) | как запустить бенчмарк на S3/P4/H743 |
 | [modules/](modules/) | каталог модулей: шаблон, примеры gain_fx и LFO |

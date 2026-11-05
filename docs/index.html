@@ -73,10 +73,10 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
 </head>
 <body>
 <header><div class="wrap">
-  <nav><a href="#about">О проекте</a><a href="#modes">Режимы</a><a href="#hardware">Железо</a><a href="#status">Статус</a><a href="#bench">Бенчмарк</a><a href="#modules">Модули</a><a href="#docs">Документы</a><a href="en/" hreflang="en">English</a></nav>
+  <nav><a href="#about">О проекте</a><a href="#modes">Режимы</a><a href="#hardware">Железо</a><a href="#status">Статус</a><a href="#kit">Комплект</a><a href="#bench">Бенчмарк</a><a href="#modules">Модули</a><a href="#docs">Документы</a><a href="en/" hreflang="en">English</a></nav>
   <h1>Букифон <span style="color:var(--mut);font-weight:400">/ Bukifon</span></h1>
   <p class="sub">Открытый настольный <strong>синтезатор + сэмплер + платформа модулей</strong>. 3D-печатный корпус, открытые схемы KiCad, открытая прошивка C++.<br><strong>Народный инструмент:</strong> комплект от <strong>≤ $200</strong> (S3) до <strong>≤ $400</strong> (полный с P4 и картриджами).</p>
-  <span class="badge">v0.7.0</span><span class="badge">CERN-OHL-S-2.0</span><span class="badge">GPL-3.0-or-later</span><span class="badge">клин 8° · 380×210×61.5</span><span class="badge">Wi-Fi + BT</span><span class="badge">USB HID + MIDI + UAC2</span>
+  <span class="badge">v0.8.0</span><span class="badge">CERN-OHL-S-2.0</span><span class="badge">GPL-3.0-or-later</span><span class="badge">клин 8° · 380×210×61.5</span><span class="badge">Wi-Fi + BT</span><span class="badge">USB HID + MIDI + UAC2</span>
   <p style="margin-top:20px">
     <a class="cta" href="https://github.com/martiyanov/bukifon">GitHub</a>
     <a class="cta alt" href="https://github.com/martiyanov/bukifon/blob/main/docs/12-roadmap.md">Дорожная карта</a>
@@ -136,7 +136,7 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
 </section>
 
 <section id="status">
-  <h2>Статус (v0.7.0)</h2>
+  <h2>Статус (v0.8.0)</h2>
   <p><strong>Host-демо уже работает:</strong> интерфейс 800×480, 4 дорожки × 16 шагов, play/stop, BPM, mute, p-lock, save/load с CRC, Module API v0 — 112 host-тестов, 83.5 % покрытия. Сборка ESP32-S3 проходит. Корпус v0.5-B (клин 8°) напечатан в модели, CORE-2/PANEL-2 — pre-freeze (ERC 0 ошибок).</p>
   <p><img src="assets/ui-main.jpg" alt="Host-демо интерфейса Букифона 800×480: статус-бар, 4 дорожки, панель параметров, transport" loading="lazy"></p>
   <ul>
@@ -151,6 +151,15 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
     <li>🔄 дальше: аудиоядро, сэмплер, SDK модулей, пилот 10–20 шт, релиз v1.0.</li>
   </ul>
   <p><img src="assets/compare.jpg" alt="Сравнение утверждённого концепта и раскладки v0.4" loading="lazy"></p>
+</section>
+
+<section id="kit">
+  <h2>Первый комплект: S3-base kit — <strong>$199</strong></h2>
+  <p>«Народность» — это не урезание органов управления, а честный product BOM и закупка. В kit входят CORE-S3, PANEL-2, упрощённый PWR-2, дисплей 5″, корпус и крепёж, 42 клавиши Choc с hot-swap, 16 энкодеров, 2 фейдера, 10 джеков, CV/GATE, печатные ручки и базовые колпачки. Опции: картриджи, microSD, БП, аккумуляторный pack, премиальные колпачки.</p>
+  <p>Партия 10–25, direct-sale, статус limited DIY/beta. P4-стандарт ($299) — после P1-бенчмарка; full ($399) — bundle с картриджами. Подробный разбор — <a href="https://github.com/martiyanov/bukifon/blob/main/docs/27-costdown.md">docs/27-costdown</a>.</p>
+  <p><a href="https://github.com/martiyanov/bukifon/blob/main/docs/26-p1-bench-kit.md">P1-стенд</a> ·
+     <a href="https://github.com/martiyanov/bukifon/blob/main/docs/28-paper-kit.md">бумажный макет 1:1</a> ·
+     <a href="https://github.com/martiyanov/bukifon/raw/main/renders/templates/bukifon_paperkit_1to1.pdf">paperkit PDF</a></p>
 </section>
 
 <section id="bench">
