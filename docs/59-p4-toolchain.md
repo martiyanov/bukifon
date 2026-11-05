@@ -158,3 +158,17 @@ Required IDF/managed components for steps 3–5:
    RGB565 backend is currently a host model (`display_rgb565`), not esp_lcd.
 6. **C6 esp-hosted** (Wi-Fi/BLE over SPI) is a separate integration; P4 first
    SKU can ship without Wi-Fi/BLE if the P1 schedule demands it.
+
+## 8. Проверенная сборка (06.11.2025, pole)
+
+| Параметр | Значение |
+|---|---|
+| Хост | `pole` (Tailscale, 8 ядер, 30 ГБ RAM, RTX 3060), Ubuntu, python3.12 |
+| ESP-IDF | **v5.5** (`git clone --depth 1 -b v5.5 --recursive`), tools через `install.sh esp32p4` |
+| Python env | создан `virtualenv` в `~/.espressif/python_env/idf5.5_py3.12_env` (в системе нет `python3-venv`) |
+| Target | `esp32p4`, custom board (CORE-2 пады) |
+| Команда | `idf.py set-target esp32p4 && idf.py build` |
+| Результат | **SUCCESS**: `bukifon_p4.bin` **250 240 B** (0x3e480), bootloader+table+app собираются, app-раздел 83 % свободен |
+| Найдено и исправлено | `file(GLOB ... CONFIGURE_DEPENDS)` в `components/bukifon_engine/CMakeLists.txt` — недопустим в script-режиме IDF 5.5; заменено на обычный GLOB |
+| Что дальше | прошить на P4 devkit: `idf.py -p PORT flash monitor`; ожидаемый лог: target=esp32p4, PSRAM 32 MiB, CPU 400 MHz, I2C-скан 8/8 |
+| Повторить | `bash tools/home_offload.sh run "cd firmware/idf_p4 && idf.py build"` (после `sync`) |

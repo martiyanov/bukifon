@@ -2,6 +2,17 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.18.0] — 2025-11-06 — «P4 собирается»
+
+### Добавлено
+- **ESP-IDF P4 сборка проверена** на домашнем ПК `pole`: IDF v5.5, `esp32p4`,
+  `idf.py set-target esp32p4 && idf.py build` → **SUCCESS**; `bukifon_p4.bin` **250 240 B**,
+  bootloader/partition-table собираются, app-раздел 83 % свободен (docs/59 §8).
+- Найден и исправлен баг скаффолда: `CONFIGURE_DEPENDS` в `components/bukifon_engine/CMakeLists.txt`
+  недопустим в script-режиме IDF 5.5.
+- Python-окружение IDF на `pole` создано через `virtualenv` (в системе нет `python3-venv`).
+- docs/32/59 обновлены: P4-toolchain больше не «не проверено», а проверено.
+
 ## [0.17.1] — 2025-11-06 — «Бандлы и P4-сборка»
 
 ### Изменено

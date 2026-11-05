@@ -10,8 +10,8 @@
 #
 # The component stays buildable with no sources until the engine is copied in.
 set(BUKIFON_SRCS "")
-file(GLOB_RECURSE BUKIFON_ENGINE_SOURCES CONFIGURE_DEPENDS
-     "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp")
+# Без CONFIGURE_DEPENDS: в script-режиме IDF этот флаг недопустим.
+file(GLOB_RECURSE BUKIFON_ENGINE_SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp")
 if(BUKIFON_ENGINE_SOURCES)
     list(APPEND BUKIFON_SRCS ${BUKIFON_ENGINE_SOURCES})
 elseif(EXISTS "${CMAKE_CURRENT_LIST_DIR}/engine_unity.cpp")
