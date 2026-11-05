@@ -1,6 +1,6 @@
 # Букифон (Bukifon) — открытая платформа: сэмплер + синтезатор + модули
 
-**Версия: 0.6.2** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
+**Версия: 0.7.0** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
 
 **Букифон** — настольный музыкальный инструмент-платформа, который собирается из
 доступных компонентов, печатается на 3D-принтере, расширяется модулями и полностью
@@ -32,14 +32,17 @@ BLE HID, передача проектов). То есть Букифон — е
 аналоговый картридж на шине 26-pin или сменная панельная дека (18 пэдов / 42 клавиши).
 Подробнее — [spec/00-vision.md §12](spec/00-vision.md).
 
-## Текущее состояние (v0.6.2)
+## Текущее состояние (v0.7.0)
 
 | Блок | Состояние |
 |---|---|
 | **Панель v0.4** | 380 × 210 × 3 мм: 42 клавиши Lapka-42 (точная геометрия, ±18°), 16 энкодеров Ø14, экран 5.0″ 800×480 без рамки, 10 mini-jack, 2 фейдера 60 мм; пересечений 0 |
 | **Корпус v0.5-B** | **клин 8°**: 380 × 210 × 61.5 мм (перед 32 / зад 61.5), 6 деталей watertight, печать без поддержек 279 г / 18.3 ч, fitcheck 32/0, профиль 1:1 для картонной проверки |
+| **PWR-2 rev.1** | батарея 1S2P + BMS BQ297 + **MAX17048** + рельсы шины: +12 В 330 мА (TPS61088), −12 В 95 мА (LMR33630 IBB), +5 В 1.6 А, +5V_LED; master load-switch, EN рельсов, питание только от BQ24074 OUT/VSYS; ERC **0/0**, PRE-FREEZE |
 | **Электроника rev.1** | **CORE-2** (ESP32-P4 + ESP32-C6 Wi-Fi/BLE по SPI, USB HS composite, аудио PCM5102A/PCM1808, CV, MIDI, шина) — ERC **0/0**, pinmap PASS (54/55 GPIO), **PRE-FREEZE**; **PANEL-2** (16 энкодеров + 42 клавиши через 4× MCP23017, LCD, 10 джеков, 2 фейдера, 3 шлейфа) — ERC 0 errors / 6 warnings, **PRE-FREEZE**. Не заказывать до бенчмарка P1 |
-| **Прошивка v0.5** | host-демо UI 800×480, секвенсор 4×16 (хранение 8 дорожек), BPM/mute/p-lock, save/load с CRC16, Module API v0 (2 примера), режимы Synth/Sampler/DAW/USB-keyboard, каркасы USB composite и BLE/Wi-Fi; **112/112 тестов**, покрытие 83.5 %; сборки ESP32-S3 (17.8 % flash) и RP2040 (37.9 % flash, RAM 87.7 %) проходят; P4 — toolchain пока нет |
+| **Прошивка v0.6** | host-демо UI 800×480, секвенсор 4×16 (хранение 8 дорожек), save/load с CRC16, Module API v0, режимы Synth/Sampler/DAW/USB-keyboard, каркасы USB composite и BLE/Wi-Fi; **120/120 тестов**; сборки ESP32-S3 и RP2040; P4 — toolchain пока нет |
+| **Бенчмарк P1** | workload freeze + харнесс `firmware/bench` (7 сценариев, JSON/CSV, детерминизм, 0 аллокаций): host worst **218 µs** = 16.4 % дедлайна, 431 µs запаса до критерия 650 µs; `bench_s3` собран, стенды P4/H743 — следующие |
+| **SDK модулей** | Module API v0 (10 функций, лимиты, WCET/bypass), каталог `modules/` (template + gain_fx C++ + LFO Lua), `tools/validate_module.py`, `tools/new_module.sh`, CI `modules.yml` |
 | **BOM (draft)** | 92 позиции: база ≈ 21 657 ₽ (~$271), полный ≈ 32 518 ₽ (~$406); «народная» цель ≤ $200 / стандарт ≤ $300 — cost-down план в spec/00 §13 |
 | **Безопасность** | история очищена от GPS EXIF и vendor-PDF с IP, санитизация путей, `SECURITY.md`, `tools/security_scan.sh` |
 

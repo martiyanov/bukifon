@@ -2,6 +2,33 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.7.0] — 2025-11-06 — «PWR-2 + бенчмарк + SDK»
+
+### Добавлено
+- **PWR-2 rev.1** (PRE-FREEZE): батарея 1S2P + BMS BQ297, MAX17048 (I²C) + резервный ADC,
+  **+12 В 330 мА** (TPS61088 sync boost + π), **−12 В 95 мА** (LMR33630 inverting buck-boost),
+  +5 В 1.6 А, +5V_LED, master load-switch, EN рельсов; питание только от BQ24074 OUT/VSYS,
+  NTC→TS, fuse 5 А; ERC **0/0**; power-tree и м��жплатные интерфейсы; решения D-27…D-36.
+- **P1-бенчмарк**: workload freeze `docs/05`, howto `docs/05a`, харнесс `firmware/bench`
+  (fm_voice, granular_track, mix_bus, psram_stream, ui_frame(+partial), usb_descriptor),
+  max/p50/p95/p99, детерминизм, JSON/CSV; host PASS (worst 218 µs = 16.4 % дедлайна,
+  запас 431 µs до 650 µs); `bench_s3` сборка; envs P4/H743 подготовлены.
+- **SDK модулей**: `docs/24-module-sdk.md`, каталог `modules/` (template, gain_fx C++,
+  lfo_module Lua — компилируются), `tools/validate_module.py`, `tools/new_module.sh`,
+  CI `.github/workflows/modules.yml`.
+- **Архитектура питания** `docs/25` по консультации GPT: бюджет ±12 В, отказ от MC34063,
+  BQ24074 OUT/VSYS, MAX17048, земля/тепло, 13 обязательных измерений до PCB.
+
+### Изменено
+- Прошивка: 120/120 тестов (было 112), bench-раздел в REPORT.md.
+- Сайт: разделы «Бенчмарк (P1)» и «Модули и SDK»; бейдж v0.7.0.
+
+### Открытые конфликты (зафиксированы в spec/90)
+- +5 В бюджет CORE-2 занижен (1.0 → 1.6 А: пропущен вход MP1584→+3V3_MCU);
+- VSYS 3 А vs пик 2.74–3.38 А — нужен прошивочный cap LED или 2S во rev.2;
+- CORE-2 rev.2 требует DNP MT3608#2/MC34063/BMS; 4 EN-линии брать с MCP23017;
+- J3 при 3 А — проверить IDC vs Micro-Fit; 1S2P vs 2S решить после замеров.
+
 ## [0.6.2] — 2025-11-06 — «VERSION и публикация»
 
 ### Исправлено
