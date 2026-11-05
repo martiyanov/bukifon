@@ -1,0 +1,18 @@
+{
+  "schema": "bukifon.module.v1",
+  "id": "bukifon.gain_fx",
+  "name": "Gain FX",
+  "version": "0.1.0",
+  "abi": 0,
+  "kind": "audio",
+  "language": "cpp",
+  "license": "GPL-3.0-or-later",
+  "author": "bukifon",
+  "description": "Диодный драйв с tone-контролем (пример Module API v0)",
+  "params": [
+    {"id": 0, "name": "Drive", "type": "float", "min": 0, "max": 1, "default": 0.5},
+    {"id": 1, "name": "Tone",  "type": "float", "min": 0, "max": 1, "default": 0.5}
+  ],
+  "files": ["src/gain_fx.cpp", "README.md", "LICENSE"],
+  "limits": {"stack_bytes": 8192, "state_bytes": 4096, "max_frames": 64}
+}

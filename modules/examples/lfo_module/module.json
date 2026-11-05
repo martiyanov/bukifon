@@ -1,0 +1,18 @@
+{
+  "schema": "bukifon.module.v1",
+  "id": "bukifon.lfo_module",
+  "name": "LFO Module",
+  "version": "0.1.0",
+  "abi": 0,
+  "kind": "control",
+  "language": "lua",
+  "license": "GPL-3.0-or-later",
+  "author": "bukifon",
+  "description": "Control-rate LFO для модуляции параметров (пример Lua-слоя)",
+  "params": [
+    {"id": 0, "name": "Rate", "type": "float", "min": 0, "max": 1, "default": 0.3},
+    {"id": 1, "name": "Depth", "type": "float", "min": 0, "max": 1, "default": 0.5}
+  ],
+  "files": ["src/lfo.lua", "README.md", "LICENSE"],
+  "limits": {"stack_bytes": 8192, "state_bytes": 4096, "max_frames": 64}
+}

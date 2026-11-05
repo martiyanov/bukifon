@@ -1,0 +1,24 @@
+Bukifon — open-source modular synthesizer
+
+Copyright (c) 2025 Bukifon contributors
+
+This project is multi-licensed by component type:
+
+  * Hardware design (schematics, PCB, BOM, mechanical design, STL, parametric
+    generators):  CERN Open Hardware Licence Version 2 — Strongly Reciprocal
+                    (CERN-OHL-S-2.0).  See LICENSE-CERN-OHL-S-2.0.
+
+  * Firmware and host tools (source code):  GNU General Public License,
+    version 3 or later (GPL-3.0-or-later).  See LICENSE-GPL-3.0-or-later.
+
+  * Documentation and artwork:  Creative Commons Attribution-ShareAlike 4.0
+    International (CC BY-SA 4.0).  See LICENSE-CC-BY-SA-4.0.
+
+SPDX identifiers for individual files:
+  hardware/**, mechanical/**, spec/**   -> CERN-OHL-S-2.0
+  firmware/**, tools/**, firmware host -> GPL-3.0-or-later
+  docs/**, README.md, text/art          -> CC-BY-SA-4.0
+
+See docs/09-licensing.md and NOTICE for details, attribution and the list of
+third-party components (KiCad symbols, Blender, Raspberry Pi Pico SDK,
+arduino-pico core, TinyUSB).

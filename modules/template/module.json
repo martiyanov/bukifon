@@ -1,0 +1,17 @@
+{
+  "schema": "bukifon.module.v1",
+  "id": "vendor.name",
+  "name": "Module Name",
+  "version": "0.1.0",
+  "abi": 0,
+  "kind": "audio",
+  "language": "cpp",
+  "license": "GPL-3.0-or-later",
+  "author": "your-handle",
+  "description": "One-line description",
+  "params": [
+    {"id": 0, "name": "Param 1", "type": "float", "min": 0, "max": 1, "default": 0.5}
+  ],
+  "files": ["src/module.cpp", "README.md", "LICENSE"],
+  "limits": {"stack_bytes": 8192, "state_bytes": 4096, "max_frames": 64}
+}
