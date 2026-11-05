@@ -3,7 +3,12 @@
 
 #include <chrono>
 #include <cstddef>
+#include <cstdio>
 #include <cstring>
+
+#if defined(ARDUINO)
+#include <esp_timer.h>
+#endif
 
 namespace bukifon {
 namespace {
@@ -38,6 +43,19 @@ bool ModuleHostV0::validate(const bukifon_module_v0_t* module) {
   return descriptorValid(desc);
 }
 
+void ModuleHostV0::resetV01State() {
+  for (int i = 0; i < kMaxSmoothers; ++i) {
+    smoothers_[i] = Smoother{};
+    lastSentParam_[i] = 0.0f;
+  }
+  hostServicesAttached_ = false;
+  inProcess_ = false;
+  logCount_ = 0;
+  logViolations_ = 0;
+  eventsSent_ = 0;
+  lastLog_[0] = '\0';
+}
+
 bool ModuleHostV0::attach(const bukifon_module_v0_t* module) {
   detach();
   if (!validate(module)) return false;
@@ -50,6 +68,20 @@ bool ModuleHostV0::attach(const bukifon_module_v0_t* module) {
   overruns_ = 0;
   bypassed_ = false;
   prepared_ = false;
+  resetV01State();
+  if (module_->attach_host) {
+    hostServices_.context = this;
+    hostServices_.now_us = &ModuleHostV0::hostNowUsThunk;
+    hostServices_.log = &ModuleHostV0::hostLogThunk;
+    if (module_->attach_host(instance_, &hostServices_) < 0) {
+      module_->destroy(instance_);
+      module_ = nullptr;
+      descriptor_ = nullptr;
+      instance_ = nullptr;
+      return false;
+    }
+    hostServicesAttached_ = true;
+  }
   return true;
 }
 
@@ -61,6 +93,7 @@ void ModuleHostV0::detach() {
   overruns_ = 0;
   bypassed_ = false;
   prepared_ = false;
+  resetV01State();
 }
 
 bool ModuleHostV0::prepare(uint32_t sampleRate) {
@@ -78,15 +111,111 @@ void ModuleHostV0::reset() {
   module_->reset(instance_);
   overruns_ = 0;
   bypassed_ = false;
+  for (int i = 0; i < kMaxSmoothers; ++i) {
+    if (smoothers_[i].initialized) {
+      smoothers_[i].current = smoothers_[i].target;
+      smoothers_[i].active = false;
+    }
+  }
+}
+
+uint64_t ModuleHostV0::hostNowUs() const {
+#if defined(ARDUINO)
+  return static_cast<uint64_t>(esp_timer_get_time());
+#else
+  using namespace std::chrono;
+  return static_cast<uint64_t>(
+      duration_cast<microseconds>(steady_clock::now().time_since_epoch()).count());
+#endif
+}
+
+uint64_t ModuleHostV0::hostNowUsThunk(void* context) {
+  return context ? static_cast<ModuleHostV0*>(context)->hostNowUs() : 0;
+}
+
+void ModuleHostV0::hostLogThunk(void* context, int level, const char* message) {
+  if (context) static_cast<ModuleHostV0*>(context)->handleLog(level, message);
+}
+
+void ModuleHostV0::handleLog(int level, const char* message) {
+  if (inProcess_) {
+    ++logViolations_;  // logging from the audio path is forbidden: drop it
+    return;
+  }
+  ++logCount_;
+  std::snprintf(lastLog_, sizeof(lastLog_), "[%d] %s", level, message ? message : "");
+}
+
+void ModuleHostV0::applySmoothing(uint32_t frames) {
+  if (!module_ || !prepared_) return;
+  const uint32_t count = descriptor_->param_count < static_cast<uint32_t>(kMaxSmoothers)
+                             ? descriptor_->param_count
+                             : static_cast<uint32_t>(kMaxSmoothers);
+  for (uint32_t id = 0; id < count; ++id) {
+    Smoother& s = smoothers_[id];
+    if (!s.active) continue;
+    const float timeSamples = s.timeMs * 0.001f * static_cast<float>(sampleRate_);
+    float alpha = 1.0f;
+    if (timeSamples > 1.0f) alpha = 1.0f - std::exp(-static_cast<float>(frames) / timeSamples);
+    s.current += (s.target - s.current) * alpha;
+    if (std::fabs(s.target - s.current) < 1e-4f) {
+      s.current = s.target;
+      s.active = false;
+    }
+    module_->set_param(instance_, static_cast<uint16_t>(id), s.current);
+    lastSentParam_[id] = s.current;
+  }
+}
+
+void ModuleHostV0::setParamSmoothed(uint16_t id, float value, float timeMs) {
+  if (!attached()) return;
+  if (id >= descriptor_->param_count || id >= kMaxSmoothers) {
+    setParam(id, value);
+    return;
+  }
+  Smoother& s = smoothers_[id];
+  if (!s.initialized) {
+    s.current = value;
+    s.target = value;
+    s.timeMs = 0.0f;
+    s.active = false;
+    s.initialized = true;
+    module_->set_param(instance_, id, value);
+    lastSentParam_[id] = value;
+    return;
+  }
+  s.target = value;
+  s.timeMs = timeMs;
+  if (timeMs <= 0.0f) {
+    s.current = value;
+    s.active = false;
+    module_->set_param(instance_, id, value);
+    lastSentParam_[id] = value;
+  } else {
+    s.active = true;
+  }
+}
+
+float ModuleHostV0::smoothedValue(uint16_t id) const {
+  if (id >= static_cast<uint16_t>(kMaxSmoothers)) return 0.0f;
+  if (smoothers_[id].initialized) return smoothers_[id].current;
+  return 0.0f;
+}
+
+bool ModuleHostV0::smoothingActive(uint16_t id) const {
+  if (id >= static_cast<uint16_t>(kMaxSmoothers)) return false;
+  return smoothers_[id].active;
+}
+
+bool ModuleHostV0::sendEvent(const bukifon_event_t& event) {
+  if (!attached() || !module_->on_event) return false;
+  module_->on_event(instance_, &event);
+  ++eventsSent_;
+  return true;
 }
 
 uint32_t ModuleHostV0::measureCost(uint32_t frames) {
-  if (costProvider_) return costProvider_(frames);
-  const auto start = std::chrono::steady_clock::now();
-  // The caller has already executed the module; this hook is only kept for the
-  // injected-cost tests.  With no provider the measured cost is reported by the
-  // process() timing path below (0 here means "use wall clock").
-  (void)start;
+  (void)frames;
   return 0;
 }
 
@@ -98,13 +227,14 @@ void ModuleHostV0::process(const float* inL, const float* inR, float* outL, floa
   while (offset < frames) {
     uint32_t chunk = static_cast<uint32_t>(frames - offset);
     if (chunk > maxFrames) chunk = maxFrames;
-    // Interleave into the ABI buffer.
     for (uint32_t i = 0; i < chunk; ++i) {
       scratchIn_[i * 2 + 0] = inL ? inL[offset + static_cast<int>(i)] : 0.0f;
       scratchIn_[i * 2 + 1] = inR ? inR[offset + static_cast<int>(i)] : 0.0f;
       scratchOut_[i * 2 + 0] = 0.0f;
       scratchOut_[i * 2 + 1] = 0.0f;
     }
+    inProcess_ = true;  // the whole ABI boundary is considered the audio path
+    applySmoothing(chunk);
     uint32_t cost = 0;
     if (!bypassed_) {
       const auto start = std::chrono::steady_clock::now();
@@ -125,6 +255,7 @@ void ModuleHostV0::process(const float* inL, const float* inR, float* outL, floa
         bypassed_ = true;
       }
     }
+    inProcess_ = false;
     for (uint32_t i = 0; i < chunk; ++i) {
       const float l = bypassed_ ? scratchIn_[i * 2 + 0] : scratchOut_[i * 2 + 0];
       const float r = bypassed_ ? scratchIn_[i * 2 + 1] : scratchOut_[i * 2 + 1];
@@ -139,6 +270,14 @@ bool ModuleHostV0::setParam(uint16_t id, float value) {
   if (!attached()) return false;
   if (id >= descriptor_->param_count) return false;
   module_->set_param(instance_, id, value);
+  if (id < static_cast<uint16_t>(kMaxSmoothers)) {
+    if (smoothers_[id].initialized) {
+      smoothers_[id].current = value;
+      smoothers_[id].target = value;
+      smoothers_[id].active = false;
+    }
+    lastSentParam_[id] = value;
+  }
   return true;
 }
 

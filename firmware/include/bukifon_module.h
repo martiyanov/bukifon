@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // =============================================================================
-//  Bukifon module API v0 — EXPERIMENTAL, NOT STABLE
+//  Bukifon module API v0.1 — EXPERIMENTAL, NOT STABLE
+//  (ABI major 0 stays backward compatible with v0 modules; minor 1 adds
+//   host services, events and host-side parameter smoothing.)
 // =============================================================================
 //
 //  This is the first, deliberately minimal module ABI for Bukifon.  It WILL
@@ -35,6 +37,7 @@ extern "C" {
 #endif
 
 #define BUKIFON_MODULE_API_VERSION 0u /* EXPERIMENTAL — unstable */
+#define BUKIFON_MODULE_API_MINOR 1u
 
 #define BUKIFON_MODULE_MAX_FRAMES 64u
 #define BUKIFON_MODULE_MAX_STACK 8192u
@@ -95,6 +98,40 @@ typedef struct bukifon_module_desc {
   uint32_t param_count; /* <= BUKIFON_MODULE_MAX_PARAMS */
 } bukifon_module_desc_t;
 
+// --- v0.1: host services ---------------------------------------------------
+// Attached once via attach_host() after create(), before prepare().  The module
+// may call now_us() any time; log() MUST NOT be called from process() (the host
+// counts such calls as real-time violations and drops the message).
+typedef struct bukifon_host_services {
+  void* context;
+  uint64_t (*now_us)(void* context);
+  void (*log)(void* context, int level, const char* message);
+} bukifon_host_services_t;
+
+// --- v0.1: events ----------------------------------------------------------
+typedef enum bukifon_event_type {
+  BUKIFON_EVENT_NONE = 0,
+  BUKIFON_EVENT_NOTE_ON = 1,
+  BUKIFON_EVENT_NOTE_OFF = 2,
+  BUKIFON_EVENT_GATE_ON = 3,
+  BUKIFON_EVENT_GATE_OFF = 4,
+  BUKIFON_EVENT_TRANSPORT_START = 5,
+  BUKIFON_EVENT_TRANSPORT_STOP = 6,
+  BUKIFON_EVENT_TRANSPORT_CONTINUE = 7,
+  BUKIFON_EVENT_TEMPO = 8,
+  BUKIFON_EVENT_PATTERN = 9,
+  BUKIFON_EVENT_PITCH_BEND = 10
+} bukifon_event_type_t;
+
+typedef struct bukifon_event {
+  uint8_t type;          /* bukifon_event_type_t */
+  uint8_t channel;       /* MIDI/part channel 0..15 */
+  uint16_t id;           /* note / CC / pattern id */
+  float value;           /* velocity 0..1, tempo BPM, bend -1..1, ... */
+  uint32_t frame_offset; /* offset inside the next process() block */
+  uint32_t reserved;
+} bukifon_event_t;
+
 typedef struct bukifon_module_v0 {
   uint32_t api_version;
   /* 1 */ const bukifon_module_desc_t* (*descriptor)(void);
@@ -108,6 +145,9 @@ typedef struct bukifon_module_v0 {
   /* 8 */ int (*save_state)(void* instance, uint8_t* out, uint32_t capacity);
   /* 9 */ int (*load_state)(void* instance, const uint8_t* data, uint32_t size);
   /* 10 */ void (*destroy)(void* instance);
+  /* --- v0.1 additions (NULL = not implemented, backward compatible) ---- */
+  /* 11 */ int (*attach_host)(void* instance, const bukifon_host_services_t* services);
+  /* 12 */ void (*on_event)(void* instance, const bukifon_event_t* event);
 } bukifon_module_v0_t;
 
 /* Entry point: one exported symbol per module binary. */

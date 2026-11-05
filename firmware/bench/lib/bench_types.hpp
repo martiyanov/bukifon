@@ -91,6 +91,12 @@ class IScenario {
   // without allocating.  Used for the determinism check.
   virtual void rewind() = 0;
   virtual Criteria criteria() const { return Criteria::audio(); }
+  // Scenario-specific (non-time) pass criteria, e.g. modelled display fps.
+  virtual bool scenarioCriteriaPass(double maxBlockUs, const char** reason) const {
+    (void)maxBlockUs;
+    if (reason) *reason = "";
+    return true;
+  }
   virtual void collectMetrics(double meanBlockUs, Metric* out, int* count) const {
     (void)meanBlockUs;
     (void)out;

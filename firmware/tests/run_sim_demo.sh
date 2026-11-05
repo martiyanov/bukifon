@@ -41,7 +41,7 @@ echo "=== 4. UI screenshots PPM -> PNG ==="
 
 echo
 echo "=== 5. artefacts ==="
-for name in main sequencer mixer modules; do
+for name in main sequencer mixer modules synth sampler daw usb_kbd; do
   png="$OUT/$name.png"
   if [ -s "$png" ]; then
     size=$(wc -c < "$png" | tr -d ' ')
@@ -52,4 +52,4 @@ for name in main sequencer mixer modules; do
   fi
 done
 echo
-echo "DEMO OK — screenshots in $OUT, event logs in $SIMOUT"
+echo "DEMO OK — 8 screenshots (4 pages + 4 device modes) in $OUT, event logs in $SIMOUT"

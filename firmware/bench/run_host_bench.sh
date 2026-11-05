@@ -13,5 +13,12 @@ echo "=== run frozen workload (host reference) ==="
   --blocks "${BENCH_BLOCKS:-2000}" --warmup "${BENCH_WARMUP:-100}"
 status=$?
 echo
-echo "results: $ROOT/results/host.json"
+echo "=== S3-base profile (host model) ==="
+"$ROOT/build/bukifon_bench" --scenario s3_profile --json "$ROOT/results/host_s3.json" \
+  --csv "$ROOT/results/host_s3.csv" --blocks "${BENCH_BLOCKS:-2000}" \
+  --warmup "${BENCH_WARMUP:-100}"
+s3_status=$?
+echo
+echo "results: $ROOT/results/host.json + host_s3.json"
+[ "$status" -eq 0 ] && exit "$s3_status"
 exit "$status"

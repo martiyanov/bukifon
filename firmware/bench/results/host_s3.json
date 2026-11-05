@@ -1,0 +1,32 @@
+{
+  "schema": "bukifon-bench-v1",
+  "tool": "bukifon-bench",
+  "platform": "macOS arm64",
+  "host": "host",
+  "compiler": "clang 21.0.0 (clang-2100.4.1.1)",
+  "timestamp": "2026-11-05T22:18:50Z",
+  "build": "host-native",
+  "notes": "Host timings are a reference for workload sanity, not a device verdict",
+  "block_frames": 64,
+  "sample_rate": 48000,
+  "deadline_us": 1333.3333,
+  "audio_max_block_us": 650.0000,
+  "all_pass": true,
+  "scenarios": [
+    {
+      "name": "s3_profile",
+      "description": "S3-base: 4 MiB pool + 750 KiB framebuffer + 25 KiB bounce, 6 FM voices + 4 granular tracks, SPI (~13 fps full) / RGB565 (>=15 fps) models, USB FS stereo (D-46/D-48/D-51)",
+      "blocks": 2000,
+      "block_frames": 64,
+      "deadline_us": 1333.3333,
+      "max_block_us": 650.0000,
+      "deterministic": true,
+      "pass": true,
+      "fail_reason": "",
+      "overruns": 0,
+      "checksum": 894414921837501835,
+      "times_us": {"min": 52.0830, "max": 177.0420, "mean": 60.3507, "p50": 54.6045, "p95": 85.7982, "p99": 116.8132},
+      "metrics": [{"name": "pool_mib", "value": 4.0000, "unit": "MiB"}, {"name": "framebuffer_kib", "value": 750.0000, "unit": "KiB"}, {"name": "bounce_kib", "value": 25.0000, "unit": "KiB"}, {"name": "spi_full_fps", "value": 13.0208, "unit": "fps"}, {"name": "spi_partial_updates_s", "value": 32.5521, "unit": "updates/s"}, {"name": "rgb_full_fps", "value": 52.0833, "unit": "fps"}, {"name": "usb_stereo_mb_s", "value": 0.2880, "unit": "MB/s"}]
+    }
+  ]
+}

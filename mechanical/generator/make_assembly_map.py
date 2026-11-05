@@ -270,11 +270,11 @@ def _panel_half_page(pdf, side):
                                fc="#e8e2d6", ec="#777", lw=0.3))
 
     ax.text(ox + (x0 + x1) / 2, oy + 210 - 196,
-            f"клавиши Lapka-42 — {'21 шт' if side == 'L' else '21 шт'} (номера по spec)",
+            "клавиши Lapka-42 — 21 шт на половину (канон ±18°)",
             fontsize=4.6, color="#eee", ha="center")
     # энкодеры
     enc = C["encoders_left"] if side == "L" else C["encoders_right"]
-    names = "ABCDEFGH"
+    names = "ABCDEFGH" if side == "L" else "IJKLMNOP"
     for i, e in enumerate(enc):
         x, y = e["center_mm"]
         if not (x0 - 10 <= x <= x1 + 10):
@@ -320,12 +320,13 @@ def _panel_half_page(pdf, side):
         if x0 - 5 <= x <= x1 + 5:
             ax.add_patch(Circle((ox + x, oy + 210 - y), 3.0, fc="none", ec="#c00",
                                 lw=0.9))
-            ax.text(ox + x + 4, oy + 210 - y + 3, "M3", fontsize=3.8, color="#c00")
+            ax.text(ox + x - 4, oy + 210 - y + 3.5, "M3", fontsize=3.8, color="#c00",
+                    ha="right")
     for (x, y) in PANEL_POSTS:
         if x0 - 5 <= x <= x1 + 5:
             ax.add_patch(Circle((ox + x, oy + 210 - y), 2.4, fc="none", ec="#990",
                                 lw=0.8, ls=(0, (1, 1))))
-            ax.text(ox + x + 3.5, oy + 210 - y - 4, "M3", fontsize=3.6, color="#990")
+            ax.text(ox + x + 3.0, oy + 210 - y - 4.5, "M3", fontsize=3.6, color="#990")
     # шип/паз по шву
     seam_x = 190.0
     ax.plot([ox + seam_x, ox + seam_x], [oy, oy + 210], color="#ff0", lw=1.2,

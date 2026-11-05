@@ -20,7 +20,7 @@ BENCH_OBJ   := $(patsubst lib/%.cpp,$(BUILD)/bench/%.o,$(BENCH_FILES))
 MAIN_OBJ    := $(BUILD)/bench_main.o
 BENCH_BIN   := $(BUILD)/bukifon_bench
 
-.PHONY: all host bench clean
+.PHONY: all host host_s3 bench clean
 
 all: $(BENCH_BIN)
 
@@ -45,6 +45,10 @@ $(BENCH_BIN): $(SRC_OBJ) $(BENCH_OBJ) $(MAIN_OBJ)
 host: $(BENCH_BIN)
 	@mkdir -p results
 	./$(BENCH_BIN) --json results/host.json --csv results/host.csv
+
+host_s3: $(BENCH_BIN)
+	@mkdir -p results
+	./$(BENCH_BIN) --scenario s3_profile --json results/host_s3.json --csv results/host_s3.csv
 
 bench: host
 

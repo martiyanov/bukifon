@@ -13,6 +13,7 @@ IScenario* createMixBusScenario();
 IScenario* createPsramStreamScenario();
 IScenario* createUiFrameScenario(bool partial);
 IScenario* createUsbDescriptorScenario();
+IScenario* createS3ProfileScenario();
 
 }  // namespace bench
 }  // namespace bukifon

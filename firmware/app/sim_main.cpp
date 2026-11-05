@@ -6,8 +6,9 @@
 // 1. builds the demo pattern (4 tracks x 16 steps, one p-lock),
 // 2. plays N bars on the host simulator (default 16),
 // 3. writes the deterministic event log and verifies it,
-// 4. renders the four 800x480 UI screens as PPM (converted to PNG by
-//    tools/ppm_to_png.py).
+// 4. renders the four 800x480 UI screens + the four device-mode panels
+//    (Synth / Sampler / DAW-controller / USB-keyboard) as PPM (converted to PNG
+//    by tools/ppm_to_png.py).
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -69,6 +70,23 @@ bool writeScreens(sim::Simulator& simulator, const std::string& outDir) {
       continue;
     }
     std::printf("wrote %s\n", path.c_str());
+  }
+  // Mode-specific panels: same UI shell, different status-bar MODE + panels.
+  const DeviceMode modes[4] = {DeviceMode::Synth, DeviceMode::Sampler, DeviceMode::DawController,
+                               DeviceMode::UsbKeyboard};
+  const char* modeNames[4] = {"synth", "sampler", "daw", "usb_kbd"};
+  for (int i = 0; i < 4; ++i) {
+    framebuffer.clear(colors::kBlack);
+    ui::UiSnapshot snapshot = simulator.snapshot(ui::Screen::Main);
+    ui::uiSnapshotForDeviceMode(&snapshot, modes[i]);
+    ui::drawUi800(framebuffer, snapshot);
+    const std::string path = outDir + "/" + modeNames[i] + ".ppm";
+    if (!framebuffer.writePpm(path.c_str())) {
+      std::printf("ERROR: cannot write %s\n", path.c_str());
+      ok = false;
+      continue;
+    }
+    std::printf("wrote %s (MODE %s)\n", path.c_str(), deviceModeShortName(modes[i]));
   }
   return ok;
 }

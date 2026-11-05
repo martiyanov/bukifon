@@ -78,6 +78,13 @@ ScenarioResult runNamedScenario(const char* name, const RunConfig& config) {
   const char* reason = "";
   result.pass = criteriaPass(result.criteria, result.stats, result.overruns, &reason);
   result.failReason = reason;
+  if (result.pass) {
+    const char* extraReason = "";
+    if (!scenario->scenarioCriteriaPass(result.stats.maxUs, &extraReason)) {
+      result.pass = false;
+      result.failReason = extraReason;
+    }
+  }
   if (!result.deterministic) {
     result.pass = false;
     result.failReason = "non-deterministic output";

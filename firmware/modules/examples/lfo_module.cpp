@@ -162,7 +162,7 @@ void lfoDestroy(void* instance) { delete static_cast<LfoState*>(instance); }
 const bukifon_module_v0_t kLfoTable = {
     BUKIFON_MODULE_API_VERSION, lfoDescriptor, lfoCreate,    lfoPrepare,
     lfoReset,                   lfoProcess,    lfoSetParam,  lfoStateSize,
-    lfoSaveState,               lfoLoadState,  lfoDestroy,
+    lfoSaveState,               lfoLoadState,  lfoDestroy,     nullptr, nullptr,
 };
 
 }  // namespace

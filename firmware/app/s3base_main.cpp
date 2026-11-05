@@ -37,7 +37,7 @@ void buildSnapshot(ui::UiSnapshot* snapshot) {
   ui::uiSnapshotForDeviceMode(snapshot, g_modes.mode());
   snapshot->bpm = g_engine.globals().v[Bpm];
   snapshot->playing = g_playing;
-  std::snprintf(snapshot->status, sizeof(snapshot->status), "%s", g_playing ? "PLAY" : "STOP");
+  snprintf(snapshot->status, sizeof(snapshot->status), "%s", g_playing ? "PLAY" : "STOP");
   snapshot->activeVoices = g_engine.activeVoices();
   snapshot->masterLevel = g_engine.lastTelemetry().peak;
   for (int t = 0; t < kNumParts; ++t) {
@@ -45,7 +45,7 @@ void buildSnapshot(ui::UiSnapshot* snapshot) {
     snapshot->tracks[t].voices = g_engine.voicesInPart(t);
   }
   const hal::cores3::BoardCores3Status& status = g_board.status();
-  std::snprintf(snapshot->footer, sizeof(snapshot->footer),
+  snprintf(snapshot->footer, sizeof(snapshot->footer),
                 "S3-BASE %s | PSRAM:%s | SPI2 %u MHz | USB FS stereo", hal::cores3::BoardCores3::name(),
                 status.psramDetected ? "8MiB" : "absent",
                 static_cast<unsigned>(g_board.config().lcdSpiHz / 1000000u));

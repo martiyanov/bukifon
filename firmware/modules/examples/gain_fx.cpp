@@ -148,7 +148,7 @@ void gainDestroy(void* instance) { delete static_cast<GainState*>(instance); }
 const bukifon_module_v0_t kGainTable = {
     BUKIFON_MODULE_API_VERSION, gainDescriptor, gainCreate,     gainPrepare,
     gainReset,                  gainProcess,    gainSetParam,   gainStateSize,
-    gainSaveState,              gainLoadState,  gainDestroy,
+    gainSaveState,              gainLoadState,  gainDestroy,    nullptr, nullptr,
 };
 
 }  // namespace
