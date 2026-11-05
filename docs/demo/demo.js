@@ -276,8 +276,9 @@ addEventListener("keydown",(e)=>{
   if(e.code==="KeyR" && !e.metaKey && !e.ctrlKey){ toggleRec(); e.preventDefault(); }
   if(["Digit1","Digit2","Digit3","Digit4"].includes(e.code)){ playPad(+e.code.slice(-1)-1); e.preventDefault(); }
   if(e.code==="KeyM" && !e.metaKey && !e.ctrlKey){ state.modOn=!state.modOn; save(); flashMsg(state.modOn?"MOD ON":"MOD OFF"); e.preventDefault(); }
-  if(e.code==="PageUp"){ state.page=(state.page+4)%5; paintKnobs(); e.preventDefault(); }
-  if(e.code==="PageDown"){ state.page=(state.page+1)%5; paintKnobs(); e.preventDefault(); }
+  if(e.code==="Home" && !e.metaKey && !e.ctrlKey){ goHome(); e.preventDefault(); }
+  if(e.code==="PageUp"){ state.page=(state.page+4)%5; paintKnobs(); syncPageChips(); e.preventDefault(); }
+  if(e.code==="PageDown"){ state.page=(state.page+1)%5; paintKnobs(); syncPageChips(); e.preventDefault(); }
   if((e.metaKey||e.ctrlKey) && e.code==="KeyZ"){ undo(); e.preventDefault(); }
   if((e.metaKey||e.ctrlKey) && e.code==="KeyC"){ copyPattern(); e.preventDefault(); }
   if((e.metaKey||e.ctrlKey) && e.code==="KeyV"){ pastePattern(); e.preventDefault(); }
@@ -414,7 +415,7 @@ function buildJacks(){
 let clipboard=null;
 function copyPattern(){ clipboard=JSON.stringify(state.parts); flashMsg("паттерн скопирован"); }
 function pastePattern(){ if(!clipboard) return; snapshot(); state.parts=JSON.parse(clipboard); paintKnobs(); save(); flashMsg("паттерн вставлен"); }
-let msg="", msgT=0, lastPadClick=null;
+let msg="", msgT=0, lastPadClick=null, lastCtx=0;
 function flashMsg(t){ msg=t; msgT=Date.now(); }
 
 /* ---------- доп. фишки ---------- */
@@ -441,6 +442,32 @@ function drawThemeSwatches(){
   });
 }
 
+/* ---------- контекст: панель, страницы, HOME, overlay ---------- */
+function renderContextBar(){
+  const el=$("contextbar"); if(!el) return;
+  const sel=[...state.selParts].map(i=>i+1).join(",")||"-";
+  const f={TRACK:["PART LEVEL","MASTER"],SCENE:["SCENE A↔B","MASTER"],DJ:["DECK A","DECK B"]}[state.faderMode]||["F1","F2"];
+  const chips=[
+    {t:`PART <b>${state.selPart+1}</b>`, w:true},
+    {t:`SELECTED <b>${sel}</b>`, w:state.selParts.size>1},
+    {t:`PAGE <b>${PAGES[state.page]}</b>`},
+    {t:`FADERS <b>${state.faderMode}</b> (F1 ${f[0]}, F2 ${f[1]})`},
+    {t:`THEME <b>${T.name}</b>`},
+    {t:`REC ${state.recording?"●":"○"}`, rec:state.recording},
+    {t:`UNSAVED`, w:true},
+  ];
+  el.innerHTML=chips.map(c=>`<span class="chip${c.w?" warn":""}${c.rec?" rec":""}">${c.t}</span>`).join("");
+}
+function buildPageChips(){
+  const host=$("pagechips"); if(!host) return; host.innerHTML="";
+  PAGES.forEach((pg,i)=>{ const b=document.createElement("button"); b.textContent=pg; b.className=i===state.page?"active":""; b.addEventListener("click",()=>{ state.page=i; paintKnobs(); syncPageChips(); save(); }); host.appendChild(b); });
+}
+function syncPageChips(){ document.querySelectorAll("#pagechips button").forEach((b,i)=>b.classList.toggle("active",i===state.page)); }
+function goHome(){ state.page=0; paintKnobs(); syncPageChips(); save(); flashMsg("HOME · MAIN"); }
+let shiftOverlay=false;
+addEventListener("keydown",(e)=>{ if(e.key==="Shift"){ shiftOverlay=true; } });
+addEventListener("keyup",(e)=>{ if(e.key==="Shift"){ shiftOverlay=false; } });
+
 /* ---------- canvas UI ---------- */
 function draw(){
   ctx.clearRect(0,0,W,H); ctx.fillStyle=T.bg; ctx.fillRect(0,0,W,H);
@@ -463,7 +490,25 @@ function draw(){
   else if(state.mode===2) drawDaw();
   else drawUsbKbd();
   drawStatusBar();
+  if(shiftOverlay) drawShiftOverlay();
+  if(Date.now()-lastCtx>400){ lastCtx=Date.now(); renderContextBar(); }
   if(msg && Date.now()-msgT<1600){ ctx.fillStyle=T.accent; ctx.font="700 12px Inter"; ctx.fillText(msg,W-220,462); }
+}
+function drawShiftOverlay(){
+  ctx.fillStyle="rgba(4,10,12,0.92)"; roundRect(60,70,W-120,H-160,10); ctx.fill();
+  ctx.strokeStyle=T.accent; ctx.lineWidth=2; roundRect(60,70,W-120,H-160,10); ctx.stroke();
+  ctx.fillStyle=T.accent; ctx.font="700 14px Inter"; ctx.fillText("СЛОИ И ЖЕСТЫ (удерживайте Shift)",84,100);
+  const rows=[
+    ["L1 · всегда на экране","игра · 16 энкодеров · фейдеры · транспорт · mute (клик по имени партии)"],
+    ["L2 · страницы","MAIN / FM / ENV / FX — таб на экране или кнопки под панелью; HOME = MAIN"],
+    ["L3 · генеративность","GEN: PROB · EUCLID · MUTATE · SCALE · ARP · EVOLVE · SEED; клик по странице GEN"],
+    ["Фейдеры","TRACK — уровень партии/мастер · SCENE — морфинг A↔B · DJ — A/B equal-power"],
+    ["Shift + фейдер","мастер-громкость (не меняет режим)"],
+    ["Undo / паттерн","Ctrl+Z · Ctrl+C / Ctrl+V · COMPARE = A/B паттерна"],
+    ["Партии","клик по имени = mute; Shift+клик = мультивыбор для группового редактирования"],
+  ];
+  rows.forEach(([k,v],i)=>{ ctx.fillStyle=T.muted; ctx.font="600 11px Inter"; ctx.fillText(k,84,130+i*28); ctx.fillStyle=T.text; ctx.fillText(v,300,130+i*28); });
+  ctx.fillStyle=T.muted; ctx.font="600 10px Inter"; ctx.fillText("отпустите Shift — overlay исчезнет",84,H-110);
 }
 function drawStatusBar(){
   const lvl=analyser?analyseLevel():0;
@@ -528,8 +573,8 @@ function drawSynth(){
     const x=690-i*0, y=0;
   });
   Object.keys(THEMES).forEach((n,i)=>{
-    const x=W-18-18-i*22, y=404;
-    ctx.beginPath(); ctx.arc(x,y,8,0,Math.PI*2); ctx.fillStyle=THEMES[n].bg; ctx.fill();
+    const x=W-74+i*18, y=22;
+    ctx.beginPath(); ctx.arc(x,y,7,0,Math.PI*2); ctx.fillStyle=THEMES[n].bg; ctx.fill();
     ctx.strokeStyle=n===state.theme?T.accent:T.line; ctx.lineWidth=n===state.theme?2:1; ctx.stroke();
   });
 }
@@ -604,9 +649,9 @@ cv.addEventListener("pointerdown",(e)=>{
   }
   if(state.mode!==0) return;
   // страницы параметров
-  if(y>370&&y<390&&x>18&&x<18+5*92){ const i=Math.floor((x-18)/92); if(i>=0&&i<5){ state.page=i; paintKnobs(); save(); return; } }
+  if(y>370&&y<390&&x>18&&x<18+5*92){ const i=Math.floor((x-18)/92); if(i>=0&&i<5){ state.page=i; paintKnobs(); syncPageChips(); save(); return; } }
   // смена темы — правый нижний угол
-  if(y>392&&y<416&&x>640){ const names=Object.keys(THEMES); const idx=Math.round((W-18-x)/22); const n=names[idx]; if(n) setTheme(n); return; }
+  if(y>12&&y<32&&x>W-90){ const names=Object.keys(THEMES); const idx=Math.round((x-(W-74))/18); const n=names[idx]; if(n) setTheme(n); return; }
   const pi=Math.floor((y-96)/66);
   if(pi<0||pi>3) return;
   // mute по клику на имя партии
@@ -649,6 +694,9 @@ function bindUI(){
   $("btnStop").addEventListener("click",()=>stopSeq());
   const share=$("btnShare"); if(share) share.addEventListener("click",copyShareLink);
   const recBtn=$("btnRec"); if(recBtn) recBtn.addEventListener("click",toggleRec);
+  const home=$("btnHome"); if(home) home.addEventListener("click",goHome);
+  const undoBtn=$("btnUndo"); if(undoBtn) undoBtn.addEventListener("click",undo);
+  buildPageChips(); syncPageChips(); renderContextBar();
   const rand=$("btnRandom"); if(rand) rand.addEventListener("click",randomizePattern);
   const td=$("btnTransDown"); if(td) td.addEventListener("click",()=>transpose(-12));
   const psel=$("presetSel");

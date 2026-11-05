@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Букифон — интерактивное демо интерфейса</title>
-<meta name="description" content="Виртуальный Букифон: интерфейс 800×480, 16 энкодеров, 42 клавиши Lapka-42 и FM-синтез в браузере. Демо для будущих пользователей.">
+<meta name="description" content="Виртуальный Букифон: панель как у реального синтезатора — 16 энкодеров вокруг экрана 800×480, 42 клавиши Lapka-42 двумя кластерами ±18°, 2 фейдера, 10 джеков, FM-звук, генеративные функции.">
 <link rel="stylesheet" href="demo.css">
 </head>
 <body>
@@ -13,60 +13,77 @@
   <nav>
     <a href="../index.html">← сайт</a>
     <a href="https://github.com/martiyanov/bukifon" rel="noopener">github</a>
+    <a href="https://github.com/martiyanov/bukifon/blob/main/docs/65-ux-patterns.md" rel="noopener">UX</a>
   </nav>
 </header>
 
 <main>
-  <div class="screen-wrap">
-    <canvas id="screen" width="800" height="480" aria-label="Экран Букифона 800×480"></canvas>
-    <div class="hint" id="hint">Мышь/палец: клавиши, энкодеры, шаги секвенсора · QWERTY: A W S E D F T G Y H U J K O L P ; · MIDI-клавиатура подключается автоматически</div>
-  </div>
+  <div class="contextbar" id="contextbar" aria-live="polite"></div>
 
-  <section class="panel" aria-label="Виртуальная панель">
-    <div class="keys" id="keysLeft" aria-label="Левая половина клавиатуры"></div>
-    <div class="mid">
-      <div class="knobs" id="knobs" aria-label="8 энкодеров страницы"></div>
-        <div class="knobs macro" id="knobsMacro" aria-label="8 макро-энкодеров"></div>
-      <div class="faders">
-        <div class="fader" data-fader="0"><div class="cap"></div><span>FADER 1</span></div>
-        <div class="fader" data-fader="1"><div class="cap"></div><span>FADER 2</span></div>
+  <div class="device" role="application" aria-label="Виртуальная панель Букифона">
+    <div class="jacks" id="jacks" aria-label="10 джеков"></div>
+
+    <div class="midrow">
+      <div class="knobblock left">
+        <div class="blocktitle">ЭНКОДЕРЫ А–З · ПАРАМЕТРЫ СТРАНИЦЫ</div>
+        <div class="knobgrid" id="knobs"></div>
+      </div>
+
+      <div class="screen-wrap">
+        <canvas id="screen" width="800" height="480" aria-label="Экран Букифона 800×480"></canvas>
+        <div class="hint" id="hint">Экран 800×480 · 4 темы · табы страниц кликабельны · HOME = MAIN · Shift = подсказка слоя</div>
+      </div>
+
+      <div class="knobblock right">
+        <div class="blocktitle">ЭНКОДЕРЫ И–П · МАКРОСЫ (выбранные партии)</div>
+        <div class="knobgrid" id="knobsMacro"></div>
       </div>
     </div>
-    <div class="keys" id="keysRight" aria-label="Правая половина клавиатуры"></div>
-  </section>
 
-  <section class="jacks" id="jacks" aria-label="Джеки"></section>
+    <div class="bottomrow">
+      <div class="keys" id="keysLeft" aria-label="Левая половина клавиатуры"></div>
+      <div class="faders">
+        <div class="fader" data-fader="0"><div class="cap"></div><span>F1</span></div>
+        <div class="fader" data-fader="1"><div class="cap"></div><span>F2</span></div>
+      </div>
+      <div class="keys" id="keysRight" aria-label="Правая половина клавиатуры"></div>
+    </div>
 
-  <section class="controls">
-    <button id="btnPlay" class="primary">PLAY</button>
-    <button id="btnStop">STOP</button>
-    <button id="btnRec" class="danger">REC</button>
-    <button id="btnShare">Поделиться паттерном</button>
-    <span id="shareState" class="badge"></span>
-    <label>BPM <input id="bpm" type="number" min="40" max="220" value="120"></label>
-    <label>VOL <input id="volume" type="range" min="0" max="100" value="70"></label>
-    <label>ТЕМА <select id="themeSel"></select></label>
-    <span class="fmodegrp">
-      <button data-fmode="TRACK" class="active">TRACK</button>
-      <button data-fmode="SCENE">SCENE</button>
-      <button data-fmode="DJ">DJ</button>
-    </span>
-    <button id="btnRandom">СЛУЧАЙНЫЙ ПАТТЕРН</button>
-    <span class="presetgrp">
-      <select id="presetSel" aria-label="Слот пресета"></select>
-      <button id="btnPresetSave">SAVE</button>
-      <button id="btnPresetLoad">LOAD</button>
-      <button id="btnAB">A/B</button>
-    </span>
-    <button id="btnTransDown">−12</button>
-    <button id="btnTransUp">+12</button>
-    <span id="midiState" class="badge">MIDI: ждём</span>
-  </section>
+    <div class="controls">
+      <button id="btnPlay" class="primary">PLAY</button>
+      <button id="btnStop">STOP</button>
+      <button id="btnRec" class="danger">REC</button>
+      <button id="btnHome">HOME</button>
+      <button id="btnUndo">UNDO</button>
+      <div class="pagechips" id="pagechips" aria-label="Страницы параметров"></div>
+      <span class="fader-modes" id="faderModes">
+        <button data-fmode="TRACK" class="active">TRACK</button>
+        <button data-fmode="SCENE">SCENE</button>
+        <button data-fmode="DJ">DJ</button>
+      </span>
+      <label>BPM <input id="bpm" type="number" min="40" max="220" value="120"></label>
+      <label>VOL <input id="volume" type="range" min="0" max="100" value="70"></label>
+      <label>ТЕМА <select id="themeSel"></select></label>
+      <span class="presetgrp">
+        <select id="presetSel" aria-label="Слот пресета"></select>
+        <button id="btnPresetSave">SAVE</button>
+        <button id="btnPresetLoad">LOAD</button>
+        <button id="btnAB">COMPARE</button>
+      </span>
+      <button id="btnRandom">СЛУЧАЙНЫЙ</button>
+      <button id="btnTransDown">−12</button>
+      <button id="btnTransUp">+12</button>
+      <button id="btnShare">Поделиться</button>
+      <span id="shareState" class="badge"></span>
+      <span id="midiState" class="badge">MIDI: ждём</span>
+    </div>
+  </div>
 </main>
 
 <footer>
-  <p>Это <strong>демо интерфейса и звука</strong>, а не прошивка: FM-движок упрощён, сэмплер/DAW показаны схематично.
-     Реальный инструмент — ESP32-P4, RGB565 800×480, 16 энкодеров EC11, 42 клавиши Lapka-42, 10 джеков.</p>
+  <p>Это <strong>демо интерфейса и звука</strong>, а не прошивка: FM-движок упрощён, сэмплер/DAW схематичны.
+     Реальный инструмент — ESP32-P4, RGB565 800×480, 16 энкодеров EC11, 42 клавиши Lapka-42, 2 фейдера, 10 джеков.
+     UX-исследование и рубрика — <a href="https://github.com/martiyanov/bukifon/blob/main/docs/65-ux-patterns.md">docs/65</a>.</p>
 </footer>
 <script src="demo.js"></script>
 </body>
