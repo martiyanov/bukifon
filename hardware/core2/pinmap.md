@@ -117,9 +117,26 @@ SDMMC slot0 на падах GPIO39…GPIO48, LCD_CAM (parallel RGB 16 бит) и
 | 0x20 | U-P1 | ENC1..ENC8 A/B (16 lines) | GPA0..GPA7 = ENC1_A..ENC8_A<br>GPB0..GPB7 = ENC1_B..ENC8_B<br>INTA -> PANEL_IRQ |
 | 0x21 | U-P2 | ENC9..ENC16 A/B (16 lines) | GPA0..GPA7 = ENC9_A..ENC16_A<br>GPB0..GPB7 = ENC9_B..ENC16_B<br>INTA -> PANEL_IRQ |
 | 0x22 | U-P3 | 16 encoder push buttons (16 lines) | GPA0..GPA7 = ENC1_PUSH..ENC8_PUSH<br>GPB0..GPB7 = ENC9_PUSH..ENC16_PUSH<br>INTA -> PANEL_IRQ |
-| 0x23 | U-P4 | 42-key matrix 6 rows x 7 cols (13 lines, 3 spare) | GPA0..GPA6 = COL0..COL6 (inputs, 10k PU)<br>GPB0..GPB5 = ROW0..ROW5 (outputs, scan)<br>INTA -> PANEL_IRQ (key press) |
+| 0x23 | U-P4 | 42-key matrix 6x7 (13 lines) + 2 EN lines (rev.2) | GPA0..GPA6 = COL0..COL6 (inputs, 10k PU)<br>GPB0..GPB5 = ROW0..ROW5 (outputs, scan)<br>GPA7 = EN_RAILS (rev.2, active-high disable +12/-12/+5)<br>GPB6 = EN_LED5 (rev.2, active-high enable; default OFF)<br>GPB7 = spare<br>INTA -> PANEL_IRQ |
 
-I2C0 (GPIO21/22) — общая шина: 2× MCP4728 (0x60/0x61), 24C32 (0x57),
+
+### PANEL-2 MCP23017 — EN-линии rev.2 (D-33/O-4)
+
+У P4 0 свободных GPIO → 4 EN-входа PWR-2 сведены к **2 линиям** MCP23017 0x23:
+
+| PWR-2 вход | Сеть CORE-2 | MCP23017 | Маршрут | Дефолт |
+|---|---|---|---|---|
+| EN_BUS12 | `EN_RAILS` | MCP23017 0x23 GPA7 | J13.15 -> J16.15 -> J18.7 (0R R94) | high-Z = +12 V ON |
+| EN_N12 | `EN_RAILS` | MCP23017 0x23 GPA7 | J18.8 (0R R95) | high-Z = -12 V ON |
+| EN_5V | `EN_RAILS` | MCP23017 0x23 GPA7 | J18.10 (0R R96) | high-Z = +5 V ON |
+| EN_LED5 | `EN_LED5` | MCP23017 0x23 GPB6 | J14.25 -> J14.25 -> J18.9 | low = LED OFF |
+
+EN_BUS12/EN_N12/EN_5V — «active-high disable» и объединены на CORE-2 в `EN_RAILS`;
+EN_LED5 — «active-high enable», по умолчанию OFF. При high-Z (MCP23017 = входы до
+инициализации) PWR-2 pull-up держит рельсы ON — соответствует D-33. Fallback без
+правки PANEL-2: EN не разводить (дефолт PWR-2), LED включать джампером JP1.
+
+I2C0 (GPIO21/22) — общая шина: 2× MCP4728 (0x60/0x61), 24C32 (0x57), MAX17048 (0x36, PWR-2),
 4× MCP23017 (0x20/0x21/0x22/0x23): 48 линий энкодеров (16× A/B/push) + 13 линий матрицы 6×7 = 61; 3 линии резерв. Наружу — только SDA/SCL/INT (wire-OR INTA). Подтяжки I2C 2.2 к и INT 10 к — на CORE-2; ёмкость шины ≤ 200 pF.
 
 ## 6. Фейдеры и джеки
@@ -385,6 +402,48 @@ I2C0 (GPIO21/22) — общая шина: 2× MCP4728 (0x60/0x61), 24C32 (0x57),
 | TB2.8 | `PGND` |
 | TB2.9 | `EXPR` |
 | TB2.10 | `3V3` |
+
+### J17 — PWR-2 J3 (IDC-20, rev.2): силовые входы, пары PGND
+
+| Pin | Цепь |
+|---|---|
+| 1 | `VSYS` |
+| 2 | `VSYS` |
+| 3 | `BATT_P` |
+| 4 | `BATT_P` |
+| 5 | `12V_EXT` |
+| 6 | `12V_EXT` |
+| 7 | `PGND` |
+| 8 | `PGND` |
+| 9 | `N12_EXT` |
+| 10 | `N12_EXT` |
+| 11 | `PGND` |
+| 12 | `PGND` |
+| 13 | `5V_EXT` |
+| 14 | `5V_EXT` |
+| 15 | `PGND` |
+| 16 | `PGND` |
+| 17 | `5V_LED` |
+| 18 | `LED_RET` |
+| 19 | `PGND` |
+| 20 | `PGND` |
+
+### J18 — PWR-2 J4 (IDC-12, rev.2): контроль/EN/I2C гейджа
+
+| Pin | Цепь |
+|---|---|
+| 1 | `BATT_MON` |
+| 2 | `NTC_PACK` |
+| 3 | `I2C0_SDA` |
+| 4 | `I2C0_SCL` |
+| 5 | `FUEL_ALRT` |
+| 6 | `PWR_GOOD` |
+| 7 | `EN_BUS12` |
+| 8 | `EN_N12` |
+| 9 | `EN_LED5` |
+| 10 | `EN_5V` |
+| 11 | `PGND` |
+| 12 | `PGND` |
 
 \* энкодеры и матрица клавиш считываются MCP23017 на PANEL-2; на CORE-2 идут только I2C + IRQ.
 

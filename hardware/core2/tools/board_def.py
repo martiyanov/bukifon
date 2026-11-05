@@ -235,10 +235,12 @@ MCP23017 = [
  dict(addr='0x22', ref='U-P3', role='16 encoder push buttons (16 lines)',
       pins=['GPA0..GPA7 = ENC1_PUSH..ENC8_PUSH', 'GPB0..GPB7 = ENC9_PUSH..ENC16_PUSH',
             'INTA -> PANEL_IRQ']),
- dict(addr='0x23', ref='U-P4', role='42-key matrix 6 rows x 7 cols (13 lines, 3 spare)',
+ dict(addr='0x23', ref='U-P4', role='42-key matrix 6x7 (13 lines) + 2 EN lines (rev.2)',
       pins=['GPA0..GPA6 = COL0..COL6 (inputs, 10k PU)',
             'GPB0..GPB5 = ROW0..ROW5 (outputs, scan)',
-            'INTA -> PANEL_IRQ (key press)']),
+            'GPA7 = EN_RAILS (rev.2, active-high disable +12/-12/+5)',
+            'GPB6 = EN_LED5 (rev.2, active-high enable; default OFF)',
+            'GPB7 = spare', 'INTA -> PANEL_IRQ']),
 ]
 # PANEL-2 totals (verified with panel netlist): 4x MCP23017 = 64 I/O,
 # 48 encoder lines (16 x A/B/push) + 13 matrix lines = 61 used, 3 spare.
@@ -305,3 +307,112 @@ CV = dict(out_range='0..10.0 V (DAC 0..2.048 V x 4.883; implemented 4.9 with 39k
           out_prot='1k series + BAT54S to AGND/+12V', out_cal='2-point calibration per channel in 24C32 EEPROM 0x57',
           in_range='-10..+10 V -> 0..3.3 V: Vadc = 1.65 - 0.165*Vin (100k/16.5k + 1.65 V offset)',
           in_prot='BAT54S to AGND/+3V3 after 1k, RC 1k/100nF at ADC')
+
+# ==========================================================================
+# rev.2 (docs sync with PWR-2, decisions D-32..D-36 / O-1..O-7)
+# ==========================================================================
+# CORE-2 J17 = PWR-2 J3 (IDC-20, power). CORE-2 J18 = PWR-2 J4 (IDC-12, control).
+J_PWR3 = [  # CORE-2 connector -> PWR-2 J3
+ (1, 'VSYS', 'power'), (2, 'VSYS', 'power'),
+ (3, 'BATT_P', 'power'), (4, 'BATT_P', 'power'),
+ (5, '12V_EXT', 'power'), (6, '12V_EXT', 'power'),
+ (7, 'PGND', 'gnd'), (8, 'PGND', 'gnd'),
+ (9, 'N12_EXT', 'power'), (10, 'N12_EXT', 'power'),
+ (11, 'PGND', 'gnd'), (12, 'PGND', 'gnd'),
+ (13, '5V_EXT', 'power'), (14, '5V_EXT', 'power'),
+ (15, 'PGND', 'gnd'), (16, 'PGND', 'gnd'),
+ (17, '5V_LED', 'power'), (18, 'LED_RET', 'power'),
+ (19, 'PGND', 'gnd'), (20, 'PGND', 'gnd'),
+]
+J_PWR4 = [  # CORE-2 connector -> PWR-2 J4
+ (1, 'BATT_MON', 'a'), (2, 'NTC_PACK', 'a'),
+ (3, 'I2C0_SDA', 'd'), (4, 'I2C0_SCL', 'd'),
+ (5, 'FUEL_ALRT', 'd'), (6, 'PWR_GOOD', 'd'),
+ (7, 'EN_BUS12', 'd'), (8, 'EN_N12', 'd'),
+ (9, 'EN_LED5', 'd'), (10, 'EN_5V', 'd'),
+ (11, 'PGND', 'gnd'), (12, 'PGND', 'gnd'),
+]
+# EN: 4 PWR-2 inputs are driven by 2 PANEL-2 MCP23017 lines (0x23 GPA7/GPB6).
+# EN_BUS12/EN_N12/EN_5V are all "active-high disable" and are tied together on
+# CORE-2 (net EN_RAILS) via 0R links; EN_LED5 is independent "active-high enable".
+EN_MAP = [
+ dict(pwr='EN_BUS12', net='EN_RAILS', panel='MCP23017 0x23 GPA7', route='J13.15 -> J16.15 -> J18.7 (0R R94)',
+      default='high-Z = +12 V ON', polarity='high = OFF'),
+ dict(pwr='EN_N12', net='EN_RAILS', panel='MCP23017 0x23 GPA7', route='J18.8 (0R R95)', default='high-Z = -12 V ON', polarity='high = OFF'),
+ dict(pwr='EN_5V', net='EN_RAILS', panel='MCP23017 0x23 GPA7', route='J18.10 (0R R96)', default='high-Z = +5 V ON', polarity='high = OFF'),
+ dict(pwr='EN_LED5', net='EN_LED5', panel='MCP23017 0x23 GPB6', route='J14.25 -> J14.25 -> J18.9', default='low = LED OFF', polarity='high = ON'),
+]
+# DNP list for rev.2 (refs match gen_core2_sch.py rev.1 component table)
+REV2_DNP = {
+ # MT3608 #1 (+12 V) - recommended DNP: PWR-2 provides +12 V (D7) + external 12 V via D2
+ 'U24': 'DNP rev.2: +12 V from PWR-2 J3 (keep for bench/USB-standalone option)',
+ 'L1': 'DNP rev.2 (MT3608 #1 +12 V)', 'D4': 'DNP rev.2 (MT3608 #1 +12 V)',
+ 'R10': 'DNP rev.2 (MT3608 #1 +12 V)', 'R11': 'DNP rev.2 (MT3608 #1 +12 V)',
+ 'C9': 'DNP rev.2 (MT3608 #1 +12 V)', 'C10': 'DNP rev.2 (MT3608 #1 +12 V)',
+ 'C11': 'DNP rev.2 (MT3608 #1 +12 V)', 'C12': 'DNP rev.2 (MT3608 #1 +12 V)',
+ 'R12': 'DNP rev.2 (MT3608 #1 +12 V)',
+ # MT3608 #2 (+5 V) - DNP mandatory: +5 V from PWR-2 J3
+ 'U25': 'DNP rev.2 (D-34): +5 V from PWR-2 J3',
+ 'L2': 'DNP rev.2 (+5 V from PWR-2)', 'D5': 'DNP rev.2 (+5 V from PWR-2)',
+ 'R13': 'DNP rev.2 (+5 V from PWR-2)', 'R14': 'DNP rev.2 (+5 V from PWR-2)',
+ 'C13': 'DNP rev.2 (+5 V from PWR-2)', 'C14': 'DNP rev.2 (+5 V from PWR-2)',
+ 'C15': 'DNP rev.2 (+5 V from PWR-2)', 'C16': 'DNP rev.2 (+5 V from PWR-2)',
+ 'R15': 'DNP rev.2 (+5 V from PWR-2)',
+ # MC34063 (-12 V) - DNP mandatory: -12 V from PWR-2 J3
+ 'U28': 'DNP rev.2 (D-34): -12 V from PWR-2 J3',
+ 'R16': 'DNP rev.2 (MC34063)', 'C27': 'DNP rev.2 (MC34063)', 'L3': 'DNP rev.2 (MC34063)',
+ 'D6': 'DNP rev.2 (MC34063)', 'R17': 'DNP rev.2 (MC34063)', 'R18': 'DNP rev.2 (MC34063)',
+ 'C28': 'DNP rev.2 (MC34063)', 'C29': 'DNP rev.2 (MC34063)', 'C30': 'DNP rev.2 (MC34063)',
+ # BMS + local pack - DNP mandatory: BMS/pack on PWR-2
+ 'U23': 'DNP rev.2 (D-34): BMS on PWR-2', 'Q1': 'DNP rev.2 (BMS on PWR-2)',
+ 'Q2': 'DNP rev.2 (BMS on PWR-2)', 'R7': 'DNP rev.2 (BMS on PWR-2)',
+ 'C8': 'DNP rev.2 (BMS on PWR-2)', 'J2': 'DNP rev.2: pack connector on PWR-2 J1',
+ 'TH1': 'DNP rev.2: NTC comes from PWR-2 J4 NTC_PACK',
+ # LED level shifter moves to PANEL-2 (PANEL-2 interfaces 6)
+ 'U44': 'DNP rev.2: level shifter 74HCT1G125 is on PANEL-2; CORE-2 drives 3.3 V LED_DATA',
+ 'R90': 'DNP rev.2: 330R on PANEL-2',
+}
+REV2_STAYS = [
+ ('MT3608 #3 (BL +20 V)', 'U29, L4, D7, R19-R21, C31-C34', 'BL boost 19-22 V для LCD — PWR-2 его не делает'),
+ ('MP1584 +3V3_MCU', 'U26, C17-C19, FB1, C20-C22', 'отдельный 3V3 для P4/PSRAM; вход +5 В (вариант b)'),
+ ('AP2112K +3V3 / +3V3_C6', 'U27/U30 + caps', 'локальные LDO CORE-2'),
+ ('BQ24074 power-path', 'U22 + обвязка, F1, U20, D1...', 'заряд и power-path остаются на CORE-2 (D-29)'),
+ ('BL boost + ферриты/защита входов', 'FB2-FB6, D19/D20, C112-C115', '+12/-12/+5 входы от PWR-2 с защитой'),
+ ('PANEL-2/PWR-2 разъёмы', 'J14, J15 (LCD), J16, J17, J18', 'J17/J18 — новые в rev.2'),
+]
+REV2_NEW = [
+ dict(ref='J17', lib=('Connector_Generic','Conn_02x10_Odd_Even'), val='PWR-2 J3 (IDC-20)',
+      fp='Connector_IDC:IDC-Header_2x10_P2.54mm_Vertical', note='rev.2: силовой разъём PWR-2; альтернатива Micro-Fit 3.0 2x6'),
+ dict(ref='J18', lib=('Connector_Generic','Conn_02x06_Odd_Even'), val='PWR-2 J4 (IDC-12)',
+      fp='Connector_IDC:IDC-Header_2x06_P2.54mm_Vertical', note='rev.2: управляющий разъём PWR-2'),
+ dict(ref='D19', lib=('Diode','SS34'), val='SS34', fp='Diode_SMD:D_SMA', note='rev.2: N12_EXT series back-feed protection'),
+ dict(ref='D20', lib=('Diode','SMAJ15A'), val='SMAJ15A', fp='Diode_SMD:D_SMA', note='rev.2: N12_EXT TVS'),
+ dict(ref='C112', lib=('Device','C_Polarized'), val='100uF/25V', fp='Capacitor_SMD:CP_Elec_6.3x7.7', note='rev.2: N12_EXT bulk'),
+ dict(ref='C113', lib=('Device','C'), val='100nF/50V', fp='Capacitor_SMD:C_0805_2012Metric', note='rev.2: N12_EXT ceramic'),
+ dict(ref='C114', lib=('Device','C_Polarized'), val='100uF/10V', fp='Capacitor_SMD:CP_Elec_6.3x7.7', note='rev.2: +5V_EXT bulk'),
+ dict(ref='C115', lib=('Device','C'), val='100nF', fp='Capacitor_SMD:C_0805_2012Metric', note='rev.2: +5V_EXT ceramic'),
+ dict(ref='R92', lib=('Device','R'), val='100k', fp='Resistor_SMD:R_0805_2012Metric', note='rev.2: PWR_GOOD pull-up to +3V3'),
+ dict(ref='R93', lib=('Device','R'), val='100k', fp='Resistor_SMD:R_0805_2012Metric', note='rev.2: FUEL_ALRT pull-up to +3V3'),
+ dict(ref='R94', lib=('Device','R'), val='0R', fp='Resistor_SMD:R_0805_2012Metric', note='rev.2: EN_RAILS -> EN_BUS12 (J18.7)'),
+ dict(ref='R95', lib=('Device','R'), val='0R', fp='Resistor_SMD:R_0805_2012Metric', note='rev.2: EN_RAILS -> EN_N12 (J18.8)'),
+ dict(ref='R96', lib=('Device','R'), val='0R', fp='Resistor_SMD:R_0805_2012Metric', note='rev.2: EN_RAILS -> EN_5V (J18.10)'),
+]
+# rails imported from PWR-2 J3: name, Vout, budget_mA, peak_mA, source
+REV2_IMPORTED = [
+ dict(name='+12V (PWR-2)', vout='11.7 (12.15 до D7)', budget=330, peak=420,
+      loads='шина 2 порта 120 + ОУ 30 + MP1584 (опц. вариант a) 216', margin=36),
+ dict(name='-12V (PWR-2)', vout='-11.55 (-12.0 до D8)', budget=95, peak=150,
+      loads='шина 2 порта 80 + ОУ 15', margin=58),
+ dict(name='+5V (PWR-2)', vout='5.10', budget=1600, peak=2000,
+      loads='см. таблицу +5 В rev.2 (1500 мА) / вариант a 990 мА', margin=25),
+ dict(name='5V_LED (PWR-2)', vout='5.0 + LED_RET', budget=550, peak=2500,
+      loads='WS2812 74 LED (прошивочный cap 550 мА)', margin=78),
+]
+REV2_5V_LOADS = [
+ ('WS2812 74 LED (кап 550 мА)', 550, '5V_LED (PWR-2), не +5'),
+ ('PCM1808 VCC 30 + MIDI 10 + панельная логика 20', 60, '+5'),
+ ('AP2112K-3.3 (+3V3 периферия, 150 мА)', 110, '+5'),
+ ('AP2112K-3.3 (+3V3_C6, 250 мА)', 190, '+5'),
+ ('MP1584 -> +3V3_MCU (700 мА, вариант b: от +5)', 510, '+5 (вариант a: +12)'),
+ ('вход BL-boost (19-22 В, 25 мА)', 80, '+5'),
+]
