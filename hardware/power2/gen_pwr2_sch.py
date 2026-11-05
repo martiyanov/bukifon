@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import sys as _sys; _sys.dont_write_bytecode = True
 # -*- coding: utf-8 -*-
 """PWR-2 schematic generator (PRE-FREEZE / DO NOT FABRICATE).
 
@@ -87,8 +88,8 @@ def build_custom_lib():
          ('7', 'PGND', -2.54, -15.24, 90, 2.54, 'power_in'),
          ('8', 'SW', 12.7, 7.62, 180, 2.54, 'passive'),
          ('9', 'SW', 12.7, 5.08, 180, 2.54, 'passive'),
-         ('10', 'VOUT', 12.7, 2.54, 180, 2.54, 'power_out'),
-         ('11', 'VOUT', 12.7, 0, 180, 2.54, 'power_out'),
+         ('10', 'VOUT', 12.7, 2.54, 180, 2.54, 'passive'),
+         ('11', 'VOUT', 12.7, 0, 180, 2.54, 'passive'),
          ('12', 'AGND', 0, -15.24, 90, 2.54, 'power_in'),
          ('13', 'EP', 2.54, -15.24, 90, 2.54, 'power_in')])
     # MAX17048: 1-cell ModelGauge fuel gauge, I2C address 0x36.
@@ -117,13 +118,13 @@ FP = {
     'C': 'Capacitor_SMD:C_0805_2012Metric',
     'C1210': 'Capacitor_SMD:C_1210_3225Metric',
     'CP': 'Capacitor_SMD:CP_Elec_6.3x7.7',
-    'L': 'Inductor_SMD:L_Bourns-SRN6045',
-    'L10': 'Inductor_SMD:L_Bourns-SRN6045',
-    'QFN20': 'Package_DFN_QFN:QFN-20-1EP_3x3mm_P0.4mm_EP1.8x1.8mm',
+    'L': 'Inductor_SMD:L_Bourns_SRN6045TA',
+    'L10': 'Inductor_SMD:L_Bourns_SRN6045TA',
+    'QFN20': 'Package_DFN_QFN:QFN-20-1EP_3x3mm_P0.4mm_EP1.65x1.65mm',
     'SOIC8': 'Package_SO:SOIC-8_3.9x4.9mm_P1.27mm',
     'SOT23': 'Package_TO_SOT_SMD:SOT-23',
     'SOT23_6': 'Package_TO_SOT_SMD:SOT-23-6',
-    'DIP8': 'Package_DIP:DIP-8_W7.62mm',
+    'DIP8': 'Package_DIP:DIP-4_W7.62mm',
     'SMA': 'Diode_SMD:D_SMA',
     'PF': 'Fuse:Fuse_1206_3216Metric',
     'IDC20': 'Connector_IDC:IDC-Header_2x10_P2.54mm_Vertical',
@@ -161,10 +162,10 @@ add('BT2', ('Device', 'Battery_Cell'), '18650 3.6V 3.5Ah',
     'банка 2/2 (параллель); ХОЛДЕРЫ С КЛЮЧОМ от переполюсовки', 'PACK', on_board=False)
 add('F1', ('Device', 'Polyfuse'), '5 A', {'1': 'BATT_CELL_P', '2': 'PACK_F'}, FP['PF'],
     'предохранитель пакета 4-5 А (по ТЗ): защита от КЗ и от переполюсовки одной банки', 'PACK')
-add('Q1', ('Transistor_FET', 'AO3401A'), 'AO3401A P-FET', {'1': 'BATT_BM', '2': 'PACK_F', '3': 'VBAT'},
-    FP['SOT23'], 'защита от переполюсовки пакета: затвор на B-, при обратной банке закрыт', 'PACK')
-add('R1', ('Device', 'R'), '100k', {'1': 'PACK_F', '2': 'BATT_BM'}, FP['R'],
-    'подтяжка затвора Q1 (OFF при обрыве)', 'PACK')
+add('Q1', ('Transistor_FET', 'AO3401A'), 'AO3401A P-FET', {'1': 'BATT_BM', '2': 'VBAT', '3': 'PACK_F'},
+    FP['SOT23'], 'защита от переполюсовки пакета: body diode PACK_F->VBAT (норма), reverse blocked', 'PACK')
+add('R1', ('Device', 'R'), '100k', {'1': 'VBAT', '2': 'BATT_BM'}, FP['R'],
+    'gate-source Q1: OFF при обрыве, ON при нормальной полярности (Vgs = -Vpack)', 'PACK')
 add('D1', ('Device', 'D_TVS'), 'SMBJ5.0A', {'1': 'PACK_F', '2': 'BATT_BM'}, FP['SMA'],
     'TVS на пакете (ESD/импульсы при hot-plug)', 'PACK')
 add('TH1', ('Device', 'Thermistor_NTC'), 'NTC 10k B3950', {'1': 'NTC_PACK', '2': 'BATT_BM'}, FP['NTC'],
@@ -196,7 +197,7 @@ add('Q6', ('Transistor_BJT', 'Q_NPN_BCE'), 'MMBT3904', {'1': 'Q6_B', '2': 'G_MAS
 add('R7', ('Device', 'R'), '10k', {'1': 'MASTER_SW', '2': 'Q6_B'}, FP['R'], 'база Q6', 'LOADS')
 add('R8', ('Device', 'R'), '100k', {'1': 'Q6_B', '2': 'PGND'}, FP['R'], 'база Q6 -> PGND (OFF по умолчанию)', 'LOADS')
 add('R9', ('Device', 'R'), '100k', {'1': 'MASTER_SW', '2': 'PGND'}, FP['R'], 'MASTER_SW -> PGND (обрыв = OFF)', 'LOADS')
-add('C2', ('Device', 'C'), '100n', {'1': 'G_MASTER', '2': 'VSYS_SW'}, FP['C'], 'сглаживание затвора (turn-on/off)', 'LOADS')
+add('C2', ('Device', 'C'), '100n', {'1': 'G_MASTER', '2': 'VSYS'}, FP['C'], 'gate-source Q4/Q5: медленный пуск (inrush control)', 'LOADS')
 add('J2', ('Connector_Generic', 'Conn_01x02'), 'SW panel', {'1': 'VSYS', '2': 'MASTER_SW'}, FP['HDR2'],
     'вывод на панельный тумблер питания (параллельно SW1)', 'LOADS')
 add('SW1', ('Switch', 'SW_SPDT'), 'POWER OFF/ON', {'1': 'VSYS', '2': 'MASTER_SW', '3': None}, FP['SW'],
@@ -224,7 +225,7 @@ add('R13', ('Device', 'R'), '1k', {'1': 'BATT_CELL_P', '2': 'BATT_MON'}, FP['R']
 
 # ============================ 4. +12 V (TPS61088) ========================
 add('U3', ('picomod2', 'TPS61088'), 'TPS61088', {
-    '1': 'VSYS_SW', '2': 'EN_BUS12', '3': 'SS_12', '4': 'FB_12', '5': 'PGND',
+    '1': 'VSYS_SW', '2': 'EN12_IC', '3': 'SS_12', '4': 'FB_12', '5': 'PGND',
     '6': 'PGND', '7': 'PGND', '8': 'SW_12', '9': 'SW_12', '10': '12V_SW',
     '11': '12V_SW', '12': 'PGND', '13': 'PGND'},
     FP['QFN20'], 'sync boost 10-A ключ: +12.15 В / 330 мА (запас 4x по току)', '12V')
@@ -237,15 +238,20 @@ add('R14', ('Device', 'R'), '100k', {'1': '12V_SW', '2': 'FB_12'}, FP['R'],
     'ОС: Vout = 1.204*(1+100k/11k) = 12.15 В', '12V')
 add('R15', ('Device', 'R'), '11k', {'1': 'FB_12', '2': 'PGND'}, FP['R'], 'низ ОС +12 В', '12V')
 add('C9', ('Device', 'C'), '100n', {'1': 'SS_12', '2': 'PGND'}, FP['C'], 'soft-start +12 В', '12V')
-add('R16', ('Device', 'R'), '100k', {'1': 'VSYS_SW', '2': 'EN_BUS12'}, FP['R'],
-    'EN по умолчанию ON (CORE-2 может тянуть вниз для секвенирования)', '12V')
+add('R16', ('Device', 'R'), '100k', {'1': 'VSYS_SW', '2': 'EN12_IC'}, FP['R'],
+    'EN +12 В по умолчанию ON (pull-up в домене VSYS)', '12V')
+add('Q9', ('Transistor_FET', '2N7002'), '2N7002', {'1': 'EN_BUS12', '2': 'PGND', '3': 'EN12_IC'},
+    FP['SOT23'], 'ключ EN +12 В: высокий уровень с CORE-2 (3.3 В) выключает рельс', '12V')
+add('C35', ('Device', 'C'), '100n', {'1': 'EN12_IC', '2': 'PGND'}, FP['C'], 'фильтр EN +12 В', '12V')
 add('L2', ('Device', 'L'), '4.7uH', {'1': '12V_SW', '2': '12V_F'}, FP['L10'],
     'pi-фильтр +12 В: L', '12V')
 add('C10', ('Device', 'C'), '47uF/25V', {'1': '12V_F', '2': 'PGND'}, FP['CP'], 'pi-фильтр +12 В: C1', '12V')
 add('C11', ('Device', 'C'), '47uF/25V', {'1': '12V_F', '2': 'PGND'}, FP['CP'], 'pi-фильтр +12 В: C2', '12V')
 add('C12', ('Device', 'C'), '100n', {'1': '12V_F', '2': 'PGND'}, FP['C'], 'pi-фильтр +12 В: HF', '12V')
-add('F2', ('Device', 'Polyfuse'), '0.5 A', {'1': '12V_F', '2': '12V_BUS'}, FP['PF'],
+add('F2', ('Device', 'Polyfuse'), '0.5 A', {'1': '12V_F', '2': '12V_OG'}, FP['PF'],
     'полифьюз шины +12 В (шина модулей <= 300 мА)', '12V')
+add('D7', ('Device', 'D_Schottky'), 'SS34', {'1': '12V_BUS', '2': '12V_OG'}, FP['SMA'],
+    'последовательный SS34: защита от back-feed внешнего 12 В/шины; батарея не разряжается', '12V')
 add('D3', ('Device', 'D_TVS'), 'SMAJ15A', {'1': '12V_BUS', '2': 'PGND'}, FP['SMA'],
     'TVS шины +12 В', '12V')
 add('R17', ('Device', 'R'), '4.7k', {'1': '12V_BUS', '2': 'PGND'}, FP['R'], 'разрядный резистор +12 В', '12V')
@@ -269,30 +275,33 @@ add('C19', ('Device', 'C'), '22uF/25V', {'1': 'PGND', '2': N12}, FP['C1210'], '�
 add('R19', ('Device', 'R'), '110k', {'1': 'PGND', '2': 'FB_N12'}, FP['R'],
     'ОС IBB: Vout = 1.0*(1+110k/10k) = 12.0 В', '12VN')
 add('R20', ('Device', 'R'), '10k', {'1': 'FB_N12', '2': N12}, FP['R'], 'низ ОС -12 В', '12VN')
-add('U5', ('Isolator', 'PC817'), 'PC817', {'1': 'OPT_ANODE', '2': 'PGND', '3': 'EN_N12_IC', '4': 'VSYS_SW'},
-    FP['DIP8'], 'оптопара: уровень EN из домена PGND в домен -12 В', '12VN')
-add('R21', ('Device', 'R'), '1k', {'1': 'EN_N12', '2': 'OPT_ANODE'}, FP['R'], 'ток LED оптопары ~2.6 мА', '12VN')
-add('R22', ('Device', 'R'), '100k', {'1': 'EN_N12', '2': 'VSYS_SW'}, FP['R'],
-    'EN по умолчанию ON (CORE-2 тянет вниз для OFF)', '12VN')
-add('R23', ('Device', 'R'), '100k', {'1': 'EN_N12_IC', '2': N12}, FP['R'], 'EN -> GND МС (OFF)', '12VN')
+add('U5', ('Isolator', 'PC817'), 'PC817', {'1': 'OPT_ANODE', '2': 'PGND', '3': N12, '4': 'EN_N12_IC'},
+    FP['DIP8'], 'оптопара: EN из домена PGND (3.3 В) в домен -12 В; транзистор тянет EN к GND МС', '12VN')
+add('R21', ('Device', 'R'), '1k', {'1': 'EN_N12', '2': 'OPT_ANODE'}, FP['R'], 'ток LED оптопары ~2.1 мА', '12VN')
+add('R22', ('Device', 'R'), '100k', {'1': 'EN_N12', '2': 'PGND'}, FP['R'], 'LED оптопары OFF при обрыве входа', '12VN')
+add('R23', ('Device', 'R'), '100k', {'1': 'EN_N12_IC', '2': 'VSYS_SW'}, FP['R'],
+    'EN -12 В по умолчанию ON (pull-up к VIN МС = 15.7 В)', '12VN')
 add('C20', ('Device', 'C'), '100n', {'1': 'EN_N12_IC', '2': N12}, FP['C'], 'фильтр EN -12 В', '12VN')
 add('L4', ('Device', 'L'), '10uH', {'1': N12, '2': 'N12_F'}, FP['L10'], 'pi-фильтр -12 В: L', '12VN')
 add('C21', ('Device', 'C'), '47uF/25V', {'1': 'PGND', '2': 'N12_F'}, FP['CP'], 'pi-фильтр -12 В: C1', '12VN')
 add('C22', ('Device', 'C'), '47uF/25V', {'1': 'PGND', '2': 'N12_F'}, FP['CP'], 'pi-фильтр -12 В: C2', '12VN')
 add('C23', ('Device', 'C'), '100n', {'1': 'PGND', '2': 'N12_F'}, FP['C'], 'pi-фильтр -12 В: HF', '12VN')
-add('F3', ('Device', 'Polyfuse'), '0.3 A', {'1': 'N12_F', '2': 'N12_BUS'}, FP['PF'],
-    'полифьюз -12 В (шина <= 95 мА; 25%+ запас)', '12VN')
+add('F3', ('Device', 'Polyfuse'), '0.3 A', {'1': 'N12_F', '2': 'N12_OG'}, FP['PF'],
+    'полифьюз -12 В (шина <= 95 мА)', '12VN')
+add('D8', ('Device', 'D_Schottky'), 'SS34', {'1': 'N12_OG', '2': 'N12_BUS'}, FP['SMA'],
+    'последовательный SS34 (A=шина, K=преобразователь): защита -12 В от back-feed', '12VN')
 add('D4', ('Device', 'D_TVS'), 'SMAJ15A', {'1': 'PGND', '2': 'N12_BUS'}, FP['SMA'], 'TVS -12 В', '12VN')
 add('R24', ('Device', 'R'), '4.7k', {'1': 'N12_BUS', '2': 'PGND'}, FP['R'], 'разрядный резистор -12 В', '12VN')
 add('C24', ('Device', 'C'), '100n', {'1': 'PGND', '2': 'N12_BUS'}, FP['C'], 'ВЧ на -12 В', '12VN')
 
 # ============================ 6. +5 V (TPS61088) =========================
 add('U6', ('picomod2', 'TPS61088'), 'TPS61088', {
-    '1': 'VSYS_SW', '2': 'EN_5', '3': 'SS_5', '4': 'FB_5', '5': 'PGND',
+    '1': 'VSYS_SW', '2': 'EN5_IC', '3': 'SS_5', '4': 'FB_5', '5': 'PGND',
     '6': 'PGND', '7': 'PGND', '8': 'SW_5', '9': 'SW_5', '10': '5V_SW',
     '11': '5V_SW', '12': 'PGND', '13': 'PGND'},
     FP['QFN20'], 'sync boost: +5.10 В / 1.0 А (аудио, MIDI, логика, вход BL)', '5V')
-add('L5', ('Device', 'L'), '10uH / 4A', {'1': 'VSYS_SW', '2': 'SW_5'}, FP['L'], 'индуктор +5 В', '5V')
+add('L5', ('Device', 'L'), '10uH / 6A', {'1': 'VSYS_SW', '2': 'SW_5'}, FP['L'],
+    'индуктор +5 В: Iin до 3.8 А при 2 А/5.1 В и 3.0 В -> Isat >= 5.5 А', '5V')
 add('C25', ('Device', 'C'), '22uF', {'1': 'VSYS_SW', '2': 'PGND'}, FP['C1210'], 'вход +5 В', '5V')
 add('C26', ('Device', 'C'), '22uF', {'1': 'VSYS_SW', '2': 'PGND'}, FP['C1210'], 'вход +5 В', '5V')
 add('C27', ('Device', 'C'), '100n', {'1': 'VSYS_SW', '2': 'PGND'}, FP['C'], 'вход +5 В ВЧ', '5V')
@@ -300,7 +309,10 @@ add('R25', ('Device', 'R'), '100k', {'1': '5V_SW', '2': 'FB_5'}, FP['R'],
     'ОС: Vout = 1.204*(1+100k/30.9k) = 5.10 В', '5V')
 add('R26', ('Device', 'R'), '30.9k', {'1': 'FB_5', '2': 'PGND'}, FP['R'], 'низ ОС +5 В', '5V')
 add('C28', ('Device', 'C'), '100n', {'1': 'SS_5', '2': 'PGND'}, FP['C'], 'soft-start +5 В', '5V')
-add('R27', ('Device', 'R'), '100k', {'1': 'VSYS_SW', '2': 'EN_5'}, FP['R'], 'EN +5 В = ON', '5V')
+add('R27', ('Device', 'R'), '100k', {'1': 'VSYS_SW', '2': 'EN5_IC'}, FP['R'], 'EN +5 В по умолчанию ON', '5V')
+add('Q10', ('Transistor_FET', '2N7002'), '2N7002', {'1': 'EN_5V', '2': 'PGND', '3': 'EN5_IC'},
+    FP['SOT23'], 'ключ EN +5 В: высокий уровень с CORE-2 выключает логическую шину', '5V')
+add('C38', ('Device', 'C'), '100n', {'1': 'EN5_IC', '2': 'PGND'}, FP['C'], 'фильтр EN +5 В', '5V')
 add('L6', ('Device', 'L'), '4.7uH', {'1': '5V_SW', '2': '5V_F'}, FP['L10'], 'pi-фильтр +5 В: L', '5V')
 add('C29', ('Device', 'C'), '47uF', {'1': '5V_F', '2': 'PGND'}, FP['CP'], 'pi-фильтр +5 В: C1', '5V')
 add('C30', ('Device', 'C'), '47uF', {'1': '5V_F', '2': 'PGND'}, FP['CP'], 'pi-фильтр +5 В: C2', '5V')
@@ -312,30 +324,31 @@ add('R28', ('Device', 'R'), '1k', {'1': '5V_BUS', '2': 'PGND'}, FP['R'], 'раз
 add('C32', ('Device', 'C'), '100n', {'1': '5V_BUS', '2': 'PGND'}, FP['C'], 'ВЧ на +5 В', '5V')
 
 # ============================ 7. +5V_LED SWITCH ==========================
-add('Q7', ('Transistor_FET', 'AO3401A'), 'AO3401A P-FET', {'1': 'G_LED', '2': '5V_BUS', '3': '5V_LED_F'},
-    FP['SOT23'], 'ключ LED-ветки: WS2812 питаются только при EN_LED5 (brightness cap снизу)', 'LED5')
-add('R29', ('Device', 'R'), '100k', {'1': '5V_BUS', '2': 'G_LED'}, FP['R'], 'подтяжка затвора (OFF)', 'LED5')
-add('Q8', ('Transistor_BJT', 'Q_NPN_BCE'), 'MMBT3904', {'1': 'Q8_B', '2': 'G_LED', '3': 'PGND'},
-    FP['SOT23'], 'драйвер ключа LED', 'LED5')
-add('R30', ('Device', 'R'), '10k', {'1': 'EN_LED5', '2': 'Q8_B'}, FP['R'], 'база Q8', 'LED5')
-add('R31', ('Device', 'R'), '100k', {'1': 'Q8_B', '2': 'PGND'}, FP['R'], 'OFF по умолчанию', 'LED5')
-add('F5', ('Device', 'Polyfuse'), '2.5 A', {'1': '5V_LED_F', '2': '5V_LED'}, FP['PF'],
+add('F5', ('Device', 'Polyfuse'), '2.5 A', {'1': '5V_BUS', '2': '5V_LED'}, FP['PF'],
     'полифьюз LED-шины (74 WS2812, прошивочный cap)', 'LED5')
-add('C33', ('Device', 'C'), '47uF', {'1': '5V_LED', '2': 'PGND'}, FP['CP'], 'буфер LED-импульсов', 'LED5')
+add('Q7', ('Transistor_FET', 'AO3400A'), 'AO3400A', {'1': 'EN_LED5', '2': 'PGND', '3': 'LED_RET'},
+    FP['SOT23'], 'low-side ключ возврата LED-ветки (WS2812): OFF = LED-цепочка без тока', 'LED5')
+add('R29', ('Device', 'R'), '100k', {'1': 'LED_RET', '2': 'PGND'}, FP['R'], 'разряд возврата LED при OFF', 'LED5')
+add('C33', ('Device', 'C'), '47uF', {'1': '5V_LED', '2': 'PGND'}, FP['CP'], 'буфер LED-импульсов (5 В всегда)', 'LED5')
 add('C34', ('Device', 'C'), '100n', {'1': '5V_LED', '2': 'PGND'}, FP['C'], 'HF LED-шины', 'LED5')
 add('D6', ('Device', 'D_TVS'), 'SMBJ5.0A', {'1': '5V_LED', '2': 'PGND'}, FP['SMA'], 'TVS LED-шины', 'LED5')
 add('R32', ('Device', 'R'), '1k', {'1': '5V_LED', '2': 'PGND'}, FP['R'], 'разрядный резистор LED', 'LED5')
+add('C39', ('Device', 'C'), '100n', {'1': 'LED_RET', '2': 'PGND'}, FP['C'], 'HF возврата LED', 'LED5')
 
 # ============================ 8. SUPERVISOR + EN INPUTS ==================
-add('U7', ('Power_Supervisor', 'MCP130-xxxDxTO'), 'MCP130-300', {
+add('U7', ('Power_Supervisor', 'MCP130-xxxDxTO'), 'MCP130-270', {
     '2': 'VSYS_SW', '3': 'PGND', '1': 'PWR_GOOD'}, FP['SOT23'],
-    'супервизор 3.00 В: PWR_GOOD = open-drain, LOW = VSYS ниже нормы', 'CTRL')
+    'супервизор 2.70 В: PWR_GOOD = open-drain, LOW = VSYS ниже нормы (UVP BMS 2.5 В)', 'CTRL')
 add('R33', ('Device', 'R'), '100R', {'1': 'EN_BUS12_C', '2': 'EN_BUS12'}, FP['R'], 'серия EN +12 В', 'CTRL')
-add('C35', ('Device', 'C'), '100n', {'1': 'EN_BUS12', '2': 'PGND'}, FP['C'], 'RC/EMI на EN +12 В', 'CTRL')
+add('R36', ('Device', 'R'), '100k', {'1': 'EN_BUS12', '2': 'PGND'}, FP['R'], 'EN +12 В -> PGND (не висит)', 'CTRL')
 add('R34', ('Device', 'R'), '100R', {'1': 'EN_N12_C', '2': 'EN_N12'}, FP['R'], 'серия EN -12 В', 'CTRL')
 add('C36', ('Device', 'C'), '100n', {'1': 'EN_N12', '2': 'PGND'}, FP['C'], 'RC/EMI на EN -12 В', 'CTRL')
 add('R35', ('Device', 'R'), '100R', {'1': 'EN_LED5_C', '2': 'EN_LED5'}, FP['R'], 'серия EN LED', 'CTRL')
+add('R37', ('Device', 'R'), '100k', {'1': 'EN_LED5', '2': 'PGND'}, FP['R'], 'EN LED -> PGND (LED OFF по умолчанию)', 'CTRL')
 add('C37', ('Device', 'C'), '100n', {'1': 'EN_LED5', '2': 'PGND'}, FP['C'], 'RC/EMI на EN LED', 'CTRL')
+add('R38', ('Device', 'R'), '100R', {'1': 'EN_5V_C', '2': 'EN_5V'}, FP['R'], 'серия EN +5 В', 'CTRL')
+add('R39', ('Device', 'R'), '100k', {'1': 'EN_5V', '2': 'PGND'}, FP['R'], 'EN +5 В -> PGND (не висит)', 'CTRL')
+add('C40', ('Device', 'C'), '100n', {'1': 'EN_5V', '2': 'PGND'}, FP['C'], 'RC/EMI на EN +5 В', 'CTRL')
 
 # ============================ 9. CONNECTORS ==============================
 add('J3', ('Connector_Generic', 'Conn_02x10_Odd_Even'), 'J-PWR (IDC-20)', {
@@ -343,13 +356,13 @@ add('J3', ('Connector_Generic', 'Conn_02x10_Odd_Even'), 'J-PWR (IDC-20)', {
     '5': '12V_BUS', '6': '12V_BUS', '7': 'PGND', '8': 'PGND',
     '9': 'N12_BUS', '10': 'N12_BUS', '11': 'PGND', '12': 'PGND',
     '13': '5V_BUS', '14': '5V_BUS', '15': 'PGND', '16': 'PGND',
-    '17': '5V_LED', '18': '5V_LED', '19': 'PGND', '20': 'PGND'},
+    '17': '5V_LED', '18': 'LED_RET', '19': 'PGND', '20': 'PGND'},
     FP['IDC20'],
     'PWR-2 <-> CORE-2: питание (пары) + возвраты; +12/-12/+5/5V_LED', 'CONN')
 add('J4', ('Connector_Generic', 'Conn_02x06_Odd_Even'), 'J-CTRL (IDC-12)', {
     '1': 'BATT_MON', '2': 'NTC_PACK', '3': 'FUEL_SDA_C', '4': 'FUEL_SCL_C',
     '5': 'FUEL_ALRT', '6': 'PWR_GOOD', '7': 'EN_BUS12_C', '8': 'EN_N12_C',
-    '9': 'EN_LED5_C', '10': 'MASTER_SW', '11': 'PGND', '12': 'PGND'},
+    '9': 'EN_LED5_C', '10': 'EN_5V_C', '11': 'PGND', '12': 'PGND'},
     FP['IDC12'],
     'PWR-2 <-> CORE-2: сенс/гейдж/статус/EN (MASTER_SW -> CORE-2 для секвенирования)', 'CONN')
 
@@ -358,25 +371,25 @@ for i, (tp, net, why) in enumerate([
         ('TP1', 'BATT_CELL_P', 'напряжение банок'), ('TP2', 'VBAT', 'выход BMS (P+)'),
         ('TP3', 'VSYS_SW', 'вход преобразователей'), ('TP4', '12V_BUS', 'шина +12 В'),
         ('TP5', 'N12_BUS', 'шина -12 В'), ('TP6', '5V_BUS', 'шина +5 В'),
-        ('TP7', '5V_LED', 'LED-шина'), ('TP8', 'PWR_GOOD', 'статус питания'),
+        ('TP7', 'LED_RET', 'возврат LED-ветки (ключ)'), ('TP8', 'PWR_GOOD', 'статус питания'),
         ('TP9', 'PGND', 'силовая земля для измерений')]):
     add(tp, ('Connector', 'TestPoint'), net, {'1': net}, FP['TP'], why, 'TP')
 
-FLAGS = ['PGND', 'VSYS', 'VSYS_SW', 'VBAT', 'BATT_CELL_P', 'BATT_BM', 'BMS_BAT',
+FLAGS = ['PGND', 'VSYS', 'VSYS_SW', 'VBAT', 'BATT_CELL_P', 'BATT_BM', 'BMS_BAT', '12V_OG', 'N12_OG',
          '12V_BUS', 'N12_BUS', '5V_BUS', '5V_LED', 'VGAUGE', '12V_SW', N12, '5V_SW',
-         '12V_F', 'N12_F', '5V_F', 'VSYS_MID']
+         '12V_F', 'N12_F', '5V_F', 'VSYS_MID', 'EN12_IC', 'EN5_IC']
 
 SEC_TITLES = {
     'PACK': 'PACK 1S2P: 2x18650 parallel, J1 pack, F1 5 A, Q1 reverse-FET, D1 TVS, TH1 NTC',
     'BMS': 'BMS 1S: BQ297xy + 2x AO3400A (common source), OVP/UVP/OCP/SCP; VBAT = P+ -> BQ24074 BAT',
-    'LOADS': 'MASTER LOAD SWITCH: back-to-back AO3401A, MMBT3904 driver, panel switch J2/SW1, TVS',
-    'GAUGE': 'FUEL GAUGE MAX17048 (I2C 0x36) + Kelvin sense + analog backup BATT_MON',
-    '12V': 'BUS +12 V: TPS61088 sync boost -> pi-filter -> polyfuse 0.5 A -> TVS (budget 330 mA)',
-    '12VN': 'BUS -12 V: LMR33630 inverting buck-boost (floating GND) + opto EN -> pi-filter -> polyfuse 0.3 A (budget 95 mA)',
-    '5V': 'LOGIC/AUDIO +5 V: TPS61088 sync boost -> pi-filter -> polyfuse 2 A (budget 1.0 A)',
-    'LED5': 'SWITCHED +5 V LED BRANCH: AO3401A key + MMBT3904 driver, EN_LED5, polyfuse 2.5 A',
-    'CTRL': 'SUPERVISOR + EN INPUTS: MCP130-300 (PWR_GOOD open-drain), 100R/100n EN filters',
-    'CONN': 'INTERFACE: J3 IDC-20 power, J4 IDC-12 control',
+    'LOADS': 'MASTER LOAD SWITCH: back-to-back AO3401A, MMBT3904 high-side driver, panel switch J2/SW1, TVS',
+    'GAUGE': 'FUEL GAUGE MAX17048 (I2C 0x36) + Kelvin sense at the cell + analog backup BATT_MON',
+    '12V': 'BUS +12 V: TPS61088 sync boost 12.15 V -> C-L-C pi-filter -> polyfuse 0.5 A -> TVS (budget 330 mA)',
+    '12VN': 'BUS -12 V: LMR33630 IBB (GND МС = -12 V, VIN = VSYS+12 V) + opto EN -> pi-filter -> polyfuse 0.3 A (budget 95 mA)',
+    '5V': 'LOGIC/AUDIO +5 V: TPS61088 sync boost 5.10 V -> pi-filter -> polyfuse 2 A (budget 1.0 A)',
+    'LED5': 'LED BRANCH: polyfuse 2.5 A + AO3400A low-side switch on the LED return (EN_LED5, OFF by default)',
+    'CTRL': 'SUPERVISOR + EN INPUTS: MCP130-270 (PWR_GOOD open-drain), 100R/100n EN filters (3.3 V-safe)',
+    'CONN': 'INTERFACE: J3 IDC-20 (VSYS/VBAT/+12/-12/+5/5V_LED/LED_RET/pairs), J4 IDC-12 (sense/I2C/status/EN)',
     'TP': 'TEST POINTS TP1..TP9',
 }
 
@@ -519,6 +532,14 @@ def export(sch):
     run('sch', 'export', 'pdf', '-o', os.path.join(HERE, PROJECT + '.pdf'), schf)
     run('sch', 'export', 'svg', '-o', os.path.join(HERE, 'svg'), schf)
 
+    # ---- PII/portability: no absolute home paths in exported netlists ----
+    for fn in ('netlist.net', 'netlist.xml'):
+        fp = os.path.join(HERE, fn)
+        if os.path.exists(fp):
+            txt = open(fp, encoding='utf-8').read()
+            txt = txt.replace(HERE, 'hardware/power2').replace(os.path.dirname(HERE), '.')
+            open(fp, 'w', encoding='utf-8').write(txt)
+
     # ---- BOM: артикул;MPN;номинал;кол-во;позиции;корпус;примечание ----
     rows = []
     for i, comp in enumerate(C):
@@ -550,11 +571,32 @@ MPN = {
     'MMBT3904': 'MMBT3904',
     'SMBJ5.0A': 'SMBJ5.0A',
     'SMAJ15A': 'SMAJ15A',
+    '2N7002': '2N7002',
     'Battery_Cell_placeholder': '',
 }
 
 
+def write_project_lib():
+    custom = build_custom_lib()
+    libpath = os.path.join(HERE, 'picomod2.kicad_sym')
+    with open(libpath, 'w', encoding='utf-8') as fh:
+        fh.write('(kicad_symbol_lib\n\t(version 20241209)\n\t(generator "gen_pwr2_sch.py")\n'
+                 '\t(generator_version "9.0")\n')
+        for nm in sorted(custom):
+            body = '\n'.join('\t' + ln for ln in custom[nm].split('\n'))
+            fh.write(body + '\n')
+        fh.write(')\n')
+    src = '/Applications/KiCad/KiCad.app/Contents/SharedSupport/template/sym-lib-table'
+    tbl = open(src, encoding='utf-8').read().rstrip()
+    tbl = tbl[:-1].rstrip() + ('\n\t(lib (name "picomod2") (type "KiCad") '
+                              '(uri "${KIPRJMOD}/picomod2.kicad_sym") (options "") '
+                              '(descr "PicoMod PWR-2 project symbols"))\n)\n')
+    open(os.path.join(HERE, 'sym-lib-table'), 'w', encoding='utf-8').write(tbl)
+    return custom
+
+
 def main():
+    write_project_lib()
     sch, comps, sections = make_schematic()
     print('written %s.kicad_sch: %d компонентов' % (PROJECT, len(C)))
     pro = os.path.join(HERE, PROJECT + '.kicad_pro')

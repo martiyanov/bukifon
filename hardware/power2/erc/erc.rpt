@@ -1,58 +1,9 @@
-ERC report (2026-11-05T21:27:55, Encoding UTF8)
+ERC report (2026-11-05T21:35:20, Encoding UTF8)
 Report includes: Errors, Warnings, Exclusions
 
 ***** Sheet /
-[pin_to_pin]: Вывод типа Выход питания соединён с выводом типа Выход питания
-    ; error
-    @(443.23 mm, 167.64 mm): Symbol U3 Вывод 10 [VOUT, Выход питания, Линия]
-    @(443.23 mm, 170.18 mm): Symbol U3 Вывод 11 [VOUT, Выход питания, Линия]
-[pin_to_pin]: Вывод типа Выход питания соединён с выводом типа Выход питания
-    ; error
-    @(817.88 mm, 74.93 mm): Symbol U6 Вывод 10 [VOUT, Выход питания, Линия]
-    @(817.88 mm, 77.47 mm): Symbol U6 Вывод 11 [VOUT, Выход питания, Линия]
-[pin_to_pin]: Вывод типа Выход питания соединён с выводом типа Выход питания
-    ; error
-    @(826.77 mm, 609.60 mm): Symbol #FLG13 Вывод 1 [Выход питания, Линия]
-    @(443.23 mm, 170.18 mm): Symbol U3 Вывод 11 [VOUT, Выход питания, Линия]
-[pin_to_pin]: Вывод типа Выход питания соединён с выводом типа Выход питания
-    ; error
-    @(878.84 mm, 609.60 mm): Symbol #FLG15 Вывод 1 [Выход питания, Линия]
-    @(817.88 mm, 77.47 mm): Symbol U6 Вывод 11 [VOUT, Выход питания, Линия]
-[lib_symbol_issues]: Текущая конфигурация не содержит библиотеку символов 'picomod2'
-    ; warning
-    @(430.53 mm, 77.47 mm): Символ U2 [MAX17048]
-[footprint_link_issues]: Посадочное место 'QFN-20-1EP_3x3mm_P0.4mm_EP1.8x1.8mm' не найдено в библиотеке 'Package_DFN_QFN'.
-    ; warning
-    @(430.53 mm, 170.18 mm): Символ U3 [TPS61088]
-[lib_symbol_issues]: Текущая конфигурация не содержит библиотеку символов 'picomod2'
-    ; warning
-    @(430.53 mm, 170.18 mm): Символ U3 [TPS61088]
-[footprint_link_issues]: Посадочное место 'L_Bourns-SRN6045' не найдено в библиотеке 'Inductor_SMD'.
-    ; warning
-    @(430.53 mm, 427.99 mm): Символ L4 [L]
-[footprint_link_issues]: Посадочное место 'L_Bourns-SRN6045' не найдено в библиотеке 'Inductor_SMD'.
-    ; warning
-    @(491.49 mm, 170.18 mm): Символ L1 [L]
-[footprint_link_issues]: Посадочное место 'L_Bourns-SRN6045' не найдено в библиотеке 'Inductor_SMD'.
-    ; warning
-    @(491.49 mm, 328.93 mm): Символ L3 [L]
-[footprint_link_issues]: Посадочное место 'L_Bourns-SRN6045' не найдено в библиотеке 'Inductor_SMD'.
-    ; warning
-    @(674.37 mm, 203.20 mm): Символ L2 [L]
-[footprint_link_issues]: Посадочное место 'QFN-20-1EP_3x3mm_P0.4mm_EP1.8x1.8mm' не найдено в библиотеке 'Package_DFN_QFN'.
-    ; warning
-    @(805.18 mm, 77.47 mm): Символ U6 [TPS61088]
-[lib_symbol_issues]: Текущая конфигурация не содержит библиотеку символов 'picomod2'
-    ; warning
-    @(805.18 mm, 77.47 mm): Символ U6 [TPS61088]
-[footprint_link_issues]: Посадочное место 'L_Bourns-SRN6045' не найдено в библиотеке 'Inductor_SMD'.
-    ; warning
-    @(866.14 mm, 77.47 mm): Символ L5 [L]
-[footprint_link_issues]: Посадочное место 'L_Bourns-SRN6045' не найдено в библиотеке 'Inductor_SMD'.
-    ; warning
-    @(1049.02 mm, 110.49 mm): Символ L6 [L]
 
- ** ERC messages: 15  Errors 4  Warnings 11
+ ** ERC messages: 0  Errors 0  Warnings 0
 
  ** Ignored checks:
     - Global label only appears once in the schematic
