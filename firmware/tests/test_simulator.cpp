@@ -137,9 +137,14 @@ TEST(SimulatorEventReplay) {
   CHECK(sim.saveEvents(path));
   Simulator loaded;
   loaded.init();
+  // Start from an empty pattern so the transport event does not trigger the
+  // default sequencer pattern: this test checks external-event replay only.
+  for (int t = 0; t < kSeqTracks; ++t) {
+    for (int st = 0; st < kSeqSteps; ++st) loaded.sequencer().step(t, st).active = false;
+  }
   CHECK(loaded.loadEvents(path));
   CHECK(loaded.pendingEventCount() == 4);
-  loaded.runSamples(6000);
+  loaded.runSamples(12000);
   INFO("event replay: notes=%zu, bpm=%.0f, peak=%.3f",
        loaded.observationLog().summarize().notesOn, loaded.sequencer().bpm(), loaded.stats().peak);
   CHECK(loaded.observationLog().summarize().notesOn == 1);

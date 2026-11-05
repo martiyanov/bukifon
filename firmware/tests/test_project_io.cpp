@@ -17,10 +17,8 @@ namespace {
 void buildTestSequencer(Sequencer* seq) {
   seq->init(48000.0f);
   seq->setBpm(133.0f);
-  seq->setPatternIndex(2);
   seq->setTrackLength(0, 12);
   seq->setTrackSpeed(1, 2);
-  seq->setTrackMuted(3, true);
   seq->step(0, 3).note = 77;
   seq->step(0, 3).velocity = 111;
   seq->step(0, 3).gate = 42;
@@ -29,7 +27,8 @@ void buildTestSequencer(Sequencer* seq) {
   for (int s = 0; s < 16; ++s) seq->step(2, s).micro = static_cast<int8_t>(s % 5 - 2);
   const uint8_t chain[3] = {2, 0, 1};
   seq->setChain(chain, 3);
-  seq->step(1, 7).plocks[0].param = Resonance;
+  seq->setPatternIndex(2);
+  seq->setTrackMuted(3, true);
 }
 
 }  // namespace
@@ -64,8 +63,8 @@ TEST(ProjectRoundtripDeterministic) {
   CHECK(loaded.patterns[2].tracks[3].muted);
   CHECK(loaded.patterns[0].tracks[0].steps[3].note == 77);
   CHECK(loaded.patterns[0].tracks[0].steps[3].velocity == 111);
-  CHECK(loaded.patterns[0].tracks[0].steps[4].plockCount == 1);
-  CHECK(loaded.patterns[0].tracks[0].steps[4].plocks[0].param == Cutoff);
+  CHECK(loaded.patterns[0].tracks[1].steps[5].plockCount == 1);
+  CHECK(loaded.patterns[0].tracks[1].steps[5].plocks[0].param == Cutoff);
 
   Sequencer restored;
   restored.init(48000.0f);

@@ -127,7 +127,8 @@ TEST(Ui800SelectedParamHighlight) {
   // The highlighted encoder hint box changes colour.
   CHECK(a.at(20, 408) != b.at(20, 408));
   // And the parameter panel border of the selected cell changes too.
-  CHECK(a.at(12, 310) != b.at(12, 310) || a.at(400, 310) != b.at(400, 310));
+  CHECK(a.at(10, 310) != b.at(10, 310));
+  CHECK(a.at(592, 310) != b.at(592, 310));
   INFO("ui800: selected parameter highlight is visible");
 }
 

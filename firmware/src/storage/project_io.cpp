@@ -196,6 +196,7 @@ bool projectDeserialize(const uint8_t* data, size_t size, Project* out) {
   project.bpm = static_cast<float>(readU16(data, &pos)) / 10.0f;
   project.activePattern = readU8(data, &pos);
   const uint8_t patternCount = readU8(data, &pos);
+  project.patternCount = patternCount;
   project.chainLength = readU8(data, &pos);
   (void)readU8(data, &pos);  // reserved
   if (patternCount > kNumPatterns) return false;
