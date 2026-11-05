@@ -31,3 +31,13 @@ id_rsa*
 .DS_Store
 refs/sketch4-panel.jpg
 refs/s4_*.jpg
+
+# build outputs
+firmware/host/build*/
+firmware/host/build-cov/
+firmware/.pio/
+firmware/Bukifon/.pio/
+*.o
+*.a
+*.tmp
+.pio/

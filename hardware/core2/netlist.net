@@ -1,7 +1,7 @@
 (export
 	(version "E")
 	(design
-		(source "/Users/a123/Проекты/Синтезатор/hardware/core2/CORE-2.kicad_sch")
+		(source "<repo>/hardware/core2/CORE-2.kicad_sch")
 		(date "2026-11-05T21:08:00")
 		(tool "Eeschema 10.0.4")
 		(sheet

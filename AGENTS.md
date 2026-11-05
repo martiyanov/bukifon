@@ -45,6 +45,8 @@ MPLCONFIGDIR=/tmp/mplcache /tmp/msvenv/bin/python tools/panel_from_json.py spec/
 # корпус: STL + fitcheck (пересечения 0)
 MPLCONFIGDIR=/tmp/mplcache /tmp/msvenv/bin/python mechanical/generator/case_v04.py
 MPLCONFIGDIR=/tmp/mplcache /tmp/msvenv/bin/python mechanical/generator/fitcheck_v04.py
+# безопасность/приватность (секреты, EXIF/GPS, абсолютные пути)
+bash tools/security_scan.sh
 # прошивка: host-тесты
 cd firmware/host && make test        # или: make -C firmware/host
 ```
