@@ -807,3 +807,28 @@ Pillow) installed in `/tmp/msvenv`; no system packages assumed.
    ready for the factory station export.
 4. P4 firmware build is still blocked by the missing P4 PlatformIO platform;
    identity CLI is host/mock-tested.
+
+---
+
+# Round 10 — UI palette tokens: 4 themes in firmware (2026-11-05)
+
+- `firmware/include/bukifon_ui_theme.h`: C API + C++ helpers; 4 themes
+  (Night/Amber/Phosphor/Cream) × 12 tokens (`bg/panel/card/line/text/muted/
+  accent/green/orange/blue/red/purple`), values exactly docs/62; default Night.
+- `firmware/src/ui/ui_theme.cpp`: frozen palette table, RGB888→RGB565,
+  `bukifon_ui_theme_set()` (case-insensitive), host file persistence
+  `save/load(path)` (NVS/flash on device = TODO(hw)).
+- Renderers converted to tokens: `src/ui/ui800.cpp` (SYNTH + all 4 device modes,
+  headers/cards/steps/params/status bar) and legacy `src/ui/menu.cpp`; local
+  hardcoded RGB565 constants removed.  Part colours follow docs/62
+  (green/orange/blue/purple for tracks 1–4).
+- Host demo CLI: `bukifon_sim --theme Cream [--theme-config PATH]`; no
+  auto-load unless a config path is passed (deterministic screenshots).
+- Tests +10 (**226/226 PASS**, 216 pre-existing untouched): exact docs/62 values
+  for all 4 themes, RGB565 conversion, selection API/bounds, persistence
+  (save/load/missing/corrupt), SYNTH rendering for every theme, 4 modes ×
+  4 themes, and a source scan proving `ui800.cpp`/`menu.cpp` contain no
+  `colors::`/`rgb565(`/raw 0xRRGGBB colour literals.
+- `docs/62-screen-palette.md` status updated: firmware uses the same tokens;
+  remaining: device NVS persistence, RGB565 banding/contrast on hardware, demo/
+  site theme selector sync (values already match).

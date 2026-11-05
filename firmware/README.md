@@ -44,7 +44,7 @@ firmware/
   engine_unity.cpp / sim_unity.cpp  PlatformIO unity translation units
   Bukifon/      RP2040 Arduino sketch: Bukifon.ino + platformio.ini
   host/         native build (Makefile + CMakeLists.txt), WAV renderer
-  tests/        unit tests (216), FFT analysis, run_tests.sh, run_sim_demo.sh, REPORT.md
+  tests/        unit tests (226), FFT analysis, run_tests.sh, run_sim_demo.sh, REPORT.md
   tools/        wavetable/font generators, ppm_to_png.py, build_pico.sh
   artifacts/    generated 800x480 UI screenshots + demo logs (git-ignored)
 ```
@@ -52,7 +52,7 @@ firmware/
 ## v0.5 host prototype — what to run
 
 ```bash
-make -C firmware/host test          # 216 unit tests
+make -C firmware/host test          # 226 unit tests
 firmware/tests/run_tests.sh         # build + tests + WAV render + FFT report
 firmware/tests/run_sim_demo.sh      # 16-bar demo, event-log determinism, 4 PNG
 ```
@@ -95,7 +95,7 @@ firmware/tests/run_tests.sh         # full pipeline: build, tests, WAV render, F
 
 Latest measured results (see `tests/REPORT.md` and `tests/out/test_log.txt`):
 
-- **216 unit tests, 0 failures** (Apple clang 21, C++17, `-O2`)
+- **226 unit tests, 0 failures** (Apple clang 21, C++17, `-O2`)
 - line coverage **83.5 %** (4347/5204 lines, gcov, generated tables excluded)
 - host demo: 16 bars, 1024 note-ons, 32 p-locks, deterministic event log, 4 PNG screens
 - A4 = **440.0000 Hz** (error `-0.0000 %`, limit ±0.1 %)
@@ -144,6 +144,16 @@ export PLATFORMIO_CORE_DIR=/tmp/piocore
 RAM 87.7 % — запас ~32 KiB; при добавлении эффектов/модулей оптимизировать
 буферы (delay-линия, пресет-кэш, 8-дорожечный секвенсор) или перенести часть в
 PSRAM (RP2350).
+
+## Round 10 — UI palette tokens in firmware
+
+- `include/bukifon_ui_theme.h` + `src/ui/ui_theme.cpp`: 4 frozen themes
+  (Night/Amber/Phosphor/Cream) × 12 tokens exactly from
+  [docs/62-screen-palette.md](../docs/62-screen-palette.md), default Night;
+  `ui_theme_set()`/C++ helpers + host settings file (device NVS TODO(hw)).
+- `src/ui/ui800.cpp` (SYNTH + 4 device modes) and `src/ui/menu.cpp` render only
+  through tokens (no raw colours; host test enforces it); track colours follow
+  green/orange/blue/purple.  Demo CLI: `bukifon_sim --theme Cream`.
 
 ## Round 9 — serials/QR labels + factory identity
 

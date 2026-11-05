@@ -6,6 +6,7 @@
 #include <cstring>
 #include <new>
 
+#include "bukifon_ui_theme.h"
 #include "ui/font6x8.hpp"
 
 #if defined(ESP32)
@@ -27,14 +28,29 @@ constexpr int kParamCellH = 40;
 constexpr int kHintsY = 400;
 constexpr int kTransportY = 432;
 
-const uint16_t kBg = colors::kPanel;
-const uint16_t kCard = rgb565(28, 31, 40);
-const uint16_t kCardActive = rgb565(40, 52, 64);
-const uint16_t kGridOn = rgb565(70, 190, 120);
-const uint16_t kGridOff = rgb565(38, 42, 50);
-const uint16_t kGridPlock = rgb565(255, 170, 60);
-const uint16_t kMeter = rgb565(90, 220, 120);
-const uint16_t kMeterHot = rgb565(255, 90, 80);
+// All colours come from the frozen palette (docs/62) via bukifon_ui_theme.h;
+// no raw RGB literals are allowed in this renderer (enforced by a host test).
+inline uint16_t bgColor() { return themeColor(BUKIFON_UI_BG); }
+inline uint16_t panelColor() { return themeColor(BUKIFON_UI_PANEL); }
+inline uint16_t cardColor() { return themeColor(BUKIFON_UI_CARD); }
+inline uint16_t activeCardColor() { return themeColor(BUKIFON_UI_PANEL); }
+inline uint16_t lineColor() { return themeColor(BUKIFON_UI_LINE); }
+inline uint16_t textColor() { return themeColor(BUKIFON_UI_TEXT); }
+inline uint16_t mutedColor() { return themeColor(BUKIFON_UI_MUTED); }
+inline uint16_t accentColor() { return themeColor(BUKIFON_UI_ACCENT); }
+inline uint16_t greenColor() { return themeColor(BUKIFON_UI_GREEN); }
+inline uint16_t orangeColor() { return themeColor(BUKIFON_UI_ORANGE); }
+inline uint16_t blueColor() { return themeColor(BUKIFON_UI_BLUE); }
+inline uint16_t redColor() { return themeColor(BUKIFON_UI_RED); }
+inline uint16_t purpleColor() { return themeColor(BUKIFON_UI_PURPLE); }
+inline uint16_t trackColor(int track) {
+  switch (track & 3) {
+    case 1: return orangeColor();
+    case 2: return blueColor();
+    case 3: return purpleColor();
+    default: return greenColor();
+  }
+}
 
 void drawCard(ICanvas& c, int x, int y, int w, int h, uint16_t fill, uint16_t border) {
   c.fillRect(x, y, w, h, fill);
@@ -43,7 +59,7 @@ void drawCard(ICanvas& c, int x, int y, int w, int h, uint16_t fill, uint16_t bo
 
 void drawBar(ICanvas& c, int x, int y, int w, int h, float norm, uint16_t color) {
   if (w <= 0 || h <= 0) return;
-  c.fillRect(x, y, w, h, kGridOff);
+  c.fillRect(x, y, w, h, lineColor());
   const int filled = static_cast<int>(std::lround(static_cast<double>(norm) * (w - 2)));
   if (filled > 0) c.fillRect(x + 1, y + 1, filled, h - 2, color);
 }
@@ -59,70 +75,70 @@ const char* screenName(Screen s) {
 }
 
 void drawHeader(ICanvas& c, const UiSnapshot& s) {
-  c.fillRect(0, 0, kUiWidth, kHeaderH, colors::kDim);
-  c.fillRect(0, kHeaderH - 2, kUiWidth, 2, colors::kAccent);
-  drawTextScaled(c, 12, 8, s.title, colors::kAccent, 2);
-  c.drawText(12, 38, s.page, colors::kGrey);
+  c.fillRect(0, 0, kUiWidth, kHeaderH, panelColor());
+  c.fillRect(0, kHeaderH - 2, kUiWidth, 2, accentColor());
+  drawTextScaled(c, 12, 8, s.title, accentColor(), 2);
+  c.drawText(12, 38, s.page, mutedColor());
 
   char buf[32];
   std::snprintf(buf, sizeof(buf), "BPM %d", static_cast<int>(std::lround(s.bpm)));
-  c.drawText(300, 10, buf, colors::kWhite);
+  c.drawText(300, 10, buf, textColor());
   std::snprintf(buf, sizeof(buf), "PAT %02d", s.pattern);
-  c.drawText(300, 28, buf, colors::kWhite);
+  c.drawText(300, 28, buf, textColor());
   std::snprintf(buf, sizeof(buf), "BAR %03d", s.bar + 1);
-  c.drawText(430, 10, buf, colors::kGrey);
+  c.drawText(430, 10, buf, mutedColor());
   std::snprintf(buf, sizeof(buf), "STEP %02d", s.activeStep + 1);
-  c.drawText(430, 28, buf, colors::kGrey);
+  c.drawText(430, 28, buf, mutedColor());
 
-  const uint16_t statusColor = s.playing ? colors::kGreen : colors::kRed;
+  const uint16_t statusColor = s.playing ? greenColor() : redColor();
   c.fillRect(540, 10, 10, 10, statusColor);
   c.drawText(556, 10, s.status, statusColor);
-  if (s.fill) c.drawText(540, 28, "FILL", colors::kValue);
-  if (s.transportRecord) c.drawText(590, 28, "REC", colors::kRed);
+  if (s.fill) c.drawText(540, 28, "FILL", orangeColor());
+  if (s.transportRecord) c.drawText(590, 28, "REC", redColor());
   std::snprintf(buf, sizeof(buf), "MODE %s", s.deviceMode);
-  c.drawText(630, 10, buf, colors::kValue);
+  c.drawText(630, 10, buf, orangeColor());
   std::snprintf(buf, sizeof(buf), "VOICES %d", s.activeVoices);
-  c.drawText(630, 28, buf, colors::kAccent);
+  c.drawText(630, 28, buf, accentColor());
 }
 
 void drawFooter(ICanvas& c, const UiSnapshot& s) {
-  c.fillRect(0, kTransportY, kUiWidth, kFooterH, colors::kDim);
+  c.fillRect(0, kTransportY, kUiWidth, kFooterH, panelColor());
   // Transport row.
-  c.fillRect(12, kTransportY + 8, 64, 28, s.playing ? colors::kGreen : kCard);
-  c.drawText(24, kTransportY + 16, s.playing ? "PLAY" : "STOP", s.playing ? colors::kBlack : colors::kWhite);
-  c.drawRect(88, kTransportY + 8, 64, 28, colors::kGrey);
-  c.drawText(100, kTransportY + 16, "|<", colors::kWhite);
-  c.drawRect(164, kTransportY + 8, 64, 28, colors::kGrey);
-  c.drawText(176, kTransportY + 16, ">|", colors::kWhite);
-  c.drawRect(240, kTransportY + 8, 64, 28, colors::kRed);
-  c.drawText(252, kTransportY + 16, "REC", colors::kWhite);
-  c.drawText(320, kTransportY + 16, s.footer, colors::kGrey);
+  c.fillRect(12, kTransportY + 8, 64, 28, s.playing ? greenColor() : cardColor());
+  c.drawText(24, kTransportY + 16, s.playing ? "PLAY" : "STOP", s.playing ? bgColor() : textColor());
+  c.drawRect(88, kTransportY + 8, 64, 28, mutedColor());
+  c.drawText(100, kTransportY + 16, "|<", textColor());
+  c.drawRect(164, kTransportY + 8, 64, 28, mutedColor());
+  c.drawText(176, kTransportY + 16, ">|", textColor());
+  c.drawRect(240, kTransportY + 8, 64, 28, redColor());
+  c.drawText(252, kTransportY + 16, "REC", textColor());
+  c.drawText(320, kTransportY + 16, s.footer, mutedColor());
   // Master level.
   char buf[32];
   std::snprintf(buf, sizeof(buf), "MASTER %3d%%",
                 static_cast<int>(std::lround(s.masterLevel * 100.0f)));
-  c.drawText(600, kTransportY + 6, buf, colors::kWhite);
-  drawBar(c, 600, kTransportY + 22, 180, 10, s.masterLevel, kMeter);
+  c.drawText(600, kTransportY + 6, buf, textColor());
+  drawBar(c, 600, kTransportY + 22, 180, 10, s.masterLevel, greenColor());
   // Box for the selected encoder hint.
   if (s.selectedParam >= 0 && s.selectedParam < kNumHints) {
-    c.drawText(12, kTransportY + 20, "ENC", colors::kGrey);
-    c.drawText(48, kTransportY + 20, s.hints[s.selectedParam], colors::kValue);
+    c.drawText(12, kTransportY + 20, "ENC", mutedColor());
+    c.drawText(48, kTransportY + 20, s.hints[s.selectedParam], orangeColor());
   }
 }
 
 void drawTrackCard(ICanvas& c, const UiSnapshot& s, int track, int x, int y, int w, int h) {
   const UiTrack& t = s.tracks[track];
   const bool selected = s.screen == Screen::Sequencer && track == s.selectedParam % kMaxTracks;
-  drawCard(c, x, y, w, h, t.active ? kCardActive : kCard,
-           selected ? colors::kAccent : colors::kGrey);
-  drawTextScaled(c, x + 8, y + 6, t.name, t.muted ? colors::kGrey : colors::kWhite, 1);
-  c.drawText(x + 8, y + 20, t.patch, colors::kGrey);
+  drawCard(c, x, y, w, h, t.active ? activeCardColor() : cardColor(),
+           selected ? accentColor() : trackColor(track));
+  drawTextScaled(c, x + 8, y + 6, t.name, t.muted ? mutedColor() : textColor(), 1);
+  c.drawText(x + 8, y + 20, t.patch, mutedColor());
   char buf[32];
   std::snprintf(buf, sizeof(buf), "CUT %d", static_cast<int>(std::lround(t.cutoff)));
-  c.drawText(x + 8, y + 34, buf, colors::kGrey);
+  c.drawText(x + 8, y + 34, buf, mutedColor());
   std::snprintf(buf, sizeof(buf), "V%d", t.voices);
-  c.drawText(x + 110, y + 34, buf, colors::kAccent);
-  if (t.muted) c.drawText(x + 136, y + 34, "MUTE", colors::kRed);
+  c.drawText(x + 110, y + 34, buf, accentColor());
+  if (t.muted) c.drawText(x + 136, y + 34, "MUTE", redColor());
   // Step grid: 16 cells.
   const int gridX = x + 170;
   const int gridY = y + 8;
@@ -132,17 +148,17 @@ void drawTrackCard(ICanvas& c, const UiSnapshot& s, int track, int x, int y, int
   for (int step = 0; step < cells; ++step) {
     const bool activeStep = (step == s.activeStep);
     const bool on = t.stepActive[step];
-    uint16_t fill = on ? kGridOn : kGridOff;
-    if (t.stepPlocked[step]) fill = kGridPlock;
-    if (activeStep) fill = colors::kAccent;
+    uint16_t fill = on ? trackColor(track) : lineColor();
+    if (t.stepPlocked[step]) fill = orangeColor();
+    if (activeStep) fill = accentColor();
     c.fillRect(gridX + step * cellW, gridY, cellW - 2, cellH, fill);
     if (on) {
       // A small note tick (1 px) at the bottom of the cell.
-      c.fillRect(gridX + step * cellW + 2, gridY + cellH - 4, cellW - 6, 2, colors::kWhite);
+      c.fillRect(gridX + step * cellW + 2, gridY + cellH - 4, cellW - 6, 2, textColor());
     }
   }
   // Track meter.
-  drawBar(c, x + 8, y + h - 12, w - 16, 6, t.level, t.peak > 0.9f ? kMeterHot : kMeter);
+  drawBar(c, x + 8, y + h - 12, w - 16, 6, t.level, t.peak > 0.9f ? redColor() : greenColor());
 }
 
 void drawTracks(ICanvas& c, const UiSnapshot& s) {
@@ -154,32 +170,32 @@ void drawTracks(ICanvas& c, const UiSnapshot& s) {
 
 void drawSequencerGrid(ICanvas& c, const UiSnapshot& s) {
   // Ruler.
-  c.fillRect(10, kTracksY - 18, kUiWidth - 20, 16, colors::kDim);
+  c.fillRect(10, kTracksY - 18, kUiWidth - 20, 16, panelColor());
   for (int step = 0; step < s.stepCount && step < kMaxSteps; ++step) {
     char buf[8];
     std::snprintf(buf, sizeof(buf), "%02d", step + 1);
     const int x = 12 + step * 47;
-    c.drawText(x, kTracksY - 16, buf, step == s.activeStep ? colors::kAccent : colors::kGrey);
+    c.drawText(x, kTracksY - 16, buf, step == s.activeStep ? accentColor() : mutedColor());
   }
   for (int t = 0; t < s.trackCount && t < kMaxTracks; ++t) {
     const UiTrack& track = s.tracks[t];
     const int y = kTracksY + t * (kTrackH + kTrackGap);
-    c.fillRect(10, y, 130, kTrackH, track.active ? kCardActive : kCard);
-    drawTextScaled(c, 16, y + 6, track.name, track.muted ? colors::kGrey : colors::kWhite, 1);
-    c.drawText(16, y + 22, track.patch, colors::kGrey);
+    c.fillRect(10, y, 130, kTrackH, track.active ? activeCardColor() : cardColor());
+    drawTextScaled(c, 16, y + 6, track.name, track.muted ? mutedColor() : textColor(), 1);
+    c.drawText(16, y + 22, track.patch, mutedColor());
     c.drawText(16, y + 38, track.muted ? "MUTED" : (track.active ? "ACTIVE" : "IDLE"),
-               track.muted ? colors::kRed : colors::kGreen);
+               track.muted ? redColor() : greenColor());
     for (int step = 0; step < s.stepCount && step < kMaxSteps; ++step) {
       const int x = 146 + step * 40;
       const bool on = track.stepActive[step] && (step % track.length == 0 || step < track.length);
-      uint16_t fill = on ? kGridOn : kGridOff;
-      if (track.stepPlocked[step]) fill = kGridPlock;
-      if (step == s.activeStep) fill = colors::kAccent;
+      uint16_t fill = on ? trackColor(t) : lineColor();
+      if (track.stepPlocked[step]) fill = orangeColor();
+      if (step == s.activeStep) fill = accentColor();
       c.fillRect(x, y + 4, 36, kTrackH - 8, fill);
       char note[8];
       std::snprintf(note, sizeof(note), "%d", static_cast<int>(track.note[step]));
-      if (on) c.drawText(x + 6, y + 18, note, colors::kBlack);
-      if (track.stepPlocked[step]) c.drawText(x + 28, y + 6, "*", colors::kWhite);
+      if (on) c.drawText(x + 6, y + 18, note, bgColor());
+      if (track.stepPlocked[step]) c.drawText(x + 28, y + 6, "*", textColor());
     }
   }
 }
@@ -191,53 +207,53 @@ void drawMixer(ICanvas& c, const UiSnapshot& s) {
     const int y = kTracksY;
     const int w = 186;
     const int h = 236;
-    drawCard(c, x, y, w, h, kCard, colors::kGrey);
-    drawTextScaled(c, x + 8, y + 8, track.name, colors::kWhite, 1);
-    c.drawText(x + 8, y + 24, track.patch, colors::kGrey);
+    drawCard(c, x, y, w, h, cardColor(), trackColor(t));
+    drawTextScaled(c, x + 8, y + 8, track.name, textColor(), 1);
+    c.drawText(x + 8, y + 24, track.patch, mutedColor());
     // Vertical level meter.
-    c.fillRect(x + w - 26, y + 40, 14, h - 90, kGridOff);
+    c.fillRect(x + w - 26, y + 40, 14, h - 90, lineColor());
     const int meterH = static_cast<int>(std::lround(static_cast<double>(track.level) * (h - 94)));
     c.fillRect(x + w - 24, y + 40 + (h - 90 - meterH), 10, meterH,
-               track.peak > 0.9f ? kMeterHot : kMeter);
+               track.peak > 0.9f ? redColor() : greenColor());
     char buf[32];
     std::snprintf(buf, sizeof(buf), "CUT %4d", static_cast<int>(std::lround(track.cutoff)));
-    c.drawText(x + 8, y + 50, buf, colors::kWhite);
+    c.drawText(x + 8, y + 50, buf, textColor());
     std::snprintf(buf, sizeof(buf), "PAN %+d", static_cast<int>(std::lround(track.pan * 100.0f)));
-    c.drawText(x + 8, y + 66, buf, colors::kWhite);
+    c.drawText(x + 8, y + 66, buf, textColor());
     std::snprintf(buf, sizeof(buf), "VOX %d", track.voices);
-    c.drawText(x + 8, y + 82, buf, colors::kGrey);
-    c.drawText(x + 8, y + 100, "SEND A", colors::kGrey);
-    drawBar(c, x + 8, y + 114, w - 44, 8, track.level * 0.8f, kMeter);
-    c.drawText(x + 8, y + 128, "SEND B", colors::kGrey);
-    drawBar(c, x + 8, y + 142, w - 44, 8, track.level * 0.5f, kMeter);
+    c.drawText(x + 8, y + 82, buf, mutedColor());
+    c.drawText(x + 8, y + 100, "SEND A", mutedColor());
+    drawBar(c, x + 8, y + 114, w - 44, 8, track.level * 0.8f, greenColor());
+    c.drawText(x + 8, y + 128, "SEND B", mutedColor());
+    drawBar(c, x + 8, y + 142, w - 44, 8, track.level * 0.5f, greenColor());
     if (track.muted) {
-      c.fillRect(x, y, w, 24, colors::kRed);
-      c.drawText(x + 8, y + 6, "MUTED", colors::kBlack);
+      c.fillRect(x, y, w, 24, redColor());
+      c.drawText(x + 8, y + 6, "MUTED", bgColor());
     }
   }
 }
 
 void drawModulesScreen(ICanvas& c, const UiSnapshot& s) {
-  drawCard(c, 10, kTracksY, 360, 236, kCard, colors::kGrey);
-  drawTextScaled(c, 20, kTracksY + 8, "MODULES", colors::kAccent, 1);
-  c.drawText(20, kTracksY + 26, s.moduleApi, colors::kGrey);
-  if (s.moduleBypassed) c.drawText(20, kTracksY + 26, "BYPASS (budget)", colors::kRed);
+  drawCard(c, 10, kTracksY, 360, 236, cardColor(), mutedColor());
+  drawTextScaled(c, 20, kTracksY + 8, "MODULES", accentColor(), 1);
+  c.drawText(20, kTracksY + 26, s.moduleApi, mutedColor());
+  if (s.moduleBypassed) c.drawText(20, kTracksY + 26, "BYPASS (budget)", redColor());
   for (int i = 0; i < s.moduleCount && i < 8; ++i) {
     const int y = kTracksY + 46 + i * 22;
-    c.fillRect(20, y, 340, 20, i == s.selectedParam ? kCardActive : kGridOff);
-    c.drawText(26, y + 6, s.modules[i], colors::kWhite);
+    c.fillRect(20, y, 340, 20, i == s.selectedParam ? activeCardColor() : lineColor());
+    c.drawText(26, y + 6, s.modules[i], textColor());
   }
   // Right side: parameter panel drawn separately.
-  drawCard(c, 380, kTracksY, 410, 236, kCard, colors::kGrey);
-  drawTextScaled(c, 392, kTracksY + 8, "PARAMETERS", colors::kAccent, 1);
+  drawCard(c, 380, kTracksY, 410, 236, cardColor(), mutedColor());
+  drawTextScaled(c, 392, kTracksY + 8, "PARAMETERS", accentColor(), 1);
   for (int i = 0; i < kNumParams; ++i) {
     const int col = i % 2;
     const int row = i / 2;
     const int x = 392 + col * 196;
     const int y = kTracksY + 34 + row * 46;
-    c.drawText(x, y, s.params[i].label, colors::kGrey);
-    drawTextScaled(c, x, y + 12, s.params[i].value, colors::kValue, 1);
-    drawBar(c, x, y + 28, 180, 6, s.params[i].norm, colors::kAccent);
+    c.drawText(x, y, s.params[i].label, mutedColor());
+    drawTextScaled(c, x, y + 12, s.params[i].value, orangeColor(), 1);
+    drawBar(c, x, y + 28, 180, 6, s.params[i].norm, accentColor());
   }
 }
 
@@ -247,11 +263,11 @@ void drawParamPanel(ICanvas& c, const UiSnapshot& s) {
     const int row = i / 4;
     const int x = 10 + col * kParamCellW;
     const int y = kParamsY + row * kParamCellH;
-    const uint16_t border = (i == s.selectedParam) ? colors::kAccent : colors::kGrey;
-    drawCard(c, x, y, kParamCellW - 6, kParamCellH - 6, kCard, border);
-    c.drawText(x + 6, y + 5, s.params[i].label, colors::kGrey);
-    drawTextScaled(c, x + 6, y + 16, s.params[i].value, colors::kValue, 1);
-    drawBar(c, x + 100, y + 18, kParamCellW - 114, 8, s.params[i].norm, colors::kAccent);
+    const uint16_t border = (i == s.selectedParam) ? accentColor() : mutedColor();
+    drawCard(c, x, y, kParamCellW - 6, kParamCellH - 6, cardColor(), border);
+    c.drawText(x + 6, y + 5, s.params[i].label, mutedColor());
+    drawTextScaled(c, x + 6, y + 16, s.params[i].value, orangeColor(), 1);
+    drawBar(c, x + 100, y + 18, kParamCellW - 114, 8, s.params[i].norm, accentColor());
   }
 }
 
@@ -259,12 +275,12 @@ void drawHints(ICanvas& c, const UiSnapshot& s) {
   for (int i = 0; i < kNumHints; ++i) {
     const int x = 10 + i * 98;
     const bool selected = (i == s.selectedParam);
-    c.fillRect(x, kHintsY, 92, 26, selected ? kCardActive : kCard);
+    c.fillRect(x, kHintsY, 92, 26, selected ? activeCardColor() : cardColor());
     char label[16];
     std::snprintf(label, sizeof(label), "E%d", i + 1);
-    c.drawText(x + 4, kHintsY + 3, label, selected ? colors::kAccent : colors::kGrey);
-    c.drawText(x + 20, kHintsY + 3, s.hints[i], selected ? colors::kWhite : colors::kGrey);
-    c.drawText(x + 20, kHintsY + 14, selected ? "< >" : "   ", colors::kValue);
+    c.drawText(x + 4, kHintsY + 3, label, selected ? accentColor() : mutedColor());
+    c.drawText(x + 20, kHintsY + 3, s.hints[i], selected ? textColor() : mutedColor());
+    c.drawText(x + 20, kHintsY + 14, selected ? "< >" : "   ", orangeColor());
   }
 }
 
@@ -530,7 +546,7 @@ void drawTextScaled(ICanvas& canvas, int x, int y, const char* text, uint16_t co
 }
 
 void drawUi800(ICanvas& canvas, const UiSnapshot& s) {
-  canvas.fillRect(0, 0, canvas.width(), canvas.height(), kBg);
+  canvas.fillRect(0, 0, canvas.width(), canvas.height(), bgColor());
   drawHeader(canvas, s);
   if (s.screen == Screen::Sequencer) {
     drawSequencerGrid(canvas, s);
@@ -558,7 +574,7 @@ Framebuffer800::Framebuffer800() {
 #else
   pixels_ = new (std::nothrow) uint16_t[static_cast<size_t>(kUiWidth) * kUiHeight];
 #endif
-  if (pixels_) clear(colors::kBlack);
+  if (pixels_) clear(bgColor());
 }
 
 Framebuffer800::~Framebuffer800() {

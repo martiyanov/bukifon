@@ -36,3 +36,29 @@
 - сайт: `docs/index.html` (фон/акценты);
 - прошивка: `firmware/include/bukifon_ui_theme.h` (следующая итерация; цвета сейчас захардкожены
   в `firmware/src/ui/*`), бенч не зависит.
+
+---
+
+## Статус в прошивке (обновлено, раунд 10)
+
+Палитра **перенесена в прошивку** и совпадает с демо/сайтом по тем же hex-значениям:
+
+| Что | Где |
+|---|---|
+| Токены/темы | `firmware/include/bukifon_ui_theme.h` (C API + C++ helper) |
+| Реализация | `firmware/src/ui/ui_theme.cpp`: таблица 4 тем × 12 токенов, current (default **Night**), RGB888→RGB565 |
+| Рендер | `firmware/src/ui/ui800.cpp` (все экраны, включая SYNTH и 4 режима) и `firmware/src/ui/menu.cpp` — **только токены**, сырых цветов нет |
+| Смена темы | `bukifon_ui_theme_set("Night|Amber|Phosphor|Cream")`, C++ `ui::setTheme()` |
+| Настройки (host) | `bukifon_ui_theme_save/load(path)` — файл-заглушка; на устройстве NVS/flash — TODO(hw) |
+| CLI демо | `host/build/bukifon_sim --theme Cream --theme-config tests/out/ui_theme.cfg` |
+
+Смысл токенов сохранён: партии 1–4 = `green/orange/blue/purple`, REC/ошибка = `red`,
+активный элемент = `accent`, неактивное = `muted`, фон/панели/карточки = `bg/panel/card/line`.
+Экран SYNTH и 4 режима (SAMPLER/DAW/USB-KBD) рендерятся из одной палитры для Night,
+Amber, Phosphor и Cream; host-тесты проверяют точные значения docs/62, переключение,
+сохранение/загрузку и отсутствие «сырых» литералов в отрисовке.
+
+**Осталось:** реальное хранение выбора темы в NVS/flash на P4 (сейчас host-файл/заглушка),
+проверка полос/контраста RGB565 на железе (docs/62 «Правила»), синхронизация селектора
+темы в демо/сайте (значения уже совпадают) и, при желании, миграция оставшихся
+не-UI палитр (LED/WS2812) на токены.

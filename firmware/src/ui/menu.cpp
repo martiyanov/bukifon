@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ui/menu.hpp"
 
+#include "bukifon_ui_theme.h"
+
 #include <cmath>
 #include <cstdio>
 #include <cstring>
@@ -364,15 +366,15 @@ void MenuModel::valueText(int encoder, char* out, size_t capacity) const {
 }
 
 void MenuModel::draw(ICanvas& canvas) const {
-  canvas.fillRect(0, 0, canvas.width(), canvas.height(), colors::kPanel);
+  canvas.fillRect(0, 0, canvas.width(), canvas.height(), ui::themeColor(BUKIFON_UI_PANEL));
   // Header.
-  canvas.fillRect(0, 0, canvas.width(), 22, colors::kDim);
-  canvas.drawText(6, 7, "Bukifon", colors::kAccent);
-  canvas.drawText(80, 7, kPages[page_].title, colors::kWhite);
+  canvas.fillRect(0, 0, canvas.width(), 22, ui::themeColor(BUKIFON_UI_PANEL));
+  canvas.drawText(6, 7, "Bukifon", ui::themeColor(BUKIFON_UI_ACCENT));
+  canvas.drawText(80, 7, kPages[page_].title, ui::themeColor(BUKIFON_UI_TEXT));
   char buf[32];
   std::snprintf(buf, sizeof(buf), "PART %d", part_ + 1);
-  canvas.drawText(200, 7, buf, colors::kGrey);
-  if (shift_) canvas.drawText(280, 7, "SHIFT", colors::kRed);
+  canvas.drawText(200, 7, buf, ui::themeColor(BUKIFON_UI_MUTED));
+  if (shift_) canvas.drawText(280, 7, "SHIFT", ui::themeColor(BUKIFON_UI_RED));
 
   // Two columns of four encoders with label + modulated value.
   for (int i = 0; i < kNumEncoders; ++i) {
@@ -381,25 +383,25 @@ void MenuModel::draw(ICanvas& canvas) const {
     const int x = 8 + col * 160;
     const int y = 34 + row * 44;
     const EncoderBinding& b = kPages[page_].encoders[i];
-    canvas.fillRect(x, y, 148, 38, rgb565(28, 31, 40));
-    canvas.drawRect(x, y, 148, 38, colors::kGrey);
-    canvas.drawText(x + 5, y + 5, b.label, colors::kGrey);
+    canvas.fillRect(x, y, 148, 38, ui::themeColor(BUKIFON_UI_CARD));
+    canvas.drawRect(x, y, 148, 38, ui::themeColor(BUKIFON_UI_MUTED));
+    canvas.drawText(x + 5, y + 5, b.label, ui::themeColor(BUKIFON_UI_MUTED));
     valueText(i, buf, sizeof(buf));
-    canvas.drawText(x + 5, y + 20, buf, colors::kValue);
+    canvas.drawText(x + 5, y + 20, buf, ui::themeColor(BUKIFON_UI_ORANGE));
   }
 
   // Footer: transport and voices.
-  canvas.fillRect(0, canvas.height() - 34, canvas.width(), 34, colors::kDim);
+  canvas.fillRect(0, canvas.height() - 34, canvas.width(), 34, ui::themeColor(BUKIFON_UI_PANEL));
   std::snprintf(buf, sizeof(buf), "TEMPO %d", static_cast<int>(engine_ ? engine_->globals().v[Bpm] : 120));
-  canvas.drawText(8, canvas.height() - 26, buf, colors::kWhite);
+  canvas.drawText(8, canvas.height() - 26, buf, ui::themeColor(BUKIFON_UI_TEXT));
   std::snprintf(buf, sizeof(buf), "VOICES %d", engine_ ? engine_->activeVoices() : 0);
-  canvas.drawText(130, canvas.height() - 26, buf, colors::kGreen);
+  canvas.drawText(130, canvas.height() - 26, buf, ui::themeColor(BUKIFON_UI_GREEN));
   std::snprintf(buf, sizeof(buf), "PART %d", part_ + 1);
-  canvas.drawText(240, canvas.height() - 26, buf, colors::kAccent);
+  canvas.drawText(240, canvas.height() - 26, buf, ui::themeColor(BUKIFON_UI_ACCENT));
   // Step bar.
   for (int s = 0; s < kSeqSteps; ++s) {
     const int x = 8 + s * 18;
-    canvas.fillRect(x, canvas.height() - 10, 16, 6, s == 7 ? colors::kAccent : colors::kGrey);
+    canvas.fillRect(x, canvas.height() - 10, 16, 6, s == 7 ? ui::themeColor(BUKIFON_UI_ACCENT) : ui::themeColor(BUKIFON_UI_MUTED));
   }
 }
 

@@ -2,6 +2,17 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.15.1] — 2025-11-06 — «Темы в прошивке»
+
+### Добавлено
+- `firmware/include/bukifon_ui_theme.h` + `src/ui/ui_theme.cpp`: **4 темы экрана** (Night/Amber/
+  Phosphor/Cream) × 12 токенов ровно из `docs/62`, RGB888 + RGB565, API `bukifon_ui_theme_set`,
+  host save/load; рендер `ui800.cpp`/`menu.cpp` переведён на токены (нет сырых цветов).
+- Host CLI: `bukifon_sim --theme Cream`; скриншоты 8 шт. перегенерированы; **226/226 тестов**.
+
+### Изменено
+- docs/62: прошивка использует те же токены; docs/48: SSH-доступ к домашнему ПК (в процессе).
+
 ## [0.15.0] — 2025-11-06 — «16 ручек, сцены, ресемплинг»
 
 ### Добавлено

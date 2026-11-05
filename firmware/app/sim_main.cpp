@@ -14,6 +14,7 @@
 #include <cstring>
 #include <string>
 
+#include "bukifon_ui_theme.h"
 #include "sim/simulator.hpp"
 #include "ui/ui800.hpp"
 
@@ -24,6 +25,8 @@ namespace {
 struct Args {
   std::string outDir = "artifacts/ui";
   std::string logPath = "tests/out/sim_event_log.txt";
+  std::string theme;
+  std::string themeConfig;  // empty: no auto-load; pass --theme-config explicitly
   int bars = 16;
   bool determinism = true;
 };
@@ -37,10 +40,16 @@ Args parseArgs(int argc, char** argv) {
       args.logPath = argv[++i];
     } else if (std::strcmp(argv[i], "--bars") == 0 && i + 1 < argc) {
       args.bars = std::atoi(argv[++i]);
+    } else if (std::strcmp(argv[i], "--theme") == 0 && i + 1 < argc) {
+      args.theme = argv[++i];
+    } else if (std::strcmp(argv[i], "--theme-config") == 0 && i + 1 < argc) {
+      args.themeConfig = argv[++i];
     } else if (std::strcmp(argv[i], "--no-determinism") == 0) {
       args.determinism = false;
     } else if (std::strcmp(argv[i], "--help") == 0) {
-      std::printf("usage: bukifon_sim [--out DIR] [--log FILE] [--bars N] [--no-determinism]\n");
+      std::printf(
+          "usage: bukifon_sim [--out DIR] [--log FILE] [--bars N] [--no-determinism]\n"
+          "                   [--theme Night|Amber|Phosphor|Cream] [--theme-config PATH]\n");
       std::exit(0);
     }
   }
@@ -95,7 +104,17 @@ bool writeScreens(sim::Simulator& simulator, const std::string& outDir) {
 
 int main(int argc, char** argv) {
   const Args args = parseArgs(argc, argv);
+  if (!args.themeConfig.empty()) bukifon_ui_theme_load(args.themeConfig.c_str());
+  if (!args.theme.empty()) {
+    if (!bukifon_ui_theme_set(args.theme.c_str())) {
+      std::printf("ERROR: unknown theme '%s' (Night|Amber|Phosphor|Cream)\n",
+                  args.theme.c_str());
+      return 2;
+    }
+    if (!args.themeConfig.empty()) bukifon_ui_theme_save(args.themeConfig.c_str());
+  }
   std::printf("Bukifon host demo\n");
+  std::printf("theme: %s\n", bukifon_ui_theme_name(bukifon_ui_theme_current()));
   std::printf("=================\n");
 
   sim::Simulator simulator;
