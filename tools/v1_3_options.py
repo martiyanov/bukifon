@@ -112,7 +112,7 @@ def draw_panel_base(ax):
         ax.text(x, y1 + 7, f"SL{i+1}", fontsize=5.4, ha="center", color="#555")
 
 
-def draw_keys(ax, keys, thumbs, label, flip=False):
+def draw_keys(ax, keys, thumbs, label, flip=True):
     """Левая половина как есть, правая — зеркало относительно центра панели."""
     hw, hh = L.KEYCAP_W / 2, L.KEYCAP_H / 2
     if not keys:
@@ -129,6 +129,7 @@ def draw_keys(ax, keys, thumbs, label, flip=False):
         for sign in (1, -1):
             px = dx + x if sign == 1 else W - (dx + x)
             py = dy + y
+            # ось Y графика инвертирована -> знак поворота обратный; позиции не меняются
             a = (-rot if flip else rot) if sign == 1 else (rot if flip else -rot)
             ax.add_patch(mp.Rectangle((px - hw, py - hh), L.KEYCAP_W, L.KEYCAP_H,
                                       angle=a, rotation_point="center",

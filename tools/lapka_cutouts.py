@@ -128,7 +128,9 @@ def layout_sheet():
             for (x, y, rot) in keys_left:
                 px = ox + (x - x0) if half == "left" else ox + (bw - (x - x0))
                 py = oy + (y - y0)
-                a = rot if half == "left" else -rot
+                # matplotlib: ось Y инвертирована, поэтому знак поворота берём обратным.
+                # Координаты (позиции) клавиш — ровно как в KiCad Lapka-42, без изменений.
+                a = -rot if half == "left" else rot
                 ax.add_patch(mp.Rectangle((px - CAP_W / 2, py - CAP_H / 2), CAP_W, CAP_H,
                                           angle=a, rotation_point="center",
                                           fc="#eef3f9", ec="#111", lw=0.8))
