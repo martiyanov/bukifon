@@ -115,6 +115,10 @@ firmware/README). Этот файл фиксирует актуальные тр
 | O-5 | J3 на 3 А | **решено**: Micro-Fit 3.0 (D-40) |
 | O-6 | 1S2P vs 2S | первый kit/P4 — **1S**; 2S — отдельная PWR-3 для full (D-39) |
 | O-7 | Символы TPS61088/MAX17048 | draft, сверить с datasheet до трассировки |
+| O-8 | `PWR_GOOD`/`FUEL_ALRT` некуда читать на P4 | **решено**: свободные GPIO ESP32-C6 (P4); опрос MAX17048 по I2C (S3) |
+| O-9 | PANEL-2 J14 CVIN3/4 и GATE_IN отсутствуют в CORE-2 | **решено**: CVIN3/4 → MCP3208 CH4/CH5; GATE_IN → MCP23017 0x23 GPB7 на PANEL-2; EXPRESSION убрать/на C6 |
+| O-10 | Цифровое расширение TDM/I2S+SPI (R-22) не влезает в J16 | **отложено** до rev.3 (отметить в rev2-plan) |
+| O-11 | J3 IDC-20 vs Micro-Fit 3.0 | **прототип — IDC-20** (тест ≤100 мВ/≤30 °C), **rev.2 — Micro-Fit 3.0** (D-40) |
 
 ## 5. Подпись
 
