@@ -41,6 +41,10 @@ firmware/README). Этот файл фиксирует актуальные тр
 | R-22 | Цифровой expansion | TDM/I²S + SPI mailbox (26-pin только аналоговая) | P2 |
 | R-23 | Quality tiers | каталог FX, admission control stretch, фикс. итерации ZDF | P2 |
 | R-24 | Альтернатива MCU | STM32H743 + SDRAM (LTDC/DMA2D, HS USB через ULPI) | P1 |
+| R-25 | USB-композит | один USB-C: **HID-клавиатура + MIDI + UAC2** (+CDC для отладки), TinyUSB composite | P4 |
+| R-26 | Радио | **Wi-Fi + Bluetooth** обязательно: S3 — нативно; P4 — сопроцессор ESP32-C6 (Wi-Fi 6/BLE 5.3, SDIO/UART) | P1–P2 |
+| R-27 | Режим DAW-клавиатуры | HID-клавиатура с раскладками (Lapka-42 как печатная клавиатура), transport/consumer control, MIDI-контроллер (CC + Mackie/HUI по запросу) | P4 |
+| R-28 | BLE MIDI + BLE HID | BLE-MIDI (NimBLE) и BLE HID клавиатура, переключение режимов без перезагрузки | P4 |
 
 ## 3. Устаревшие документы (требуют правки в P2)
 
@@ -68,6 +72,8 @@ firmware/README). Этот файл фиксирует актуальные тр
 | D-10 | 05.11 | cut-list: сначала сложность FX → admission control stretch → ZDF-итерации → голоса → дорожки | консультация GPT/Codex |
 | D-11 | 05.11 | цифровой expansion-интерфейс TDM/I²S + SPI mailbox; недоверенный audio-rate — RP2350-картридж | консультация GPT/Codex |
 | D-12 | 05.11 | SemVer + тег на каждый релиз, README обновляется в том же коммите | требование заказчика (AGENTS.md) |
+| D-13 | 06.11 | «Народный синтезатор»: S3-версия ≤ $200 — основная, P4 + C6 — «стандарт/pro»; цена — критерий P6 | требование заказчика + BOM draft |
+| D-14 | 06.11 | USB-композит (HID клавиатура + MIDI + UAC2) и Wi-Fi/BT — обязательные функции, не опции | требование заказчика |
 
 ## 5. Подпись
 

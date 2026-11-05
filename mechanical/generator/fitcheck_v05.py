@@ -72,14 +72,26 @@ def run(name, meta, instances, parts):
     # --- PANEL-2: на 8 мм ниже панели, параллельно ей ---------------------
     p2 = F4.panel1_board()
     p2.apply_translation([0, 0, 3.4])         # v0.4: 11.4→8 мм ниже панели
-    chk("PANEL-2 360×190×1.6 (параллельно панели, −8 мм)", _apply(p2, M))
+    p2w = _apply(p2, M)
+    # переходные отверстия под вертикальные стойки (углы + 6 стоек PANEL-2)
+    clears = []
+    for (x, yf) in P04.PANEL_SCREWS:
+        xw, yw = PV.variant(name) and (x, 105.0 + (yf - 105.0) * math.cos(math.radians(8.0)))
+        clears.append(C.cyl_z(5.6, 0.0, 80.0, xw, yw, 20))
+    for (x, yf) in PV.PANEL1_POSTS:
+        xw, yw = (x, 105.0 + (yf - 105.0) * math.cos(math.radians(8.0)))
+        clears.append(C.cyl_z(4.0, 0.0, 80.0, xw, yw, 20))
+    p2w = C.DIFF(p2w, clears)
+    chk("PANEL-2 360×190×1.6 (параллельно панели, −8 мм)", p2w)
     # --- CORE-2 / PWR-2 / батарея: горизонтальные площадки -----------------
     core = C.box(PV.CORE_X0, PV.CORE_X1, PV.CORE_Y0, PV.CORE_Y1,
                  PV.CORE_Z0, PV.CORE_Z1)
     chk("CORE-2 200×108×1.6 @ Z12 (гориз.)", core)
     pwr = C.box(PV.PWR2_X0, PV.PWR2_X1, PV.PWR2_Y0, PV.PWR2_Y1, 6.0, 7.6)
     chk("PWR-2 90×70×1.6 @ Z6 (гориз.)", pwr)
-    for i, cell in enumerate(F4.battery_cells()):
+    for i, bx in enumerate(PV.BAT_X):
+        cell = C.cyl_y(PV.BAT_D / 2, PV.BAT_Y0, PV.BAT_Y1, bx,
+                       3.0 + PV.BAT_D / 2 + 0.2, 40)
         chk(f"Батарея 18650 #{i+1} (ложемент)", cell)
     # --- компоненты панели (в системе панели, с тем же наклоном) ----------
     for i, m in enumerate(F4.encoder_bodies()[:16:5]):
@@ -88,12 +100,12 @@ def run(name, meta, instances, parts):
         chk(f"Корпус джека #{i+1}", _apply(m, M))
     for i, m in enumerate(F4.fader_bodies()):
         chk(f"Корпус фейдера #{i+1}", _apply(m, M))
-    v = sum(_inter(_apply(m, M), pan_w) for m in F4.knobs_3d())
+    vk = sum(_inter(_apply(m, M), pan_w) for m in F4.knobs_3d())
     rows.append(("[G]", "16 ручек Ø14 (над панелью)", "по нормали панели",
-                 f"пересечение {v:.1f} мм³", "OK" if v < 3.0 else "КОНФЛИКТ"))
-    v = sum(_inter(_apply(m, M), pan_w) for m in F4.keycaps_3d())
+                 f"пересечение {vk:.1f} мм³", "OK" if vk < 3.0 else "КОНФЛИКТ"))
+    vc = sum(_inter(_apply(m, M), pan_w) for m in F4.keycaps_3d())
     rows.append(("[G]", "42 колпачка (над панелью)", "по нормали панели",
-                 f"пересечение {v:.1f} мм³", "OK" if v < 3.0 else "КОНФЛИКТ"))
+                 f"пересечение {vc:.1f} мм³", "OK" if vc < 3.0 else "КОНФЛИКТ"))
 
     # --- габарит/высоты -----------------------------------------------------
     bb = pan_w.bounds

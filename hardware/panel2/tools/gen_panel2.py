@@ -42,7 +42,7 @@ FP = {
     'SOT23_6': 'Package_TO_SOT_SMD:SOT-23-6',
     'MCP23017': 'Package_SO:SOIC-28W_7.5x17.9mm_P1.27mm',
     'L': 'Inductor_SMD:L_Bourns_SRN6045TA',
-    'JACK': 'Connector_Audio:AudioJack3.5mm_Rean_NYS230',
+    'JACK': 'Connector_Audio:Jack_3.5mm_CUI_SJ1-3523N_Horizontal',
     'FADER': 'Potentiometer_THT:Potentiometer_Bourns_PTA6043_Single_Slide',
     'FPC40': 'Connector_FFC-FPC:Hirose_FH12-40S-0.5SH_1x40-1MP_P0.50mm_Horizontal',
     'FFC40': 'Connector_FFC-FPC:Hirose_FH12-40S-0.5SH_1x40-1MP_P0.50mm_Horizontal',
@@ -79,7 +79,7 @@ BOM_NOTE = {
     '4.7k': 'I2C pull-up (2 шт.); GATE IN последовательный (1 шт.)',
     '330R': 'последовательный резистор LED_DATA после буфера',
     '33R': 'резистор подсветки LCD (ограничение тока LED-линейки)',
-    '0R': 'net-tie GND-AGND (одна точка)',
+    '0R': 'net-tie GND-GNDA (одна точка)',
     '100n': 'RC фаз энкодеров, блокировка ИС/LED, фильтры джеков',
     '10u': 'вход/выход boost подсветки',
     '22uF': 'вход boost подсветки',
@@ -90,7 +90,7 @@ BOM_NOTE = {
     'SMAJ12A': 'TVS CV OUT (кламп 12 В)',
     'SMAJ15A': 'TVS CV IN (кламп 15 В, ±12 В вход не проводит)',
     'SMAJ5.0A': 'TVS GATE OUT (кламп 5 В)',
-    'BAT54S': 'кламп GATE IN к 3.3 В/AGND',
+    'BAT54S': 'кламп GATE IN к 3.3 В/GNDA',
     'SS34': 'диод boost подсветки',
     'MT3608': 'boost подсветки 5 В → ~19 В (DNP если модуль LCD имеет свой драйвер)',
     '2N7002': 'низковольтный ключ подсветки (PWM)',
@@ -107,6 +107,17 @@ BOM_NOTE = {
     'TP': 'тестпоинты',
 }
 
+# KiCad "derived" library symbols are flattened by our generator and then ERC warns
+# lib_symbol_mismatch for every instance. Use the base symbol (identical pinout) and put the
+# real part number into Value/BOM (standard practice for generic symbols).
+SYM_ALIAS = {
+    ('Diode', '1N4148'): ('Diode', '1N4001'),
+    ('Diode', 'SS34'): ('Diode', 'SB120'),
+    ('Interface_Expansion', 'MCP23017x-x-SP'): ('Interface_Expansion', 'MCP23017x-x-SO'),
+    ('Transistor_FET', '2N7002'): ('Transistor_FET', 'Q_NMOS_GSD'),
+    ('74xGxx', '74AHCT1G125'): ('74xGxx', '74LVC1G125'),
+}
+
 # --------------------------------------------------------------------------
 # geometry from spec/panel-spec-v0.4.json
 # --------------------------------------------------------------------------
@@ -121,38 +132,39 @@ def _rot(x, y, deg):
     return (x * math.cos(r) - y * math.sin(r), x * math.sin(r) + y * math.cos(r))
 
 
-# left half: local Lapka coords rotated by +18 deg and shifted; solve shift from key #0
-_ang = float(CT['keyboard_left'][0]['angle_deg'])
-_lx, _ly = _rot(LAPKA42_LEFT[0][0], LAPKA42_LEFT[0][1], _ang)
-_ox = CT['keyboard_left'][0]['center_mm'][0] - _lx
-_oy = CT['keyboard_left'][0]['center_mm'][1] - _ly
+# exact placement transform: reuse the canonical v0.4 layout code (tools/make_canonical_v04.py),
+# so key positions/angles are bit-identical to spec/panel-spec-v0.4.json
+import make_canonical_v04 as V04  # noqa: E402
+
+_LEFT = V04._place(False, +V04.TILT_DEG, *V04.LEFT_C)
+_RIGHT = V04._place(True, -V04.TILT_DEG, *V04.RIGHT_C)
+KEY_PLACED = {'L': _LEFT, 'R': _RIGHT}
 
 
 def key_panel_xy(key, half):
-    """Panel coordinates of a Lapka key (key = 1..21, half = 'L'/'R')."""
-    loc = LAPKA42_LEFT[key - 1]
-    x, y = _rot(loc[0], loc[1], _ang)
-    x, y = x + _ox, y + _oy
-    if half == 'R':
-        x = PANEL_W - x
+    x, y, ang = KEY_PLACED[half][key - 1]
     return (round(x, 2), round(y, 2))
 
 
-# --- sanity: our transform must reproduce the JSON coordinates (<=0.5 mm)
+def key_panel_angle(key, half):
+    return round(KEY_PLACED[half][key - 1][2], 2)
+
+
+# --- sanity: our transform must reproduce the JSON coordinates (<=0.1 mm)
 def _check_geometry():
     worst = 0.0
     for half, lst in (('L', CT['keyboard_left']), ('R', CT['keyboard_right'])):
         for e in lst:
             k = int(e['key_number'])
             x, y = key_panel_xy(k, half)
-            dx = abs(x - e['center_mm'][0])
-            dy = abs(y - e['center_mm'][1])
-            worst = max(worst, dx, dy)
+            worst = max(worst, abs(x - e['center_mm'][0]), abs(y - e['center_mm'][1]),
+                        abs(key_panel_angle(k, half) - e['angle_deg']))
     return worst
 
 
 GEOM_ERR = _check_geometry()
-assert GEOM_ERR <= 0.55, 'Lapka geometry does not match spec JSON (%.2f mm)' % GEOM_ERR
+assert GEOM_ERR <= 0.1, 'Lapka geometry does not match spec JSON (%.2f)' % GEOM_ERR
+
 
 # --- matrix cell (row 1..6, col 1..7) for each key index (1..21) -----------
 def key_cell(key):
@@ -189,7 +201,7 @@ for half, lst in (('L', CT['keyboard_left']), ('R', CT['keyboard_right'])):
         _d += 1
         KEYS.append(dict(id=e['id'], key=k, half=half, ref='KEY_%s%02d' % (half, k),
                          row=r, col=c, x=float(e['center_mm'][0]), y=float(e['center_mm'][1]),
-                         angle=float(e['angle_deg']), diode='D%d' % _d,
+                         angle=key_panel_angle(k, half), diode='D%d' % _d,
                          net_in='K_%s%02d_N' % (half, k)))
 KEYS.sort(key=lambda e: (e['half'], e['key']))
 
@@ -271,7 +283,7 @@ IDC_DIG = {
     '7': 'LED_DATA', '8': 'GND', '9': '+5V', '10': 'GND', '11': '+3V3', '12': 'GND',
     '13': '+5V', '14': 'GND', '15': 'NC', '16': 'GND',
 }
-# J14 IDC-26 = analog patch field to CORE-2 (odd = signal, even = AGND)
+# J14 IDC-26 = analog patch field to CORE-2 (odd = signal, even = GNDA)
 IDC_AN = {
     '1': 'CVOUT1', '3': 'CVOUT2', '5': 'CVOUT3', '7': 'CVOUT4',
     '9': 'CVIN1', '11': 'CVIN2', '13': 'CVIN3', '15': 'CVIN4',
@@ -279,7 +291,7 @@ IDC_AN = {
     '25': 'NC',
 }
 for _p in range(2, 27, 2):
-    IDC_AN[str(_p)] = 'AGND'
+    IDC_AN[str(_p)] = 'GNDA'
 # J15 optional SPI display (alternative to RGB panel), DNP
 SPI_ALT = {'1': '+3V3', '2': 'GND', '3': 'SPI2_SCK', '4': 'SPI2_MOSI', '5': 'SPI2_CS',
            '6': 'SPI2_DC', '7': 'SPI2_RST', '8': 'BL_PWM', '9': 'SPI2_MISO',
@@ -302,15 +314,16 @@ class B:
         self._n = 0
 
     def part(self, lib, name, ref, value, x, y, fp='', note=''):
+        lib, name = SYM_ALIAS.get((lib, name), (lib, name))
         p = self.sch.sym(lib, name, ref, value, x, y, fp)
         self.bom.append(dict(ref=ref, value=value, fp=fp, mpn=MPN.get(value, '')))
         return p
 
-    def r(self, ref, value, x, y, kind='R0603'):
-        return self.part('Device', 'R', ref, value, x, y, FP[kind])
+    def r(self, ref, value, x, y, kind='R0603', note=''):
+        return self.part('Device', 'R', ref, value, x, y, FP[kind], note)
 
-    def c(self, ref, value, x, y, kind='C0603'):
-        return self.part('Device', 'C', ref, value, x, y, FP[kind])
+    def c(self, ref, value, x, y, kind='C0603', note=''):
+        return self.part('Device', 'C', ref, value, x, y, FP[kind], note)
 
     def _intent(self, comp, net, num=None, pname=None):
         from kicad_sch import pin, pin_by_name
@@ -377,7 +390,7 @@ def enc_block(n, bx, by):
 
 for i, e in enumerate(ENCODERS):
     col, row = i % 4, i // 4
-    enc_block(int(e['ref'][3:]), 57.15 + col * 139.7, 76.2 + row * 95.25)
+    enc_block(int(e['ref'][3:]), 88.9 + col * 149.86, 139.7 + row * 110.49)
 
 s.text('1. 16 x EC11 (A/B/SW), 8 слева + 8 справа. Каждая фаза: 10k подтяжка -> 1k -> 100n -> MCP23017 '
        '(RC 1k/100n по ТЗ). Кнопка: 10k подтяжка + 100n. Все 48 линий идут в 3 x MCP23017 (I2C).',
@@ -400,32 +413,35 @@ def mcp(ref, addr_net, x, y, note):
 
 
 MCP = {}
-MCP['U1'] = mcp('U1', None, 76.2, 419.1, 'MCP23017 0x20: ENC1..ENC8 A/B (GPA=A, GPB=B)')
-MCP['U2'] = mcp('U2', None, 228.6, 419.1, 'MCP23017 0x21: ENC9..ENC16 A/B')
-MCP['U3'] = mcp('U3', None, 381.0, 419.1, 'MCP23017 0x22: ENC1..ENC16 SW (GPA=1..8, GPB=9..16)')
-MCP['U4'] = mcp('U4', None, 533.4, 419.1, 'MCP23017 0x23: матрица 6x7 (GPA0..5=ROW1..6, GPB0..6=COL1..7)')
+MCP['U1'] = mcp('U1', None, 101.6, 596.9, 'MCP23017 0x20: ENC1..ENC4 A/B (GPA), ENC5..8 A/B (GPB)')
+MCP['U2'] = mcp('U2', None, 254.0, 596.9, 'MCP23017 0x21: ENC9..12 A/B (GPA), ENC13..16 A/B (GPB)')
+MCP['U3'] = mcp('U3', None, 406.4, 596.9, 'MCP23017 0x22: ENC1..16 SW (GPA=1..8, GPB=9..16)')
+MCP['U4'] = mcp('U4', None, 558.8, 596.9, 'MCP23017 0x23: матрица 6x7 (GPA0..5=ROW1..6, GPB0..6=COL1..7)')
 
 # addresses A0..A2
 for ref, bits in (('U1', ('GND', 'GND', 'GND')), ('U2', ('+3V3', 'GND', 'GND')),
                   ('U3', ('GND', '+3V3', 'GND')), ('U4', ('+3V3', '+3V3', 'GND'))):
     for i, (pinname, net) in enumerate(zip(('A0', 'A1', 'A2'), bits)):
         b.net_pin(MCP[ref], pinname, net)
-    cc = b.c('C%d' % (33 + int(ref[1:]) - 1), '100n', 76.2 + (int(ref[1:]) - 1) * 152.4, 381.0,
-             '%s decoupling' % ref)
+    cc = b.c('C%d' % (33 + int(ref[1:]) - 1), '100n', 101.6 + (int(ref[1:]) - 1) * 152.4, 558.8,
+             note='%s decoupling' % ref)
     b.rail(cc, '1', '+3V3'); b.rail(cc, '2', 'GND')
 
 # encoder A/B + SW lines into the expanders
+def enc_ab_pin(n):
+    """(chip, port, bit) of ENCn_A; ENCn_B is bit+1. 8 encoders per chip: 4 on GPA, 4 on GPB."""
+    chip = 'U1' if n <= 8 else 'U2'
+    loc = (n - 1) if n <= 8 else (n - 9)          # 0..7
+    if loc < 4:
+        return chip, 'GPA', loc * 2
+    return chip, 'GPB', (loc - 4) * 2
+
+
 for e in ENCODERS:
     n = int(e['ref'][3:])
-    if n <= 8:
-        u, port, bit = MCP['U1'], 'GPA', (n - 1) * 2
-        u2, port2 = MCP['U1'], 'GPB'
-        b.net_pin(u, '%s%d' % (port, bit), 'ENC%d_A' % n)
-        b.net_pin(u, '%s%d' % (port, bit + 1), 'ENC%d_B' % n)
-    else:
-        u, port, bit = MCP['U2'], 'GPA', (n - 9) * 2
-        b.net_pin(u, '%s%d' % (port, bit), 'ENC%d_A' % n)
-        b.net_pin(u, '%s%d' % (port, bit + 1), 'ENC%d_B' % n)
+    chip, port, bit = enc_ab_pin(n)
+    b.net_pin(MCP[chip], '%s%d' % (port, bit), 'ENC%d_A' % n)
+    b.net_pin(MCP[chip], '%s%d' % (port, bit + 1), 'ENC%d_B' % n)
     # SW: ENC1..8 -> U3 GPA0..7, ENC9..16 -> U3 GPB0..7
     u = MCP['U3']
     if n <= 8:
@@ -435,24 +451,24 @@ for e in ENCODERS:
 
 # I2C pull-ups + INT pull-up + reset pull-up
 for i, (netname, ref) in enumerate((('SDA', 'R110'), ('SCL', 'R111'))):
-    r = b.r(ref, '4.7k', 380.0 + i * 25.4, 340.0, 'R0603')
+    r = b.r(ref, '4.7k', 660.4 + i * 35.56, 546.1, 'R0603')
     b.rail(r, '1', '+3V3'); b.net(r, '2', netname)
-rint = b.r('R92', '10k', 405.0, 340.0, 'R0603')
+rint = b.r('R92', '10k', 731.52, 546.1, 'R0603')
 b.rail(rint, '1', '+3V3'); b.net(rint, '2', 'INT')
-rrst = b.r('R88', '10k', 430.0, 340.0, 'R0603')
+rrst = b.r('R88', '10k', 767.08, 546.1, 'R0603')
 b.rail(rrst, '1', '+3V3'); b.net(rrst, '2', 'MCP_RST')
 
 s.text('2. 4 x MCP23017 на I2C0 (0x20/0x21 = A/B 16 энкодеров, 0x22 = 16 кнопок, 0x23 = матрица 6x7). '
        'INTA всех чипов — open-drain, общая линия INT с подтяжкой 10k. Адреса: A0..A2 (см. схему).',
-       (25.4, 330.2), 1.8)
+       (25.4, 533.4), 1.8)
 
 # --------------------------------------------------------------------------
 # 3. KEY MATRIX 42 x Choc + 1N4148, 6 rows x 7 cols
 # --------------------------------------------------------------------------
 for k in KEYS:
     col, row = k['col'], k['row']
-    x = 640.0 + (col - 1) * 62.4
-    y = 76.2 + (row - 1) * 52.07
+    x = 736.6 + (col - 1) * 62.4
+    y = 139.7 + (row - 1) * 60.96
     sw = b.part('Switch', 'SW_Push', k['ref'], 'CHOC', x, y, FP['CHOC'],
                 'Lapka %s key_number=%d, panel (%.1f, %.1f) %.0f deg' %
                 (k['half'], k['key'], k['x'], k['y'], k['angle']))
@@ -470,11 +486,11 @@ for c in range(1, 8):
     b.net_pin(MCP['U4'], 'GPB%d' % (c - 1), 'COL%d' % c)
 # external column pull-ups (internal 100k too weak)
 for c in range(1, 8):
-    r = b.r('R%d' % (80 + c), '10k', 1040.0 + (c - 1) * 20.0, 419.1, 'R0603')
+    r = b.r('R%d' % (80 + c), '10k', 736.6 + (c - 1) * 35.56, 558.8, 'R0603')
     b.rail(r, '1', '+3V3'); b.net(r, '2', 'COL%d' % c)
 # 3 spare pins of U4 -> test points
 for i, pin in enumerate(('GPA6', 'GPA7', 'GPB7')):
-    tp = b.part('Connector', 'TestPoint', 'TP%d' % (9 + i), 'TP', 1040.0 + i * 25.4, 470.0, FP['TP'],
+    tp = b.part('Connector', 'TestPoint', 'TP%d' % (9 + i), 'TP', 736.6 + i * 35.56, 520.7, FP['TP'],
                 'spare pin U4 %s' % pin)
     b.net_pin(MCP['U4'], pin, 'SPARE%d' % (i + 1))
     b.net(tp, '1', 'SPARE%d' % (i + 1))
@@ -487,7 +503,7 @@ s.text('3. Матрица 42 клавиш Lapka-42: 6 строк x 7 столб�
 # --------------------------------------------------------------------------
 # 4. LCD 5.0" 800x480 RGB + FPC-40 + FFC-40 to CORE-2 + backlight
 # --------------------------------------------------------------------------
-j_fpc = b.part('Connector_Generic', 'Conn_01x40', 'J11', 'FPC40', 130.0, 560.0, FP['FPC40'],
+j_fpc = b.part('Connector_Generic', 'Conn_01x40', 'J11', 'FPC40', 355.6, 711.2, FP['FPC40'],
                'FPC-40 0.5 mm: LCD panel tail (pinout panel-dependent - verify!)')
 for pin, net in LCD_FPC.items():
     if net in ('NC',):
@@ -495,48 +511,48 @@ for pin, net in LCD_FPC.items():
     else:
         b.net(j_fpc, int(pin), net)
 
-j_ffc = b.part('Connector_Generic', 'Conn_01x40', 'J12', 'FFC40', 260.0, 560.0, FP['FFC40'],
+j_ffc = b.part('Connector_Generic', 'Conn_01x40', 'J12', 'FFC40', 469.9, 711.2, FP['FFC40'],
                'FPC-40 0.5 mm: PANEL-2 -> CORE-2 (RGB bus + BL_PWM + +5V)')
 for pin, net in FFC_CORE.items():
     b.net(j_ffc, int(pin), net)
 
 # LCD decoupling
 for i in range(4):
-    c = b.c('C%d' % (37 + i), '100n', 130.0 + i * 20.0, 520.0, 'C0603')
+    c = b.c('C%d' % (37 + i), '100n', 279.4 + i * 20.32, 736.6, 'C0603')
     b.rail(c, '1', 'LCD_3V3'); b.rail(c, '2', 'GND')
 
 # backlight: boost 5V -> BL_A (~19 V) + low-side PWM switch + bypass jumper
-u_bl = b.part('Regulator_Switching', 'MT3608', 'U7', 'MT3608', 380.0, 560.0, FP['SOT23_6'],
+u_bl = b.part('Regulator_Switching', 'MT3608', 'U7', 'MT3608', 596.9, 660.4, FP['SOT23_6'],
               'backlight boost 5V -> ~19V (DNP if the LCD module has its own driver)')
 b.net_pin(u_bl, 'IN', '+5V'); b.net_pin(u_bl, 'GND', 'GND')
-b.nc(u_bl, 'NC')
+# pin 6 of MT3608 is NC (library pin type "no_connect") - left open
 b.net_pin(u_bl, 'SW', 'BL_SW')
 b.net_pin(u_bl, 'FB', 'BL_FB')
 b.net_pin(u_bl, 'EN', 'BL_PWM')
-l1 = b.part('Device', 'L', 'L1', '22uH', 380.0, 600.0, FP['L'], 'boost inductor')
+l1 = b.part('Device', 'L', 'L1', '22uH', 596.9, 711.2, FP['L'], 'boost inductor')
 b.net(l1, '1', '+5V'); b.net(l1, '2', 'BL_SW')
-d_bl = b.part('Diode', 'SS34', 'D43', 'SS34', 410.0, 600.0, FP['D_SMA'], 'boost rectifier')
+d_bl = b.part('Diode', 'SS34', 'D43', 'SS34', 629.92, 711.2, FP['D_SMA'], 'boost rectifier')
 b.net(d_bl, '2', 'BL_SW'); b.net(d_bl, '1', 'BL_A')
-r_fb1 = b.r('R106', '33k', 440.0, 570.0, 'R0603')
+r_fb1 = b.r('R106', '33k', 660.4, 660.4, 'R0603')
 b.net(r_fb1, '1', 'BL_A'); b.net(r_fb1, '2', 'BL_FB')
-r_fb2 = b.r('R107', '1k', 440.0, 600.0, 'R0603')
+r_fb2 = b.r('R107', '1k', 660.4, 711.2, 'R0603')
 b.net(r_fb2, '1', 'BL_FB'); b.rail(r_fb2, '2', 'GND')
-c_in = b.c('C73', '22uF', 350.0, 600.0, 'C0603')
+c_in = b.c('C73', '22uF', 568.0, 711.2, 'C0603')
 b.rail(c_in, '1', '+5V'); b.rail(c_in, '2', 'GND')
-c_out = b.c('C74', '10u', 470.0, 600.0, 'C0603')
+c_out = b.c('C74', '10u', 691.0, 711.2, 'C0603')
 b.net(c_out, '1', 'BL_A'); b.rail(c_out, '2', 'GND')
-r_led = b.r('R108', '33R', 500.0, 570.0, 'R0603')
+r_led = b.r('R108', '33R', 721.36, 660.4, 'R0603')
 b.net(r_led, '1', 'BL_A'); b.net(r_led, '2', 'BL_K')
-q_bl = b.part('Transistor_FET', '2N7002', 'Q2', '2N7002', 530.0, 600.0, FP['D_SOT23'],
+q_bl = b.part('Transistor_FET', '2N7002', 'Q2', '2N7002', 751.84, 711.2, FP['D_SOT23'],
               'low-side PWM switch for the LED string')
 b.net_pin(q_bl, 'D', 'BL_K'); b.net_pin(q_bl, 'S', 'GND'); b.net_pin(q_bl, 'G', 'BL_G')
-rg = b.r('R109', '100R', 500.0, 630.0, 'R0603')
+rg = b.r('R109', '100R', 721.36, 736.6, 'R0603')
 b.net(rg, '1', 'BL_PWM'); b.net(rg, '2', 'BL_G')
-rpd = b.r('R93', '10k', 530.0, 630.0, 'R0603')
+rpd = b.r('R93', '10k', 751.84, 736.6, 'R0603')
 b.net(rpd, '1', 'BL_G'); b.rail(rpd, '2', 'GND')
 
 # alternative SPI display header (DNP)
-j_spi = b.part('Connector_Generic', 'Conn_01x14', 'J15', 'HDR1x14', 620.0, 560.0, FP['HDR1x14'],
+j_spi = b.part('Connector_Generic', 'Conn_01x14', 'J15', 'HDR1x14', 279.4, 660.4, FP['HDR1x14'],
                'alternative SPI display (DNP) - R-18 open')
 for pin, net in SPI_ALT.items():
     if net == 'NC':
@@ -547,104 +563,107 @@ for pin, net in SPI_ALT.items():
 s.text('4. Экран 5.0" 800x480 RGB 16 бит: FPC-40 (J11) — хвост панели, FPC-40 (J12) — шлейф в CORE-2 '
        '(21 сигнал: R0-R4/G0-G5/B0-B4, PCLK/DE/HSYNC/VSYNC, BL_PWM). Подсветка: boost MT3608 5V->19V '
        '+ низковольтный ключ Q2 (PWM), JP-обход если модуль имеет свой драйвер. J15 — альтернатива SPI (DNP).',
-       (25.4, 500.38), 1.6)
+       (25.4, 660.4), 1.6)
 
 # --------------------------------------------------------------------------
 # 5. JACK FIELD 10 x 3.5 mm + protection
 # --------------------------------------------------------------------------
+N_CVOUT = N_CVIN = 0
 for i, (jid, netname, title, direction, level, prot) in enumerate(JACK_FIELD):
     col, row = i % 5, i // 5
-    x = 76.2 + col * 165.0
-    y = 680.0 + row * 60.0
+    x = 800.1 + col * 87.63
+    y = 660.4 + row * 71.12
     j = b.part('Connector_Audio', 'AudioJack2', jid, 'JACK', x, y, FP['JACK'],
                '%s (%s, %s): %s' % (title, direction, level, prot))
     tip = 'TIP_' + netname
-    b.net_pin(j, 'T', tip)
-    b.rail(j, 'S', 'AGND')
+    b.net(j, 'T', tip)
+    b.rail(j, 'S', 'GNDA')
     if netname.startswith('CVOUT'):
-        r = b.r('R%d' % (94 + i), '1k', x - 25.0, y, 'R0603')
+        j = N_CVOUT; N_CVOUT += 1
+        r = b.r('R%d' % (94 + j), '1k', x - 25.4, y, 'R0603')
         b.net(r, '1', netname); b.net(r, '2', tip)
-        d = b.part('Device', 'D_TVS', 'D%d' % (44 + i), 'SMAJ12A', x + 25.0, y, FP['D_SMA'],
+        d = b.part('Device', 'D_TVS', 'D%d' % (44 + j), 'SMAJ12A', x + 25.4, y, FP['D_SMA'],
                    'TVS 12 V: %s' % title)
-        b.net(d, '1', tip); b.rail(d, '2', 'AGND')
-        c = b.c('C%d' % (42 + i), '100n', x, y + 25.0, 'C0603')
-        b.net(c, '1', tip); b.rail(c, '2', 'AGND')
+        b.net(d, '1', tip); b.rail(d, '2', 'GNDA')
+        c = b.c('C%d' % (42 + j), '100n', x, y + 25.4, 'C0603')
+        b.net(c, '1', tip); b.rail(c, '2', 'GNDA')
     elif netname.startswith('CVIN'):
-        r = b.r('R%d' % (98 + i), '100R', x - 25.0, y, 'R0603')
+        j = N_CVIN; N_CVIN += 1
+        r = b.r('R%d' % (98 + j), '100R', x - 25.4, y, 'R0603')
         b.net(r, '1', tip); b.net(r, '2', netname)
-        d = b.part('Device', 'D_TVS', 'D%d' % (48 + i), 'SMAJ15A', x + 25.0, y, FP['D_SMA'],
+        d = b.part('Device', 'D_TVS', 'D%d' % (48 + j), 'SMAJ15A', x + 25.4, y, FP['D_SMA'],
                    'TVS 15 V: %s' % title)
-        b.net(d, '1', tip); b.rail(d, '2', 'AGND')
-        c = b.c('C%d' % (46 + i), '100n', x, y + 25.0, 'C0603')
-        b.net(c, '1', tip); b.rail(c, '2', 'AGND')
+        b.net(d, '1', tip); b.rail(d, '2', 'GNDA')
+        c = b.c('C%d' % (46 + j), '100n', x, y + 25.4, 'C0603')
+        b.net(c, '1', tip); b.rail(c, '2', 'GNDA')
     elif netname == 'GATE_OUT':
-        r = b.r('R102', '1k', x - 25.0, y, 'R0603')
+        r = b.r('R102', '1k', x - 25.4, y, 'R0603')
         b.net(r, '1', netname); b.net(r, '2', tip)
-        d = b.part('Device', 'D_TVS', 'D52', 'SMAJ5.0A', x + 25.0, y, FP['D_SMA'], 'TVS 5 V: GATE OUT')
-        b.net(d, '1', tip); b.rail(d, '2', 'AGND')
-        c = b.c('C50', '100n', x, y + 25.0, 'C0603')
-        b.net(c, '1', tip); b.rail(c, '2', 'AGND')
+        d = b.part('Device', 'D_TVS', 'D52', 'SMAJ5.0A', x + 25.4, y, FP['D_SMA'], 'TVS 5 V: GATE OUT')
+        b.net(d, '1', tip); b.rail(d, '2', 'GNDA')
+        c = b.c('C50', '100n', x, y + 25.4, 'C0603')
+        b.net(c, '1', tip); b.rail(c, '2', 'GNDA')
     else:  # GATE_IN
-        r = b.r('R103', '4.7k', x - 25.0, y, 'R0603')
+        r = b.r('R103', '4.7k', x - 25.4, y, 'R0603')
         b.net(r, '1', tip); b.net(r, '2', 'GATE_IN_RAW')
-        d = b.part('Diode', 'BAT54S', 'D53', 'BAT54S', x + 25.0, y, FP['D_SOT23'],
-                   'clamp GATE IN to 3V3/AGND')
-        b.net(d, '3', 'GATE_IN_RAW'); b.rail(d, '1', '+3V3'); b.rail(d, '2', 'AGND')
-        c = b.c('C51', '100n', x, y + 25.0, 'C0603')
-        b.net(c, '1', 'GATE_IN_RAW'); b.rail(c, '2', 'AGND')
-        sch = b.part('74xGxx', '74LVC1G17', 'U5', '74LVC1G17', x + 55.0, y, FP['SOT23_5'],
+        d = b.part('Diode', 'BAT54S', 'D53', 'BAT54S', x + 25.4, y, FP['D_SOT23'],
+                   'clamp GATE IN to 3V3/GNDA')
+        b.net(d, '3', 'GATE_IN_RAW'); b.rail(d, '1', '+3V3'); b.rail(d, '2', 'GNDA')
+        c = b.c('C51', '100n', x, y + 25.4, 'C0603')
+        b.net(c, '1', 'GATE_IN_RAW'); b.rail(c, '2', 'GNDA')
+        sch = b.part('74xGxx', '74LVC1G17', 'U5', '74LVC1G17', x + 55.88, y, FP['SOT23_5'],
                      'Schmitt buffer GATE IN (3.3 V)')
-        b.rail(sch, 5, '+5V' if False else '+3V3')
+        b.rail(sch, 5, '+3V3')
         b.rail(sch, 3, 'GND')
         b.net(sch, 2, 'GATE_IN_RAW')
         b.net(sch, 4, 'GATE_IN_CLEAN')
 
-# net-tie GND <-> AGND
-rn = b.r('R112', '0R', 700.0, 780.0, 'R0603')
-b.rail(rn, '1', 'GND'); b.rail(rn, '2', 'AGND')
+# net-tie GND <-> GNDA
+rn = b.r('R112', '0R', 495.3, 655.32, 'R0603')
+b.rail(rn, '1', 'GND'); b.rail(rn, '2', 'GNDA')
 
 s.text('5. Джек-поле: 4 x CV OUT (0..10 В), 4 x CV IN (±10 В), GATE OUT (0/5 В), GATE IN (0..12 В). '
        'Защита: CV OUT — 1k + TVS SMAJ12A + 100n; CV IN — 100R + TVS SMAJ15A + 100n (100R даёт 0.1% '
        'погрешности на 100k входа CORE-2, ±12 В TVS не открывает); GATE OUT — 1k + SMAJ5.0A; '
-       'GATE IN — 4.7k + BAT54S (3.3 В/AGND) + 100n + 74LVC1G17. AGND и GND соединены в одной точке (R112).',
-       (25.4, 640.08), 1.6)
+       'GATE IN — 4.7k + BAT54S (3.3 В/GNDA) + 100n + 74LVC1G17. GNDA и GND соединены в одной точке (R112).',
+       (25.4, 660.4), 1.6)
 
 # --------------------------------------------------------------------------
 # 6. FADERS 2 x 60 mm
 # --------------------------------------------------------------------------
 for i, f in enumerate(FADERS_SPEC):
-    x = 950.0 + i * 100.0
-    y = 680.0
+    x = 60.96 + i * 76.2
+    y = 660.4
     pot = b.part('Device', 'R_Potentiometer', 'F%d' % (i + 1), 'POT60', x, y, FP['FADER'],
                  '60 mm fader, 10k linear (stroke %d mm)' % f['stroke'])
     b.rail(pot, '1', '+3V3')
-    b.rail(pot, '3', 'AGND')
+    b.rail(pot, '3', 'GNDA')
     b.net(pot, '2', 'FADER%d_RAW' % (i + 1))
-    r = b.r('R%d' % (104 + i), '1k', x + 25.0, y, 'R0603')
+    r = b.r('R%d' % (104 + i), '1k', x + 25.4, y, 'R0603')
     b.net(r, '1', 'FADER%d_RAW' % (i + 1)); b.net(r, '2', 'FADER%d' % (i + 1))
-    c = b.c('C%d' % (53 + i), '100n', x + 50.0, y, 'C0603')
-    b.net(c, '1', 'FADER%d' % (i + 1)); b.rail(c, '2', 'AGND')
+    c = b.c('C%d' % (53 + i), '100n', x + 50.8, y, 'C0603')
+    b.net(c, '1', 'FADER%d' % (i + 1)); b.rail(c, '2', 'GNDA')
 
 s.text('6. 2 фейдера 60 мм (10k линейные) через RC 1k/100n → FADER1/FADER2 → MCP3208 CORE-2. '
        'Линейность: 10k по 3.3 В = 0.33 мА, шум 1k+100n (fc 1.6 кГц), 12 бит = 0.8 мВ/LSB.',
-       (920.0, 640.08), 1.6)
+       (114.3, 711.2), 1.6)
 
 # --------------------------------------------------------------------------
 # 7. LED chain 17 x WS2812B-2020 + 74HCT1G125
 # --------------------------------------------------------------------------
-buf = b.part('74xGxx', '74AHCT1G125', 'U6', '74HCT1G125', 900.0, 720.0, FP['SOT23_5'],
+buf = b.part('74xGxx', '74AHCT1G125', 'U6', '74HCT1G125', 480.06, 812.8, FP['SOT23_5'],
              'LED_DATA buffer 3.3->5 V (VCC=+5V, TTL input)')
-b.net(buf, '2', 'LED_DATA'); b.net(buf, '1', 'GND'); b.net(buf, '5', '+5V')
-b.net(buf, '3', 'GND'); b.net(buf, '4', 'LED_BUF')
-cbuf = b.c('C72', '100n', 870.0, 720.0, 'C0603')
+b.net(buf, 2, 'LED_DATA'); b.net(buf, 1, 'GND'); b.net(buf, 5, '+5V')
+b.net(buf, 3, 'GND'); b.net(buf, 4, 'LED_BUF')
+cbuf = b.c('C72', '100n', 520.7, 812.8, 'C0603')
 b.rail(cbuf, '1', '+5V'); b.rail(cbuf, '2', 'GND')
-rled = b.r('R113', '330R', 930.0, 720.0, 'R0603')
+rled = b.r('R113', '330R', 546.1, 812.8, 'R0603')
 b.net(rled, '1', 'LED_BUF'); b.net(rled, '2', 'LED_IN')
 prev = 'LED_IN'
 LEDS = ['LED_ENC%d' % i for i in range(1, 17)] + ['LED_STATUS']
 for i, ref in enumerate(LEDS):
-    x = 60.0 + (i % 9) * 90.0
-    y = 745.0 + (i // 9) * 50.0
+    x = 60.96 + i * 63.5
+    y = 787.4
     led = b.part('LED', 'WS2812B-2020', ref, 'WS2812B-2020', x, y, FP['LED2020'],
                  'RGB %s (+5 V)' % ('status' if ref == 'LED_STATUS' else 'knob ring'))
     b.net_pin(led, 'DIN', prev)
@@ -656,17 +675,17 @@ for i, ref in enumerate(LEDS):
         prev = out
     else:
         b.nc(led, pname='DOUT')
-    cc = b.c('C%d' % (55 + i), '100n', x, y + 20.0, 'C0603')
+    cc = b.c('C%d' % (55 + i), '100n', x, y + 22.86, 'C0603')
     b.rail(cc, '1', '+5V'); b.rail(cc, '2', 'GND')
 
 s.text('7. 17 x WS2812B-2020 (16 ручек + статус), питание +5 В, данные GPxx -> U6 74HCT1G125 '
        '(VCC=+5 В) -> 330R -> цепочка; 100n на каждый LED.',
-       (25.4, 705.0), 1.6)
+       (25.4, 828.0), 1.6)
 
 # --------------------------------------------------------------------------
 # 8. CONNECTORS to CORE-2 + mounting + test points
 # --------------------------------------------------------------------------
-j_dig = b.part('Connector_Generic', 'Conn_02x08_Odd_Even', 'J13', 'IDC16', 900.0, 100.0, FP['IDC16'],
+j_dig = b.part('Connector_Generic', 'Conn_02x08_Odd_Even', 'J13', 'IDC16', 863.6, 88.9, FP['IDC16'],
                'digital/power ribbon to CORE-2 (IDC-16 2x8)')
 for pin, net in IDC_DIG.items():
     if net == 'NC':
@@ -674,7 +693,7 @@ for pin, net in IDC_DIG.items():
     else:
         b.net(j_dig, int(pin), net)
 
-j_an = b.part('Connector_Generic', 'Conn_02x13_Odd_Even', 'J14', 'IDC26', 1050.0, 100.0, FP['IDC26'],
+j_an = b.part('Connector_Generic', 'Conn_02x13_Odd_Even', 'J14', 'IDC26', 1041.4, 88.9, FP['IDC26'],
               'analog patch-field ribbon to CORE-2 (IDC-26 2x13)')
 for pin, net in IDC_AN.items():
     if net == 'NC':
@@ -683,23 +702,23 @@ for pin, net in IDC_AN.items():
         b.net(j_an, int(pin), net)
 
 for i, (hx, hy) in enumerate(M3_HOLES):
-    b.part('Mechanical', 'MountingHole', 'H%d' % (i + 1), 'M3', 30.0 + i * 40.0, 60.0, FP['HOLE'],
+    b.part('Mechanical', 'MountingHole', 'H%d' % (i + 1), 'M3', 30.0 + i * 40.0, 63.5, FP['HOLE'],
            'M3 hole: panel (%.0f, %.0f) = mechanical PANEL1_POSTS' % (hx, hy))
 
 for i, (netname, note) in enumerate((('SDA', 'I2C SDA'), ('SCL', 'I2C SCL'), ('INT', 'expander INT'),
                                      ('LED_DATA', 'WS2812 data'), ('GATE_IN_CLEAN', 'gate in, 3.3 V'),
-                                     ('+5V', '+5V rail'), ('+3V3', '+3V3 rail'), ('AGND', 'analog return'))):
-    tp = b.part('Connector', 'TestPoint', 'TP%d' % (i + 1), 'TP', 30.0 + i * 30.0, 90.0, FP['TP'], note)
+                                     ('+5V', '+5V rail'), ('+3V3', '+3V3 rail'), ('GNDA', 'analog return'))):
+    tp = b.part('Connector', 'TestPoint', 'TP%d' % (i + 1), 'TP', 30.0 + i * 35.56, 88.9, FP['TP'], note)
     b.net(tp, '1', netname)
 
-s.power_anchor('+3V3', 25.4, 300.0)
-s.power_anchor('+5V', 60.96, 300.0)
-s.power_anchor('GND', 96.52, 300.0)
-s.power_anchor('AGND', 132.08, 300.0)
+s.power_anchor('+3V3', 25.4, 533.4)
+s.power_anchor('+5V', 71.12, 533.4)
+s.power_anchor('GND', 116.84, 533.4)
+s.power_anchor('GNDA', 162.56, 533.4)
 
 s.text('8. Разъёмы в CORE-2: J13 IDC-16 (цифровой/питание: SDA, SCL, INT, LED_DATA, +5V, +3V3, GND); '
-       'J14 IDC-26 (аналог: CVOUT1..4, CVIN1..4, GATE_OUT, GATE_IN_CLEAN, FADER1/2, AGND); '
-       'J12 FPC-40 (LCD RGB). Полная таблица — pinmap.md/.csv.', (25.4, 215.0), 1.6)
+       'J14 IDC-26 (аналог: CVOUT1..4, CVIN1..4, GATE_OUT, GATE_IN_CLEAN, FADER1/2, GNDA); '
+       'J12 FPC-40 (LCD RGB). Полная таблица — pinmap.md/.csv.', (25.4, 101.6), 1.6)
 
 PATH = b.done()
 print('written', PATH)
@@ -740,17 +759,10 @@ def write_matrix():
     A('|---:|---|---|---:|---:|---|---|---|')
     for i, e in enumerate(ENCODERS):
         n = int(e['ref'][3:])
-        if n <= 8:
-            ua, pa, ba = 'U1', 'GPA', (n - 1) * 2
-            ua2 = 'U1'
-            pb = 'GPB'
-        else:
-            ua, pa, ba = 'U2', 'GPA', (n - 9) * 2
-            ua2 = 'U2'
-            pb = 'GPB'
+        chip, port, bit = enc_ab_pin(n)
         sw = 'U3.GPA%d' % (n - 1) if n <= 8 else 'U3.GPB%d' % (n - 9)
-        A('| %d | `%s` | %s | %.1f | %.1f | %s.%s%d | %s.GPB%d | %s |'
-          % (n, e['id'], e['half'], e['x'], e['y'], ua, pa, ba, ua2, ba + 1, sw))
+        A('| %d | `%s` | %s | %.1f | %.1f | %s.%s%d | %s.%s%d | %s |'
+          % (n, e['id'], e['half'], e['x'], e['y'], chip, port, bit, chip, port, bit + 1, sw))
     A('')
     A('Почему 3 × MCP23017, а не 2: у EC11 три линии на энкодер (A, B, SW) → 16 × 3 = 48 входов; '
       'два MCP23017 дают только 32. Три чипа (0x20/0x21/0x22) покрывают 48 линий ровно, '
@@ -806,7 +818,7 @@ def write_pinmap():
              'CVOUT4': 'core→panel', 'CVIN1': 'panel→core', 'CVIN2': 'panel→core',
              'CVIN3': 'panel→core', 'CVIN4': 'panel→core', 'GATE_OUT': 'core→panel',
              'GATE_IN_CLEAN': 'panel→core', 'FADER1': 'panel→core', 'FADER2': 'panel→core',
-             'AGND': '—', 'NC': '—'}[net]
+             'GNDA': '—', 'NC': '—'}[net]
         level = '0..10 В' if net.startswith('CVOUT') else (
             '±10 В' if net.startswith('CVIN') else (
                 '0/5 В' if net == 'GATE_OUT' else ('0/3.3 В' if net == 'GATE_IN_CLEAN' else
@@ -814,7 +826,7 @@ def write_pinmap():
         rows.append(('J14 (IDC-26)', pin, net, d, 'analog' if net != 'NC' else 'nc', level,
                      'аналоговое поле'))
     # summary
-    sig = [r for r in rows if r[2] not in ('GND', 'AGND', 'NC')]
+    sig = [r for r in rows if r[2] not in ('GND', 'GNDA', 'NC')]
     L = []
     A = L.append
     A('# PANEL-2 ↔ CORE-2 — карта линий (PRE-FREEZE)')
@@ -833,7 +845,7 @@ def write_pinmap():
     A('| LED-цепочка 17 × WS2812B: LED_DATA | 1 | J13 IDC-16 |')
     A('| Джек-поле: 4 CV OUT + 4 CV IN + GATE OUT + GATE IN | 10 | J14 IDC-26 |')
     A('| Фейдеры 2 × 10k → MCP3208 (CORE-2) | 2 | J14 IDC-26 |')
-    A('| Питание: +5 В (LED, подсветка boost), +3V3 (логика), GND/AGND | 2 рельса + возврат | J13/J14 |')
+    A('| Питание: +5 В (LED, подсветка boost), +3V3 (логика), GND/GNDA | 2 рельса + возврат | J13/J14 |')
     A('')
     A('**Итого сигналов: 37** (21 LCD + 3 I2C/INT + 1 LED + 10 джеков + 2 фейдера).')
     A('**Одного IDC-26 не хватает:** в IDC-26 максимум 13 сигнальных пинов при «сигнал/земля»; '
@@ -842,7 +854,7 @@ def write_pinmap():
     A('1. **J12 FFC-40** — LCD RGB-шина (21 сигнал) + питание: высокочастотные линии нельзя '
       'тащить через IDC-26 вместе с аналогом и I2C;')
     A('2. **J13 IDC-16** — цифровое: I2C (2) + INT (1) + LED_DATA (1) + +5V/+3V3/GND;')
-    A('3. **J14 IDC-26** — аналоговое поле: 12 сигналов на нечётных пинах, AGND на чётных '
+    A('3. **J14 IDC-26** — аналоговое поле: 12 сигналов на нечётных пинах, GNDA на чётных '
       '(экранировка «сигнал/земля»).')
     A('')
     A('Мультиплексирование: 48 линий энкодеров + 13 матрицы = **61 GPIO** свёрнуты в 3 линии '
@@ -863,7 +875,7 @@ def write_pinmap():
     for r in [r for r in rows if r[0].startswith('J13')]:
         A('| %s | `%s` | %s | %s | %s |' % (r[1], r[2], r[3], r[5], r[6]))
     A('')
-    A('## 4. J14 — IDC-26 (аналоговое поле; нечётные = сигнал, чётные = AGND)')
+    A('## 4. J14 — IDC-26 (аналоговое поле; нечётные = сигнал, чётные = GNDA)')
     A('')
     A('| Pin | Сигнал | Направление | Уровень | Примечание |')
     A('|---:|---|---|---|---|')
@@ -942,3 +954,229 @@ print('bom    :', write_bom())
 print('intent :', write_intent())
 print('geometry deviation vs JSON: %.2f mm' % GEOM_ERR)
 print('components: %d, connected intent lines: %d' % (len(b.bom), len(b.intent)))
+
+
+# --------------------------------------------------------------------------
+# interfaces.md — электрические интерфейсы и защита
+# --------------------------------------------------------------------------
+def write_interfaces():
+    L = []
+    A = L.append
+    A('# PANEL-2 — электрические интерфейсы (PRE-FREEZE draft)')
+    A('')
+    A('Сгенерировано `tools/gen_panel2.py`. **Плата не заказывается** — документ фиксирует '
+      'контракт для ревью (R-01…R-11, `spec/90-requirements-registry.md`).')
+    A('')
+    A('## 1. Джек-поле (10 × 3.5 мм, R-06, шаг 13.1 мм, верхний ряд)')
+    A('')
+    A('Принятое назначение: **4 CV OUT + 4 CV IN + GATE OUT + GATE IN** (строго 10 по R-06). '
+      'Аудио-джеков в верхнем поле нет — LINE/PHONES/AUDIO IN выносятся на заднюю панель CORE-2 '
+      '(см. §1.2); это предмет решения Lead (см. README «Открытые вопросы»).')
+    A('')
+    A('| Джек | X | Y (панель) | Назначение | Уровень | Защита на PANEL-2 |')
+    A('|---|---:|---:|---|---|---|')
+    for j, (jid, netname, title, direction, level, prot) in zip(JACKS_SPEC, JACK_FIELD):
+        A('| %s | %.1f | %.1f | %s (%s) | %s | %s |'
+          % (jid, j['x'], j['y'], title, direction, level, prot))
+    A('')
+    A('### 1.1 Защита (детали)')
+    A('')
+    A('* **CV OUT (J01…J04)**: выход буфера CORE-2 → `1 кОм` → TVS **SMAJ12A** на GNDA + `100 нФ`. '
+      'TVS ограничивает выброс / ошибочное подключение ±12 В к выходу; 1 кОм развязывает буфер.')
+    A('* **CV IN (J05…J08)**: джек → `100 Ом` → узел `CVINn` (в CORE-2) + TVS **SMAJ15A** на GNDA + '
+      '`100 нФ`. 100 Ом при входном 100 кОм CORE-2 даёт **0.1 %** погрешности — важно для 1 В/окт; '
+      'TVS 15 В не открывается при штатных ±12 В и срабатывает на выбросы; ток при ±24 В ≤ 90 мА.')
+    A('* **GATE OUT (J09)**: `1 кОм` + TVS **SMAJ5.0A** + `100 нФ` (open-drain 2N7000 на CORE-2, '
+      'подтяжка 4.7 кОм к +5 В — на CORE-2).')
+    A('* **GATE IN (J10)**: `4.7 кОм` + **BAT54S** (кламп к +3.3 В / GNDA: ток при +12 В ≤ 1.8 мА) + '
+      '`100 нФ` + **74LVC1G17** (триггер Шмитта, 3.3 В) → `GATE_IN_CLEAN` в CORE-2.')
+    A('* **Земли**: цифровая `GND` и аналоговая `GNDA` соединены в одной точке (R112 = 0 Ω) — '
+      'звезда на PCB, чтобы не гнать цифровые токи через аналоговый возврат.')
+    A('')
+    A('### 1.2 Аудио (вне верхнего джек-поля, на задней панели CORE-2)')
+    A('')
+    A('Аудио-тракт PANEL-2 не касается, но контракт фиксируем:')
+    A('')
+    A('| Сигнал | Разъём | AC-coupling | Защита |')
+    A('|---|---|---|---|')
+    A('| LINE OUT (стерео) | 3.5 мм TRS, задняя панель | `10 мкФ` X7R/электролит + `10 кОм` на GNDA '
+      '(срез ~1.6 Гц) | `1 кОм` + `BAT54S` + `100 пФ` на выходе буфера TL072 |')
+    A('| PHONES | 3.5 мм TRS | `10 мкФ` + `10 кОм`, последовательно `100 Ом` | `BAT54S` |')
+    A('| AUDIO IN (для PCM1808) | 3.5 мм TRS | `2.2 мкФ` + `10 кОм` (срез ~7 Гц) | `1 кОм` + `BAT54S` + '
+      '`100 пФ` |')
+    A('')
+    A('Если Lead решит включить аудио в верхнее поле (R-06 = 10 шт.), меняются местами два джека: '
+      'J09/J10 (GATE) → LINE/AUDIO IN; в этом случае PANEL-2 получает тракт AC-coupling '
+      '(конденсаторы + RC) по таблице выше. Изменение — одна таблица в генераторе. ')
+    A('')
+    A('## 2. Экран 5.0" 800×480 RGB 16 бит')
+    A('')
+    A('* **J11** — FPC-40 (0.5 мм) под хвост панели; **J12** — FFC-40 в CORE-2. '
+      'Пины: R0-R4 (5), G0-G5 (6), B0-B4 (5), PCLK, DE, HSYNC, VSYNC, BL_PWM + 3V3/5V/GND.')
+    A('* RGB565: младшие биты R5/G6/G7/B5 не разводятся — 16 бит достаточно для UI '
+      '(65 536 цветов); панель 24-битная, младшие биты можно посадить на GND на CORE-2.')
+    A('* Тайминг-бюджет (ориентир): 800×480 @ 60 Гц, PCLK ≈ 33 МГц, HBP/HFP/VBP/VFP — '
+      'по datasheet панели; линии PCLK/DE/HSYNC/VSYNC — короткие, с FFC 0.5 мм «земля-сигнал-земля».')
+    A('* **Подсветка**: типичная линейка 5.0" RGB — 4…6 белых LED последовательно, 19…22 В / 20…40 мА. '
+      'На PANEL-2: **MT3608** boost 5 В → ~19 В (feedback 33k/1k), последовательный 33 R, '
+      'низковольтный ключ **2N7002** на BL_K (PWM от CORE-2, 100 R + 10k). '
+      '**DNP**: если модуль панели имеет свой драйвер подсветки — boost не ставить (только JP-обход).')
+    A('* Альтернатива **J15** (1×14, DNP): SPI-дисплей по R-18 (SPI2_SCK/MOSI/CS/DC/RST/MISO/BL). '
+      'Nets SPI2_* намеренно никуда не идут — это точка расширения; ERC даёт 6 warnings '
+      '`isolated_pin_label` на них (см. README).')
+    A('')
+    A('## 3. Энкодеры (16 × EC11) — I2C')
+    A('')
+    A('| Параметр | Значение |')
+    A('|---|---|')
+    A('| Чипы | 4 × MCP23017: 0x20 (ENC1…8 A/B), 0x21 (ENC9…16 A/B), 0x22 (16 × SW), 0x23 (матрица) |')
+    A('| Шина | I2C0, 400 кГц, подтяжка 4.7 кОм на +3V3 (на PANEL-2) |')
+    A('| INT | INTA всех чипов open-drain → общая линия `INT` + 10 кОм; IOC на обеих сторонах |')
+    A('| Фильтр фазы | 10 кОм подтяжка → 1 кОм → 100 нФ → вход MCP (fc ≈ 1.6 кГц) |')
+    A('| Кнопка энкодера | 10 кОм подтяжка + 100 нФ, дебаунс 5…10 мс в прошивке |')
+    A('| Бюджет шины | INT-событие = 1 × 2-байтовое чтение ≈ 75 мкс; 16 энк. × 200 событий/с = 3200 × '
+      '75 мкс = 24 % шины; скан матрицы 500 Гц ≈ 10 %; запас > 60 % |')
+    A('')
+    A('**Почему 3 чипа, а не 2**: 16 энкодеров × 3 линии = 48 входов; 2 × MCP23017 = 32 — не хватает. '
+      'Выбирать «напрямую» = 48 GPIO + 13 матрицы = 61 линия на шлейфе — нереально. '
+      '4 чипа дают 3 линии (SDA/SCL/INT) вместо 61.')
+    A('')
+    A('## 4. Матрица клавиш (42 × Choc, 6×7)')
+    A('')
+    A('* Строки ROW1…ROW6 = GPA0…GPA5 (MCP23017 0x23), прижимаются к GND по одной; '
+      'столбцы COL1…COL7 = GPB0…GPB6, чтение с внешней подтяжкой 10 кОм.')
+    A('* В каждой клавише — **1N4148**: анод = клавиша, катод = столбец → фантом при диагональных '
+      'нажатиях исключён.')
+    A('* Скан: 6 × (запись + чтение) ≈ 0.5 мс при 400 кГц → рекомендовано 500 Гц (2 мс). '
+      'INT по изменению столбцов (IOC) — мгновенная реакция.')
+    A('* Полная таблица ключ → строка/столбец/диод — `matrix.md`.')
+    A('')
+    A('## 5. Фейдеры (2 × 60 мм)')
+    A('')
+    A('* 10 кОм линейные (Bourns PTA6043), включены между +3V3 и GNDA; ток 0.33 мА.')
+    A('* Ползунок → `1 кОм` → `100 нФ` на GNDA → `FADER1/FADER2` → **MCP3208 на CORE-2** '
+      '(12 бит; 0.8 мВ/LSB, fc RC = 1.6 кГц).')
+    A('* Линейность: резистивная дорожка линейная (не логарифм); прошивка может применить кривую.')
+    A('')
+    A('## 6. LED-индикация (17 × WS2812B-2020)')
+    A('')
+    A('* 16 колец под энкодерами + 1 статус; питание **+5 В**, данные GPxx → **74HCT1G125** '
+      '(VCC = +5 В, TTL-вход) → 330 Ω → цепочка; 100 нФ на каждый LED.')
+    A('* Бюджет тока: 17 × 10 мА = 170 мА по +5 В; ограничение яркости — в прошивке.')
+    A('')
+    A('## 7. Питание PANEL-2')
+    A('')
+    A('| Рельс | Откуда | Потребители | Оценка |')
+    A('|---|---|---|---|')
+    A('| +3V3 | CORE-2 (J13) | 4 × MCP23017, матрица/подтяжки, буфер Шмитта, 74HCT1G125 | ≈ 30 мА |')
+    A('| +5V | CORE-2 (J13, 2 пина) | 17 × WS2812, boost подсветки | ≈ 170 мА + 40 мА |')
+    A('| GND / GNDA | CORE-2 (J13/J14) | возвраты | — |')
+    A('')
+    with open(os.path.join(P2, 'interfaces.md'), 'w', encoding='utf-8') as f:
+        f.write('\n'.join(L) + '\n')
+    return os.path.join(P2, 'interfaces.md')
+
+
+print('interfaces:', write_interfaces())
+
+
+# --------------------------------------------------------------------------
+# README.md
+# --------------------------------------------------------------------------
+def write_readme():
+    L = []
+    A = L.append
+    A('# PANEL-2 — PRE-FREEZE (не заказывать плату)')
+    A('')
+    A('Схема панели **v0.4** (380 × 210 мм): 16 × EC11, 42 × Kailh Choc (Lapka-42, матрица 6×7), '
+      'экран 5.0" 800×480 RGB 16 бит, 10 × mini-jack, 2 фейдера 60 мм, 17 × WS2812B. '
+      'Статус: **PRE-FREEZE / DO NOT FABRICATE** — цель ночного этапа не «плата к заказу», '
+      'а проверенный контракт CORE-2 ↔ PANEL-2 и ревью решений.')
+    A('')
+    A('Лицензия: CERN-OHL-S-2.0. Геометрия: `spec/panel-spec-v0.4.json` (единственный источник); '
+      'реестр требований: `spec/90-requirements-registry.md` (R-01…R-11).')
+    A('')
+    A('## 1. Файлы')
+    A('')
+    A('| Файл | Что |')
+    A('|---|---|')
+    A('| `PANEL-2.kicad_sch` | схема (KiCad 10, S-expr 20250114), A0, штамп PRE-FREEZE на листе |')
+    A('| `PANEL-2.pdf`, `svg/` | экспорт схемы |')
+    A('| `PANEL-2.net` | netlist (импорт в pcbnew) |')
+    A('| `erc/PANEL-2-erc.rpt` | ERC-отчёт (0 errors, 6 warnings — см. §5) |')
+    A('| `pinmap.md`, `pinmap.csv` | контракт PANEL-2 ↔ CORE-2: все линии, направления, уровни |')
+    A('| `matrix.md` | матрица 42 клавиш (ключ → строка/столбец/диод/номер JSON) + энкодеры → MCP |')
+    A('| `interfaces.md` | электрические интерфейсы: джеки/защита, дисплей, энкодеры, матрица, фейдеры, LED, питание |')
+    A('| `BOM-panel2.csv` | черновой BOM (номинал/корпус/артикул/кол-во) |')
+    A('| `tools/gen_panel2.py` | генератор схемы и всех таблиц из одного источника данных |')
+    A('| `tools/verify_netlist.py` | сверка netlist ↔ контракт (intent, pinmap.csv, matrix.md) |')
+    A('')
+    A('Пересборка: `cd hardware/panel2 && ./tools/build.sh` '
+      '(генерация → ERC → PDF/SVG/netlist → проверка).')
+    A('')
+    A('## 2. Архитектурные решения')
+    A('')
+    A('1. **Энкодеры через I2C, 4 × MCP23017**: 16 × (A,B,SW) = 48 + матрица 13 = 61 линия. '
+      '2 чипа дают только 32 входа — недостаточно; 4 чипа (0x20…0x23) сводят всё к SDA/SCL/INT. '
+      'Скорость: INT-чтение 75 мкс, 16 энкодеров ≤ 24 % шины, матрица 500 Гц ≈ 10 %.')
+    A('2. **Три шлейфа, а не один IDC-26**: сигналов 37 (21 LCD + 3 I2C/INT + 1 LED + 10 джеков '
+      '+ 2 фейдера) — в IDC-26 помещается максимум 13 сигнальных. Отсюда **J12 FFC-40** (LCD RGB) + '
+      '**J13 IDC-16** (цифровое/питание) + **J14 IDC-26** (аналог, «сигнал/AGND»). '
+      'Это ответ на вопрос «хватает ли одного IDC-26» — нет. Подробно: `pinmap.md` §1.')
+    A('3. **Джек-поле**: 4 CV OUT + 4 CV IN + GATE OUT + GATE IN (10 по R-06). Аудио — на задней '
+      'панели CORE-2 (AC-coupling описан в `interfaces.md` §1.2) — **требует подтверждения Lead**.')
+    A('4. **Экран**: FPC-40 на панели (J11) + FFC-40 в CORE-2 (J12); подсветка boost MT3608 (DNP, '
+      'если модуль имеет свой драйвер); J15 — альтернатива SPI (DNP).')
+    A('5. **Защита джеков**: CV OUT 1k + SMAJ12A; CV IN 100R + SMAJ15A (0.1 % погрешности); '
+      'GATE OUT 1k + SMAJ5.0A; GATE IN 4.7k + BAT54S + 74LVC1G17.')
+    A('6. **Матрица**: 1N4148 в каждой клавише (антифантом), строки сканируются по одной, '
+      'внешние подтяжки 10 кОм по столбцам.')
+    A('')
+    A('## 3. Статус ERC')
+    A('')
+    A('| Плата | Errors | Warnings | Компонентов | Соединений |')
+    A('|---|---:|---:|---:|---:|')
+    A('| PANEL-2 | **0** | **6** (isolated_pin_label, nets SPI2_* на DNP-разъёме J15) | 353 | 999 |')
+    A('')
+    A('## 4. Проверки (не «на глаз»)')
+    A('')
+    A('* **Геометрия**: генератор берёт позиции клавиш тем же кодом, что и `spec/panel-spec-v0.4.json` '
+      '(`tools/make_canonical_v04.py`), и **assert**-ит отклонение от JSON: текущее **%.2f мм** '
+      '(порог 0.1 мм).' % GEOM_ERR)
+    A('* **Уникальность**: 42 клавиши → 42 уникальные ячейки (6×7), 42 диода; 16 энкодеров → '
+      '48 уникальных линий в MCP23017; 4 чипа имеют разные адреса.')
+    A('* **Netlist ↔ контракт**: `tools/verify_netlist.py` сверяет netlist с pinmap.csv и matrix.md.')
+    A('* **ERC**: `kicad-cli sch erc` — 0 errors; 6 warnings перечислены в §5.')
+    A('')
+    A('## 5. Предупреждения ERC (все 6 — осознанные)')
+    A('')
+    A('`isolated_pin_label` × 6: `SPI2_SCK`, `SPI2_MOSI`, `SPI2_CS`, `SPI2_DC`, `SPI2_RST`, `SPI2_MISO` — '
+      'цепи альтернативного SPI-дисплея на J15 (DNP, R-18 открыт). Каждая цепь имеет один пин '
+      '(разъём); в CORE-2 они придут, если SPI-вариант будет выбран. На PCB-этапе либо подключить их '
+      'к CORE-2, либо убрать J15.')
+    A('')
+    A('## 6. Открытые вопросы (для Lead / CORE-2)')
+    A('')
+    A('1. **Аудио-джеки**: подтвердить, что LINE/PHONES/AUDIO IN остаются на задней панели CORE-2 '
+      '(в верхнем поле R-06 ровно 10, все заняты CV/GATE). Альтернатива — забрать 2 позиции у джек-поля.')
+    A('2. **FPC-40 распиновка** зависит от модуля 5.0" 800×480: таблица `pinmap.md` §5 — предлагаемый '
+      'контракт, перед PCB сверить с datasheet панели.')
+    A('3. **Подсветка**: тип линейки (4…6 LED, 19…22 В) и наличие драйвера в модуле → решение '
+      '«ста**вить/не ставить MT3608».')
+    A('4. **Крепёж**: механические параметры PANEL-1 rev.2 задают **6 стоек M3** '
+      '(30/145/260 × 30/180), в задаче было 4×M3 — в схему заложены 6 отверстий по механике; '
+      'подтвердить.')
+    A('5. **CORE-2**: сколько пинов выделяется под I2C/INT, LCD RGB, BL_PWM (нужно 3 + 21 + 1).')
+    A('')
+    A('## 7. Что не сделано (осознанно)')
+    A('')
+    A('* `.kicad_pcb`: разводка/трассировка не делалась (PCB-этап после freeze).')
+    A('* Footprint Kailh Choc hot-swap и FPC-40 зависят от выбранных компонентов — на PCB-этапе.')
+    A('* Номиналы защиты/подсветки требуют проверки на макете (TVS/boost под конкретные модули).')
+    A('')
+    with open(os.path.join(P2, 'README.md'), 'w', encoding='utf-8') as f:
+        f.write('\n'.join(L) + '\n')
+    return os.path.join(P2, 'README.md')
+
+
+print('readme:', write_readme())

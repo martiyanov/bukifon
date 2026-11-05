@@ -50,6 +50,7 @@ struct StepModulator {
 };
 
 struct SequenceTrack {
+  bool muted = false;
   SequenceStep steps[kSeqSteps];
   uint8_t length = kSeqSteps;
   uint8_t speed = 1;  // 1..8 multiplier of the 16th step length
@@ -58,7 +59,8 @@ struct SequenceTrack {
 };
 
 struct Pattern {
-  SequenceTrack tracks[kSeqTracks];
+  // Storage allows 8 tracks; the engine currently drives 4 parts/tracks.
+  SequenceTrack tracks[kMaxSeqTracks];
 };
 
 class SequencerSink {
@@ -74,6 +76,17 @@ class SequencerSink {
   virtual void onSeqSoundLock(int track, int preset) { (void)track; (void)preset; }
   virtual void onSeqStep(int track, int step, uint32_t pass) {
     (void)track; (void)step; (void)pass;
+  }
+  // Base (non-p-locked) value of a part parameter, normalised 0..1.  Used to
+  // restore a parameter after an Elektron-style p-lock step.
+  virtual float seqParamBase(int track, int param) const {
+    (void)track; (void)param;
+    return 0.0f;
+  }
+  // Restore a parameter that was p-locked by the previous step.  Engines that
+  // store the pre-lock value override this; the default restores the base.
+  virtual void onSeqPlockRestore(int track, int param) {
+    onSeqPlock(track, param, seqParamBase(track, param));
   }
 };
 
@@ -104,6 +117,10 @@ class Sequencer {
   int trackLength(int track) const;
   void setTrackSpeed(int track, int speed);
   int trackSpeed(int track) const;
+  void setTrackMuted(int track, bool muted);
+  bool trackMuted(int track) const;
+  static constexpr int maxTracks() { return kMaxSeqTracks; }
+  static constexpr int activeTracks() { return kSeqTracks; }
 
   void process(int samples);
   void onClockTick();  // 24 ppqn from MIDI clock
@@ -167,6 +184,10 @@ class Sequencer {
   uint8_t chain_[kMaxPatternChain] = {};
   int chainLength_ = 0;
   int chainPos_ = 0;
+
+  // P-lock bookkeeping: params locked by the previous step of each track.
+  uint8_t lastPlockParams_[kMaxSeqTracks][kPlocksPerStep] = {};
+  uint8_t lastPlockCount_[kMaxSeqTracks] = {};
 };
 
 }  // namespace bukifon

@@ -32,7 +32,8 @@ constexpr int kMipLevels = 8;
 
 // --- sequencer -------------------------------------------------------------
 constexpr int kSeqSteps = 16;
-constexpr int kSeqTracks = 4;            // one track per part
+constexpr int kSeqTracks = 4;            // active tracks (one per part)
+constexpr int kMaxSeqTracks = 8;         // storage/architecture headroom
 constexpr int kNumPatterns = 8;
 constexpr int kMaxPatternChain = 16;
 constexpr int kPlocksPerStep = 8;

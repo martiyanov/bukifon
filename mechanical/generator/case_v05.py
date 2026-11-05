@@ -59,8 +59,9 @@ def _plane_cutter(v, dz=0.0, above=True):
     box.apply_translation([0, 0, 300 if above else -300])   # нижняя грань z=0
     Rx = trimesh.transformations.rotation_matrix(-np.arctan(a), [1, 0, 0])
     box.apply_transform(Rx)
-    zc = v["center_rim"] - dz * v["cos"]
-    yc = 105.0 - dz * v["sin"]
+    # dz > 0 — плоскость сдвинута ВЫШЕ (по нормали панели)
+    zc = v["center_rim"] + dz * v["cos"]
+    yc = 105.0 + dz * v["sin"]
     box.apply_translation([190.0, yc, zc])
     return box
 
@@ -109,7 +110,9 @@ def build_body(v):
     # стойки PANEL-2 (6 × M3) — на 8 мм ниже панели по нормали
     for (x, yf) in P.PANEL1_POSTS:
         xw, yw = _panel_to_world(v, (x, yf))
-        z2 = _rim_z(v, yw) - P.PANEL2_OFFSET * v["cos"]
+        # плоскость PANEL-2: исходная точка (x,yw0) сдвинута на -8 по нормали
+        yw0 = yw + P.PANEL2_OFFSET * v["sin"]
+        z2 = _rim_z(v, yw0) - P.PANEL2_OFFSET * v["cos"]
         feats.append(C.cyl_z(3.5, P.FLOOR_T - 0.6, z2, xw, yw, 28))
     # стойки CORE-2 (4 × M3) — горизонтально, Z 12
     for (x, y) in P.CORE_POSTS:
@@ -119,9 +122,9 @@ def build_body(v):
         feats.append(C.cyl_z(3.0, P.FLOOR_T - 0.6, 6.0, x, y, 24))
     # рёбра жёсткости
     for x in (60.0, 110.0, 290.0, 340.0):
-        feats.append(C.box(x - 1.5, x + 1.5, P.WALL - 0.6, P.WALL + 8.0,
+        feats.append(C.box(x - 1.5, x + 1.5, P.WALL - 0.6, P.WALL + 5.6,
                            P.FLOOR_T - 0.6, Hmax))
-        feats.append(C.box(x - 1.5, x + 1.5, 210 - P.WALL - 8.0, 210 - P.WALL + 0.6,
+        feats.append(C.box(x - 1.5, x + 1.5, 210 - P.WALL - 5.6, 210 - P.WALL + 0.6,
                            P.FLOOR_T - 0.6, Hmax))
     # батарея: A/B — открытые седла; C — закрытый отсек с крышкой
     if v["battery"] == "space":
@@ -168,7 +171,8 @@ def build_body(v):
     # PANEL-2: втулки M3 сверху стоек
     for (x, yf) in P.PANEL1_POSTS:
         xw, yw = _panel_to_world(v, (x, yf))
-        z2 = _rim_z(v, yw) - P.PANEL2_OFFSET * v["cos"]
+        yw0 = yw + P.PANEL2_OFFSET * v["sin"]
+        z2 = _rim_z(v, yw0) - P.PANEL2_OFFSET * v["cos"]
         cuts.append(C.cyl_z(P.M3_INSERT_D / 2, z2 - 6.0, z2 + 0.1, xw, yw, 24))
     # CORE-2 / PWR-2: резьбовые отверстия
     for (x, y) in P.CORE_POSTS:
@@ -347,7 +351,7 @@ def main():
         # матрица установки панели: поворот на -angle вокруг X,
         # центр панели (Y=105, Z=60) → (Y=105, Z=center_rim)
         a = np.radians(v["angle_deg"])
-        M = (trimesh.transformations.translation_matrix([0, 0, v["center_rim"] - 60.0])
+        M = (trimesh.transformations.translation_matrix([0, 105.0, v["center_rim"]])
              @ trimesh.transformations.rotation_matrix(-a, [1, 0, 0])
              @ trimesh.transformations.translation_matrix([0, -105.0, -60.0]))
         with open(os.path.join(HERE, f"assembly_v05_{name}.json"), "w") as f:

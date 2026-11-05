@@ -622,7 +622,24 @@ void Engine::onSeqNoteOff(int track, int note) {
 
 void Engine::onSeqPlock(int track, int param, float normalized) {
   if (track < 0 || track >= kNumParts || param < 0 || param >= kNumPartParams) return;
+  // Remember the pre-lock value so the p-lock lasts exactly one step.
+  if (!plockSavedValid_[track][param]) {
+    plockSaved_[track][param] = parts_[track].base().v[param];
+    plockSavedValid_[track][param] = true;
+  }
   setPartParam(track, param, paramFromNorm(kPartParamMeta[param], normalized));
+}
+
+void Engine::onSeqPlockRestore(int track, int param) {
+  if (track < 0 || track >= kNumParts || param < 0 || param >= kNumPartParams) return;
+  if (!plockSavedValid_[track][param]) return;
+  setPartParam(track, param, plockSaved_[track][param]);
+  plockSavedValid_[track][param] = false;
+}
+
+float Engine::seqParamBase(int track, int param) const {
+  if (track < 0 || track >= kNumParts || param < 0 || param >= kNumPartParams) return 0.0f;
+  return paramToNorm(kPartParamMeta[param], parts_[track].base().v[param]);
 }
 
 void Engine::onSeqSoundLock(int track, int preset) {

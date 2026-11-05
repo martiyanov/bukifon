@@ -28,6 +28,7 @@ class Engine : public SequencerSink, public ArpSink {
   GlobalParams& globals() { return globalBase_; }
   const GlobalParams& globals() const { return globalBase_; }
   PartParams& partBase(int part) { return parts_[part].baseRef(); }
+  const PartParams& partBase(int part) const { return parts_[part].base(); }
   const PartParams& partParams(int part) const { return parts_[part].params(); }
   void setGlobalParam(int id, float value);
   void setPartParam(int part, int id, float value);
@@ -82,6 +83,8 @@ class Engine : public SequencerSink, public ArpSink {
   void onSeqSoundLock(int track, int preset) override;
   void onArpNoteOn(int part, int note, int velocity) override;
   void onArpNoteOff(int part, int note) override;
+  float seqParamBase(int track, int param) const override;
+  void onSeqPlockRestore(int track, int param) override;
 
   // Direct slot editing helper (also used by UI / patch loading).
   void setModSlot(int part, int slot, const ModSlotData& data);
@@ -107,6 +110,8 @@ class Engine : public SequencerSink, public ArpSink {
   float globalOffsets_[kNumGlobalParams] = {};
   float partOffsets_[kNumParts][kNumPartParams] = {};
   float slotDepthOffsets_[kNumParts][kModSlots] = {};
+  float plockSaved_[kNumParts][kNumPartParams] = {};
+  bool plockSavedValid_[kNumParts][kNumPartParams] = {};
   ModContext modCtx_[kNumParts];
 
   float bend_[16] = {};

@@ -1,0 +1,30 @@
+ERC report (2026-11-05T21:01:02, Encoding UTF8)
+Report includes: Errors, Warnings
+
+***** Sheet /
+[isolated_pin_label]: Label connected to only one pin
+    ; warning
+    @(271.78 mm, 650.24 mm): Метка 'SPI2_SCK'
+[isolated_pin_label]: Label connected to only one pin
+    ; warning
+    @(271.78 mm, 652.78 mm): Метка 'SPI2_MOSI'
+[isolated_pin_label]: Label connected to only one pin
+    ; warning
+    @(271.78 mm, 655.32 mm): Метка 'SPI2_CS'
+[isolated_pin_label]: Label connected to only one pin
+    ; warning
+    @(271.78 mm, 657.86 mm): Метка 'SPI2_DC'
+[isolated_pin_label]: Label connected to only one pin
+    ; warning
+    @(271.78 mm, 660.40 mm): Метка 'SPI2_RST'
+[isolated_pin_label]: Label connected to only one pin
+    ; warning
+    @(271.78 mm, 665.48 mm): Метка 'SPI2_MISO'
+
+ ** ERC messages: 6  Errors 0  Warnings 6
+
+ ** Ignored checks:
+    - Global label only appears once in the schematic
+    - Four connection points are joined together
+    - SPICE model issue
+    - Assigned footprint doesn't match footprint filters

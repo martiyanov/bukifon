@@ -72,7 +72,7 @@ struct UiSnapshot {
   char modules[8][24] = {};
   char moduleApi[24] = "API v0";
   bool moduleBypassed = false;
-  char footer[56] = "";
+  char footer[80] = "";
   int activeVoices = 0;
   float masterLevel = 0.0f;
   bool transportRecord = false;

@@ -19,13 +19,13 @@
    0.0,
    0.990268,
    0.139173,
-   -112.328533
+   -7.328533
   ],
   [
    0.0,
    -0.139173,
    0.990268,
-   -61.016925
+   -1.016925
   ],
   [
    0.0,
@@ -54,7 +54,7 @@
    ],
    "watertight": true,
    "watertight_reload": true,
-   "volume_mm3": 213793.2
+   "volume_mm3": 189403.2
   },
   "body_R": {
    "file": "body_R.stl",
@@ -75,7 +75,7 @@
    ],
    "watertight": true,
    "watertight_reload": true,
-   "volume_mm3": 216446.2
+   "volume_mm3": 194373.4
   },
   "panel_L": {
    "file": "panel_L.stl",

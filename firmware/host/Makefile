@@ -7,8 +7,9 @@
 #   make clean
 
 CXX      ?= /usr/bin/g++
+PYTHON   ?= /opt/homebrew/bin/python3
 CXXFLAGS ?= -std=c++17 -O2 -Wall -Wextra
-CPPFLAGS := -I../src -I. -MMD -MP
+CPPFLAGS := -I../src -I../include -I../app -I. -MMD -MP
 LDFLAGS  ?=
 
 SRC_DIR   := ../src
@@ -22,11 +23,16 @@ TEST_FILES := $(wildcard $(TEST_DIR)/*.cpp)
 TEST_OBJ   := $(patsubst $(TEST_DIR)/%.cpp,$(BUILD)/test_obj/%.o,$(TEST_FILES))
 
 RENDER_OBJ := $(BUILD)/host/render_wav.o
+SIM_OBJ    := $(BUILD)/app/sim_main.o
+
+EXAMPLE_FILES := $(wildcard ../modules/examples/*.cpp)
+EXAMPLE_OBJ   := $(patsubst ../modules/examples/%.cpp,$(BUILD)/examples/%.o,$(EXAMPLE_FILES))
 
 TEST_BIN   := $(BUILD)/bukifon_tests
 RENDER_BIN := $(BUILD)/bukifon_render
+SIM_BIN    := $(BUILD)/bukifon_sim
 
-.PHONY: all test render clean
+.PHONY: all test render sim demo clean
 
 all: $(TEST_BIN) $(RENDER_BIN)
 
@@ -42,13 +48,25 @@ $(BUILD)/host/%.o: %.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
+$(BUILD)/app/%.o: ../app/%.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+$(BUILD)/examples/%.o: ../modules/examples/%.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
 -include $(shell find $(BUILD) -name '*.d' 2>/dev/null)
 
-$(TEST_BIN): $(OBJ) $(TEST_OBJ)
+$(TEST_BIN): $(OBJ) $(TEST_OBJ) $(EXAMPLE_OBJ)
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
-$(RENDER_BIN): $(OBJ) $(RENDER_OBJ)
+$(RENDER_BIN): $(OBJ) $(RENDER_OBJ) $(EXAMPLE_OBJ)
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+$(SIM_BIN): $(OBJ) $(SIM_OBJ) $(EXAMPLE_OBJ)
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
@@ -58,6 +76,13 @@ test: $(TEST_BIN)
 render: $(RENDER_BIN)
 	mkdir -p ../tests/out
 	./$(RENDER_BIN) ../tests/out
+
+sim: $(SIM_BIN)
+	@mkdir -p ../artifacts/ui ../artifacts/sim ../tests/out
+	./$(SIM_BIN) --out ../artifacts/ui --log ../artifacts/sim/event_log.txt
+
+demo: sim
+	$(PYTHON) ../tools/ppm_to_png.py ../artifacts/ui
 
 clean:
 	rm -rf $(BUILD)

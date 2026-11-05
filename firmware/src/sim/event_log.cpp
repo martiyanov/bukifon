@@ -2,6 +2,7 @@
 #include "sim/event_log.hpp"
 
 #include <algorithm>
+#include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>

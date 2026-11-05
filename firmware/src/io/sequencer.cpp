@@ -43,13 +43,13 @@ float StepModulator::eval(int step, uint32_t pass) const {
 void Sequencer::init(float sampleRate) {
   sampleRate_ = sampleRate;
   for (int p = 0; p < kNumPatterns; ++p) {
-    for (int t = 0; t < kSeqTracks; ++t) {
+    for (int t = 0; t < kMaxSeqTracks; ++t) {
       SequenceTrack& track = patterns_[p].tracks[t];
       track.length = kSeqSteps;
       track.speed = 1;
       for (int s = 0; s < kSeqSteps; ++s) {
         track.steps[s] = SequenceStep{};
-        track.steps[s].note = static_cast<uint8_t>(48 + (t * 12) + (s % 12));
+        track.steps[s].note = static_cast<uint8_t>(48 + ((t % kSeqTracks) * 12) + (s % 12));
       }
       for (int i = 0; i < kStepMods; ++i) {
         track.mods[i] = StepModulator{};
@@ -69,6 +69,7 @@ void Sequencer::reset() {
   undoAvailable_ = false;
   chainLength_ = 0;
   chainPos_ = 0;
+  for (int t = 0; t < kMaxSeqTracks; ++t) lastPlockCount_[t] = 0;
 }
 
 Pattern& Sequencer::pattern(int index) {
@@ -110,6 +111,17 @@ void Sequencer::setTrackSpeed(int track, int speed) {
   if (track < 0 || track >= kSeqTracks) return;
   patterns_[patternIndex_].tracks[track].speed =
       static_cast<uint8_t>(math::clampInt(speed, 1, 8));
+}
+
+void Sequencer::setTrackMuted(int track, bool muted) {
+  if (track < 0 || track >= kMaxSeqTracks) return;
+  patterns_[patternIndex_].tracks[track].muted = muted;
+  if (muted) noteOffIfPending(track);
+}
+
+bool Sequencer::trackMuted(int track) const {
+  if (track < 0 || track >= kMaxSeqTracks) return false;
+  return patterns_[patternIndex_].tracks[track].muted;
 }
 
 int Sequencer::trackSpeed(int track) const {
@@ -193,16 +205,32 @@ void Sequencer::triggerStep(int track) {
 
   if (sink_) sink_->onSeqStep(track, stepIndex, pass);
 
-  if (s.active && conditionPasses(s, track, pass)) {
+  // Restore parameters p-locked by the previous step (Elektron p-locks last for
+  // the duration of their step only), then apply this step's locks.
+  if (sink_) {
+    for (int i = 0; i < lastPlockCount_[track]; ++i) {
+      const uint8_t param = lastPlockParams_[track][i];
+      bool lockedAgain = false;
+      for (int k = 0; k < s.plockCount && k < kPlocksPerStep; ++k) {
+        if (s.plocks[k].param == param) {
+          lockedAgain = true;
+          break;
+        }
+      }
+      if (!lockedAgain) sink_->onSeqPlockRestore(track, param);
+    }
+    lastPlockCount_[track] = 0;
+    for (int i = 0; i < s.plockCount && i < kPlocksPerStep; ++i) {
+      sink_->onSeqPlock(track, s.plocks[i].param,
+                        static_cast<float>(s.plocks[i].value) / 255.0f);
+      lastPlockParams_[track][i] = s.plocks[i].param;
+      lastPlockCount_[track] = static_cast<uint8_t>(i + 1);
+    }
+  }
+
+  if (!tr.muted && s.active && conditionPasses(s, track, pass)) {
     noteOffIfPending(track);
     if (s.soundLock >= 0 && sink_) sink_->onSeqSoundLock(track, s.soundLock);
-    // Parameter locks are applied to the track's part before the note starts.
-    if (sink_) {
-      for (int i = 0; i < s.plockCount && i < kPlocksPerStep; ++i) {
-        sink_->onSeqPlock(track, s.plocks[i].param,
-                          static_cast<float>(s.plocks[i].value) / 255.0f);
-      }
-    }
     // Generative step modulators: modulate note, velocity and gate length.
     int note = s.note;
     int velocity = s.velocity;

@@ -1,0 +1,83 @@
+connector;pin;signal;direction;kind;level;note
+J12 (FFC-40);1;GND;—;power;—;LCD RGB-шина к CORE-2
+J12 (FFC-40);2;GND;—;power;—;LCD RGB-шина к CORE-2
+J12 (FFC-40);3;R0;core→panel;digital;3.3 В;LCD RGB-шина к CORE-2
+J12 (FFC-40);4;R1;core→panel;digital;3.3 В;LCD RGB-шина к CORE-2
+J12 (FFC-40);5;R2;core→panel;digital;3.3 В;LCD RGB-шина к CORE-2
+J12 (FFC-40);6;R3;core→panel;digital;3.3 В;LCD RGB-шина к CORE-2
+J12 (FFC-40);7;R4;core→panel;digital;3.3 В;LCD RGB-шина к CORE-2
+J12 (FFC-40);8;G0;core→panel;digital;3.3 В;LCD RGB-шина к CORE-2
+J12 (FFC-40);9;G1;core→panel;digital;3.3 В;LCD RGB-шина к CORE-2
+J12 (FFC-40);10;G2;core→panel;digital;3.3 В;LCD RGB-шина к CORE-2
+J12 (FFC-40);11;G3;core→panel;digital;3.3 В;LCD RGB-шина к CORE-2
+J12 (FFC-40);12;G4;core→panel;digital;3.3 В;LCD RGB-шина к CORE-2
+J12 (FFC-40);13;G5;core→panel;digital;3.3 В;LCD RGB-шина к CORE-2
+J12 (FFC-40);14;B0;core→panel;digital;3.3 В;LCD RGB-шина к CORE-2
+J12 (FFC-40);15;B1;core→panel;digital;3.3 В;LCD RGB-шина к CORE-2
+J12 (FFC-40);16;B2;core→panel;digital;3.3 В;LCD RGB-шина к CORE-2
+J12 (FFC-40);17;B3;core→panel;digital;3.3 В;LCD RGB-шина к CORE-2
+J12 (FFC-40);18;B4;core→panel;digital;3.3 В;LCD RGB-шина к CORE-2
+J12 (FFC-40);19;GND;—;power;—;LCD RGB-шина к CORE-2
+J12 (FFC-40);20;GND;—;power;—;LCD RGB-шина к CORE-2
+J12 (FFC-40);21;PCLK;core→panel;digital;3.3 В;LCD RGB-шина к CORE-2
+J12 (FFC-40);22;DE;core→panel;digital;3.3 В;LCD RGB-шина к CORE-2
+J12 (FFC-40);23;HSYNC;core→panel;digital;3.3 В;LCD RGB-шина к CORE-2
+J12 (FFC-40);24;VSYNC;core→panel;digital;3.3 В;LCD RGB-шина к CORE-2
+J12 (FFC-40);25;GND;—;power;—;LCD RGB-шина к CORE-2
+J12 (FFC-40);26;GND;—;power;—;LCD RGB-шина к CORE-2
+J12 (FFC-40);27;LCD_3V3;core→panel;power;—;LCD RGB-шина к CORE-2
+J12 (FFC-40);28;LCD_3V3;core→panel;power;—;LCD RGB-шина к CORE-2
+J12 (FFC-40);29;GND;—;power;—;LCD RGB-шина к CORE-2
+J12 (FFC-40);30;BL_PWM;core→panel;digital;3.3 В;LCD RGB-шина к CORE-2
+J12 (FFC-40);31;+5V;core→panel;power;—;LCD RGB-шина к CORE-2
+J12 (FFC-40);32;+5V;core→panel;power;—;LCD RGB-шина к CORE-2
+J12 (FFC-40);33;GND;—;power;—;LCD RGB-шина к CORE-2
+J12 (FFC-40);34;GND;—;power;—;LCD RGB-шина к CORE-2
+J12 (FFC-40);35;GND;—;power;—;LCD RGB-шина к CORE-2
+J12 (FFC-40);36;GND;—;power;—;LCD RGB-шина к CORE-2
+J12 (FFC-40);37;GND;—;power;—;LCD RGB-шина к CORE-2
+J12 (FFC-40);38;GND;—;power;—;LCD RGB-шина к CORE-2
+J12 (FFC-40);39;GND;—;power;—;LCD RGB-шина к CORE-2
+J12 (FFC-40);40;GND;—;power;—;LCD RGB-шина к CORE-2
+J13 (IDC-16);1;SDA;bidir;digital;3.3 В;цифровой/питание
+J13 (IDC-16);2;GND;—;power;—;цифровой/питание
+J13 (IDC-16);3;SCL;core→panel;digital;3.3 В;цифровой/питание
+J13 (IDC-16);4;GND;—;power;—;цифровой/питание
+J13 (IDC-16);5;INT;panel→core;digital;3.3 В;цифровой/питание
+J13 (IDC-16);6;GND;—;power;—;цифровой/питание
+J13 (IDC-16);7;LED_DATA;core→panel;digital;3.3 В;цифровой/питание
+J13 (IDC-16);8;GND;—;power;—;цифровой/питание
+J13 (IDC-16);9;+5V;core→panel;power;5 В;цифровой/питание
+J13 (IDC-16);10;GND;—;power;—;цифровой/питание
+J13 (IDC-16);11;+3V3;core→panel;power;3.3 В;цифровой/питание
+J13 (IDC-16);12;GND;—;power;—;цифровой/питание
+J13 (IDC-16);13;+5V;core→panel;power;5 В;цифровой/питание
+J13 (IDC-16);14;GND;—;power;—;цифровой/питание
+J13 (IDC-16);15;NC;—;digital;3.3 В;цифровой/питание
+J13 (IDC-16);16;GND;—;power;—;цифровой/питание
+J14 (IDC-26);1;CVOUT1;core→panel;analog;0..10 В;аналоговое поле
+J14 (IDC-26);3;CVOUT2;core→panel;analog;0..10 В;аналоговое поле
+J14 (IDC-26);5;CVOUT3;core→panel;analog;0..10 В;аналоговое поле
+J14 (IDC-26);7;CVOUT4;core→panel;analog;0..10 В;аналоговое поле
+J14 (IDC-26);9;CVIN1;panel→core;analog;±10 В;аналоговое поле
+J14 (IDC-26);11;CVIN2;panel→core;analog;±10 В;аналоговое поле
+J14 (IDC-26);13;CVIN3;panel→core;analog;±10 В;аналоговое поле
+J14 (IDC-26);15;CVIN4;panel→core;analog;±10 В;аналоговое поле
+J14 (IDC-26);17;GATE_OUT;core→panel;analog;0/5 В;аналоговое поле
+J14 (IDC-26);19;GATE_IN_CLEAN;panel→core;analog;0/3.3 В;аналоговое поле
+J14 (IDC-26);21;FADER1;panel→core;analog;0..3.3 В;аналоговое поле
+J14 (IDC-26);23;FADER2;panel→core;analog;0..3.3 В;аналоговое поле
+J14 (IDC-26);25;NC;—;nc;—;аналоговое поле
+J14 (IDC-26);2;GNDA;—;analog;—;аналоговое поле
+J14 (IDC-26);4;GNDA;—;analog;—;аналоговое поле
+J14 (IDC-26);6;GNDA;—;analog;—;аналоговое поле
+J14 (IDC-26);8;GNDA;—;analog;—;аналоговое поле
+J14 (IDC-26);10;GNDA;—;analog;—;аналоговое поле
+J14 (IDC-26);12;GNDA;—;analog;—;аналоговое поле
+J14 (IDC-26);14;GNDA;—;analog;—;аналоговое поле
+J14 (IDC-26);16;GNDA;—;analog;—;аналоговое поле
+J14 (IDC-26);18;GNDA;—;analog;—;аналоговое поле
+J14 (IDC-26);20;GNDA;—;analog;—;аналоговое поле
+J14 (IDC-26);22;GNDA;—;analog;—;аналоговое поле
+J14 (IDC-26);24;GNDA;—;analog;—;аналоговое поле
+J14 (IDC-26);26;GNDA;—;analog;—;аналоговое поле
