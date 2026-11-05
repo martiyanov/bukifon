@@ -56,3 +56,7 @@ body.capture canvas{border-radius:0;width:800px;height:480px;display:block}
 .fmodegrp{display:inline-flex;gap:4px}
 .fmodegrp button{padding:6px 10px;font-size:11px}
 .fmodegrp button.active{background:#1f7a46;border-color:#38c172;color:#eaffee}
+
+.presetgrp{display:inline-flex;gap:4px;align-items:center}
+.presetgrp select{padding:6px}
+.presetgrp button{padding:6px 8px;font-size:11px}

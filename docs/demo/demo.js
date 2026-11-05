@@ -9,15 +9,16 @@ const ctx = cv.getContext("2d");
 const $ = (id) => document.getElementById(id);
 
 const MODES = ["SYNTH", "SAMPLER", "DAW", "USB-KBD"];
-const PAGES = ["MAIN", "FM", "ENV", "FX"];
+const PAGES = ["MAIN", "FM", "ENV", "FX", "GEN"];
 const PAGE_PARAMS = [
   ["CUTOFF", "RESON", "ENV AMT", "DRIVE", "ATK", "DEC", "SUS", "REL"],
   ["RATIO", "DEPTH", "DETUNE", "OP2", "FM ENV", "FEEDBK", "NOISE", "SUB"],
   ["ATK", "DEC", "SUS", "REL", "FILT ENV", "VEL SENS", "GLIDE", "LFO RATE"],
   ["DELAY MIX", "FEEDBK", "TIME", "DRIVE", "CRUSH", "WIDTH", "REVERB", "MASTER"],
+  ["PROB", "EUCLID", "MUTATE", "SCALE", "ARP RATE", "ARP MODE", "EVOLVE", "SEED"],
 ];
-const PAGE_MIN = [[80,0,0,0,1,20,0,20],[1,0,0,0,0,0,0,0],[1,20,0,20,0,0,0,0],[0,0,20,0,0,0,0,0]];
-const PAGE_MAX = [[12000,100,100,100,2000,3000,100,3000],[8,100,50,100,100,100,100,100],[2000,3000,100,3000,100,100,500,100],[100,100,800,100,100,100,100,100]];
+const PAGE_MIN = [[80,0,0,0,1,20,0,20],[1,0,0,0,0,0,0,0],[1,20,0,20,0,0,0,0],[0,0,20,0,0,0,0,0],[0,0,0,0,0,0,0,0]];
+const PAGE_MAX = [[12000,100,100,100,2000,3000,100,3000],[8,100,50,100,100,100,100,100],[2000,3000,100,3000,100,100,500,100],[100,100,800,100,100,100,100,100],[100,16,12,4,3,2,1,999]];
 const THEMES = {
   night:  { name:"Night",   bg:"#0a1a1d", panel:"#0d2428", card:"#0e2024", line:"#1e3a3f", text:"#d7ecef", muted:"#7fb6bc", accent:"#4fd1e0", green:"#38c172", orange:"#f6993f", blue:"#4aa3ff", red:"#ff5c5c", purple:"#b07cff" },
   amber:  { name:"Amber",   bg:"#0e0b08", panel:"#1a130c", card:"#1f1710", line:"#3a2a16", text:"#f2e6d2", muted:"#b99b74", accent:"#ffb347", green:"#7fbf5f", orange:"#f08a24", blue:"#5fa8d3", red:"#e5544b", purple:"#c9a0dc" },
@@ -26,10 +27,13 @@ const THEMES = {
 };
 const PART_NAMES = ["FAT SAW", "FM BELL", "POLY VOX", "LADDER LEAD"];
 const SCALES = [[0,0,7,12,3,10,5,7],[0,12,7,16,19,24,14,21],[0,7,12,16,19,21,24,28],[0,2,5,7,12,14,17,19]];
+const NOTE_SCALES=[[0,2,3,5,7,8,10],[0,2,4,5,7,9,11],[0,2,4,7,9],[0,2,3,5,7,9,10]];
+const SCALE_NAMES=["OFF","MINOR","MAJOR","PENTA","DORIAN"];
+const ARP_RATES=[0.5,0.25,0.125]; const ARP_MODES=["UP","DOWN","UPDOWN"];
 const JACKS = ["CV OUT 1","CV OUT 2","CV OUT 3","CV OUT 4","CV IN 1","CV IN 2","GATE OUT","GATE IN","CLK OUT","CLK IN"];
 const CC_BASE = [[74,71,73,91,73,75,76,72],[20,21,22,23,24,25,26,27],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0]];
 
-const state = { mode:0, page:0, theme:"night", faderMode:"TRACK", bpm:120, playing:false, step:0, selPart:0, volume:0.7, delayMix:0.25, cables:new Set(), parts:[], capture:false, pads:[], recording:false, recStarted:0 };
+const state = { mode:0, page:0, theme:"night", faderMode:"TRACK", selParts:new Set([0]), modOn:true, seed:7, bpm:120, playing:false, step:0, selPart:0, volume:0.7, delayMix:0.25, cables:new Set(), parts:[], capture:false, pads:[], recording:false, recStarted:0 };
 function defaultPart(i) {
   return {
     name: PART_NAMES[i], active: i < 2, mute:false, level: 0.85, sceneX: 0,
@@ -40,6 +44,7 @@ function defaultPart(i) {
       [[2,3,1.5,4][i], 55-i*8, 6, 40, 30, 10, 0, 25],
       [10+i*15, 240+i*80, 60, 420, 30, 60, 0, 20],
       [25, 30, 280, 10, 0, 50, 15, 70],
+      [i===0?100:70, 4+i*2, 0, 1, 0, 0, 0, 7+i*13],
     ],
   };
 }
@@ -55,6 +60,8 @@ function roundRect(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,
 function pmin(page,i){ return PAGE_MIN[page][i]; }
 function pmax(page,i){ return PAGE_MAX[page][i]; }
 function pval(){ return state.parts[state.selPart].pages[state.page]; }
+function selectedParts(){ return [...state.selParts].filter(i=>state.parts[i]); }
+function applyParam(page,i,val){ for(const pi of selectedParts()) state.parts[pi].pages[page][i]=val; }
 function snapshot(){ try { undoStack.push(JSON.stringify(state.parts)); if (undoStack.length>30) undoStack.shift(); } catch(e){} }
 function undo(){ const s=undoStack.pop(); if(!s) return; try { state.parts=JSON.parse(s); paintKnobs(); save(); flashMsg("undo"); } catch(e){} }
 
@@ -143,6 +150,43 @@ function playPad(i){
 }
 function stopAllPads(){ state.pads.forEach(p=>{ try{ p._src && p._src.stop(); }catch(e){} p._src=null; }); }
 
+/* ---------- генеративные функции ---------- */
+function rng(seed){ let x=(seed||1)>>>0; return ()=>{ x^=x<<13; x>>>=0; x^=x>>17; x<<=5; x>>>=0; return (x>>>0)/4294967296; }; }
+function genParams(part){ return part.pages[4]; }
+function applyScale(part, midi){
+  const sp=genParams(part), si=Math.round(sp[3]);
+  if(si<=0) return midi;
+  const sc=NOTE_SCALES[Math.min(si,NOTE_SCALES.length-1)];
+  const rel=midi-part.root; if(rel<0) return midi;
+  const oct=Math.floor(rel/12), deg=rel%12;
+  let best=sc[0]; for(const d of sc){ if(Math.abs(d-deg)<Math.abs(best-deg)) best=d; }
+  return part.root+oct*12+best;
+}
+function mutateNote(part, step, note){
+  const sp=genParams(part), amt=Math.round(sp[2]); if(amt<=0) return note;
+  const r=rng((state.seed||1)+part.root*7+step*131);
+  const off=Math.round((r()*2-1)*amt/3);
+  return note+off;
+}
+function euclidPattern(density){
+  const n=16, k=Math.max(0,Math.min(16,Math.round(density)));
+  if(k===0) return new Array(n).fill(false);
+  if(k===n) return new Array(n).fill(true);
+  // алгоритм Бьорклунда: ближайшее распределение
+  const pat=[]; for(let i=0;i<n;i++) pat.push(Math.floor((i*k)/n)!==Math.floor(((i+1)*k)/n));
+  return pat;
+}
+function regenerateEuclid(part){
+  const sp=genParams(part), density=Math.round(sp[1]);
+  const pat=euclidPattern(density);
+  part.steps.forEach((st,i)=>{ st.on=pat[i]; st.accent=pat[i]&&i%4===0; });
+}
+function evolvePart(part){
+  const r=rng((state.seed||1)+Math.floor(Date.now()/4000));
+  part.steps.forEach(st=>{ if(st.on && r()<0.5) st.note=clamp(st.note+Math.round((r()*2-1)*3),-12,24); });
+  flashMsg("evolve");
+}
+
 /* ---------- sequencer ---------- */
 let seqTimer=null, nextStepTime=0, lookahead=0.1;
 const stepDur=()=>60/state.bpm/4;
@@ -153,8 +197,14 @@ function scheduleStep(step,when){
   for (const part of state.parts){
     if(!part.active||part.mute) continue;
     const s=part.steps[step]; if(!s.on) continue;
+    const gp=genParams(part);
+    if(Math.random()*100 > gp[0]) continue;                 // PROB
+    let n=mutateNote(part, step, s.note);                    // MUTATE
+    n=applyScale(part, part.root+n)-part.root;               // SCALE
+    if(Math.round(gp[6])>0 && step===0 && state.playing){ }  // EVOLVE по бару — ниже
     const dt=Math.max(0,(when-AC.currentTime)*1000);
-    setTimeout(()=>{ noteOn(part.root+s.note, s.accent?1:0.65, part); },dt);
+    setTimeout(()=>{ noteOn(part.root+n, s.accent?1:0.65, part); },dt);
+    if(Math.round(gp[6])>0 && step===15){ setTimeout(()=>evolvePart(part), dt+30); }
   }
 }
 
@@ -225,6 +275,9 @@ addEventListener("keydown",(e)=>{
   if(e.code==="Space"){ state.playing?stopSeq():startSeq(); e.preventDefault(); }
   if(e.code==="KeyR" && !e.metaKey && !e.ctrlKey){ toggleRec(); e.preventDefault(); }
   if(["Digit1","Digit2","Digit3","Digit4"].includes(e.code)){ playPad(+e.code.slice(-1)-1); e.preventDefault(); }
+  if(e.code==="KeyM" && !e.metaKey && !e.ctrlKey){ state.modOn=!state.modOn; save(); flashMsg(state.modOn?"MOD ON":"MOD OFF"); e.preventDefault(); }
+  if(e.code==="PageUp"){ state.page=(state.page+4)%5; paintKnobs(); e.preventDefault(); }
+  if(e.code==="PageDown"){ state.page=(state.page+1)%5; paintKnobs(); e.preventDefault(); }
   if((e.metaKey||e.ctrlKey) && e.code==="KeyZ"){ undo(); e.preventDefault(); }
   if((e.metaKey||e.ctrlKey) && e.code==="KeyC"){ copyPattern(); e.preventDefault(); }
   if((e.metaKey||e.ctrlKey) && e.code==="KeyV"){ pastePattern(); e.preventDefault(); }
@@ -371,6 +424,14 @@ function randomizePattern(){ snapshot();
 }
 function transpose(semi){ snapshot(); state.parts.forEach(p=>{ p.steps.forEach(st=>{ st.note=clamp(st.note+semi,-24,48); }); }); save(); flashMsg("транспозиция "+semi); }
 
+/* ---------- пресеты и A/B ---------- */
+function loadPresets(){ try{ return JSON.parse(localStorage.getItem("bukifon-presets-v1")||"[]"); }catch(e){ return []; } }
+function storePresets(list){ try{ localStorage.setItem("bukifon-presets-v1", JSON.stringify(list)); }catch(e){} }
+function savePresetTo(slot){ const list=loadPresets(); list[slot]={parts:JSON.parse(JSON.stringify(state.parts)),page:state.page,theme:state.theme,at:Date.now()}; storePresets(list); flashMsg("пресет "+slot+" сохранён"); }
+function loadPresetFrom(slot){ const list=loadPresets(); const p=list[slot]; if(!p) { flashMsg("пустой слот "+slot); return; } snapshot(); state.parts=p.parts; state.page=p.page??0; if(p.theme) setTheme(p.theme); paintKnobs(); save(); flashMsg("пресет "+slot+" загружен"); }
+let abSnapshot=null;
+function toggleAB(){ if(!abSnapshot){ abSnapshot=JSON.stringify(state.parts); flashMsg("A сохранён · нажмите ещё раз для B"); } else { const cur=JSON.stringify(state.parts); state.parts=JSON.parse(abSnapshot); abSnapshot=cur; paintKnobs(); save(); flashMsg("A/B переключено"); } }
+
 /* ---------- themes ---------- */
 function setTheme(name){ if(!THEMES[name]) return; state.theme=name; T=THEMES[name]; document.documentElement.style.setProperty("--accent",T.accent); save(); }
 function drawThemeSwatches(){
@@ -417,7 +478,8 @@ function drawSynth(){
   for(let pi=0;pi<4;pi++){
     const part=state.parts[pi], y=top+pi*rowH, color=partColor(pi);
     ctx.fillStyle=T.card; roundRect(8,y,W-16,rowH-6,6); ctx.fill();
-    if(pi===state.selPart){ ctx.strokeStyle=T.accent; ctx.lineWidth=1.5; roundRect(8,y,W-16,rowH-6,6); ctx.stroke(); }
+    if(state.selParts.has(pi)){ ctx.strokeStyle=T.accent; ctx.lineWidth=1.5; roundRect(8,y,W-16,rowH-6,6); ctx.stroke(); }
+    if(pi===state.selPart){ ctx.fillStyle=T.accent; ctx.beginPath(); ctx.arc(W-24,y+16,4,0,Math.PI*2); ctx.fill(); }
     ctx.fillStyle=color; ctx.font="700 12px Inter"; ctx.fillText(`PART ${pi+1}`,18,y+18);
     ctx.fillStyle=part.mute?T.red:T.muted; ctx.font="600 10px Inter";
     ctx.fillText(part.name+(part.mute?" · MUTE":"")+(part.active?"":" · OFF"),18,y+34);
@@ -445,6 +507,20 @@ function drawSynth(){
     ctx.fillStyle=T.accent; ctx.fillRect(x,y+16,86*clamp((p[i]-pmin(state.page,i))/(pmax(state.page,i)-pmin(state.page,i)),0,1),5);
     ctx.fillStyle=T.text; ctx.font="700 11px Inter"; ctx.fillText(fmtParam(state.page,i,p[i]),x,y+40);
     ctx.fillStyle=T.line; ctx.font="600 8px Inter"; ctx.fillText(`E${i+1}`,x+70,y+40);
+  }
+  if(state.page===4){
+    const gp=genParams(state.parts[state.selPart]);
+    const dens=Math.round(gp[1]), ring=euclidPattern(dens);
+    ctx.fillStyle=T.card; roundRect(470,368,300,32,6); ctx.fill();
+    ctx.fillStyle=T.muted; ctx.font="600 10px Inter";
+    ctx.fillText(`GEN · ${SCALE_NAMES[Math.round(gp[3])]||"OFF"} · prob ${Math.round(gp[0])}% · mut ${Math.round(gp[2])} · evolve ${Math.round(gp[6])?"ON":"OFF"} · seed ${state.seed}`,478,382);
+    for(let i=0;i<16;i++){ ctx.beginPath(); ctx.arc(700+i*4.2,406,3,0,Math.PI*2); ctx.fillStyle=ring[i]?T.accent:T.line; ctx.fill(); }
+  }
+  // mod-visible: LFO-маркер на cutoff
+  if(state.page===0){
+    const t=Date.now()/700, lfo=Math.sin(t)*(state.modOn?20:0);
+    const x=18+92*clamp((state.parts[state.selPart].pages[0][0]/12000),0,1);
+    ctx.beginPath(); ctx.arc(clamp(x+lfo,12,790),415,4,0,Math.PI*2); ctx.fillStyle=state.modOn?T.orange:T.muted; ctx.fill();
   }
   // theme switcher (small swatches bottom-right)
   const names=Object.keys(THEMES);
@@ -527,12 +603,18 @@ cv.addEventListener("pointerdown",(e)=>{
     return;
   }
   if(state.mode!==0) return;
+  // страницы параметров
+  if(y>370&&y<390&&x>18&&x<18+5*92){ const i=Math.floor((x-18)/92); if(i>=0&&i<5){ state.page=i; paintKnobs(); save(); return; } }
   // смена темы — правый нижний угол
   if(y>392&&y<416&&x>640){ const names=Object.keys(THEMES); const idx=Math.round((W-18-x)/22); const n=names[idx]; if(n) setTheme(n); return; }
   const pi=Math.floor((y-96)/66);
   if(pi<0||pi>3) return;
   // mute по клику на имя партии
-  if(x<120){ state.parts[pi].mute=!state.parts[pi].mute; save(); return; }
+  if(x<120){
+    if(e.shiftKey){ state.selParts.has(pi)?state.selParts.delete(pi):state.selParts.add(pi); if(!state.selParts.size) state.selParts.add(pi); state.selPart=pi; paintKnobs(); }
+    else { state.parts[pi].mute=!state.parts[pi].mute; }
+    save(); return;
+  }
   if(x>120&&x<776){ const s=Math.floor((x-128)/40); if(s>=0&&s<=15){ snapshot(); const part=state.parts[pi], st=part.steps[s]; st.on=!st.on; if(st.on) st.accent=s%4===0; state.selPart=pi; paintKnobs(); save(); startPreview(part,s); } }
 });
 function startPreview(part,s){ if(!state.playing){ const n=part.root+part.steps[s].note; noteOn(n,0.8,part); setTimeout(()=>noteOff(n),180); } }
@@ -569,6 +651,11 @@ function bindUI(){
   const recBtn=$("btnRec"); if(recBtn) recBtn.addEventListener("click",toggleRec);
   const rand=$("btnRandom"); if(rand) rand.addEventListener("click",randomizePattern);
   const td=$("btnTransDown"); if(td) td.addEventListener("click",()=>transpose(-12));
+  const psel=$("presetSel");
+  if(psel){ for(let i=0;i<8;i++){ const o=document.createElement("option"); o.value=i; o.textContent="PRESET "+(i+1); psel.appendChild(o); } }
+  const psave=$("btnPresetSave"); if(psave) psave.addEventListener("click",()=>savePresetTo(+(psel.value||0)));
+  const pload=$("btnPresetLoad"); if(pload) pload.addEventListener("click",()=>loadPresetFrom(+(psel.value||0)));
+  const ab=$("btnAB"); if(ab) ab.addEventListener("click",toggleAB);
   const tu=$("btnTransUp"); if(tu) tu.addEventListener("click",()=>transpose(12));
   const themeSel=$("themeSel");
   if(themeSel){ Object.keys(THEMES).forEach(n=>{ const o=document.createElement("option"); o.value=n; o.textContent=THEMES[n].name; themeSel.appendChild(o); }); themeSel.value=state.theme; themeSel.addEventListener("change",(e)=>setTheme(e.target.value)); }
@@ -581,7 +668,7 @@ function bindUI(){
 load(); if(loadFromHash()) {}
 const params = new URLSearchParams(location.search);
 if (params.get("theme") && THEMES[params.get("theme")]) state.theme = params.get("theme");
-if (params.get("page") != null) state.page = clamp(+params.get("page")||0, 0, 3);
+if (params.get("page") != null) state.page = clamp(+params.get("page")||0, 0, 4);
 if (params.get("mode") != null) state.mode = clamp(+params.get("mode")||0, 0, 3);
 if (params.get("capture") === "1") document.body.classList.add("capture");
 setTheme(state.theme); buildKeys(); buildKnobs(); buildFaders(); buildJacks(); bindUI(); paintKnobs(); midiInit();

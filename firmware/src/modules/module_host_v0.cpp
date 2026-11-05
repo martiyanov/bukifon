@@ -2,6 +2,7 @@
 #include "modules/module_host_v0.hpp"
 
 #include <chrono>
+#include <cmath>
 #include <cstddef>
 #include <cstdio>
 #include <cstring>

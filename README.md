@@ -1,6 +1,6 @@
 # Букифон (Bukifon) — открытая платформа: сэмплер + синтезатор + модули
 
-**Версия: 0.15.1** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
+**Версия: 0.16.0** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
 
 **Букифон** — настольный музыкальный инструмент-платформа, который собирается из
 доступных компонентов, печатается на 3D-принтере, расширяется модулями и полностью
@@ -32,12 +32,14 @@ BLE HID, передача проектов). То есть Букифон — е
 аналоговый картридж на шине 26-pin или сменная панельная дека (18 пэдов / 42 клавиши).
 Подробнее — [spec/00-vision.md §12](spec/00-vision.md).
 
-## Текущее состояние (v0.15.1)
+## Текущее состояние (v0.16.0)
 
 | Блок | Состояние |
 |---|---|
 | **Панель v0.4** | 380 × 210 × 3 мм: 42 клавиши Lapka-42 (точная геометрия, ±18°), 16 энкодеров Ø14, экран 5.0″ 800×480 без рамки, 10 mini-jack, 2 фейдера 60 мм; пересечений 0 |
 | **Корпус v0.5-B** | **клин 8°**: 380 × 210 × 61.5 мм (перед 32 / зад 61.5), 6 деталей watertight, печать без поддержек 279 г / 18.3 ч, fitcheck 32/0, профиль 1:1 для картонной проверки |
+| **UX-паттерны** | исследование синтезаторных практик (Elektron, Kaleidoscope Минкина, Nord/Deluge/OP-1/Push/M8) и рубрика 9/10 — `docs/65`; GEN-страница, мультивыбор, пресеты, A/B, mod-индикация в демо |
+| **Home offload** | `tools/home_offload.sh` — rsync+SSH на домашний ПК (8 ядер, RTX 3060); host-тесты прошли там 226/226 |
 | **Темы в прошивке** | 4 темы × 12 токенов (docs/62), рендер на токенах, CLI `--theme`, **226/226 тестов** |
 | **UI/UX** | 3 итерации, 16 энкодеров (8 страниц + 8 макросов), фейдеры TRACK/SCENE/DJ + Fn, REC-ресемплинг, 4 темы экрана 800×480 (`docs/61–64`) |
 | **P4 toolchain** | ESP-IDF scaffold `firmware/idf_p4/` (P4, 32 МБ PSRAM, I2C-скан, heartbeat) + docs/59: PlatformIO P4 не поддерживает, путь — IDF 5.5+ |
@@ -111,6 +113,8 @@ BLE HID, передача проектов). То есть Букифон — е
 | [docs/62-screen-palette.md](docs/62-screen-palette.md) | палитра экрана 800×480 (4 темы) |
 | [docs/63-resampling-looper.md](docs/63-resampling-looper.md) | ресемплинг (v1.0) и луппер (backlog) |
 | [docs/64-fader-modes.md](docs/64-fader-modes.md) | режимы фейдеров: Octatrack-сцены, DJ, Fn |
+| [docs/65-ux-patterns.md](docs/65-ux-patterns.md) | UX-паттерны синтезаторов, связка с железом, рубрика 9/10 |
+| [docs/66-ux-implementation.md](docs/66-ux-implementation.md) | реализация UX-паттернов в прошивке (после раунда 11) |
 | [docs/53-pwr-log.md](docs/51-pwr-log.md) | журнал 13 измерений PWR и go/no-go |
 | [docs/33-bom-s3.md](docs/33-bom-s3.md) | product BOM S3-base: COGS 1/10/25, опции, маржа |
 | [docs/34-assembly.md](docs/34-assembly.md) | пошаговая сборка S3-base (B-light) |

@@ -8,8 +8,10 @@
 
 - Tailscale на ноутбуке: `100.116.234.8 (macbook-pro-123)`.
 - В сети видны: `pole` `100.75.89.89` (online), `vds`, `apparatus` (offline), `vladimir-lenovo` (offline).
-- **SSH до `pole` пока не отвечает** (порт 22 timeout) — нужно включить sshd на домашнем ПК
-  или сообщить точный порт/пользователя/имя в Tailscale.
+- **SSH работает**: `sym@100.75.89.89` (host `pole`), порт 22, ключ `id_ed25519` авторизован.
+  Характеристики: 8 ядер, 30 ГБ RAM, RTX 3060, 417 ГБ свободно; `pio`/`cmake`/`ninja`
+  поставлены в `~/.local` (python3.12 без venv), ESP-IDF ставится в `~/esp-idf`.
+  Инструмент: `tools/home_offload.sh {sync|run|fetch|shell}` (rsync + ssh).
 
 ## Что будем выносить
 
@@ -20,6 +22,7 @@
 | Сборки PlatformIO (esp32-s3, rp2040) | `PLATFORMIO_CORE_DIR=~/.pio pio run` | кэш, параллельность |
 | Прогоны bench/тестов | `make -C firmware/bench host` | параллельно с ноутбуком |
 | CI-подобные проверки перед релизом | `bash tools/check_all.sh` | независимость от ноутбука |
+| ESP-IDF сборка P4 | `~/esp-idf/install.sh esp32p4`, затем `idf.py build` | тяжёлый toolchain/2 ГБ |
 
 ## Как включить (нужно от владельца)
 
