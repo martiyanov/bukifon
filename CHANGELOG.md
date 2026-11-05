@@ -2,6 +2,32 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.12.0] — 2025-11-06 — «Стенды и варианты»
+
+### Добавлено
+- **Выбор дисплея (O-15/O-19 закрыты)** `docs/47`: первый SKU — **RGB565 поверх RGB888 FPC-40**,
+  основной кандидат **TFT-H050A1SVIST4R40** (HotLCD, ST7262, 40-pin, 1000 нит, 3.3 В, $18–25),
+  резерв NHD-5.0-800480AF-ASXP / EJ050NA-01G; DSI (Waveshare/Topway) — rev.3.1;
+  чек-лист 15 пунктов до разводки; BOM-p4 COGS **$223/$198/$180** на 1/10/25.
+- **CORE-2 rev.3 plan** `hardware/core2/rev3-plan.md`: P4-first, RGB565/DSI, keep/drop/change,
+  fallback H743 (отдельная плата с общим outline/FFC, не dual-MCU), TP1–TP30 в схеме
+  (ERC 0/0), **bring-up** `docs/43` (15 шагов, ожидаемые значения, типовые ошибки).
+- **PWR-2 стенд-макет** `docs/44` + `hardware/power2/bench-macet.md`: **13 измерений** (T1–T13)
+  с методикой/критериями/таблицами, 3×3 load matrix, load-step/ripple/FFT/тепло/BMS/гейдж;
+  BOM стенда `bench-bom.csv` — **$102.92** (EVM/bare-IC, breadboard запрещён).
+- **Корпус вариант C** `mechanical/stl_v05_C/`: 12°, закрытый отсек 1S2P с крышкой,
+  складная подставка, кабельный канал; **314 г / 20.8 ч**, fitcheck **37/0**, сравнение
+  A/B/C (`preview_v05_compare/side_profile_all.png`), `docs/45-case-variants.md`.
+- **P4 HAL + factory self-test** `firmware/src/hal/board_cores2.*` (55 GPIO по pinmap),
+  `firmware/src/factory/` — 14 тестов, CLI `factory --json`, JSON-отчёт, loopback-плаг;
+  `docs/46-factory-test.md`; **183/183 тестов**.
+- **Home-compute** `docs/48`: вынос рендеров/сборок на домашний ПК через Tailscale
+  (SSH пока не настроен); решения D-73…D-78.
+
+### Изменено
+- README: P4 Standard $299, варианты корпуса A/B/C/B-light, display/factory/PWR-стенд.
+- Сайт: раздел «Варианты корпуса» (профили 0°/8°/12°), обновлённые статусы и бейдж v0.12.0.
+
 ## [0.11.0] — 2025-11-06 — «P4 first + структура»
 
 ### Изменено (решения заказчика)

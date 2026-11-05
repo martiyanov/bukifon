@@ -44,7 +44,7 @@ firmware/
   engine_unity.cpp / sim_unity.cpp  PlatformIO unity translation units
   Bukifon/      RP2040 Arduino sketch: Bukifon.ino + platformio.ini
   host/         native build (Makefile + CMakeLists.txt), WAV renderer
-  tests/        unit tests (160), FFT analysis, run_tests.sh, run_sim_demo.sh, REPORT.md
+  tests/        unit tests (183), FFT analysis, run_tests.sh, run_sim_demo.sh, REPORT.md
   tools/        wavetable/font generators, ppm_to_png.py, build_pico.sh
   artifacts/    generated 800x480 UI screenshots + demo logs (git-ignored)
 ```
@@ -52,7 +52,7 @@ firmware/
 ## v0.5 host prototype — what to run
 
 ```bash
-make -C firmware/host test          # 160 unit tests
+make -C firmware/host test          # 183 unit tests
 firmware/tests/run_tests.sh         # build + tests + WAV render + FFT report
 firmware/tests/run_sim_demo.sh      # 16-bar demo, event-log determinism, 4 PNG
 ```
@@ -95,7 +95,7 @@ firmware/tests/run_tests.sh         # full pipeline: build, tests, WAV render, F
 
 Latest measured results (see `tests/REPORT.md` and `tests/out/test_log.txt`):
 
-- **160 unit tests, 0 failures** (Apple clang 21, C++17, `-O2`)
+- **183 unit tests, 0 failures** (Apple clang 21, C++17, `-O2`)
 - line coverage **83.5 %** (4347/5204 lines, gcov, generated tables excluded)
 - host demo: 16 bars, 1024 note-ons, 32 p-locks, deterministic event log, 4 PNG screens
 - A4 = **440.0000 Hz** (error `-0.0000 %`, limit ±0.1 %)
@@ -145,7 +145,16 @@ RAM 87.7 % — запас ~32 KiB; при добавлении эффектов/
 буферы (delay-линия, пресет-кэш, 8-дорожечный секвенсор) или перенести часть в
 PSRAM (RP2350).
 
-## Platform priority (round 6): P4 first, S3 lite later
+## Platform priority: P4 first, S3 lite later
+
+**Round 7 — P4 HAL + factory self-test:** `src/hal/board_cores2.*` (CORE-2,
+55 GPIO from `hardware/core2/pinmap.csv`) and `src/factory/selftest.*` (14
+docs/42 tests, timeouts, JSON, CLI).  Host: `make -C firmware/host factory` →
+14/14 PASS mock (38 s nominal; EOL 2–2.5 min), report in
+`firmware/tests/out/factory_report.json`; protocol in
+[docs/46-factory-test.md](../docs/46-factory-test.md).  `env:p4` is prepared but
+**not buildable** (official espressif32 8.0.0 has no P4 board/framework) — no
+false SUCCESS; display/I2S/C6 and P4 hardware access are explicit TODO(hw) stubs.
 
 The customer decision is that the **first SKU is P4 with RGB565/DSI + HS USB**;
 S3-base is the "lite later" concept platform.  The 800×480 UI and the four

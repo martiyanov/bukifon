@@ -593,3 +593,88 @@ mode panels).
   protocol (`docs/39`) is ready but has not been executed.
 - P4 toolchain is not available in this environment; P4 numbers are host models
   from `p4_profile`, not silicon measurements.
+
+---
+
+# Round 7 — P4 HAL + factory self-test (2026-11-05)
+
+First SKU is P4; this round adds the CORE-2 board HAL and the 14-test factory
+self-test (docs/42 §2) with a host CLI/mocks for the production station.
+
+## Build (P4) — honest status
+
+```bash
+PLATFORMIO_CORE_DIR=/tmp/piocore pio run -d firmware -e p4
+# => UnknownEnvNamesError: Unknown environment names 'p4'
+```
+
+`env:p4` is **prepared but intentionally commented**: the installed official
+`platformio/espressif32` 8.0.0 has no ESP32-P4 board definition/framework, so the
+env cannot resolve.  `firmware/platformio.ini` contains the attempted result, the
+P4 build filter (`app/esp32_main.cpp` + engine + `src/hal/board_cores2.cpp`) and a
+commented `p4_factory` entry.  No P4 SUCCESS is claimed.
+
+## CORE-2 board HAL (`firmware/src/hal/board_cores2.*`)
+
+Pins frozen from `hardware/core2/pinmap.csv`: **55 GPIO signals** (54 functional +
+GPIO36 strap), uniqueness enforced.  Key buses:
+
+- I2S0: MCLK 20 / BCK 16 / LRCK 17 / DAC DIN 18 / ADC DOUT 19;
+- I2C0: SDA 21 / SCL 22 (400 kHz: MCP4728×2, 24C32, 4× MCP23017);
+- shared SPI2: SCK 6 / MOSI 7 / MISO 8 / MCP3208 CS 9; C6 CS 26 / HS 24 / DR 25 / RST 27;
+- MIDI UART1: TX 10 / RX 11; UART0 37/38; BOOT 35 / STRAP36 / VBUS_DET 54;
+- SDMMC slot0 4-bit: D0–D3 39–42, CLK 43, CMD 44, CD 45;
+- RGB565 LCD_CAM: PCLK 12, DE 13, HS 14, VS 15, B0–B4/G0–G5/R0–R4 (0–5,23,28–34,46,47),
+  BL_PWM 49, LCD_DISP 50; WS2812 48; PANEL_IRQ 51; GATE1/2 52/53;
+- USB HS dedicated PHY.  Display RGB/DSI backend, I2S driver and C6 esp-hosted
+  link are explicit `TODO(hw)` stubs (status flags report not-ready).
+
+## Factory self-test (`firmware/src/factory/`)
+
+14 tests from docs/42 §2, each with nominal time and timeout (3× nominal + 500 ms),
+PASS/FAIL/TIMEOUT, details, and a JSON report (`bukifon-factory-selftest-v1`).
+
+**CLI (host mock):**
+
+```bash
+make -C firmware/host factory
+firmware/host/build/bukifon_factory --json            # JSON report only
+firmware/host/build/bukifon_factory                   # human table
+firmware/host/build/bukifon_factory --out report.json --stop-on-fail
+```
+
+Actual host run: **14/14 PASS, total 38 000 ms** (nominal automation ≈38 s;
+target EOL 2–2.5 min with operator checks).  Exit code 0 PASS / 1 FAIL / 2 usage.
+Report written to `firmware/tests/out/factory_report.json`.
+
+Tests: power-on/brownout, I2C scan (strict 0x20–0x23/0x36/0x57/0x60/0x61),
+MCP23017 walking-bit + IRQ, MCP3208 vector (±2 LSB), MCP4728→MCP3208/CV ≤20 mV,
+codec 1 kHz/−12 dBFS/gain ±1 dB/THD<−60 dB, SD 1 MiB CRC32 ≥700 KB/s, display
+patterns, WS2812 current ±20 %, MAX17048 ≤30 mV, USB composite enum
+(CDC+MIDI+HID+UAC), controls (42 keys/16 encoders/2 faders), CV/GATE loopback,
+MIDI 100 packets 0 errors.
+
+**Real vs mocks:** runner/validators/timeouts/JSON/CLI are real and host-tested;
+host `MockHardware` is deterministic with failure/timeout injection;
+`P4FactoryHardware` methods and flash `factory_data`/24C32 identity/QR are
+`TODO(hw)` stubs returning false (no fabricated PASS).  Docs:
+[`docs/46-factory-test.md`](../docs/46-factory-test.md) — loopback plug, table,
+EOL timing, JSON, serial/QR, risks.
+
+## Tests
+
+**183 / 183 PASS** (160 pre-existing untouched; +6 board_cores2, +17 factory:
+validators, timeout, stop-on-fail, every-test-can-fail, JSON, CLI, mock).  Full
+pipeline `run_tests.sh` → ALL HOST TESTS PASSED (FFT unchanged).
+
+## Risks
+
+1. **P4 build unavailable** — no P4 PlatformIO board/framework installed; env
+   prepared/commented, device run untested.
+2. **Hardware methods are stubs** — the factory flow currently proves the
+   station software/runner/JSON, not the CORE-2 electrical paths.
+3. EOL timings are nominal (docs/42), not measured; operator tests depend on the
+   station UI.
+4. Identity/QR writing to flash `factory_data` + 24C32 calibrations is `TODO(hw)`.
+5. Factory tests depend on TinyUSB/I2S/display backends that are still stubs
+   (docs/39) — enable them before the first real EOL run.
