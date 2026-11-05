@@ -16,3 +16,4 @@ firmware/artifacts/
 *.swp
 .idea/
 .vscode/
+dist/
