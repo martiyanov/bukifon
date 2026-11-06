@@ -1011,3 +1011,30 @@ Pillow) installed in `/tmp/msvenv`; no system packages assumed.
   `docs/60` distribution note. README updated (351, examples).
 - **TODO(hw)**: dynamic ABI loading/MPU sandbox/signature on P4, watchdog,
   public SDK v1 after P1; audio modules still statically linked on device.
+
+---
+
+# Round 23 — project v2 save/load (2026-11-06)
+
+- **`storage/project_v2.*`**: one `.bkfp` file — magic "BKFP", version 2,
+  body size, metadata, transport/UI, CRC32; sections:
+  - `INTP` internal v1 project payload (4 parts/patterns/chain),
+  - `GENP` 12×GenParams (4 internal + 8 external),
+  - `EXTP` 8 external MIDI tracks (ch/PC/note/vel/len/mute/CC p-lock/steps),
+  - `MIC1` mic source/gain/thresh/sensitivity/monitor/beatbox + 8 pad descriptors
+    (name/used/frames/peak/storage; no audio),
+  - `MODS` ≤8 modules id/version/sha256 + parameters.
+- **Migration v1→v2**: old `.bkfp` detected by version; patterns/BPM/chain kept,
+  EXTP/mic/modules defaulted; preset bank untouched.
+- **API**: `projectV2Save/Load`, `projectV2Serialize/Deserialize`,
+  `projectV2Validate`, `projectV2ToJson/FromJson`, `captureProjectV2`,
+  `applyProjectV2` (shared Sequencer + ExtSequencer + GEN + theme).
+  Transactional load: version/CRC/size errors return clear messages and never
+  partially overwrite the destination.
+- **Tests**: **365/365 PASS** (351 pre-existing + 14 project v2: full roundtrip,
+  EXT/mic/modules, v1 migration, CRC/version/short, transactional, defaults,
+  deterministic serialization, limits, preset-bank integration, apply/capture,
+  JSON, missing file). `run_tests.sh` → PASS.
+- **Docs**: `docs/70-external-sequencer.md` §9 project v2 schema/migration.
+- **TODO(hw)**: NVS/flash/SD persistence and signing; audio samples remain
+  separate files; `.bkfp` host format is portable and ready.

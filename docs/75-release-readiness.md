@@ -25,7 +25,7 @@
 - [x] панель/корпуса/эргономика (4 варианта, paperkit, fitcheck 0);
 - [x] CORE-2 rev.3, PANEL-2 rev.3, PWR-2 rev.1 — ERC/PINMAP/SCHEMATIC PASS;
 - [x] микрофон: схемы + datasheet-сверка (4 расхождения исправлены) + прошивка + UI;
-- [x] прошивка: **331/331 тестов**, UI 7 вкладок, 12 треков, GEN/EXT/MIC, SDK, **factory self-test 21**;
+- [x] прошивка: **365/365 тестов**, UI 7 вкладок, 12 треков, GEN/EXT/MIC, SDK, **factory self-test 21**;
 - [x] P4 toolchain: ESP-IDF v5.5 собирает bin;
 - [x] демо 9/10 + **blind UX-харнесс** + **авто-прогон 8/8** (`node tools/test_demo_ux.js`);
 - [x] философия/читаемость/UX-паттерны (docs/65/68/69);

@@ -142,3 +142,60 @@ unmuted-треков, затем start.
    задержки; USB-MIDI host на P4 — будущий режим (rev.3 option).
 5. **UI p-lock жестом** «удержать шаг + энкодер» — в host-демо показана
    визуализация, обработка жеста на 42 клавишах/энкодерах — bring-up.
+
+---
+
+## 9. Project v2 (`.bkfp`) — единый файл проекта (раунд 23)
+
+Ранее EXTP-пейлоад, 8 preset slots, тема и mic-настройки хранились разрозненно
+(§7 TODO). Теперь они интегрированы в **BUKIFON PROJECT v2**:
+`firmware/src/storage/project_v2.*`.
+
+### Схема файла
+
+```
+magic "BKFP" (u32) | version=2 (u16) | flags (u16) | bodySize (u32)
+metadata: name[64] author[64] created[24] appVersion[16]
+transport/UI: bpm*10 (u16) swing*1000 (u16) faderMode[10]
+              selectedPart selectedTrack currentPattern themeId themeName[16]
+sections (tag u32 + size u32 + payload):
+  INTP — внутренний project v1 payload (4 партии/паттерны/бар/чейн)
+  GENP — 12×GenParams (4 internal + 8 external), по 12 байт
+  EXTP — external sequencer payload (8 MIDI-треков: ch/PC/note/vel/len/mute/CC p-lock/16 шагов)
+  MIC1 — MicConfig (source/gain/thresh/sensitivity/monitor/beatbox) + 8 pad descriptors
+         (name/used/frames/peak/storage; аудио НЕ сохраняется)
+  MODS — до 8 модулей: id[64]/version[16]/sha256[65] + параметры (id/value)
+CRC32 (u32) по всему файлу, кроме самого CRC
+```
+
+**API:** `projectV2Save/Load`, `projectV2Serialize/Deserialize`,
+`projectV2Validate`, `projectV2ToJson/FromJson`, `captureProjectV2`,
+`applyProjectV2` (общий Sequencer + ExtSequencer + GEN + тема).
+
+### Миграция v1 → v2
+
+Старый `.bkfp` (project_io v1) читается по version=1: INTP-секция
+десериализуется старым `projectDeserialize`, паттерны/BPM/чейн сохраняются,
+новые секции (EXTP/mic/modules) заполняются дефолтами. Preset bank (8 слотов)
+не затрагивается — тест интеграции подтверждает.
+
+### Ошибки и транзакционность
+
+- version/CRC/размер/неизвестная версия → отказ с понятным сообщением
+  (`CRC32 mismatch`, `unsupported version`, `body size mismatch`, `file too short`);
+- загрузка **транзакционна**: при любой ошибке целевой объект не меняется;
+- лимиты: 8 ext-треков, 16 шагов, ≤8 модулей, ≤16 params/модуль, GEN bounds,
+  BPM 20–300, swing −1…1.
+
+### Тесты (365/365 host)
+
+Полный roundtrip всех секций; v1-миграция; CRC/версия/короткий файл;
+отсутствующие секции→дефолты; 8 external tracks; mic/pads; modules;
+детерминизм сериализации; лимиты; preset bank; apply/capture; JSON; missing
+file; транзакционность. См. `firmware/tests/test_project_v2.cpp`.
+
+### TODO(hw)
+
+Реальное хранение `.bkfp` в NVS/flash (`factory_data`) и SD, подпись/шифрование
+не реализованы; хост-формат/CRC32 готов и переносим. Аудио сэмплов в проекте
+нет (только описания pad-ов) — сэмплы как обычные файлы (docs/63).
