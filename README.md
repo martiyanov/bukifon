@@ -1,6 +1,6 @@
 # Букифон (Bukifon) — открытая платформа: сэмплер + синтезатор + модули
 
-**Версия: 0.53.0** · сайт: **https://bukifon.ru/** (канон, HTTPS), `bukifon.com` → 301, зеркало: https://martiyanov.github.io/bukifon/ (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
+**Версия: 0.54.0** · сайт: **https://bukifon.ru/** (канон, HTTPS), `bukifon.com` → 301, зеркало: https://martiyanov.github.io/bukifon/ (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
 
 **Букифон** — настольный музыкальный инструмент-платформа, который собирается из
 доступных компонентов, печатается на 3D-принтере, расширяется модулями и полностью
@@ -32,7 +32,7 @@ BLE HID, передача проектов). То есть Букифон — е
 аналоговый картридж на шине 26-pin или сменная панельная дека (18 пэдов / 42 клавиши).
 Подробнее — [spec/00-vision.md §12](spec/00-vision.md).
 
-## Текущее состояние (v0.53.0)
+## Текущее состояние (v0.54.0)
 
 | Блок | Состояние |
 |---|---|
@@ -74,11 +74,11 @@ BLE HID, передача проектов). То есть Букифон — е
 | **PCB rev.1: нетлист + футпринты** | CORE-2 **373 refs/1224 пада** (16 placeholder), PANEL-2 left/right 181/174 (по 21 Choc), PWR-2 128 (0 placeholder); **DRC 0/0**, verify PASS; unconnected — неразведённые цепи |
 | **PCB rev.1 scaffolds** | KiCad-каркасы: CORE-2 200×108 6L, PANEL-2 2×180×190 4L, PWR-2 90×70 4L/2oz; Edge.Cuts/NPTH/keepout, **DRC 0/0**, verify ±0.05 мм (`hardware/*/rev1/`) |
 | **Раскладка Lapka-42** | клавиши PANEL-2 исправлены: каждая плата — свои 21 (L01–L21 / R01–R21) по spec (остаточное 0.006 мм от Lapka-42), DRC 0/0; превью `docs/assets/panel-lapka-*.png` |
-| **Вырезы разъёмов** | **11 задних**: MIDI IN/OUT **TRS-A Ø8.2** (X30/44), DC Ø9 X91, EXP Ø8.2 X120.5, mic Ø8.2 X140, **LINE OUT** (стерео TRS) X160, PHONES X172, AUDIO IN L/R X184/196, **CV5/6** X208/220; SD 12×2, USB-C; перемычки ≥3.8 мм; B-light **230.9 г/11.2 ч**; fitcheck 16/0 |
+| **Вырезы разъёмов** | **11 задних**: MIDI IN/OUT **TRS-A Ø8.2** (X30/44), DC Ø9 X91, EXP Ø8.2 X120.5, mic Ø8.2 X140, **LINE OUT** (стерео TRS) X160, PHONES X172, AUDIO IN L/R X184/196, **CV5/6** X208/220; SD 12×2, USB-C; перемычки ≥3.8 мм; B-light **228.9 г/11.0 ч**; fitcheck 16/0 |
 | **Board-fit (PCB rev.1)** | контуры для KiCad: CORE-2 200×108, PANEL-2 две платы 180×180 (360×190), PWR-2 90×70; DXF/assembly/spec, 22 проверки 0 конфликтов (`mechanical/board-fit/`) |
 | **PANEL-2 ∥ панели** | стойки/плата наклонены вместе с панелью: угол **0.00°**, зазор **12 мм**, оси энкодеров/клавиш ⊥ панели; fitcheck B-light **47/0**; B-light **228.9 г/11.0 ч**; `panel_parallel.jpg` |
 | **Корпуса** (с микрофоном) | B_mic ≈278 г/18.4 ч, C_mic ≈316 г/20.9 ч (порт/LED/MEMS на панелях; fitcheck 44/0 и 49/0) |
-| **Корпуса** | A flat 302 г · B 8° 277 г · **B-light 230 г / 11.1 ч** · C 12° 314 г (батарейный отсек, подставка) — `docs/45` |
+| **Корпуса** | A flat 301 г/19.9 ч · B 8° 275.5 г/18.2 ч · **B-light 228.9 г / 11.0 ч** · C 12° 313.2 г/20.7 ч; B_mic 276.8, C_mic 314.6; PANEL-2 ∥ панели (0.00°) — `docs/45` |
 | **Factory test** | 14 тестов, CLI `factory --json`, loopback-плаг, EOL 2–2.5 мин (`docs/46`); **183/183 тестов** |
 | **Product BOM P4 (первый SKU)** | `BOM-p4.csv` + `docs/33/40` (rev.3 с микрофоном): COGS **$241/$215/$196** на 1/10/25 (mic-узел $17.6); **P4 Standard $299** (gross 28.1 % на 10, net ~18 %), Full Bundle $399; S3 lite — $224/$199/$181 |
 | **Сборка** | `renders/templates/bukifon_assembly_map_1to1.pdf` (4 стр: слои, панель 1:1, крепёж/шлейфы), `docs/34`, `docs/35` print-first, 3D exploded |
@@ -86,7 +86,7 @@ BLE HID, передача проектов). То есть Букифон — е
 | **GEN/UX в прошивке** | PROB/EUCLID/MUTATE/SCALE/ARP/EVOLVE/SEED (детерминированно), 5-я вкладка GEN, 8 пресетов с CRC32, A/B, мультивыбор, mod-visible «M»; **248/248 тестов** (`docs/66`) |
 | **Прошивка v0.7** | **160/160 тестов**; S3 HAL сборка SUCCESS; spike `spike_s3` SUCCESS; **P1 P4-профиль** PASS (RGB/DSI 52 fps, HS UAC2 8×8, max block 320 µs); UI 4 режимов; Module API v0.1 |
 | **CORE-2 rev.2 (основная плата)** | ESP32-P4 + ESP32-C6, 32 МБ PSRAM, USB HS, RGB565/DSI, ERC 0/0; DFM/DFT: 30 TP, **21 self-test** (вкл. микрофон), recovery, 6 слоёв — PRE-FREEZE |
-| **Корпус B-light** | **230 г / 11.1 ч** (−17 % массы, −39 % времени): стенки 2.0/дно 1.8, 3 периметра + локальные рёбра, панели-оболочки; 6 STL watertight, fitcheck 32/0 |
+| **Корпус B-light** | **228.9 г / 11.0 ч** (−17 % массы, −39 % времени): стенки 2.0/дно 1.8, 3 периметра + локальные рёбра, панели-оболочки; 6 STL watertight, fitcheck **47/0**; PANEL-2 ∥ панели |
 | **CORE-2 rev.2** | схема внесена: J17/J18, входы 12V_EXT/N12_EXT/+5V_EXT/5V_LED, EN-развязки, CV IN3/4 на MCP3208, re-pin J14/J15/J16, DNP 46; **ERC 0/0**, pinmap PASS |
 | **PANEL-2 rev.2** | J13/J14 (5V_LED, LED_RET, EN_RAILS, EN_LED5), re-pin по канону, GATE_IN на MCP23017 0x23, LED_DATA 3.3 В + shifter; **ERC 0 err/6 warn**, verify 1290/0 |
 | **PWR-2 rev.1** | батарея 1S2P + BMS BQ297 + **MAX17048** + рельсы шины: +12 В 330 мА (TPS61088), −12 В 95 мА (LMR33630 IBB), +5 В 1.6 А, +5V_LED; master load-switch, EN рельсов, питание только от BQ24074 OUT/VSYS; ERC **0/0**, PRE-FREEZE |

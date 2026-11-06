@@ -1,6 +1,6 @@
 # Сборка Букифона v0.5-B-light (S3-base) — пошаговый гайд
 
-Версия: корпус **v0.5-B-light** (клин 8°, 230 г / 11.1 ч), ядро **CORE-S3 rev.0**,
+Версия: корпус **v0.5-B-light** (клин 8°, 228.9 г / 11.0 ч), ядро **CORE-S3 rev.0**,
 панель **PANEL-2 rev.2**, питание **PWR-2 rev.1**, дисплей 5″ 800×480.
 Сборочная карта: [`renders/templates/bukifon_assembly_map_1to1.pdf`](../renders/templates/bukifon_assembly_map_1to1.pdf)
 (4 стр.); 3D-вид: [`mechanical/preview_v05_B_light/assembly_exploded.jpg`](../mechanical/preview_v05_B_light/assembly_exploded.jpg);
