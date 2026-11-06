@@ -1088,3 +1088,30 @@ Pillow) installed in `/tmp/msvenv`; no system packages assumed.
 - **Screenshots**: `artifacts/ui/{synth,gen,ext,mic,main}_{ru,en}.png` (10 PNG;
   RU visually inspected: real Cyrillic labels/tabs/context, no '?' boxes).
 - **Docs**: `docs/61`/`docs/66` — glyph package, transliteration removed.
+
+---
+
+# Round 27 — storage backend + atomic persistence (2026-11-06)
+
+- **`storage/storage_backend.*`**: `StorageBackend` interface (begin/write/read/
+  erase/exists/size/name, namespace+key), `MockFlash` (256 KiB, write/erase
+  counters, fail-after-N/power-cut/bit-flip/capacity injection), `SdFileBackend`
+  (host files), `NvsBackend` (in-memory ESP-IDF stub).
+- **`AtomicStorage`**: two slots A/B with magic `BKA1`, sequence, size, CRC32;
+  write inactive → read-back verify → erase old only after success; load picks
+  higher valid sequence, reports recovery when the other slot is damaged, errors
+  without partial load when both are bad; payload limit 64 KiB.
+- **Integration**: project v2 `.bkfp` via `projectV2SaveToStore/loadFromStore`;
+  preset bank via `PresetBank::serialize/deserialize` +
+  `presetBankSaveToStore/loadFromStore`; UI language via
+  `languageSaveToStore/loadFromStore` (RU/EN survives reboot model); namespace
+  `bukifon`.
+- **Tests**: **407/407 PASS** (391 + 16 storage tests: MockFlash read/write/
+  erase/multi-key/capacity/wear, A/B roundtrip/sequence, power-cut mid-write,
+  bit-flip readback, one-copy recovery, both-corrupt error, limits, project v2/
+  preset bank/language through MockFlash, SD backend, NVS stub, torn-erase).
+  `run_tests.sh` → PASS.
+- **Docs**: `docs/70` §10 storage/atomicity/recovery; `docs/42` §9 factory/DFM
+  storage section.
+- **TODO(hw)**: real ESP-IDF NVS partition and SDMMC driver, wear-leveling,
+  power-loss handling in drivers, project signing/encryption.

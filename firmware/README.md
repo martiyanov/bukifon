@@ -44,7 +44,7 @@ firmware/
   engine_unity.cpp / sim_unity.cpp  PlatformIO unity translation units
   Bukifon/      RP2040 Arduino sketch: Bukifon.ino + platformio.ini
   host/         native build (Makefile + CMakeLists.txt), WAV renderer
-  tests/        unit tests (391), FFT analysis, run_tests.sh, run_sim_demo.sh, REPORT.md
+  tests/        unit tests (407), FFT analysis, run_tests.sh, run_sim_demo.sh, REPORT.md
   tools/        wavetable/font generators, ppm_to_png.py, build_pico.sh
   artifacts/    generated 800x480 UI screenshots + demo logs (git-ignored)
 ```
@@ -52,7 +52,7 @@ firmware/
 ## v0.5 host prototype — what to run
 
 ```bash
-make -C firmware/host test          # 391 unit tests
+make -C firmware/host test          # 407 unit tests
 firmware/tests/run_tests.sh         # build + tests + WAV render + FFT report
 firmware/tests/run_sim_demo.sh      # 16-bar demo, event-log determinism, 4 PNG
 ```
@@ -95,7 +95,7 @@ firmware/tests/run_tests.sh         # full pipeline: build, tests, WAV render, F
 
 Latest measured results (see `tests/REPORT.md` and `tests/out/test_log.txt`):
 
-- **391 unit tests, 0 failures** (Apple clang 21, C++17, `-O2`)
+- **407 unit tests, 0 failures** (Apple clang 21, C++17, `-O2`)
 - line coverage **83.5 %** (4347/5204 lines, gcov, generated tables excluded)
 - host demo: 16 bars, 1024 note-ons, 32 p-locks, deterministic event log, 4 PNG screens
 - A4 = **440.0000 Hz** (error `-0.0000 %`, limit ±0.1 %)
@@ -144,6 +144,14 @@ export PLATFORMIO_CORE_DIR=/tmp/piocore
 RAM 87.7 % — запас ~32 KiB; при добавлении эффектов/модулей оптимизировать
 буферы (delay-линия, пресет-кэш, 8-дорожечный секвенсор) или перенести часть в
 PSRAM (RP2350).
+
+## Round 27 — storage backend + atomic persistence
+
+- **`storage/storage_backend.*`**: StorageBackend + MockFlash (fault injection) +
+  SdFileBackend + NVS stub; **AtomicStorage** A/B slots with sequence+CRC32,
+  read-back verify, recovery flag, no partial load.
+- Integrated project v2, 8-slot preset bank and UI language through the backend.
+- 16 new tests (407 total); docs/70 §10, docs/42 §9.
 
 ## Round 25 — Cyrillic bitmap font
 

@@ -1,6 +1,6 @@
 # Букифон (Bukifon) — открытая платформа: сэмплер + синтезатор + модули
 
-**Версия: 0.42.1** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
+**Версия: 0.43.0** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
 
 **Букифон** — настольный музыкальный инструмент-платформа, который собирается из
 доступных компонентов, печатается на 3D-принтере, расширяется модулями и полностью
@@ -32,14 +32,14 @@ BLE HID, передача проектов). То есть Букифон — е
 аналоговый картридж на шине 26-pin или сменная панельная дека (18 пэдов / 42 клавиши).
 Подробнее — [spec/00-vision.md §12](spec/00-vision.md).
 
-## Текущее состояние (v0.42.1)
+## Текущее состояние (v0.43.0)
 
 | Блок | Состояние |
 |---|---|
 | **Панель v0.4** | 380 × 210 × 3 мм: 42 клавиши Lapka-42 (точная геометрия, ±18°), 16 энкодеров Ø14, экран 5.0″ 800×480 без рамки, 10 mini-jack, 2 фейдера 60 мм; пересечений 0 |
 | **Корпус v0.5-B** | **клин 8°**: 380 × 210 × 61.5 мм (перед 32 / зад 61.5), 6 деталей watertight, печать без поддержек 279 г / 18.3 ч, fitcheck 32/0, профиль 1:1 для картонной проверки |
-| **EXT в прошивке** | 8 MIDI-треков (CH/PC/vel/len, 1 CC p-lock), clock out/in 24 ppqn, GEN на внешних, live record, save/load EXTP+CRC32, DIN+USB без дублей; UI-вкладка EXT; **391/391 тестов** (`docs/70 §7`) |
-| **Микрофон/голос (реализовано)** | PANEL-2 rev.3: **ICS-43434 I2S MEMS** + порт Ø1.8 (122, 5.5) + LED; CORE-2 rev.3: I2S1 GPIO40/41/42 + J19 + 3.5 мм jack/MAX9814/TS5A + SW3 mute; прошивка: захват/запись ≤30 с/битбокс kick-snare-hat/UNDO/приватность/UI MIC; **391/391 тестов** |
+| **EXT в прошивке** | 8 MIDI-треков (CH/PC/vel/len, 1 CC p-lock), clock out/in 24 ppqn, GEN на внешних, live record, save/load EXTP+CRC32, DIN+USB без дублей; UI-вкладка EXT; **407/407 тестов** (`docs/70 §7`) |
+| **Микрофон/голос (реализовано)** | PANEL-2 rev.3: **ICS-43434 I2S MEMS** + порт Ø1.8 (122, 5.5) + LED; CORE-2 rev.3: I2S1 GPIO40/41/42 + J19 + 3.5 мм jack/MAX9814/TS5A + SW3 mute; прошивка: захват/запись ≤30 с/битбокс kick-snare-hat/UNDO/приватность/UI MIC; **407/407 тестов** |
 | **Идея → звук** | метрики интуитивности в docs/68: time-to-sound ≤10 с, time-to-idea ≤30 с, 0 критических ошибок за 5 мин, blind-тест 5 людей |
 | **Module SDK v0.2** | манифест `bukifon.module.v2` (schema/id/version/api/abi/permissions/params/sha256), валидатор + безопасный loader (API/ABI/SHA до исполнения), 2 примера (`mod_tape_delay`, `mod_euclid_arp`), упаковка `--check` |
 | **Внешний секвенсор** | **8 MIDI-треков + 4 внутренние партии**: channel/PC/vel/length, clock out/in, p-lock CC, GEN на внешних, live record; паритет с Octatrack по MIDI (`docs/70`) |
@@ -53,6 +53,7 @@ BLE HID, передача проектов). То есть Букифон — е
 | **UI/UX** | 3 итерации, 16 энкодеров (8 страниц + 8 макросов), фейдеры TRACK/SCENE/DJ + Fn, REC-ресемплинг, 4 темы экрана 800×480 (`docs/61–64`) |
 | **Кириллица** | 66 глифов 6×8 (А–Я, а–я, Ё/ё), UTF-8 lookup, транслитерация удалена; метрика: max 90 px при ячейке 94 px; 10 скриншотов RU/EN |
 | **Локализация** | UI RU/EN: 90+ ключей (`tr()`), переключение и сохранение языка (project v2), **кириллический glyph-пакет 6×8 (66 глифов, транслитерация удалена)**, 10 RU/EN-скриншотов |
+| **Хранение** | storage backend (MockFlash/SD/NVS-stub), **атомарная A/B запись** с CRC32 и recovery; project v2, preset bank, язык — через backend; power-cut/bit-flip тесты |
 | **Проект v2** | `.bkfp`: 4 партии + 8 EXT-треков + GEN + mic + модули + тема/транспорт, CRC32, миграция v1, транзакционная загрузка |
 | **P4 bring-up app** | UART-баннер/чип/PSRAM, I2C-скан 8/8, RGB565-паттерны, engine bench ≤650 µs, I2S MEMS 1 с; **сборка 330 512 Б, 0 warnings** (IDF 5.5, home) |
 | **P4 toolchain** | **сборка проверена** на `pole`: ESP-IDF v5.5 → `bukifon_p4.bin` 250 КБ (83 % app-раздела свободно), bootloader+table; PlatformIO P4 по-прежнему не умеет (`docs/59`) |
@@ -220,7 +221,7 @@ BLE HID, передача проектов). То есть Букифон — е
 ```bash
 export PLATFORMIO_CORE_DIR=/tmp/piocore
 /tmp/msvenv/bin/pio run -d firmware/Bukifon      # сборка UF2
-cd firmware/host && make test                    # host-тесты DSP (391 тест)
+cd firmware/host && make test                    # host-тесты DSP (407 тестов)
 ```
 
 ## Структура репозитория

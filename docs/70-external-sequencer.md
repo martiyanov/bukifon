@@ -199,3 +199,57 @@ file; транзакционность. См. `firmware/tests/test_project_v2.cp
 Реальное хранение `.bkfp` в NVS/flash (`factory_data`) и SD, подпись/шифрование
 не реализованы; хост-формат/CRC32 готов и переносим. Аудио сэмплов в проекте
 нет (только описания pad-ов) — сэмплы как обычные файлы (docs/63).
+
+---
+
+## 10. Хранение: NVS/flash/SD, атомарность, recovery (раунд 27)
+
+Реализовано `firmware/src/storage/storage_backend.*` (host-модели; реальные
+ESP-IDF NVS/SDMMC драйверы — TODO(hw)).
+
+### Backend API
+
+`StorageBackend`: `begin/write/read/erase/exists/size/name`, namespace + key
+(единый namespace `bukifon`). Реализации:
+- **MockFlash** — RAM-флеш 256 КиБ, счётчики записи/стирания, инъекция ошибок:
+  `setFailAfterWrites`, `setPowerCutAtWrite` (частичная запись), `setBitFlipAtWrite`,
+  `setMaxBytes`;
+- **SdFileBackend** — файлы `<root>/<ns>_<key>.bin` (host-модель; реальный SDIO/SDMMC
+  TODO(hw));
+- **NvsBackend** — in-memory stub с тем же интерфейсом; реальная ESP-IDF `nvs`
+  партиция/`nvs_set_blob` — TODO(hw).
+
+### Атомарная запись A/B
+
+Запись `AtomicStorage::write(key,payload)`:
+1. читаются оба слота `key.a`/`key.b` (magic `BKA1`, version, sequence, size, CRC32);
+2. выбирается неактивный слот; sequence = max(valid)+1;
+3. запись → **read-back verify** (CRC + побайтовое сравнение);
+4. только после успеха стирается старый слот; при любой ошибке старый остаётся.
+
+`read`: выбирает валидный слот с большей sequence; если второй слот существует, но
+повреждён — возвращает данные и выставляет `lastLoadRecovered()`/`recoveryCount()`;
+если оба битые — ошибка и **никакой частичной загрузки**. Лимит payload 64 КиБ.
+
+### Интеграция
+
+- project v2 `.bkfp`: `projectV2SaveToStore/loadFromStore` (serialize → A/B slot);
+- preset bank (8 слотов, CRC32): `presetBankSaveToStore/loadFromStore`
+  (`PresetBank::serialize/deserialize`);
+- язык UI: `languageSaveToStore/loadFromStore` (`RU`/`EN`, после reboot модель
+  восстанавливает `getLanguage()`);
+- серийник/настройки — через тот же backend (namespace `bukifon`).
+
+### Тесты
+
+**407/407 host** (+16): read/write/erase, несколько ключей/размеры, capacity,
+wear-счётчики, A/B roundtrip/sequence, power-cut в середине, bit-flip readback,
+повреждение одной копии → recovery, обе битые → ошибка без partial, erase/лимиты,
+project v2/preset bank/язык через MockFlash, SD backend, NVS stub, recovery после
+torn erase. См. `firmware/tests/test_storage_backend.cpp`.
+
+### TODO(hw)
+
+Реальная **NVS-партиция** ESP-IDF (`nvs_flash_init`, namespace `bukifon`,
+blob-ключи) и SD-драйвер (SDMMC 1-bit, hot-remove), wear-leveling/flash-сектора,
+защита от power-loss на уровне драйвера и подпись/шифрование проекта.

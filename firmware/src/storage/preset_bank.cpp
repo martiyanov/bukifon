@@ -86,6 +86,41 @@ bool PresetBank::save(const char* path) const {
   return ok;
 }
 
+
+size_t PresetBank::serializedSize() const { return 20 + sizeof(PresetSlot) * kSlots; }
+
+size_t PresetBank::serialize(uint8_t* out, size_t capacity) const {
+  if (!out || capacity < serializedSize()) return 0;
+  std::memset(out, 0, 20);
+  out[0] = static_cast<uint8_t>(kMagic & 0xFF);
+  out[1] = static_cast<uint8_t>((kMagic >> 8) & 0xFF);
+  out[2] = static_cast<uint8_t>((kMagic >> 16) & 0xFF);
+  out[3] = static_cast<uint8_t>((kMagic >> 24) & 0xFF);
+  out[4] = static_cast<uint8_t>(kVersion & 0xFF);
+  out[5] = static_cast<uint8_t>(kVersion >> 8);
+  out[6] = static_cast<uint8_t>(kSlots);
+  const uint32_t crc = crc32Bytes(reinterpret_cast<const uint8_t*>(slots_), sizeof(slots_));
+  std::memcpy(out + 16, &crc, sizeof(crc));
+  std::memcpy(out + 20, slots_, sizeof(slots_));
+  return serializedSize();
+}
+
+bool PresetBank::deserialize(const uint8_t* data, size_t size) {
+  if (!data || size != serializedSize()) return false;
+  const uint32_t magic = static_cast<uint32_t>(data[0]) | (static_cast<uint32_t>(data[1]) << 8) |
+                         (static_cast<uint32_t>(data[2]) << 16) |
+                         (static_cast<uint32_t>(data[3]) << 24);
+  const uint16_t version = static_cast<uint16_t>(data[4] | (data[5] << 8));
+  if (magic != kMagic || version != kVersion || data[6] != kSlots) return false;
+  uint32_t crc = 0;
+  std::memcpy(&crc, data + 16, sizeof(crc));
+  PresetSlot loaded[kSlots];
+  std::memcpy(loaded, data + 20, sizeof(loaded));
+  if (crc32Bytes(reinterpret_cast<const uint8_t*>(loaded), sizeof(loaded)) != crc) return false;
+  for (int i = 0; i < kSlots; ++i) slots_[i] = loaded[i];
+  return true;
+}
+
 bool PresetBank::writeSlot(int slot, const char* name, const GenParams* gen, int parts,
                            uint8_t selectedParts, char* error, size_t errorLen) {
   if (slot < 0 || slot >= kSlots || !name || !name[0] || !gen || parts <= 0) {

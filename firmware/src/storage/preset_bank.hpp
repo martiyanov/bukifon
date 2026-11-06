@@ -30,6 +30,9 @@ class PresetBank {
   void clear();
   bool load(const char* path);
   bool save(const char* path) const;
+  size_t serializedSize() const;
+  size_t serialize(uint8_t* out, size_t capacity) const;
+  bool deserialize(const uint8_t* data, size_t size);
 
   bool writeSlot(int slot, const char* name, const GenParams* gen, int parts,
                  uint8_t selectedParts, char* error = nullptr, size_t errorLen = 0);

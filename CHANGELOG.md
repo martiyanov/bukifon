@@ -2,6 +2,19 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.43.0] — 2025-11-06 — «Хранение и бэкапы»
+
+### Добавлено
+- **Storage backend** (`storage_backend.*`): MockFlash (fail-after-N/power-cut/bit-flip, счётчики),
+  SdFileBackend, NvsBackend-stub; namespace/key API.
+- **AtomicStorage A/B**: magic/version/sequence/CRC32, запись в неактивный слот → verify →
+  переключение, recovery при повреждении копии, ошибка без частичной загрузки при двух битых.
+- Интеграция: project v2 `.bkfp`, preset bank 8 слотов, язык UI, серийник/настройки —
+  через backend; **407/407 тестов** (+16, включая power-cut и bit-flip).
+- **VDS**: ежедневный бэкап сайта/nginx (tar.gz, retention 7, cron 03:30) — `deploy/vds/bukifon-backup.sh`,
+  docs/88 §8; авто-TLS watcher для доменов.
+- docs/70 §10, docs/42 §9 — хранение/recovery/TODO(hw).
+
 ## [0.42.1] — 2025-11-06 — «Авто-TLS для доменов»
 
 ### Добавлено

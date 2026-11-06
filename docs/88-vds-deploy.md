@@ -70,3 +70,10 @@ curl -s https://bukifon.ru/robots.txt
 sudo rsync -a /var/backups/bukifon/last/ /var/www/bukifon/
 sudo systemctl reload nginx
 ```
+
+## 8. Бэкапы (VDS)
+
+- `/usr/local/bin/bukifon-backup.sh` + cron **03:30** ежедневно: tar.gz `/var/backups/bukifon/bukifon-YYYYMMDD.tar.gz`
+  (сайт + nginx-конфиг), retention 7; лог `/var/log/bukifon-backup.log`.
+- Восстановление: `sudo tar -xzf /var/backups/bukifon/bukifon-YYYYMMDD.tar.gz -C /tmp && sudo rsync -a /tmp/site-YYYYMMDD/ /var/www/bukifon/ && sudo systemctl reload nginx`.
+- Проверка: `sudo /usr/local/bin/bukifon-backup.sh` → строка `backup ok`.

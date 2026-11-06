@@ -181,3 +181,25 @@ USB/boot, повторный brownout, BMS/заряд вне порогов, hot
 `count:21`), P4 без toolchain — 21 SKIP. Скриншот станции:
 [`firmware/artifacts/factory/selftest.png`](../firmware/artifacts/factory/selftest.png).
 Тесты: 331/331 host (20 новых, включая SKIP, mic mute, MIDI no-duplicates, 42/16).
+
+---
+
+## 9. Хранение: NVS/SD, атомарность, recovery (раунд 27)
+
+Прошивка использует единый `StorageBackend` + `AtomicStorage` (A/B слоты,
+sequence + CRC32, read-back verify, recovery-флаг). Для фабрики/DFM:
+
+- **NVS partition** (`nvs_flash_init`): namespace `bukifon`, ключи `project`,
+  `presets`, `language`, `serial`/настройки; ISO-совместимый blob-доступ;
+  реальная инициализация/размер партиции — TODO(hw), host stub уже покрыт тестами.
+- **SD** (SDMMC 1-bit): файловый backend `<root>/<ns>_<key>.bin`; hot-remove и
+  CRC — на уровне AtomicStorage; реальный драйвер — TODO(hw).
+- **Атомарность:** запись в неактивный слот A/B → verify (CRC+memcmp) → старое
+  стирается только после успеха; power-cut/bit-flip в середине не уничтожает
+  последнюю копию; load сообщает recovery; обе копии битые → ошибка без
+  частичной загрузки.
+- **EOL/self-test:** добавить проверку записи/чтения/стирания ключа `bukifon/eol`
+  через реальную NVS/SD на стенде; проверить recovery после намеренного
+  power-cut; wear-счётчики (MockFlash) — модель для оценки ресурса.
+- **TODO(hw):** NVS partition table + `nvs_flash_init`, SDIO/SDMMC, wear-leveling,
+  подпись/шифрование `.bkfp`; тесты 407/407 host (MockFlash/SdFile/NVS stub).
