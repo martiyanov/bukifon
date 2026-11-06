@@ -1,0 +1,45 @@
+name: ci
+on:
+  push:
+    branches: [main, feature/panel-v04-canonical]
+  pull_request:
+
+jobs:
+  host:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Python deps
+        run: pip install pillow
+      - name: Host tests (firmware)
+        run: make -C firmware/host test
+      - name: Docs links
+        run: python3 tools/check_docs_links.py
+      - name: BOM ↔ netlist
+        run: |
+          python3 tools/check_bom_netlist.py --netlist hardware/core2/netlist.net --bom hardware/core2/BOM-core2.csv
+          python3 tools/check_bom_netlist.py --netlist hardware/panel2/PANEL-2.net --bom hardware/panel2/BOM-panel2.csv
+          python3 tools/check_bom_netlist.py --netlist hardware/power2/netlist.net --bom hardware/power2/BOM-power2.csv
+      - name: PWR template parses
+        run: python3 tools/pwr_bench_check.py docs/pwr-results-template.csv
+      - name: Security scan (secrets/PII/EXIF)
+        run: bash tools/security_scan.sh
+
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: VERSION/CHANGELOG/README consistency
+        run: |
+          python3 - <<'PY'
+          import re
+          v=open('VERSION').read().strip()
+          cl=open('CHANGELOG.md',encoding='utf-8').read()
+          rd=open('README.md',encoding='utf-8').read()
+          assert re.match(r'^\d+\.\d+\.\d+$', v), v
+          assert f'[{v}]' in cl, 'VERSION нет в CHANGELOG'
+          assert v in rd, 'VERSION нет в README'
+          print('ok', v)
+          PY

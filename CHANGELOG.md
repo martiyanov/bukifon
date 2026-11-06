@@ -2,6 +2,26 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.40.0] — 2025-11-06 — «Демо RU/EN и доступность»
+
+### Добавлено
+- **Локализация веб-демо RU/EN**: таблица **256 ключей** (кнопки/страницы/параметры/макросы/
+  EXT/MIC/GEN/статусы/UX-тест/сообщения), переключатель в шапке, `?lang=en`, localStorage;
+  canvas-текст через `t()`; аудит ширины **187 строк, 0 overflow** в RU и EN.
+- **Доступность демо**: `aria-label`/`role` у кнопок/джеков/энкодеров/клавиш/фейдеров,
+  `role=slider` + клавиатура (стрелки/Shift/PageUp/Down/Home/End), видимый фокус,
+  live-region для сообщений, `role=img` + описание canvas.
+- **EXT-энкодеры в демо**: левые 8 в режиме EXT управляют CH/PROG/VEL/LEN/CC#/CC VAL/SWING/CLK
+  выбранного трека (диапазоны, клавиатура, undo), не page-параметрами; авто-тест RU/EN
+  проверяет drag/keyboard/Home/End и неизменность page-params.
+- **GitHub Actions CI** (`.github/workflows/ci.yml`): host-тесты, docs links, BOM↔netlist,
+  PWR-шаблон, security; `tools/security_scan.sh` — портируемый `${PYTHON:-python3}`.
+- UX-тест расширен: RU + EN прогоны, a11y/клавиатура/EXT/ширина строк; итог **RU PASS · EN PASS**.
+
+### Исправлено (найдено при локализации)
+- переполнение ячеек mute/off-суффиксом; canvas игнорировал текущую страницу; page-энкодеры
+  использовали заглушку 0..1; TypeError в битбоксе; ensureScenes при клавиатуре.
+
 ## [0.39.1] — 2025-11-06 — «Счётчики тестов»
 
 ### Исправлено

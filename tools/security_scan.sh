@@ -17,7 +17,7 @@ if git grep -nE "/Users/[A-Za-z0-9._-]+/|/home/[A-Za-z0-9._-]+/" -- . ':!tools/s
 else echo "чисто"; fi
 
 say "3. EXIF/GPS в изображениях"
-/tmp/msvenv/bin/python - <<'PY' || fail=1
+${PYTHON:-python3} - <<'PY' || fail=1
 import glob, sys
 from PIL import Image
 bad=[]
