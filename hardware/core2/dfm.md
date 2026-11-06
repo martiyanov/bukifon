@@ -135,6 +135,53 @@ I2C при boot, пишет в USB-дескриптор (iSerial) и лог.
   WS2812 (guard GND между), 3V3_MIC через FB8; аналоговая часть MAX9814/PCM1808 — keepout от
   цифровых/20 В; TP31/32 не под шлейфом; SW3 mute доступен снаружи; loopback mic→PCM1808→DAC.
 
+## 5a. Сверка с datasheet (MAX9814 / TS5A23157, 2026-11-06)
+
+Официальные datasheet: [MAX9814 (Analog Devices)](https://www.analog.com/media/en/technical-documentation/data-sheets/MAX9814.pdf),
+[TS5A23157 (TI)](https://www.ti.com/lit/ds/symlink/ts5a23157.pdf). Сверены все пины U46/U47;
+**найдено 4 расхождения — исправлены в схеме** (ERC 0/0 после правки).
+
+### MAX9814 (TDFN-14, U46)
+
+| Пин | Datasheet | У нас (net) | Статус |
+|---:|---|---|---|
+| 1 | CT (тайминг AGC) | `CT` → C125 **470 нФ** → AGND | ✔ (номинал приведён к datasheet) |
+| 2 | SHDN, active-low | `SHDN` ← R113 100k к 3V3_MIC; SW3 → AGND = mute | ✔ полярность верна: SW3 замкнут = shutdown |
+| 3 | CG | `CG` → C124 2.2 мкФ → AGND | ✔ |
+| 4, 11 | N.C. → GND | `AGND` | ✔ |
+| 5 | VDD (1 мкФ bypass) | `3V3_MIC` (C128 10 мкФ + C129 100 нФ) | ✔ |
+| 6 | MICOUT | `MIC_AGC` → C126 1 мкФ | ✔ |
+| 7 | GND | `AGND` | ✔ |
+| 8 | MICIN | `MICIN_A` ← C127 100 нФ ← `MIC_IN` | ✔ |
+| 9 | A/R | `AGND` → 1:500 | ✔ |
+| 10 | GAIN | `AGND` → 50 дБ | ✔ (40/50/60 по strap) |
+| 12 | BIAS (0.47 мкФ) | `BIAS` → C123 470 нФ | ✔ |
+| 13 | MICBIAS | `MICBIAS_N` → C122 1 мкФ; R106 2.2 к → `MIC_BIAS` | ✔ |
+| 14 | **TH** (AGC threshold) | **`TH`** ← R107 150k от MICBIAS, R108 100k на AGND (V_TH≈0.4·MICBIAS) | **исправлено** (был EP) |
+| EP | Exposed pad → GND | `EP` (pin 15) → AGND | **исправлено** (пад добавлен) |
+
+### TS5A23157 (DGS/VSSOP-10, U47)
+
+| Пин | Datasheet | У нас (net) | Статус |
+|---:|---|---|---|
+| 1 | IN1 | `MIC_SEL` | ✔ |
+| 2 | NO1 | `SW_MIC` | **исправлено** (NO=MIC) |
+| 3 | GND | `AGND` | ✔ |
+| 4 | NO2 | `SW_MIC` | **исправлено** |
+| 5 | **IN2** | `MIC_SEL` | **исправлено** (был COM2) |
+| 6 | **COM2** | `SW_R_COM` | **исправлено** (был NC2) |
+| 7 | **NC2** | `AUDIN_R_F` (LINE R) | **исправлено** (был IN2) |
+| 8 | V+ | `3V3` | ✔ |
+| 9 | NC1 | `AUDIN_L_F` (LINE L) | ✔ |
+| 10 | COM1 | `SW_L_COM` | ✔ |
+
+**Truth table:** IN=L → NC–COM ON; IN=H → NO–COM ON. Поэтому NO=MIC, NC=LINE:
+`MIC_SEL=0` → LINE (R110 100k PD — дефолт), `MIC_SEL=1` → MIC. COM1/COM2 → C78/C80 → PCM1808
+VINL/VINR — подтверждено.
+
+**Вердикт:** pinout и полярность теперь соответствуют datasheet; остаётся только сверить
+посадочные места (TDFN-14-1EP, MSOP-10) с land pattern производителя на этапе PCB.
+
 ## 6. Чек-лист «перед заказом PCB» (20 пунктов)
 
 1. [ ] Реестр `spec/90` подписан, PRE-FREEZE снят для rev.2.

@@ -2,6 +2,17 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.25.1] — 2025-11-06 — «Datasheet-сверка микрофона»
+
+### Исправлено
+- **MAX9814** (CORE-2): pin14 → TH с делителем R107 150k/R108 100k (AGC on), добавлен EP
+  pin15→AGND, CT = 470 нФ (по datasheet); SHDN active-low подтверждён (SW3 = mute).
+- **TS5A23157**: исправлен pinout (5 IN2, 6 COM2, 7 NC2) и полярность: MIC_SEL=0 → LINE
+  (NC–COM), 1 → MIC (NO–COM); подтверждено COM→PCM1808 VINL/VINR.
+- Схема/PDF/SVG/netlist/ERC/BOM (267 строк) перегенерированы: **ERC 0/0**, pinmap/schematic PASS.
+- docs/71 §6/§8.7, hardware/core2/dfm.md §5a — таблицы «пин → datasheet → у нас»; в документах
+  зафиксировано 4 найденных расхождения и их исправления; rev3-plan — пункт закрыт.
+
 ## [0.25.0] — 2025-11-06 — «Тест интуитивности»
 
 ### Добавлено

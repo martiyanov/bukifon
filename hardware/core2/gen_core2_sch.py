@@ -105,15 +105,16 @@ def build_custom_lib():
          ('7', 'GND', 0, -20.32, 90), ('8', 'MICIN', -15.24, -2.54, 0),
          ('9', 'AR', -15.24, -5.08, 0), ('10', 'GAIN', -15.24, -7.62, 0),
          ('11', 'NC11', 15.24, -12.7, 180), ('12', 'BIAS', 15.24, 12.7, 180),
-         ('13', 'MCBIAS', 15.24, 10.16, 180), ('14', 'EP', 15.24, -15.24, 180)],
+         ('13', 'MCBIAS', 15.24, 10.16, 180), ('14', 'TH', 15.24, -15.24, 180),
+         ('15', 'EP', 15.24, -17.78, 180)],
         hide_num=False)
     lib['TS5A23157'] = custom_symbol(
         'TS5A23157', 'U', 'TS5A23157 dual SPDT analog switch (VSSOP-10)',
         (-10.16, -12.7, 10.16, 12.7),
         [('1', 'IN1', -12.7, 7.62, 0), ('2', 'NO1', 12.7, 10.16, 180),
          ('3', 'GND', 0, -15.24, 90), ('4', 'NO2', 12.7, 5.08, 180),
-         ('5', 'COM2', 12.7, 2.54, 180), ('6', 'NC2', 12.7, 0, 180),
-         ('7', 'IN2', -12.7, 0, 0), ('8', 'VCC', 0, 15.24, 270),
+         ('5', 'IN2', 12.7, 2.54, 180), ('6', 'COM2', 12.7, 0, 180),
+         ('7', 'NC2', -12.7, 0, 0), ('8', 'VCC', 0, 15.24, 270),
          ('9', 'NC1', 12.7, -2.54, 180), ('10', 'COM1', 12.7, -5.08, 180)],
         hide_num=False)
     lib['PCM1808'] = custom_symbol(
@@ -438,9 +439,9 @@ add('C122', ('Device','C'), '1uF/10V', {'1':'MICBIAS_N','2':'AGND'}, FP['C'], 'm
 add('U46', ('picomod','MAX9814'), 'MAX9814 (AGC mic amp)',
     {'1':'CT','2':'SHDN','3':'CG','4':'AGND','5':'3V3_MIC','6':'MIC_AGC',
      '7':'AGND','8':'MICIN_A','9':'AGND','10':'AGND','11':'AGND','12':'BIAS',
-     '13':'MICBIAS_N','14':'AGND'}, 'Package_DFN_QFN:TDFN-14-1EP_3x3mm_P0.4mm_EP1.78x2.35mm',
-    'AGC mic preamp (D-91); pinout verify vs datasheet before PCB', A)
-add('C125', ('Device','C'), '1uF/10V', {'1':'CT','2':'AGND'}, FP['C'], 'AGC attack/release (CT)', A)
+     '13':'MICBIAS_N','14':'TH','15':'AGND'}, 'Package_DFN_QFN:TDFN-14-1EP_3x3mm_P0.4mm_EP1.78x2.35mm',
+    'AGC mic preamp (D-91); pinout verified vs datasheet 2026-11-06 (TH/EP fixed)', A)
+add('C125', ('Device','C'), '470nF', {'1':'CT','2':'AGND'}, FP['C'], 'AGC attack/release (CT, datasheet typical)', A)
 add('C124', ('Device','C'), '2.2uF/10V', {'1':'CG','2':'AGND'}, FP['C'], 'DC offset adjust (CG)', A)
 add('C123', ('Device','C'), '470nF', {'1':'BIAS','2':'AGND'}, FP['C'], 'bias decoupling', A)
 add('R113', ('Device','R'), '100k', {'1':'3V3_MIC','2':'SHDN'}, FP['R'], 'SHDN pull-up (mic on)', A)
@@ -450,9 +451,11 @@ add('R114', ('Device','R'), '1k', {'1':'3V3_MIC','2':'MIC_LED_A'}, FP['R'], '', 
 add('D31', ('Device','LED'), 'MIC ON', {'1':'MIC_LED_K','2':'MIC_LED_A'}, FP['C'], 'LED «MIC ON» (D-92)', A)
 add('C126', ('Device','C'), '1uF/16V', {'1':'MIC_AGC','2':'SW_MIC'}, FP['C'], 'MAX9814 out -> switch', A)
 add('U47', ('picomod','TS5A23157'), 'TS5A23157 (line/mic switch)',
-    {'1':'MIC_SEL','2':'AUDIN_L_F','3':'AGND','4':'AUDIN_R_F','5':'SW_R_COM',
-     '6':'SW_MIC','7':'MIC_SEL','8':'3V3','9':'SW_MIC','10':'SW_L_COM'},
+    {'1':'MIC_SEL','2':'SW_MIC','3':'AGND','4':'SW_MIC','5':'MIC_SEL',
+     '6':'SW_R_COM','7':'AUDIN_R_F','8':'3V3','9':'AUDIN_L_F','10':'SW_L_COM'},
     'Package_SO:MSOP-10-1EP_3x3mm_P0.5mm_EP1.68x1.88mm', 'analog switch line(AUDIO IN)/mic, control MIC_SEL (footprint verify vs DGS)', A)
+add('R107', ('Device','R'), '150k', {'1':'MICBIAS_N','2':'TH'}, FP['R'], 'AGC threshold divider top (V_TH = MCBIAS*0.4)', A)
+add('R108', ('Device','R'), '100k', {'1':'TH','2':'AGND'}, FP['R'], 'AGC threshold divider bottom', A)
 add('R110', ('Device','R'), '100k', {'1':'MIC_SEL','2':'AGND'}, FP['R'], 'MIC_SEL pull-down = LINE by default', A)
 
 # ---------------------------- CV ------------------------------------------

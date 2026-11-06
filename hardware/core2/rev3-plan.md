@@ -74,8 +74,8 @@ recovery-пады; при DSI — дополнительный FFC и переп
 | MEMS на PANEL-2 | I2S1 RX, slave, 24 бит/48 кГц; PANEL-2 rev.3 (ICS-43434/SPH0645), акустический порт/сетка | `MIC_BCK` GPIO40, `MIC_WS` GPIO41, `MIC_DATA` GPIO42; `3V3_MIC` |
 | Разъём MEMS | J19 IDC-6 canon: **1 BCK, 2 GND, 3 WS, 4 GND, 5 DATA, 6 +3V3** (mates PANEL-2 J16 1:1); экранированный кабель ≤150 мм | 3.3 В через FB8 + 10 мкФ/100 нФ; ESD USBLC6 ×2 |
 | 3.5 мм jack | J20 TRS (tip=signal, ring=bias 2.2 к), D30 SMAJ5.0A, C127 100 нФ | `MIC_IN`, `MIC_BIAS` |
-| MAX9814 | AGC 40–60 дБ, MICBIAS, SHDN, MICOUT; CT/CG/BIAS-конденсаторы | U46; `MIC_AGC` → C126 1 мкФ |
-| Line/mic switch | TS5A23157: COM1/COM2 → C78/C80 → PCM1808 VINL/VINR; NO=LINE, NC=MIC | U47; `MIC_SEL` GPIO54 (0=LINE, 1=MIC), R110 100k PD |
+| MAX9814 | AGC 40–60 дБ; CT 470 нФ, CG 2.2 мкФ, BIAS 470 нФ; **TH = делитель 150k/100k от MICBIAS**, EP(15)→GND; SHDN active-low (SW3 mute) | U46; `MIC_AGC` → C126 1 мкФ |
+| Line/mic switch | TS5A23157 (сверено): 1 IN1, 2 NO1(MIC), 3 GND, 4 NO2(MIC), 5 IN2, 6 COM2, 7 NC2(LINE R), 8 V+, 9 NC1(LINE L), 10 COM1; COM1/COM2 → C78/C80 → PCM1808; IN=L→NC=LINE, IN=H→NO=MIC | U47; `MIC_SEL` GPIO54 (0=LINE, 1=MIC), R110 100k PD |
 | Приватность | SW3 (MIC MUTE) тянет SHDN→GND; Q5+D31 «MIC ON» | D-92 |
 | TP | TP31 `MIC_DATA`, TP32 `MIC_BCK` | доступ после сборки |
 | Изменения в rev.2 | удалены R25/R26/C52 (VBUS_DET), R32-R34 (SDIO D1-D3 pull-ups); J5 → 1-bit SDMMC (DAT1/2/3 NC) | — |
@@ -107,8 +107,8 @@ MAX9814/TDFN-14 и TS5A23157/DGS по datasheet до PCB, сертификаци
 5. Pogo-поле: 6 падов достаточно (3V3/GND/UART0/BOOT/RESET)?
 6. Бюджет PWR-2 при 32 МБ PSRAM/RGB: подтвердить на P1.
 7. DNP-список rev.2 остаётся (46 позиций) или что-то возвращается под P4-first.
-8. Mic (D-91): PANEL-2 rev.3 MEMS (MPN/порт) и ответный J19; pinout MAX9814/TDFN-14 и TS5A23157/DGS
-   сверить с datasheet до PCB; MIC_SEL = GPIO54 (бывший VBUS_DET) — подтвердить потерю VBUS-детекта
-   (USB-режим через BQ/перечисление).
+8. Mic (D-91): PANEL-2 rev.3 MEMS (MPN/порт) и ответный J19; **pinout MAX9814/TDFN-14 и
+   TS5A23157/DGS сверены с datasheet 2026-11-06 — ЗАКРЫТО** (dfm.md §5a, docs/71 §6);
+   MIC_SEL = GPIO54 (бывший VBUS_DET) — подтвердить потерю VBUS-детекта (USB-режим через BQ/перечисление).
 9. D-92: SW3 mute + LED «MIC ON» — в rev.3; прошивка запрещает запись при mute; нужен ли второй
    аппаратный mute для MEMS на PANEL-2.

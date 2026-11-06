@@ -278,6 +278,15 @@ TS5A23157/DGS по datasheet до PCB; при необходимости 4-bit S
 - [ ] SW1 (панель) и SW3 (ядро) разрывают/глушат микрофон; LED гаснет;
 - [ ] запись при mute невозможна (прошивка), индикатор MIC в контекст-строке.
 
+## 8.7 Сверка с datasheet (ЗАКРЫТО 06.11.2025)
+
+MAX9814 (ADI, TDFN-14): pin14=TH (делитель R107 150k/R108 100k от MICBIAS, V_TH≈0.4·MICBIAS),
+EP=pin15→AGND, CT=470 нФ; SHDN active-low (SW3 замкнут = mute); GAIN=GND (50 дБ), A/R=GND.
+TS5A23157 (TI, DGS-10): исправлены пины 5/6/7 (IN2/COM2/NC2), truth table IN=L→NC–COM (LINE),
+IN=H→NO–COM (MIC); MIC_SEL=0 → LINE (PD 100k), 1 → MIC. Netlist/ERC 0/0, check_pinmap/
+check_schematic PASS; подробные таблицы — `hardware/core2/dfm.md` §5a, docs/71 §6.
+Осталось только сверить footprints TDFN-14-1EP и VSSOP-10 при разводке PCB.
+
 ## 9. TODO(hw)
 
 1. **I2S1 RX DMA** (MEMS ICS-43434/SPH0645LM4H), реальный ring buffer, 24 бит/48 кГц,
@@ -291,3 +300,50 @@ TS5A23157/DGS по datasheet до PCB; при необходимости 4-bit S
    (v1.1, backlog R-39).
 6. **Приватность-аудит**: подтвердить, что Wi-Fi/BT стек не получает mic-буфер; оставить
    только явную пользовательскую передачу.
+
+---
+
+## 6. Сверка с datasheet (MAX9814 / TS5A23157, 2026-11-06)
+
+Официальные datasheet: [MAX9814 (ADI)](https://www.analog.com/media/en/technical-documentation/data-sheets/MAX9814.pdf),
+[TS5A23157 (TI)](https://www.ti.com/lit/ds/symlink/ts5a23157.pdf). Сверены все пины U46/U47;
+**найдено 4 расхождения, исправлены в схеме** (ERC 0/0).
+
+### MAX9814 (TDFN-14, U46)
+
+| Пин | Datasheet | У нас | Статус |
+|---:|---|---|---|
+| 1 | CT | C125 **470 нФ** → AGND | ✔ (номинал приведён к datasheet) |
+| 2 | SHDN active-low | R113 100k↑, SW3→GND (mute) | ✔ SW3 замкнут = shutdown; разомкнут = mic on |
+| 3 | CG | C124 2.2 мкФ → AGND | ✔ |
+| 4, 11 | N.C. → GND | AGND | ✔ |
+| 5 | VDD (1 мкФ) | 3V3_MIC, C128 10 мкФ + C129 100 нФ | ✔ |
+| 6 | MICOUT | MIC_AGC → C126 1 мкФ | ✔ |
+| 7 | GND | AGND | ✔ |
+| 8 | MICIN | C127 100 нФ ← MIC_IN | ✔ |
+| 9 | A/R | AGND (1:500) | ✔ |
+| 10 | GAIN | AGND (50 дБ) | ✔ |
+| 12 | BIAS (0.47 мкФ) | C123 470 нФ | ✔ |
+| 13 | MICBIAS | C122 1 мкФ; R106 2.2 к → bias | ✔ |
+| 14 | **TH** | R107 150k / R108 100k (V_TH≈0.4·MICBIAS) | **исправлено** (был EP) |
+| EP | пад → GND | pin 15 EP → AGND | **исправлено** (добавлен) |
+
+### TS5A23157 (DGS/VSSOP-10, U47)
+
+| Пин | Datasheet | У нас | Статус |
+|---:|---|---|---|
+| 1 | IN1 | MIC_SEL | ✔ |
+| 2 | NO1 | SW_MIC | **исправлено** (NO=MIC) |
+| 3 | GND | AGND | ✔ |
+| 4 | NO2 | SW_MIC | **исправлено** |
+| 5 | **IN2** | MIC_SEL | **исправлено** (был COM2) |
+| 6 | **COM2** | SW_R_COM | **исправлено** (был NC2) |
+| 7 | **NC2** | AUDIN_R_F (LINE R) | **исправлено** (был IN2) |
+| 8 | V+ | 3V3 | ✔ |
+| 9 | NC1 | AUDIN_L_F (LINE L) | ✔ |
+| 10 | COM1 | SW_L_COM | ✔ |
+
+**Полярность:** IN=L → NC–COM ON ⇒ `MIC_SEL=0` = LINE (дефолт, R110 PD); IN=H → NO–COM ON ⇒
+`MIC_SEL=1` = MIC. COM1/COM2 → C78/C80 → PCM1808 VINL/VINR — подтверждено.
+**Вердикт:** пины и полярность соответствуют datasheet; остаётся проверить land pattern
+TDFN-14-1EP и MSOP-10 при разводке PCB.
