@@ -48,9 +48,8 @@ int uiTextHeight(UiTextRole role);
 int uiTextWidth(UiTextRole role);
 void drawTextRole(ICanvas& canvas, int x, int y, const char* text, uint16_t color,
                   UiTextRole role);
-// Latin transliteration of Cyrillic labels (the 6x8 font is ASCII only):
-// "А · CUTOFF" renders as "A · CUTOFF" while snapshots keep the real labels.
-const char* uiAsciiForLabel(const char* text, char* buffer, size_t capacity);
+// Text width in pixels for the current 6x8 glyph metrics (Cyrillic included).
+int uiTextPixelWidth(const char* text, UiTextRole role);
 
 struct UiTrack {
   char name[10] = "PART";

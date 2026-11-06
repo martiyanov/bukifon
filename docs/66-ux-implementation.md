@@ -130,6 +130,7 @@ self-test вынесены в `firmware/include/bukifon_i18n.h` (`UiKey` + RU/EN
 90+ ключей). Рисование через `tr(key)`; переключение `setLanguage/getLanguage`;
 язык сохраняется в project v2 (`language` в заголовке, v1→RU, старый v2→RU),
 host-настройка `i18nSaveLanguage/LoadLanguage` (NVS/flash — TODO(hw)).
-Скриншоты `artifacts/ui/synth_ru.png` + `synth_en.png`. Ограничение: 6×8-шрифт
-ASCII, кириллица на экране — транслитерация до подключения кириллического
-glyph-пакета; строки уже UTF-8. Тесты: 377/377.
+Скриншоты `artifacts/ui/{synth,gen,ext,mic,main}_{ru,en}.png` (10 PNG).
+**Кириллический glyph-пакет** `src/ui/font_cyrillic6x8.*` (66 глифов 6×8,
+UTF-8 lookup; RU рисуется настоящими буквами, транслитерация удалена); ширина
+всех ключей ≤90 px при ячейке 94. Тесты: 391/391.

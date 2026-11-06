@@ -1065,3 +1065,26 @@ Pillow) installed in `/tmp/msvenv`; no system packages assumed.
 - **Docs**: `docs/61`/`docs/66` localisation sections.
 - **TODO(hw/font)**: Cyrillic glyph package for the bitmap font, NVS/flash
   language persistence, locale-aware value formatting (units/dates).
+
+---
+
+# Round 25 — Cyrillic bitmap font (2026-11-06)
+
+- **Glyph package** `src/ui/font_cyrillic6x8.*`: 66 glyphs 6×8 — uppercase
+  А–Я (32), lowercase а–я (32), Ё/ё; generated from an 7 px narrow font and
+  centered in the 6×8 cell. `uiFontGlyph(codepoint)` maps UTF-8 codepoints to
+  ASCII or Cyrillic glyphs; unsupported codepoints return nullptr → '?'.
+- **Rendering**: `drawTextRole`, `ICanvas::drawTextImpl`/`drawText` and legacy
+  `drawTextScaled` decode UTF-8 and draw real Cyrillic glyphs; transliteration
+  (`uiAsciiForLabel`) removed from the UI path. ASCII path unchanged.
+- **Metrics**: translations shortened where needed (longest RU/EN key 90 px at
+  Caption, cell 94 px); `uiTextPixelWidth(text, role)` + `uiUtf8Codepoints`
+  exposed for tests/CI. `UiParam.label/hints` buffers support UTF-8.
+- **Tests**: **391/391 PASS** (377 + 14 font tests: uppercase/lowercase/Ё
+  coverage, bitmap non-empty, UTF-8 count, every RU key glyph coverage, all
+  translations fit 94 px, RU/EN frames differ, RU snapshot labels, actual
+  Cyrillic vs '?' fallback render, 7-page RU/EN smoke, glyph lookup fallback,
+  width metric). `run_tests.sh` → PASS.
+- **Screenshots**: `artifacts/ui/{synth,gen,ext,mic,main}_{ru,en}.png` (10 PNG;
+  RU visually inspected: real Cyrillic labels/tabs/context, no '?' boxes).
+- **Docs**: `docs/61`/`docs/66` — glyph package, transliteration removed.

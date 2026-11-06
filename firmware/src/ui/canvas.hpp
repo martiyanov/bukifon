@@ -5,6 +5,7 @@
 #include <cstdint>
 
 #include "ui/font6x8.hpp"
+#include "ui/font_cyrillic6x8.hpp"
 
 namespace bukifon {
 
@@ -42,12 +43,32 @@ class ICanvas {
   }
   virtual void drawChar(int x, int y, char c, uint16_t color) = 0;
 
-  // Default text renderer uses the generated 6x8 font.
+  // Default text renderer uses the generated 6x8 font (ASCII + Cyrillic UTF-8).
   void drawTextImpl(int x, int y, const char* text, uint16_t color, uint16_t bg) {
+    if (!text) return;
     int cx = x;
-    for (const char* p = text; *p; ++p) {
+    for (const unsigned char* p = reinterpret_cast<const unsigned char*>(text); *p;) {
+      uint32_t cp = *p;
+      if (cp < 0x80) {
+        ++p;
+      } else if ((cp & 0xE0) == 0xC0 && p[1]) {
+        cp = ((cp & 0x1F) << 6) | (p[1] & 0x3F);
+        p += 2;
+      } else if ((cp & 0xF0) == 0xE0 && p[1] && p[2]) {
+        cp = ((cp & 0x0F) << 12) | ((p[1] & 0x3F) << 6) | (p[2] & 0x3F);
+        p += 3;
+      } else {
+        cp = '?';
+        ++p;
+      }
+      const uint8_t* glyph = uiFontGlyph(cp);
+      if (!glyph) glyph = uiFontGlyph('?');
       if (bg != 0xFFFF) fillRect(cx, y, kFontWidth, kFontHeight, bg);
-      drawChar(cx, y, *p, color);
+      for (int row = 0; row < kFontHeight; ++row) {
+        for (int col = 0; col < kFontWidth; ++col) {
+          if (glyph[row] & (1u << col)) drawPixel(cx + col, y + row, color);
+        }
+      }
       cx += kFontWidth;
     }
   }

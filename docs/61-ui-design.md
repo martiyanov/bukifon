@@ -94,7 +94,11 @@
   применяет его явно.
 - **Отрисовка:** `ui800.cpp` использует `tr()` для вкладок/страниц/статусов/
   контекст-строки/полей MIC/EXT/GEN/MAIN; буферы `UiParam.label/hints` увеличены
-  под UTF-8. Текущий 6×8-шрифт — ASCII, поэтому кириллица на экране выводится
-  ASCII-транслитерацией (`uiAsciiForLabel`); это ограничение шрифта (TODO:
-  отдельный кириллический glyph-пакет), строки таблицы уже настоящий UTF-8.
-- Скриншоты: `firmware/artifacts/ui/synth_en.png` и `synth_ru.png`.
+  под UTF-8. **Кириллический glyph-пакет реализован**:
+  `firmware/src/ui/font_cyrillic6x8.*` — 66 глифов 6×8 (А–Я, а–я, Ё/ё),
+  UTF-8 → glyph lookup (`uiFontGlyph`), ASCII остаётся на прежней таблице.
+  Транслитерация удалена: RU-строки рисуются настоящими кириллическими
+  глифами (transliteration no longer used); ширина всех RU/EN ключей ≤90 px
+  при ячейке 94 px (метрика `uiTextPixelWidth`, UTF-8 codepoint count).
+- Скриншоты: `firmware/artifacts/ui/{synth,gen,ext,mic,main}_{ru,en}.png`
+  (10 PNG, RU и EN; визуально проверены).

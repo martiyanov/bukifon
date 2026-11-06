@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ui/ui800.hpp"
+#include "ui/font_cyrillic6x8.hpp"
 #include "bukifon_i18n.h"
 
 #include <cmath>
@@ -285,9 +286,10 @@ void drawParamPanel(ICanvas& c, const UiSnapshot& s) {
                                                   UiKey::EnvAmt, UiKey::Drive,
                                                   UiKey::MacroAtk, UiKey::MacroDly,
                                                   UiKey::MacroRes, UiKey::MacroRel};
-      static const UiKey micShort[kNumParams] = {UiKey::Source, UiKey::Gain, UiKey::Thresh,
-                                                 UiKey::Monitor, UiKey::Beatbox, UiKey::Sens,
-                                                 UiKey::RecPad, UiKey::Level};
+      static const UiKey micShort[kNumParams] = {UiKey::ShortSrc, UiKey::ShortGain,
+                                                 UiKey::ShortThr, UiKey::ShortMon,
+                                                 UiKey::ShortBeat, UiKey::ShortSens,
+                                                 UiKey::ShortPad, UiKey::ShortLvl};
       const UiKey shortKey = s.screen == Screen::Main ? mainShort[index] : micShort[index];
       std::snprintf(display.label, sizeof(display.label), "%s", tr(shortKey));
     }
@@ -296,9 +298,7 @@ void drawParamPanel(ICanvas& c, const UiSnapshot& s) {
     drawCard(c, x, y, kParamCellW - 4, kParamCellH - 4, cardColor(),
              selected ? accentColor() : lineColor());
     char label[40];
-    char asciiPrefix[8];
-    std::snprintf(label, sizeof(label), "%s · %s", uiEncoderCellPrefix(e),
-                  uiAsciiForLabel(p.label, asciiPrefix, sizeof(asciiPrefix)));
+    std::snprintf(label, sizeof(label), "%s · %s", uiEncoderCellPrefix(e), p.label);
     drawTextRole(c, x + 4, y + 3, label, mutedColor(), UiTextRole::Caption);
     drawTextRole(c, x + 4, y + 17, p.value, orangeColor(), UiTextRole::Value);
     drawBar(c, x + 4, y + kParamCellH - 16, kParamCellW - 12, 8, p.norm,
@@ -688,14 +688,17 @@ void uiSnapshotDemo(UiSnapshot* snapshot, Screen screen) {
     snapshot->abCompare = true;
     snapshot->presetSlot = 2;
     std::snprintf(snapshot->selectedLabel, sizeof(snapshot->selectedLabel), "%s", "1+3");
-    const UiKey hintKeys[8] = {UiKey::Prob, UiKey::Euclid, UiKey::Mutate, UiKey::Scale,
-                               UiKey::ArpRate, UiKey::ArpMode, UiKey::Evolve, UiKey::Seed};
+    const UiKey hintKeys[8] = {UiKey::ShortProb, UiKey::ShortEuclid, UiKey::ShortMutate,
+                               UiKey::ShortScale, UiKey::ShortArpRate, UiKey::ShortArpMode,
+                               UiKey::ShortEvolve, UiKey::ShortSeed};
     for (int i = 0; i < kNumHints; ++i) {
       std::snprintf(snapshot->hints[i], sizeof(snapshot->hints[i]), "%s", tr(hintKeys[i]));
     }
+    const UiKey fullKeys[8] = {UiKey::Prob, UiKey::Euclid, UiKey::Mutate, UiKey::Scale,
+                               UiKey::ArpRate, UiKey::ArpMode, UiKey::Evolve, UiKey::Seed};
     for (int i = 0; i < kNumParams; ++i) {
       std::snprintf(snapshot->params[i].label, sizeof(snapshot->params[i].label), "%s",
-                    tr(hintKeys[i]));
+                    tr(fullKeys[i]));
     }
     std::snprintf(snapshot->footer, sizeof(snapshot->footer),
                   "GEN | A/B compare | group edit parts 1+3 | 8 presets");
@@ -739,8 +742,9 @@ void uiSnapshotDemo(UiSnapshot* snapshot, Screen screen) {
       std::snprintf(snapshot->params[i].value, sizeof(snapshot->params[i].value), "%s", values[i]);
       snapshot->params[i].norm = 0.2f + 0.08f * static_cast<float>(i);
     }
-    const UiKey hintKeys[8] = {UiKey::Source, UiKey::Gain, UiKey::Thresh, UiKey::Monitor,
-                               UiKey::Beatbox, UiKey::Sens, UiKey::Rec, UiKey::RecPad};
+    const UiKey hintKeys[8] = {UiKey::ShortSrc, UiKey::ShortGain, UiKey::ShortThr,
+                               UiKey::ShortMon, UiKey::ShortBeat, UiKey::ShortSens,
+                               UiKey::ShortPad, UiKey::ShortLvl};
     for (int i = 0; i < kNumHints; ++i) {
       std::snprintf(snapshot->hints[i], sizeof(snapshot->hints[i]), "%s", tr(hintKeys[i]));
     }
@@ -913,10 +917,22 @@ void uiSnapshotForDeviceMode(UiSnapshot* snapshot, DeviceMode mode) {
 void drawTextScaled(ICanvas& canvas, int x, int y, const char* text, uint16_t color, int scale) {
   if (!text || scale <= 0) return;
   int cx = x;
-  for (const char* p = text; *p; ++p) {
-    char c = *p;
-    if (c < 32 || c > 127) c = '?';
-    const uint8_t* glyph = kFont6x8[static_cast<int>(c) - 32];
+  for (const unsigned char* p = reinterpret_cast<const unsigned char*>(text); *p;) {
+    uint32_t cp = *p;
+    if (cp < 0x80) {
+      ++p;
+    } else if ((cp & 0xE0) == 0xC0 && p[1]) {
+      cp = ((cp & 0x1F) << 6) | (p[1] & 0x3F);
+      p += 2;
+    } else if ((cp & 0xF0) == 0xE0 && p[1] && p[2]) {
+      cp = ((cp & 0x0F) << 12) | ((p[1] & 0x3F) << 6) | (p[2] & 0x3F);
+      p += 3;
+    } else {
+      cp = '?';
+      ++p;
+    }
+    const uint8_t* glyph = uiFontGlyph(cp);
+    if (!glyph) glyph = uiFontGlyph('?');
     for (int row = 0; row < kFontHeight; ++row) {
       const uint8_t bits = glyph[row];
       for (int col = 0; col < kFontWidth; ++col) {
@@ -947,24 +963,9 @@ int uiTextWidth(UiTextRole role) {
 
 namespace {
 
-char asciiForCodepoint(uint32_t cp) {
-  if (cp >= 0x0410 && cp <= 0x042F) {
-    static const char kMap[32] = {'A', 'B', 'B', 'G', 'D', 'E', 'E', 'X', '3', 'N', 'N', 'K',
-                                  'L', 'M', 'H', 'O', 'P', 'P', 'C', 'T', 'Y', 'F', 'X', 'C',
-                                  '4', 'W', 'W', 'b', 'b', 'b', '3', 'I'};
-    return kMap[cp - 0x0410];
-  }
-  if (cp >= 0x0430 && cp <= 0x044F) {
-    static const char kMap[32] = {'a', 'b', 'b', 'g', 'd', 'e', 'e', 'x', '3', 'n', 'n', 'k',
-                                  'l', 'm', 'h', 'o', 'p', 'p', 'c', 't', 'y', 'f', 'x', 'c',
-                                  '4', 'w', 'w', 'b', 'b', 'b', '3', 'r'};
-    return kMap[cp - 0x0430];
-  }
-  if (cp == 0x0401 || cp == 0x0451) return 'E';
-  if (cp == 0x00B7) return '-';  // middle dot
-  if (cp == 0x2014 || cp == 0x2013) return '-';
-  if (cp >= 32 && cp < 127) return static_cast<char>(cp);
-  return '?';
+const uint8_t* glyphForCodepoint(uint32_t cp) {
+  const uint8_t* glyph = uiFontGlyph(cp);
+  return glyph ? glyph : kFont6x8[static_cast<int>('?') - 32];
 }
 
 size_t decodeUtf8(const char* p, uint32_t* cp) {
@@ -988,17 +989,6 @@ size_t decodeUtf8(const char* p, uint32_t* cp) {
 
 }  // namespace
 
-const char* uiAsciiForLabel(const char* text, char* buffer, size_t capacity) {
-  if (!text || !buffer || capacity == 0) return "";
-  size_t used = 0;
-  for (const char* p = text; *p && used + 1 < capacity;) {
-    uint32_t cp = 0;
-    p += decodeUtf8(p, &cp);
-    buffer[used++] = asciiForCodepoint(cp);
-  }
-  buffer[used] = '\0';
-  return buffer;
-}
 
 void drawTextRole(ICanvas& canvas, int x, int y, const char* text, uint16_t color,
                   UiTextRole role) {
@@ -1012,9 +1002,7 @@ void drawTextRole(ICanvas& canvas, int x, int y, const char* text, uint16_t colo
   for (const char* p = text; *p;) {
     uint32_t cp = 0;
     p += decodeUtf8(p, &cp);
-    const char c = asciiForCodepoint(cp);
-    const int glyphIndex = (c >= 32 && c <= 127) ? c - 32 : '?' - 32;
-    const uint8_t* glyph = kFont6x8[glyphIndex];
+    const uint8_t* glyph = glyphForCodepoint(cp);
     for (int row = 0; row < kFontHeight; ++row) {
       const uint8_t bits = glyph[row];
       const int y0 = y + row * h / kFontHeight;
@@ -1029,6 +1017,11 @@ void drawTextRole(ICanvas& canvas, int x, int y, const char* text, uint16_t colo
     }
     cx += w;
   }
+}
+
+int uiTextPixelWidth(const char* text, UiTextRole role) {
+  if (!text) return 0;
+  return uiUtf8Codepoints(text) * uiTextWidth(role);
 }
 
 void drawUi800(ICanvas& canvas, const UiSnapshot& s) {
@@ -1104,8 +1097,8 @@ void Framebuffer800::drawPixel(int x, int y, uint16_t color) {
 }
 
 void Framebuffer800::drawChar(int x, int y, char c, uint16_t color) {
-  if (c < 32 || c > 127) c = '?';
-  const uint8_t* glyph = kFont6x8[static_cast<int>(c) - 32];
+  const uint8_t* glyph = uiFontGlyph(static_cast<uint8_t>(c));
+  if (!glyph) glyph = uiFontGlyph('?');
   for (int row = 0; row < kFontHeight; ++row) {
     for (int col = 0; col < kFontWidth; ++col) {
       if (glyph[row] & (1u << col)) drawPixel(x + col, y + row, color);

@@ -27,6 +27,10 @@ enum class UiKey : uint16_t {
   Ch, Prog, Vel, Len, CcHash, CcVal, Swing, Clk,
   // MIC page.
   Source, Gain, Thresh, Monitor, Beatbox, Sens, RecPad, Kick, Snare, Hat,
+  // Short display variants (fit a 94 px cell with the "А · " prefix / hint row).
+  ShortSrc, ShortGain, ShortThr, ShortMon, ShortBeat, ShortSens, ShortPad, ShortLvl,
+  ShortProb, ShortEuclid, ShortMutate, ShortScale, ShortArpRate, ShortArpMode,
+  ShortEvolve, ShortSeed,
   // Self-test / generic errors.
   Timeout, HardwareFail, NotFound, Loading,
   kCount
