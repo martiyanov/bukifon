@@ -53,6 +53,7 @@ function defaultPart(i) {
 state.parts = [0,1,2,3].map(defaultPart);
 state.extTracks = Array.from({length:8},(_,i)=>({ch:i+1, prog:i, ccNum:74+i, steps:Array.from({length:16},(_,s2)=>({on:s2%4===0, note:[0,7,12,3][s2%4], vel:100, cc:64}))}));
 let T = THEMES[state.theme];
+if (typeof window !== "undefined") window.state = state;
 const COLOR = [T.green, T.orange, T.blue, T.purple];
 const undoStack = [];
 
@@ -145,7 +146,7 @@ const UTASKS=[
 ];
 const TFLAGS={sound:false,env:false,mute2:false,euclid:false,chgMutate:false,mutundo:false,record:false,scene:false,home:false,leftMain:false};
 let TEST=null;
-function startTest(){ state.test={active:true,idx:0,t0:performance.now(),results:[],done:false}; TEST=TFLAGS; for(const k in TEST) TEST[k]=false; state.page=0; state.mode=0; flashMsg("UX-тест: 8 задач, без подсказок"); }
+function startTest(){ state.test={active:true,idx:0,t0:performance.now(),results:[],done:false}; TEST=TFLAGS; if(typeof window!=="undefined") window.TEST=TEST; for(const k in TEST) TEST[k]=false; state.page=0; state.mode=0; flashMsg("UX-тест: 8 задач, без подсказок"); }
 function finishTest(){ state.test.active=false; state.test.done=true; }
 function copyTestResults(){ const r={date:new Date().toISOString(),tasks:state.test.results,score:state.test.results.filter(x=>x.ok).length,total:UTASKS.length}; const t=JSON.stringify(r,null,1); if(navigator.clipboard) navigator.clipboard.writeText(t).catch(()=>{}); flashMsg("результаты скопированы"); }
 function checkTest(){
@@ -423,7 +424,16 @@ function buildKnobs(){
   const host=$("knobs"); host.innerHTML=""; knobEls.length=0;
   const letters=["А","Б","В","Г","Д","Е","Ж","З"];
   for(let i=0;i<8;i++){
-    const k=makeKnob(host,i,{ get:()=>pval()[i], set:(v)=>{ pval()[i]=v; if(state.page===3) applyFx(); }, min:0, max:1, onChange:null });
+    const k=makeKnob(host,i,{ get:()=>pval()[i], set:(v)=>{
+      pval()[i]=v; if(state.page===3) applyFx();
+      if(state.page===4){
+        if(i===1){ regenerateEuclid(state.parts[state.selPart]); if(TEST) TEST.euclid=true; }
+        if(i===2 && TEST) TEST.chgMutate=true;
+        if(i===7) state.seed=Math.round(v);
+      }
+      if(TEST && state.page===2) TEST.env=true;
+      try{ sendCC((CC_BASE[state.page]&&CC_BASE[state.page][i]!=null)?CC_BASE[state.page][i]:74+i, (v-pmin(state.page,i))/(pmax(state.page,i)-pmin(state.page,i))*127); }catch(e){}
+    }, min:0, max:1, onChange:null });
     k.parentElement.dataset.letter=letters[i];
     knobEls.push(k);
   }

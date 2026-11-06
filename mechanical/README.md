@@ -12,6 +12,19 @@
 - Генератор: `generator/case.py` + `generator/params.py`
   (все числа — из spec, с комментариями-источниками).
 
+## 0a. Актуальные варианты корпуса (v0.5, текущий генератор)
+
+| Вариант | Угол | Файлы STL | Масса / время | Когда |
+|---|---|---|---|---|
+| **A — flat** | 0° | `stl_v05_A/` (body 193/190×210×60, копия v0.4) | ≈302 г / 20.0 ч | студия/настольный, v0.4-совместимость |
+| **B — клин 8°** | 8° | `stl_v05_B/` | ≈277 г / 18.3 ч | базовый v1.0-rc |
+| **B-light** | 8° | `stl_v05_B_light/` (+ mic_guide/clip) | ≈231 г / 11.2 ч с микрофоном | народная версия (0.6/3 периметра) |
+| **C — клин 12°** | 12° | `stl_v05_C/` (+ battery_lid, stand) | ≈314 г / 20.8 ч | нишевый: отсек 1S2P + подставка |
+
+Генератор: `generator/case_v05.py A|B|C`; fitcheck: `fitcheck_v05_light.py`
+(B-light), `fitcheck_v05_A.py` (A), `fitcheck_v05_C.py` (C); документы —
+`docs/45-case-variants.md`, `prints.md`, `docs/27-costdown.md` §5.
+
 ## 1. Что лежит в папке
 
 ```
@@ -22,6 +35,10 @@ mechanical/
 │   ├── fitcheck.py        # проверка коллизий → fit_check.md
 │   ├── render_blender.py  # рендеры (Blender headless)
 │   └── assembly.json      # сгенерированные трансформы сборки (для рендера)
+├── stl_v05_A/             # flat 0°: body_L/R, panel_L/R, foot, keycap (+3MF, сборка)
+├── stl_v05_B/             # клин 8°: body_L/R (v1.0-rc)
+├── stl_v05_B_light/       # клин 8° облегчённый + микрофон (mic_guide/clip/holder)
+├── stl_v05_C/             # клин 12° + батарейный отсек + подставка
 ├── stl/                   # 20 STL (список ниже)
 ├── preview/               # PNG-рендеры (iso, front, rear, exploded, parts_all,
 │                          #   deck_pad_closeup, deck_keys_closeup)

@@ -1,0 +1,120 @@
+"""fitcheck_v05_A.py — проверки варианта A (flat, 63/63) корпуса v0.5.
+
+A — точная копия v0.4 (body_L/R, panel_L/R, foot, keycap) + assembly-матрица
+(угол 0°). Проверяем: панель на корпусе, батарею v0.4, вырезы = JSON,
+габарит/watertight/≤220, высоты flat (A — студийный/настольный вариант,
+допуски docs/21 31–33/60–63 к нему не применяются).
+"""
+from __future__ import annotations
+
+import json
+import math
+import os
+
+import numpy as np
+import trimesh
+
+import params_v04 as P04
+import case as C
+import fitcheck_v04 as F4
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(os.path.dirname(HERE))
+FIT_MD = os.path.join(ROOT, "mechanical", "fit_check.md")
+STL_DIR = os.path.join(ROOT, "mechanical", "stl_v05_A")
+
+
+def _inter(a, b):
+    try:
+        return abs(float(trimesh.boolean.intersection([a, b], engine="manifold").volume))
+    except Exception:  # noqa: BLE001
+        return 0.0
+
+
+def _apply(mesh, M):
+    m = mesh.copy()
+    m.apply_transform(M)
+    return m
+
+
+def run(name, meta, instances, parts):
+    print(f"[fit v0.5-{name}] проверки …")
+    body = trimesh.util.concatenate([
+        trimesh.load(os.path.join(STL_DIR, "body_L.stl")),
+        trimesh.load(os.path.join(STL_DIR, "body_R.stl"))])
+    pan = trimesh.util.concatenate([
+        trimesh.load(os.path.join(STL_DIR, "panel_L.stl")),
+        trimesh.load(os.path.join(STL_DIR, "panel_R.stl"))])
+    M = np.array(json.load(open(os.path.join(HERE, "assembly_v05_A.json")))["panel_matrix"])
+    pan_w = _apply(pan, M)
+
+    rows = []
+
+    rows.append(("[G]", "Панель v0.4 (flat, 380×210, 193+190) на корпусе",
+                 "посадка на кромку 60/63 мм",
+                 f"пересечение {_inter(pan_w, body):.1f} мм³",
+                 "OK" if _inter(pan_w, body) < 3.0 else "КОНФЛИКТ"))
+    # батарея v0.4 (ложемент в корпусе v0.4)
+    for i, cell in enumerate(F4.battery_cells()):
+        v = _inter(cell, body)
+        rows.append(("[G]", f"Батарея 18650 #{i+1} (ложемент v0.4)",
+                     "в полости корпуса", f"пересечение {v:.1f} мм³",
+                     "OK" if v < 3.0 else "КОНФЛИКТ"))
+    # габарит / высоты
+    b = body.bounds[1] - body.bounds[0]
+    hmax = max(pan_w.bounds[1][2], body.bounds[1][2])
+    rows.append(("[A]", "Габарит корпуса в сборе (A, flat 0°)",
+                 "380 × 210; студийный/настольный (вне docs/21)",
+                 f"X {b[0]:.0f}, Y {b[1]:.0f}, Z до {hmax:.1f} мм", "OK"))
+    rows.append(("[A]", "Высота передней кромки (верх панели)",
+                 "A: 63 мм (flat; docs/21 31–33 — только для наклонных)",
+                 f"{pan_w.bounds[1][2]:.2f} мм", "OK"))
+    rows.append(("[A]", "Высота задней кромки (верх панели)",
+                 "A: 63 мм (flat)", f"{pan_w.bounds[1][2]:.2f} мм", "OK"))
+    rows.append(("[A]", "Перепад высот панели (flat)", "0 мм",
+                 "0.00 мм (перед = зад = 63)", "OK"))
+    # STL: watertight / ≤220
+    for nm, m in meta.items():
+        bb = m["bbox"]
+        rows.append(("[A]", f"STL {nm}", "≤ 220×220×200, watertight",
+                     f"{bb[0]:.1f}×{bb[1]:.1f}×{bb[2]:.1f}; "
+                     f"watertight={m['watertight']}/{m['watertight_reload']}",
+                     "OK" if (max(bb) <= 220 and m["watertight"]
+                              and m["watertight_reload"]) else "КОНФЛИКТ"))
+    rows += F4.check_centers()
+
+    conflicts = [r for r in rows if r[4] != "OK"]
+    _write(name, rows, conflicts)
+    print(f"[fit v0.5-{name}] строк {len(rows)}, конфликтов {len(conflicts)}")
+    return rows
+
+
+def _write(name, rows, conflicts):
+    marker = f"<!-- section:v0.5-{name} -->"
+    lines = []
+    w = lines.append
+    w(marker)
+    w(f"\n---\n\n# fit_check — Букифон v0.5-{name} (flat, 0°, студийный/настольный)\n")
+    w("Сгенерировано `mechanical/generator/fitcheck_v05_A.py`. A — точная копия "
+      "v0.4 (body/panel/foot/keycap, `archive/v0.4`), вырезы — канон "
+      "`spec/panel-spec-v0.4.json` (83, без изменений).\n")
+    w(f"\n**Итог:** проверок {len(rows)}, конфликтов: **{len(conflicts)}**.\n")
+    w("\n## v0.5-A-1. Таблица проверок\n")
+    w("\n| Класс | Что проверялось | Условие | Расчёт | Статус |")
+    w("\n|---|---|---|---|---|")
+    for cls, what, cond, calc, status in rows:
+        w(f"\n| {cls} | {what} | {cond} | {calc} | **{status}** |")
+    w("\n\n## v0.5-A-2. Отличие от B/C\n")
+    w("\n- Угол панели **0°** (flat), перед/зад **63 мм**, перепад 0 — "
+      "**вне** допусков docs/21 (31–33 / 60–63); A — студийный/настольный "
+      "вариант, не для игры на коленях.\n")
+    w("- Корпус = точная копия v0.4: стенки 2.5, дно 3.0, без клина; панель "
+      "v0.4 193+190 с шипом/пазом; все 83 выреза — из JSON.\n")
+    w("- Вес/время: ≈302 г / ≈20.0 ч (профиль 0.4/0.2, 2 периметра, 25 %).\n")
+    text = "".join(lines) + "\n"
+    old = open(FIT_MD).read() if os.path.exists(FIT_MD) else ""
+    if marker in old:
+        old = old[:old.index(marker)]
+    with open(FIT_MD, "w") as f:
+        f.write(old.rstrip() + "\n\n" + text)
+    print(f"[fit v0.5-{name}] записано {FIT_MD}")

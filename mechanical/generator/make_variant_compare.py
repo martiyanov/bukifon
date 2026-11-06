@@ -17,8 +17,9 @@ os.makedirs(os.path.dirname(OUT), exist_ok=True)
 
 DEPTH = 210.0
 VARIANTS = [
-    ("A — flat (0°)", 0.0, 63.0, 63.0, "#777777", "-"),
+    ("A — flat (0°, студийный)", 0.0, 63.0, 63.0, "#777777", "-"),
     ("B — клин 8° (базовый v1.0-rc)", 8.0, 32.0, 61.5, "#c0392b", "-"),
+    ("B-light — 8°, 230 г / 11.1 ч", 8.0, 32.0, 61.5, "#e67e22", (0, (5, 2))),
     ("C — клин 12° + отсек + подставка", 12.0, 32.0, 76.6, "#2c6fbb", "-"),
 ]
 
@@ -43,8 +44,11 @@ def main():
         pts = contour(front, rear)
         ax.plot([p[0] for p in pts], [p[1] for p in pts], color=color, lw=2.4, ls=ls,
                 label=f"{label}: перед {front:.0f} / зад {rear:.0f} мм")
-        ax.annotate(f"{ang:.0f}°", xy=(24, rear - 4.0), fontsize=9.5, color=color,
-                    fontweight="bold")
+        if label.startswith("B-light"):
+            ax.annotate("8°", xy=(28, rear - 8.0), fontsize=8.0, color=color)
+        else:
+            ax.annotate(f"{ang:.0f}°", xy=(24, rear - 4.0), fontsize=9.5, color=color,
+                        fontweight="bold")
     ax.axhline(0, color="#444", lw=0.8)
     ax.text(4, -6, "стол (Z=0)", fontsize=7, color="#444")
     ax.set_aspect("equal")

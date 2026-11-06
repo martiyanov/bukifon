@@ -86,11 +86,14 @@ def build_body(v):
     """Нижняя скорлупа (body_L/body_R) под выбранный вариант."""
     name = v["name"]
     if name == "A":
-        # A — точная копия v0.4: берём готовые STL
+        # A — точная копия v0.4 (flat): берём готовые STL из archive/v0.4,
+        # stl_v04 в рабочей папке больше нет (AGENTS §4a)
+        src_dir = STL_V04
+        if not os.path.exists(os.path.join(src_dir, "body_L.stl")):
+            src_dir = os.path.join(ROOT, "archive", "v0.4", "mechanical", "stl_v04")
         out = {}
         for part in ("body_L", "body_R"):
-            src = os.path.join(STL_V04, part + ".stl")
-            m = trimesh.load(src)
+            m = trimesh.load(os.path.join(src_dir, part + ".stl"))
             out[part] = m
         return out
 
@@ -383,7 +386,10 @@ def main():
         _3mf(trimesh.util.concatenate(placed),
              os.path.join(stl_dir, f"bukifon_v05_{name}_assembly.3mf"))
         try:
-            if name == "C":
+            if name == "A":
+                import fitcheck_v05_A
+                fitcheck_v05_A.run(name, meta, inst, parts)
+            elif name == "C":
                 import fitcheck_v05_C
                 fitcheck_v05_C.run(name, meta, inst, parts)
             else:
