@@ -23,13 +23,13 @@ clean(){ # name: A содержит IP, нет запрещённых, AAAA пу
   local n=$1 a aaaa
   a=$(dns_get "$n" A | tr '\n' ' ')
   aaaa=$(dns_get "$n" AAAA | tr '\n' ' ')
-  if [ -z "$a" ] || [ -z "${a##*$IP*}" ] || echo "$a $aaaa" | grep -Eq "$FORBIDDEN"; then
-    say "$n: A=[$a] AAAA=[$aaaa] -> НЕ готов"; return 1
+  if echo "$a $aaaa" | grep -Eq "$FORBIDDEN"; then
+    say "$n: A=[$a] AAAA=[$aaaa] -> старые IP"; return 1
   fi
-  if [ -n "$aaaa" ]; then say "$n: остался AAAA=[$aaaa] -> НЕ готов"; return 1; fi
+  case "$a" in *"$IP"*) ;; *) say "$n: A=[$a] -> нет $IP"; return 1;; esac
+  if [ -n "$aaaa" ]; then say "$n: AAAA=[$aaaa] -> удалить AAAA"; return 1; fi
   say "$n: A=[$a] -> ok"; return 0
 }
-
 com_ok=0; ru_ok=0
 clean bukifon.com && clean www.bukifon.com && com_ok=1
 clean bukifon.ru && clean www.bukifon.ru && ru_ok=1

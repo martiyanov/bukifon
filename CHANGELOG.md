@@ -2,6 +2,15 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.44.1] — 2025-11-06 — «HTTPS bukifon.com»
+
+### Исправлено/добавлено
+- **bukifon.com работает по HTTPS** (Let's Encrypt; `www.bukifon.com` → 301 на apex); сайт RU/EN,
+  демо и ассеты отдаются с VDS (200).
+- **Исправлен auto-TLS watcher**: инвертированная проверка A-записи (`-z ${a##*IP*}`) не давала
+  выпустить сертификат; теперь .com выдан автоматически, .ru ждёт делегации NS.
+- nginx: отдельные vhost'ы для apex/www (.com), редирект www; docs/88 обновлён; watcher в репо.
+
 ## [0.44.0] — 2025-11-06 — «Board-fit и RC-пакет»
 
 ### Добавлено
