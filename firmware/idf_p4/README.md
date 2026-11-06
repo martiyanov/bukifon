@@ -33,7 +33,16 @@ idf.py --version              # must report v5.5 or newer
 If the P4 target is unknown, the IDF checkout is older than 5.3 / missing
 submodules (`git submodule update --init --recursive`).
 
-## 2. Build / flash
+## 2. Partition table / NVS
+
+`partitions.csv` (16 MB flash): `nvs` 24 KiB, `otadata` 8 KiB, `phy_init` 4 KiB,
+`factory` 1 MiB, `storage` SPIFFS 1 MiB, `coredump` 64 KiB. `app_main` calls
+`nvs_flash_init()` (erase+retry on NO_FREE_PAGES/NEW_VERSION), logs NVS stats and
+self-tests `project.meta`/`lang` through the real `NvsStorageBackend`
+(namespace `bukifon`) — expect `NVS OK` in the monitor. Details: docs/42 §10,
+docs/59 §9.
+
+## 3. Build / flash
 
 ```bash
 cd firmware/idf_p4
@@ -47,6 +56,8 @@ idf.py -p /dev/ttyUSB0 flash monitor
 Expected log (values depend on the board):
 
 ```
+I (xxx) bukifon: NVS OK: used=... free=... total=... namespaces=...
+I (xxx) bukifon: NVS OK: project.meta=16 bytes lang=RU (namespace bukifon)
 I (xxx) bukifon:  Bukifon P4 bring-up
 I (xxx) bukifon:  target=esp32p4 rev=... cores=... features=0x...
 I (xxx) bukifon:  IDF version: v5.5...
@@ -64,22 +75,24 @@ I (xxx) bukifon: P4 bring-up sequence complete; heartbeat every 10 s
 PANEL-2/PWR-2/EEPROM/DACs — it is not a build failure.  On a custom board/stand
 all 8 addresses must be present (factory self-test, docs/46).
 
-## 3. Layout
+## 4. Layout
 
 ```
 firmware/idf_p4/
   CMakeLists.txt              # IDF project entry
   sdkconfig.defaults          # P4, PSRAM, 16 MB flash, FreeRTOS 1 kHz, USB HS notes
+  partitions.csv              # nvs/otadata/phy_init/factory/storage/coredump (16 MB)
   main/
     CMakeLists.txt
-    app_main.cpp              # hello + chip/PSRAM/I2C scan + heartbeat
+    app_main.cpp              # bring-up + NVS init/project.meta/lang self-test
+    nvs_storage_backend.*     # real ESP-IDF NVS blob adapter (namespace bukifon)
   components/bukifon_engine/  # optional engine component (empty scaffold)
     CMakeLists.txt
     src/ include/ app/        # placeholders; copy the portable engine here
   README.md
 ```
 
-## 4. Connecting the existing engine (components/)
+## 5. Connecting the existing engine (components/)
 
 The portable engine (`firmware/src`, `firmware/include`, `firmware/engine_unity.cpp`)
 has no Arduino dependency; it can be built as an IDF component.  From the
@@ -106,7 +119,7 @@ engine is portable C++17; ESP-IDF builds it with `-fno-exceptions` (default
 drivers); write IDF drivers around it instead (`driver/i2c_master`,
 `driver/i2s_std`, `esp_lcd`, `sdmmc`, `esp_tinyusb`).
 
-## 5. IDF components needed for the product (next steps)
+## 6. IDF components needed for the product (next steps)
 
 | Feature | IDF component / managed dependency |
 |---|---|
@@ -121,7 +134,7 @@ drivers); write IDF drivers around it instead (`driver/i2c_master`,
 Add managed components in `main/idf_component.yml` when needed; keep this
 scaffold dependency-free so the first build is reproducible.
 
-## 6. Verification status
+## 7. Verification status
 
 - **Not built in this development environment**: ESP-IDF was not installed here
   at the time of writing; a clone/install attempt is recorded in
@@ -133,7 +146,7 @@ scaffold dependency-free so the first build is reproducible.
 - A real hardware claim (PSRAM 32 MB, CPU 400 MHz, I2C 8/8) requires running the
   flashed image on the P4 devkit and attaching the monitor log.
 
-## 7. Troubleshooting
+## 8. Troubleshooting
 
 | Symptom | Fix |
 |---|---|

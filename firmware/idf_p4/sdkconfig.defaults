@@ -19,7 +19,7 @@ CONFIG_SPIRAM_MALLOC_RESERVE_INTERNAL=32768
 
 # --- flash / partitions ----------------------------------------------------
 CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y
-CONFIG_PARTITION_TABLE_SINGLE_APP_LARGE=y
+# Custom partition table (round 32) — see below; single-app layout is superseded.
 # Production plan (docs/42 §4): OTA A/B + recovery + factory_data; the scaffold
 # keeps a single app partition until the bootloader/OTA layout is frozen.
 
@@ -35,3 +35,14 @@ CONFIG_ESP_CONSOLE_UART_DEFAULT=y
 # --- C++ -------------------------------------------------------------------
 CONFIG_COMPILER_CXX_EXCEPTIONS=n
 CONFIG_COMPILER_CXX_RTTI=n
+
+# --- storage / partitions (round 32) --------------------------------------
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+CONFIG_PARTITION_TABLE_FILENAME="partitions.csv"
+CONFIG_ESP_COREDUMP_ENABLE=y
+CONFIG_ESP_COREDUMP_ENABLE_TO_FLASH=y
+CONFIG_ESP_COREDUMP_DATA_FORMAT_ELF=y
+# NVS is initialized by app_main (erase+retry on NO_FREE_PAGES/NEW_VERSION).
+# Storage partition is SPIFFS (data/spiffs) for project/SD cache; real SPIFFS
+# mount is a later step, the partition table is frozen here.

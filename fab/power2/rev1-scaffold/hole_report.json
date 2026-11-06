@@ -1,0 +1,11 @@
+{
+ "board": "power2",
+ "mounting_holes": 4,
+ "drill_files": [
+  "PWR-2-rev1-PTH.drl",
+  "PWR-2-rev1-NPTH.drl"
+ ],
+ "total_holes": 4,
+ "copper_layers": 4,
+ "edge_cuts_closed": true
+}

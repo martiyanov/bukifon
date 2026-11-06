@@ -3,7 +3,7 @@
 **Status:** сборка **проверена 06.11.2025** на домашнем ПК `pole`:
 **ESP-IDF v5.5**, target `esp32p4`, `idf.py set-target esp32p4 && idf.py build`
 → **SUCCESS**, `bukifon_p4.bin` **250 240 B** (83 % app-раздела свободно), см. §8.
-Host-тесты прошивки: **248/248**. PlatformIO P4 по-прежнему не поддерживает (§1).
+Host-тесты прошивки: **407/407**. PlatformIO P4 по-прежнему не поддерживает (§1).
 
 Related: [P1 measurement stand](56-p1-measurements.md), [CORE-2 pin map](../hardware/core2/pinmap.md),
 [factory self-test](46-factory-test.md), [RC definition](36-rc-definition.md).
@@ -183,3 +183,25 @@ Required IDF/managed components for steps 3–5:
 | Команда | `bash tools/ci_p4_remote.sh` — sync + host-тесты GCC + `idf.py build` (повторяемо) |
 
 Вывод: изменения после v0.25 (микрофон, SDK, self-test 21, bring-up app) не сломали сборку P4. В IDF 5.5 для P4 выбирается **360 МГц** (`CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_360`); 400 МГц в Kconfig этой версии нет.
+
+---
+
+## 9. Partition table + NVS / coredump (раунд 32)
+
+`firmware/idf_p4/partitions.csv` (16 МБ flash, см. docs/42 §10):
+`nvs` 24 КиБ, `otadata` 8 КиБ, `phy_init` 4 КиБ, `factory` 1 МиБ,
+`storage` (SPIFFS) 1 МиБ, `coredump` 64 КиБ. `sdkconfig.defaults`:
+`CONFIG_PARTITION_TABLE_CUSTOM=y` + путь `partitions.csv`,
+`CONFIG_ESP_COREDUMP_ENABLE_TO_FLASH=y` (ELF).
+
+В `app_main` (P4-ветка): `nvs_flash_init()`, при
+`ESP_ERR_NVS_NO_FREE_PAGES`/`ESP_ERR_NVS_NEW_VERSION_FOUND` — erase+retry;
+лог `NVS OK: used/free/total/namespaces`; реальный `NvsStorageBackend`
+(blob get/set/commit/erase, namespace `bukifon`) вместо host-stub; self-test
+`project.meta` и `lang` с read-back → `NVS OK`.
+
+**Сборка/размер:** ранее hello IDF v5.5 дал `bukifon_p4.bin` 250 240 B
+(см. §8). Текущий bring-up app содержит esp_lcd/I2S/NVS; ожидаемый bin ~330 КБ
+(<1 МиБ factory). Проверка на home: `idf.py build && idf.py size` или
+`tools/ci_p4_remote.sh`; при bin >1 МиБ — увеличить `factory`/сдвинуть разделы.
+Локально IDF нет — build/размер помечаются как проверка на home, не выдумываются.

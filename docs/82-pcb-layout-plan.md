@@ -140,6 +140,7 @@ keepout/стек — **без компонентов, netlist и меди**; PCB
   (0.5×0.8 мм, шаг 1.0) с корректными номерами и числом — реальные `.kicad_mod` из KiCad-библиотек
   (имена footprint'ов уже в BOM) подтянуть при разводке; placeholder'ы и bare-имена требуют замены/
   связывания с библиотеками; DRC-unconnected (499/368/265/263) — ожидаемо на каркасе.
+- **Fab dry-run:** `bash tools/export_fab_dryrun.sh` → `fab/<board>/rev1-scaffold/` (gerbers/drill/CPL/BOM/PDF); checker PASS; см. `docs/83` §8. **Не для заказа.**
 - **Дальше:** реальные футпринты кастомных (см. README), правила DRC/импедансов, медные полигоны/GND,
   затем трассировка — только после MCU freeze (docs/56) и PWR 13/13 (docs/51).
 

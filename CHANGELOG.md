@@ -2,6 +2,20 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.48.0] — 2025-11-06 — «Fab dry-run и NVS»
+
+### Добавлено
+- **Fab dry-run из каркасов rev.1**: `fab/<board>/rev1-scaffold/` — Gerbers X2 (16 слоёв),
+  drill PTH/NPTH (CORE-2 129, PANEL-2 45/45, PWR-2 4 отверстия), CPL/BOM, stackup, drawings,
+  hole_report (`edge_cuts_closed=true`); `check_fab_package.py` — **PASS на всех 4**;
+  `tools/export_fab_dryrun.sh`; docs/83 §8, D-104. Явно «DRY-RUN, NOT FOR ORDER» (нет трассировки).
+- **P4 partitions + реальный NVS**: `partitions.csv` (nvs 24 KiB, factory **1 MiB**, storage 1 MiB,
+  coredump 64 KiB), `NvsStorageBackend` (nvs blob get/set/commit/erase, namespace `bukifon`),
+  `nvs_flash_init` с erase+retry, self-test `project.meta`/`lang` → `NVS OK`.
+- **P4 build**: bin **369 552 Б** (0x5a390), factory 1 MiB — **65 % свободно**; compile-fix
+  (`bukifon::NvsStorageBackend`, static `openNs`, `esp_err.h`), host 407/407.
+- docs/42 §10, docs/59 §9, docs/82 §11, spec/90 D-104.
+
 ## [0.47.0] — 2025-11-06 — «Футпринты и правила»
 
 ### Добавлено

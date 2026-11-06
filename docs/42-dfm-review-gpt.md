@@ -203,3 +203,34 @@ sequence + CRC32, read-back verify, recovery-флаг). Для фабрики/DF
   power-cut; wear-счётчики (MockFlash) — модель для оценки ресурса.
 - **TODO(hw):** NVS partition table + `nvs_flash_init`, SDIO/SDMMC, wear-leveling,
   подпись/шифрование `.bkfp`; тесты 407/407 host (MockFlash/SdFile/NVS stub).
+
+---
+
+## 10. NVS-партиции, recovery, размеры (раунд 32)
+
+CORE-2/P4 (16 МБ flash) — `firmware/idf_p4/partitions.csv`:
+
+| Имя | Тип | SubType | Offset | Размер | Назначение |
+|---|---|---|---|---|---|
+| `nvs` | data | nvs | 0x9000 | 0x6000 (24 KiB) | namespace `bukifon`: project.meta/lang/settings |
+| `otadata` | data | ota | 0xf000 | 0x2000 | OTA-состояние (future A/B) |
+| `phy_init` | data | phy | 0x11000 | 0x1000 | RF calibration |
+| `factory` | app | factory | 0x20000 | 0x100000 (1 MiB) | bring-up app, ожидаемый bin ~330 КБ |
+| `storage` | data | spiffs | 0x120000 | 0x100000 (1 MiB) | project/SD-кэш (SPIFFS; mount — later) |
+| `coredump` | data | coredump | 0x220000 | 0x10000 (64 KiB) | `CONFIG_ESP_COREDUMP_ENABLE_TO_FLASH` |
+
+- `sdkconfig.defaults`: `CONFIG_PARTITION_TABLE_CUSTOM=y`, custom filename
+  `partitions.csv`, `CONFIG_ESP_COREDUMP_ENABLE_TO_FLASH=y`, coredump ELF.
+- `app_main`: `nvs_flash_init()`; при `ESP_ERR_NVS_NO_FREE_PAGES`/
+  `ESP_ERR_NVS_NEW_VERSION_FOUND` — `nvs_flash_erase()` + повтор; лог
+  `NVS OK: used/free/total/namespaces`; реальный `NvsStorageBackend`
+  (`nvs_set_blob/commit/get_blob/erase`, namespace `bukifon`), self-test
+  `project.meta` + `lang` с read-back и логом `NVS OK`.
+- Recovery: NVS-инициализация с erase-retry; coredump-партиция для паник;
+  атомарность project/preset — на уровне `AtomicStorage` (docs/70 §10) поверх
+  NVS/SD.
+- Размер: app-раздел 1 МиБ; фактический bin проверить `idf.py size` на home/CI
+  (`tools/ci_p4_remote.sh`); если >1 МиБ — увеличить factory и сдвинуть
+  storage/coredump (таблица позволяет до 16 МБ).
+- TODO(hw): запись в NVS на реальной плате, SPIFFS mount, OTA A/B; SD-драйвер —
+  отдельный шаг (docs/70 §10).

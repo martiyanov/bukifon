@@ -27,6 +27,9 @@
 #include "esp_system.h"
 #include "esp_timer.h"
 #include "esp_heap_caps.h"
+#include "nvs_flash.h"
+#include "nvs.h"
+#include "nvs_storage_backend.hpp"
 #include "driver/gpio.h"
 
 #if __has_include("esp_psram.h")
@@ -90,6 +93,54 @@ const char* targetName() {
 }
 
 #if defined(CONFIG_IDF_TARGET_ESP32P4)
+void nvsInitAndSelfTest() {
+  esp_err_t rc = nvs_flash_init();
+  if (rc == ESP_ERR_NVS_NO_FREE_PAGES || rc == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+    ESP_LOGW(kTag, "NVS init: %s -> erase+retry", esp_err_to_name(rc));
+    nvs_flash_erase();
+    rc = nvs_flash_init();
+  }
+  if (rc != ESP_OK) {
+    ESP_LOGE(kTag, "NVS init FAIL: %s", esp_err_to_name(rc));
+    return;
+  }
+  nvs_stats_t stats = {};
+  if (nvs_get_stats(nullptr, &stats) == ESP_OK) {
+    ESP_LOGI(kTag, "NVS OK: used=%u free=%u total=%u namespaces=%u",
+             static_cast<unsigned>(stats.used_entries), static_cast<unsigned>(stats.free_entries),
+             static_cast<unsigned>(stats.total_entries),
+             static_cast<unsigned>(stats.namespace_count));
+  }
+  bukifon::NvsStorageBackend nvs;
+  if (!nvs.begin()) {
+    ESP_LOGE(kTag, "NVS storage backend begin FAIL");
+    return;
+  }
+  const uint8_t meta[] = "BKF2|p4-bringup";
+  const uint8_t lang[] = "RU";
+  if (!nvs.write("bukifon", "project.meta", meta, sizeof(meta) - 1) ||
+      !nvs.write("bukifon", "lang", lang, sizeof(lang) - 1)) {
+    ESP_LOGE(kTag, "NVS self-test write FAIL");
+    return;
+  }
+  uint8_t readMeta[32] = {};
+  size_t readSize = 0;
+  if (!nvs.read("bukifon", "project.meta", readMeta, sizeof(readMeta), &readSize) ||
+      readSize != sizeof(meta) - 1 || std::memcmp(readMeta, meta, readSize) != 0) {
+    ESP_LOGE(kTag, "NVS self-test read/verify FAIL");
+    return;
+  }
+  uint8_t readLang[8] = {};
+  size_t langSize = 0;
+  if (!nvs.read("bukifon", "lang", readLang, sizeof(readLang), &langSize)) {
+    ESP_LOGE(kTag, "NVS self-test lang read FAIL");
+    return;
+  }
+  ESP_LOGI(kTag, "NVS OK: project.meta=%u bytes lang=%.*s (namespace bukifon)",
+           static_cast<unsigned>(readSize), static_cast<int>(langSize),
+           reinterpret_cast<const char*>(readLang));
+}
+
 void printChipBanner() {
   esp_chip_info_t chip;
   esp_chip_info(&chip);
@@ -521,6 +572,7 @@ extern "C" void app_main(void) {
 #if defined(BUKIFON_HAVE_UART_DRIVER)
   uart_set_baudrate(UART_NUM_0, 115200);  // UART0 console, docs/80 day-1
 #endif
+  nvsInitAndSelfTest();
   printChipBanner();
   if (i2cBegin()) i2cScan();
   displayTest();

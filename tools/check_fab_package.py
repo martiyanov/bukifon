@@ -26,6 +26,25 @@ def main():
         problems.append(f"Gerber-слоёв {len(gerbers)} < {GERBER_MIN}")
     if not drills:
         problems.append("нет drill/*.drl")
+    else:
+        names=[os.path.basename(x) for x in drills]
+        if not any('NPTH' in n for n in names): problems.append("drill: нет *NPTH*.drl")
+        if not any('PTH' in n for n in names): problems.append("drill: нет *PTH*.drl")
+    # Edge.Cuts gerber must exist
+    gdir=os.path.join(root,'gerbers')
+    if os.path.isdir(gdir):
+        if not any(('Edge_Cuts' in f or 'Edge.Cuts' in f or f.endswith('.gko') or f.endswith('.gm1')) for f in os.listdir(gdir)):
+            problems.append("gerbers: нет Edge.Cuts слоя")
+    # optional dry-run hole report
+    hr=os.path.join(root,'hole_report.json')
+    if os.path.exists(hr):
+        try:
+            h=json.load(open(hr,encoding='utf-8'))
+            if int(h.get('mounting_holes',0)) < 1: problems.append("hole_report: mounting_holes < 1")
+            if int(h.get('total_holes',0)) < int(h.get('mounting_holes',0)): problems.append("hole_report: total_holes < mounting_holes")
+            if int(h.get('copper_layers',0)) < 4: problems.append("hole_report: copper_layers < 4")
+        except Exception as e:
+            warnings.append(f"hole_report: {e}")
     # CPL
     if os.path.exists(os.path.join(root, "cpl.csv")):
         rows = read_csv(os.path.join(root, "cpl.csv"))

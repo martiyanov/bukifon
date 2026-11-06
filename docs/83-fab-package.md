@@ -60,3 +60,26 @@ fab/
 
 `fab/` — в git (лёгкие файлы: PDF/CSV/MD; Gerber — zip в `dist/fab/<version>/`), версии тегами;
 герберы не перезаписывать — новая ревизия = новая папка.
+
+## 8. Dry-run экспорт из каркасов rev.1 (2026-11-06)
+
+Первый полный прогон экспорт/проверка **без заказа PCB**, из каркасов
+`hardware/{core2,panel2,power2}/rev1/*.kicad_pcb` (нетлист/футпринты есть, трассировки нет).
+Повтор: `bash tools/export_fab_dryrun.sh`.
+
+| Пакет | Gerbers | Drill (PTH/NPTH) | Отверстий | BOM | CPL | Checker |
+|---|---:|---:|---:|---:|---:|---|
+| `fab/core2/rev1-scaffold` | 16 | 2 | 129 (4 крепёж) | 373 | 295 | **PASS** |
+| `fab/panel2-left/rev1-scaffold` | 16 | 2 | 45 (3 крепёж + Choc NPTH) | 181 | 180 | **PASS** |
+| `fab/panel2-right/rev1-scaffold` | 16 | 2 | 45 (3 крепёж) | 174 | 174 | **PASS** |
+| `fab/power2/rev1-scaffold` | 16 | 2 | 4 (4 крепёж) | 128 | 128 | **PASS** |
+
+Каждый пакет: `gerbers/` (X2, Edge.Cuts замкнут, 6/4 Cu), `drill/*PTH.drl`+`*NPTH.drl`,
+`bom.csv` (ref,qty,mpn,value,package,dnp,note), `cpl.csv` (mm, от левого нижнего угла,
+DNP исключены), `stackup.md`, `fab-drawing.pdf`, `assembly-drawing.pdf`, `hole_report.json`,
+`README.md`, `MANIFEST.md`. Проверка: `python3 tools/check_fab_package.py fab/<board>/rev1-scaffold`
+— **PASS** (CPL refs ⊆ BOM refs, нет DNP в CPL, ≥8 слоёв, Edge.Cuts, PTH/NPTH, без PII).
+
+**Ограничения dry-run:** нет трассировки/медных полигонов; стандартные пассивные компоненты —
+упрощённые пады (реальные `.kicad_mod` при разводке); нет IPC-D-356; BOM — черновой MPN без
+поставщиков. **Для заказа не годится** — только проверка пайплайна экспорта и чекера.

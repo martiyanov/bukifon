@@ -1,6 +1,6 @@
 # Букифон (Bukifon) — открытая платформа: сэмплер + синтезатор + модули
 
-**Версия: 0.47.0** · сайт: **https://bukifon.com/** (HTTPS; `bukifon.ru` — после делегации NS), зеркало: https://martiyanov.github.io/bukifon/ (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
+**Версия: 0.48.0** · сайт: **https://bukifon.com/** (HTTPS; `bukifon.ru` — после делегации NS), зеркало: https://martiyanov.github.io/bukifon/ (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
 
 **Букифон** — настольный музыкальный инструмент-платформа, который собирается из
 доступных компонентов, печатается на 3D-принтере, расширяется модулями и полностью
@@ -32,7 +32,7 @@ BLE HID, передача проектов). То есть Букифон — е
 аналоговый картридж на шине 26-pin или сменная панельная дека (18 пэдов / 42 клавиши).
 Подробнее — [spec/00-vision.md §12](spec/00-vision.md).
 
-## Текущее состояние (v0.47.0)
+## Текущее состояние (v0.48.0)
 
 | Блок | Состояние |
 |---|---|
@@ -67,6 +67,8 @@ BLE HID, передача проектов). То есть Букифон — е
 | **Медиа** | PNG→JPEG (60 файлов, −83 МБ), SVG→.svg.gz (19, −46 МБ), дубликаты убраны; tracked **71 МБ** (`docs/52`) |
 | **Дисплей** | RGB565 поверх RGB888 FPC-40: **TFT-H050A1SVIST4R40** (HotLCD/ST7262, 40-pin, 1000 нит, $18–25), резерв NHD/EJ050NA; DSI — rev.3.1 (`docs/47`) |
 | **PWR-стенд** | 13 измерений до PCB (`docs/44`); BOM: база $123.92 + EVM $153 = **$276.92** (вариант A, D-79); breadboard запрещён |
+| **Fab dry-run** | 4 пакета `fab/*/rev1-scaffold`: 16 Gerber-слоёв, PTH+NPTH (129/45/45/4 отверстий), CPL⊆BOM, Edge.Cuts, **checker PASS**; `tools/export_fab_dryrun.sh` — проверка пайплайна до заказа |
+| **P4 NVS/partitions** | `partitions.csv` (nvs 24K, factory 1 MiB, storage 1 MiB, coredump 64K), real NVS backend, self-test `project.meta`/`lang`; **bin 369 552 Б, 65 % factory свободно** |
 | **PCB rev.1: реальные футпринты** | **0 placeholder**; кастомные `.kicad_mod` (P4-адаптер, C6, MP1584, Choc) + стандартные KiCad (TRS/DC/кнопки/QFN); DRC-классы Default/Power/USB_HS(90 Ω)/Audio/RF; **DRC 0/0**, RULES PASS; план GND-полигонов |
 | **PCB rev.1: нетлист + футпринты** | CORE-2 **373 refs/1224 пада** (16 placeholder), PANEL-2 left/right 181/174 (по 21 Choc), PWR-2 128 (0 placeholder); **DRC 0/0**, verify PASS; unconnected — неразведённые цепи |
 | **PCB rev.1 scaffolds** | KiCad-каркасы: CORE-2 200×108 6L, PANEL-2 2×180×190 4L, PWR-2 90×70 4L/2oz; Edge.Cuts/NPTH/keepout, **DRC 0/0**, verify ±0.05 мм (`hardware/*/rev1/`) |
