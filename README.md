@@ -1,6 +1,6 @@
 # Букифон (Bukifon) — открытая платформа: сэмплер + синтезатор + модули
 
-**Версия: 0.45.0** · сайт: **https://bukifon.com/** (HTTPS; `bukifon.ru` — после делегации NS), зеркало: https://martiyanov.github.io/bukifon/ (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
+**Версия: 0.46.0** · сайт: **https://bukifon.com/** (HTTPS; `bukifon.ru` — после делегации NS), зеркало: https://martiyanov.github.io/bukifon/ (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
 
 **Букифон** — настольный музыкальный инструмент-платформа, который собирается из
 доступных компонентов, печатается на 3D-принтере, расширяется модулями и полностью
@@ -32,7 +32,7 @@ BLE HID, передача проектов). То есть Букифон — е
 аналоговый картридж на шине 26-pin или сменная панельная дека (18 пэдов / 42 клавиши).
 Подробнее — [spec/00-vision.md §12](spec/00-vision.md).
 
-## Текущее состояние (v0.45.0)
+## Текущее состояние (v0.46.0)
 
 | Блок | Состояние |
 |---|---|
@@ -67,6 +67,7 @@ BLE HID, передача проектов). То есть Букифон — е
 | **Медиа** | PNG→JPEG (60 файлов, −83 МБ), SVG→.svg.gz (19, −46 МБ), дубликаты убраны; tracked **71 МБ** (`docs/52`) |
 | **Дисплей** | RGB565 поверх RGB888 FPC-40: **TFT-H050A1SVIST4R40** (HotLCD/ST7262, 40-pin, 1000 нит, $18–25), резерв NHD/EJ050NA; DSI — rev.3.1 (`docs/47`) |
 | **PWR-стенд** | 13 измерений до PCB (`docs/44`); BOM: база $123.92 + EVM $153 = **$276.92** (вариант A, D-79); breadboard запрещён |
+| **PCB rev.1: нетлист + футпринты** | CORE-2 **373 refs/1224 пада** (16 placeholder), PANEL-2 left/right 181/174 (по 21 Choc), PWR-2 128 (0 placeholder); **DRC 0/0**, verify PASS; unconnected — неразведённые цепи |
 | **PCB rev.1 scaffolds** | KiCad-каркасы: CORE-2 200×108 6L, PANEL-2 2×180×190 4L, PWR-2 90×70 4L/2oz; Edge.Cuts/NPTH/keepout, **DRC 0/0**, verify ±0.05 мм (`hardware/*/rev1/`) |
 | **Вырезы разъёмов** | MIDI Ø14 X76, DC Ø9 X91, EXPRESSION Ø8.2 X120.5, mic Ø8.2 X140, SD 12×2 слева, USB-C; перемычки ≥3.5 мм; B-light **231.1 г/11.2 ч**; fitcheck 16/0 |
 | **Board-fit (PCB rev.1)** | контуры для KiCad: CORE-2 200×108, PANEL-2 две платы 180×180 (360×190), PWR-2 90×70; DXF/assembly/spec, 22 проверки 0 конфликтов (`mechanical/board-fit/`) |

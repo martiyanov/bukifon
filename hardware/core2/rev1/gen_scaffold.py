@@ -179,8 +179,8 @@ def build_board(b, outpath, cu_count=6, cu_thickness=0.035):
             L.append(s)
     # labels
     ly = H*0.55
-    L.append(gr_text('%s rev.1 scaffold - PRE-FREEZE, do not fabricate' % b['id'], 2, ly, size='1.6'))
-    L.append(gr_text('board %s x %s mm; screw %s; %d Cu layers; 1.6 mm' % (W,H,b.get('mounting',{}).get('screw','M3'),cu_count), 2, ly-4.0, size='1.2'))
+    L.append(gr_text('%s rev.1 scaffold - PRE-FREEZE, do not fabricate' % b['id'], 2, ly, layer='Cmts.User', size='1.6'))
+    L.append(gr_text('board %s x %s mm; screw %s; %d Cu layers; 1.6 mm' % (W,H,b.get('mounting',{}).get('screw','M3'),cu_count), 2, ly-4.0, layer='Cmts.User', size='1.2'))
     L.append(')')
     open(outpath,'w',encoding='utf-8').write('\n'.join(L)+'\n')
     return W,H

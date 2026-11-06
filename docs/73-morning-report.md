@@ -69,3 +69,15 @@
 - **Прошивка:** `firmware/` (311 тестов), `firmware/idf_p4/` (IDF 5.5);
 - **Репозиторий:** [docs/41](41-repo-recreate.md) + `dist/bukifon-fresh-v0.23.2.bundle`;
 - **Отчёты:** [docs/32](32-progress-report.md), этот файл, [docs/23](23-nightly-report.md).
+
+## 8. Обновление 06.11.2025 (v0.45.0)
+
+- **PCB rev.1**: каркасы KiCad (CORE-2 200×108 6L, PANEL-2 2×180×190 4L, PWR-2 90×70 4L/2oz),
+  Edge.Cuts/NPTH/keepout, **DRC 0/0**, verify ±0.05 мм; дальше — нетлист/футпринты.
+- **Корпус**: вырезы MIDI/DC/EXP/mic/SD/USB-C (перемычки ≥3.5 мм), B-light **231.1 г/11.2 ч**.
+- **Прошивка**: storage backend + атомарное A/B хранение (project/presets/язык, recovery),
+  **407/407 тестов**; project v2; UI RU/EN + кириллица; SDK v0.2; self-test 21.
+- **Сайт**: **https://bukifon.com/** (HTTPS, www→apex), задеплоен на VDS; bukifon.ru ждёт
+  делегации NS; auto-TLS watcher; ежедневные бэкапы; деплой — `tools/deploy_vds.sh`, docs/88.
+- **Релизы**: v0.14 → **v0.45.0**; release bundle проверяется SHA256/PII; RC-пакет —
+  `tools/make_rc_bundle.sh` + чек-лист docs/87.

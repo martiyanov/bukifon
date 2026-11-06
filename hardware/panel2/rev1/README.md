@@ -35,3 +35,18 @@
 2. FPC-40/IDC pinout и направление выхода (docs/82 §...); зоны MEMS ≥10 мм от LED/BL.
 3. Крепёж: по board-fit **3×M3 на каждую плату (6 всего на панель)**; панель крепится к корпусу.
 4. DFM `hardware/panel2/dfm.md`, затем заказ.
+
+## Нетлист и посадочные места — первый импорт (2026-11-06)
+
+- Источник: `hardware/panel2/PANEL-2.net` (PANEL-2 rev.2/3) + `BOM-panel2.csv`.
+- Разбивка left/right по зонам board-fit: ENC1–8/KEY1–21/J01–J05/F1 — левая;
+  ENC9–16/KEY22–42/J06–J10/F2 — правая; остальные refs — поровну.
+- **Refs: left 181, right 174 (итого 355 + 6 H-креплений = 361)**.
+- **Footprints: left 181 + 4 крепления, right 174 + 3 крепления**; pads left 585 / right 443.
+- **Placeholder: 21 на каждой плате** — клавиши Choc (`KEY_L01…L21`, `KEY_R01…R21`);
+  остальные (R/C/D/энкодеры/джеки) получили footprints из BOM (энкодеры/джеки — bare-имена
+  кастомных библиотек, проверить при разводке).
+- Зоны: энкодеры/клавиши/фельдеры/джеки — по центрам keepout/вырезов board-fit; остальное — сетка.
+- **DRC: 0 errors / 0 warnings; unconnected: left 368 / right 265** — допустимо.
+- Перегенерация: `python hardware/core2/rev1/gen_scaffold.py && python hardware/core2/rev1/import_netlist.py`.
+- Дальше: реальные футпринты Choc/EC11/джеков/FPC-40/IDC, затем трассировка после MCU freeze.

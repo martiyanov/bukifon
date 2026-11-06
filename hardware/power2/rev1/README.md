@@ -29,3 +29,14 @@
 1. Импорт netlist/посадочных мест PWR-2 rev.1 (TPS61088, LMR33630, BQ24074 EVM? — после стенда docs/44).
 2. Силовые полигоны 3 А, тепловые vias, J3 (IDC-20 vs Micro-Fit, O-11), звезда PGND.
 3. DFM `hardware/power2/dfm.md` + PWR 13/13 (docs/51), затем заказ.
+
+## Нетлист и посадочные места — первый импорт (2026-11-06)
+
+- Источник: `hardware/power2/netlist.xml` + `BOM-power2.csv`.
+- **Refs: 128/128**; 4 NPTH-крепления M2.5 — из каркаса.
+- **Footprints: 128**; pads **328**; **Placeholder: 0** (все footprint'ы есть в BOM/стандартных
+  библиотеках; силовые — проверить thermal pad/2 oz).
+- **DRC: 0 errors / 0 warnings; unconnected = 263** — допустимо.
+- Зоны: силовая зона (hot-loop/battery-conn) — при ручной разводке; сетка — черновая.
+- Перегенерация: `python hardware/core2/rev1/gen_scaffold.py && python hardware/core2/rev1/import_netlist.py`.
+- Дальше: трассировка 3 А/тепловые полигоны после PWR 13/13; J3 (IDC vs Micro-Fit).

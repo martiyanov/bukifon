@@ -2,6 +2,20 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.46.0] — 2025-11-06 — «Нетлист в каркасах rev.1»
+
+### Добавлено
+- **Импорт нетлиста в каркасы PCB rev.1** (`hardware/*/rev1/`): сети, футпринты, пады по нетлисту
+  (KiCad CLI не умеет Update PCB from schematic — генератор `import_netlist.py`):
+  CORE-2 **373 refs / 1224 пада**, PANEL-2 left **181** / right **174** (по 21 Choc), PWR-2 **128**.
+- **Footprint-маппинг** из BOM: стандартные библиотеки; **placeholder'ы** для кастомных —
+  CORE-2 16 (P4-модуль A1, C6 U31, BQ24074, MP1584, TRS/DC/mic джеки, кнопки), PANEL-2 21×2
+  (Choc), PWR-2 0.
+- **Расстановка по зонам** board-fit/keepout (USB-C у кромки, C6 у антенны, энкодеры/клавиши/
+  джеки по JSON, силовая зона PWR-2); **DRC 0 errors/0 warnings**, `verify_import.py` PASS;
+  unconnected зафиксированы (трассировка — после MCU freeze).
+- docs/82 §10, README в `rev1/`, spec/90 **D-102**; docs/73 — обновление статуса.
+
 ## [0.45.0] — 2025-11-06 — «Каркасы PCB и вырезы»
 
 ### Добавлено
