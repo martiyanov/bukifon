@@ -1,6 +1,6 @@
 # Букифон (Bukifon) — открытая платформа: сэмплер + синтезатор + модули
 
-**Версия: 0.40.0** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
+**Версия: 0.41.0** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
 
 **Букифон** — настольный музыкальный инструмент-платформа, который собирается из
 доступных компонентов, печатается на 3D-принтере, расширяется модулями и полностью
@@ -32,7 +32,7 @@ BLE HID, передача проектов). То есть Букифон — е
 аналоговый картридж на шине 26-pin или сменная панельная дека (18 пэдов / 42 клавиши).
 Подробнее — [spec/00-vision.md §12](spec/00-vision.md).
 
-## Текущее состояние (v0.40.0)
+## Текущее состояние (v0.41.0)
 
 | Блок | Состояние |
 |---|---|
@@ -151,6 +151,8 @@ BLE HID, передача проектов). То есть Букифон — е
 | [docs/83-fab-package.md](docs/83-fab-package.md) · [fab/](fab/) | состав fab-пакета, CPL/BOM, чек-лист, приёмка; `tools/check_fab_package.py` |
 | [docs/84-costdown.md](docs/84-costdown.md) | cost-down: где деньги, варианты снижения, маржа $299/$319/$349 |
 | [docs/85-second-source.md](docs/85-second-source.md) | вторые источники, supply-риски, чек-лист до заказа |
+| [docs/86-backlog-webapp-plugin.md](docs/86-backlog-webapp-plugin.md) | бэклог: сайт на VDS, PWA-приложение, DAW-плагин |
+| [docs/87-v1.0-rc-notes-draft.md](docs/87-v1.0-rc-notes-draft.md) | черновик release notes v1.0-rc (критерии, проверки) |
 | [docs/en/README.md](docs/en/README.md) · [quick-start](docs/en/quick-start.md) | English docs index / quick start |
 | [docs/72-assembly-workshops.md](docs/72-assembly-workshops.md) | где собрать: мастерские Москвы/СПб/НН, RFQ, цены |
 | [docs/73-morning-report.md](docs/73-morning-report.md) | утренний отчёт: состояние, блокеры, план, риски |
@@ -166,6 +168,8 @@ BLE HID, передача проектов). То есть Букифон — е
 | [docs/83-fab-package.md](docs/83-fab-package.md) · [fab/](fab/) | состав fab-пакета, CPL/BOM, чек-лист, приёмка; `tools/check_fab_package.py` |
 | [docs/84-costdown.md](docs/84-costdown.md) | cost-down: где деньги, варианты снижения, маржа $299/$319/$349 |
 | [docs/85-second-source.md](docs/85-second-source.md) | вторые источники, supply-риски, чек-лист до заказа |
+| [docs/86-backlog-webapp-plugin.md](docs/86-backlog-webapp-plugin.md) | бэклог: сайт на VDS, PWA-приложение, DAW-плагин |
+| [docs/87-v1.0-rc-notes-draft.md](docs/87-v1.0-rc-notes-draft.md) | черновик release notes v1.0-rc (критерии, проверки) |
 | [docs/en/README.md](docs/en/README.md) · [quick-start](docs/en/quick-start.md) | English docs index / quick start |
 | [docs/53-pwr-log.md](docs/51-pwr-log.md) | журнал 13 измерений PWR и go/no-go |
 | [docs/33-bom-s3.md](docs/33-bom-s3.md) | product BOM S3-base: COGS 1/10/25, опции, маржа |
