@@ -2,6 +2,20 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.44.0] — 2025-11-06 — «Board-fit и RC-пакет»
+
+### Добавлено
+- **`mechanical/board-fit/`**: контуры плат для разводки PCB rev.1 — **CORE-2 200×108**
+  (4×M3), **PANEL-2 две платы 180×180** в контуре 360×190 (3×M3 каждая), **PWR-2 90×70**
+  (4×M2.5); origin/отверстия/вырезы/keepout'ы в `board-spec.json`; **DXF (R12, Y-up)** для
+  KiCad Edge.Cuts, assembly.dxf, превью; **22 проверки, 0 конфликтов** (fit_check).
+- Исправлены TBD в docs/82: реальные стойки PANEL-2 (6×M3: 30/65/150/230/283/341, Y=46),
+  контур (было «380×210» → 360×190), PANEL-2 = две платы.
+- Найдено: в STL **нет вырезов** MIDI TRS/DC/EXPRESSION/mic jack/SD — в board-spec даны
+  предложенные позиции (добавить в корпус перед печатью).
+- **`tools/make_rc_bundle.sh`**: сборка RC-кандидата одним вызовом (check_all + security +
+  release bundle + fresh + чек-лист docs/87); docs/87 обновлён.
+
 ## [0.43.1] — 2025-11-06 — «Vhost'ы по доменам и watcher DNS»
 
 ### Изменено
