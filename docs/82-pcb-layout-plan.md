@@ -142,3 +142,26 @@ keepout/стек — **без компонентов, netlist и меди**; PCB
   связывания с библиотеками; DRC-unconnected (499/368/265/263) — ожидаемо на каркасе.
 - **Дальше:** реальные футпринты кастомных (см. README), правила DRC/импедансов, медные полигоны/GND,
   затем трассировка — только после MCU freeze (docs/56) и PWR 13/13 (docs/51).
+
+## 11. Реальные футпринты и DRC-правила (2026-11-06)
+
+- **Placeholder'ы заменены полностью: 0** на всех платах. Кастомные `.kicad_mod` созданы в
+  `hardware/*/rev1/footprints/` + `fp-lib-table`: `A1_P4_MODULE_ADAPTER` (2×32, адаптер 90×28),
+  `C6_MINI_1` (13.2×16.6), `MP1584_MODULE` (4 пада), `CHOC_V1` (Kailh Choc hot-swap, 18×18).
+  Стандартные: TRS — `Connector_Audio:Jack_3.5mm_CUI_SJ1-3535NG_Horizontal`, DC —
+  `Connector_BarrelJack:BarrelJack_CUI_PJ-063AH_Horizontal`, кнопки —
+  `Button_Switch_THT:SW_PUSH_6mm`, BQ24074 — `Package_DFN_QFN:QFN-16-1EP_3x3mm_P0.5mm_EP1.75x1.75mm`.
+  Вставка — через **pcbnew Python API** (реальная геометрия, пады с net).
+- **DRC-правила/сет-классы** в `.kicad_pro`: `Default`, `Power` (ширина 1.0 мм; силовые до 2 мм
+  при разводке), `USB_HS` (90 Ω: diff width/gap 0.2/0.2, clearance 0.15), `Audio` (0.25 мм),
+  `RF` (C6 SPI); track widths 0.2–2.0, via 0.6/0.3 и 0.8/0.45, diff pair 0.2/0.2; каркасные
+  silk/courtyard — ignore. Проверка: `verify_import.py` — **RULES PASS** (5 классов, 5 ключевых
+  netов: USB_HS_DP/DM, +12V, AUDOUT_L, C6_CS).
+- **Счётчики:** CORE-2 373 refs/1259 pads, PANEL-2 181+174/630+488, PWR-2 128/332;
+  **DRC 0 errors / 0 warnings** на всех 4; unconnected 499/367/264/263 (допустимо).
+- **GND-полигоны (план, заливка позже):** GND на F.Cu/B.Cu после трассировки; AGND — отдельная
+  зона (DAC/ADC), звезда в NT1/NT2; PGND — силовая зона у J17, звезда у входных ёмкостей;
+  под антенной C6 — keepout без меди; LED-возврат — отдельно к J13. Заливку/stitching — после
+  MCU freeze и трассировки.
+- **Ограничение:** для не-заменённых стандартных компонентов в каркасе пады упрощённые
+  (0.5×0.8/шаг 1.0) — полные `.kicad_mod` подтягиваются при разводке; правила/классы уже готовы.

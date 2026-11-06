@@ -1,0 +1,4 @@
+(fp_lib_table
+	(version 7)
+	(lib (name "rev1")(type "KiCad")(uri "${KIPRJMOD}/footprints")(options "")(descr "rev1 custom placeholder footprints"))
+)

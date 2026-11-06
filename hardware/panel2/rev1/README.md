@@ -50,3 +50,16 @@
 - **DRC: 0 errors / 0 warnings; unconnected: left 368 / right 265** — допустимо.
 - Перегенерация: `python hardware/core2/rev1/gen_scaffold.py && python hardware/core2/rev1/import_netlist.py`.
 - Дальше: реальные футпринты Choc/EC11/джеков/FPC-40/IDC, затем трассировка после MCU freeze.
+
+## Реальные футпринты и DRC-правила (2026-11-06)
+
+- **Placeholder'ы: 0** — 42 клавиши Choc заменены на custom `CHOC_V1` (18×18, 2 пада + NPTH
+  центра 3.4/боковой 1.7, hot-swap) из `footprints/` (+`fp-lib-table`), вставлены pcbnew API.
+- Остальные refs — footprint-имена из BOM (KiCad); в каркасе упрощённые пады (полные
+  `.kicad_mod` — при разводке). Footprints left 181/right 174 (+крепёж), pads 630/488,
+  refs 181/181 и 174/174; **DRC 0/0**, unconnected 367/264.
+- **DRC-правила** (`.kicad_pro` left/right): классы Default/Power/USB_HS/Audio/RF, дорожки
+  0.2–1.0 мм, via 0.6/0.3 и 0.8/0.45, diff pair 0.2/0.2; для каркаса silk/courtyard —
+  `rule_severities` ignore.
+- **GND-полигоны (план):** GND-заливка на F.Cu/B.Cu; аналоговое поле J14 — AGND-полигон,
+  звезда; LED-цепочка — отдельный возврат к J13; экран/клавиши — без меди под FPC.

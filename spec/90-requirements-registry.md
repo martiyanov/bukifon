@@ -173,6 +173,7 @@ firmware/README). Этот файл фиксирует актуальные тр
 | D-100 | 06.11 | bukifon.ru/.com — DNS на VDS, TLS Let's Encrypt, деплой rsync/git; секреты вне репо | docs/86 |
 | D-101 | 06.11 | PCB rev.1 layout scaffolds из `mechanical/board-fit/`: CORE-2 200×108/6 слоёв, PANEL-2 L/R 180×190/4, PWR-2 90×70/4 (2 oz); DRC 0, verify ±0.05 мм | docs/82 §9 + hardware/*/rev1 |
 | D-102 | 06.11 | Первый импорт нетлиста в каркасы: CORE-2 373 refs/16 placeholder, PANEL-2 L181+R174/21+21, PWR-2 128/0; DRC 0 errors, unconnected зафиксированы; трассировка — после MCU freeze | docs/82 §10 + hardware/*/rev1 |
+| D-103 | 06.11 | Реальные футпринты (0 placeholder): custom A1/C6/MP1584/CHOC + KiCad стандартные; DRC-классы/impedance (USB_HS 90 Ω, Power/Audio/RF), правила; DRC 0/0; GND-полигоны — план до трассировки | docs/82 §11 + hardware/*/rev1 |
 | D-96 | 06.11 | Сборка: прототипы — Резонит/Интер-Плата, пилот — А-Контракт/НПП Асти/Телерем, корпуса — Modelica3D/ПИМТЕХ/фаблаб, профильная сборка — VG-Line (Москва) | docs/72 |
 | D-95 | 06.11 | Принцип «идея → звук»: метрики time-to-sound ≤10 с, time-to-idea ≤30 с, blind-тест 5 людей — в docs/68 | docs/68 |
 | D-90 | 06.11 | Паритет-цель v1.0-rc: 8 треков/канал/PC/vel/length, clock, transport, 1 CC p-lock, GEN, save/load | docs/70 |

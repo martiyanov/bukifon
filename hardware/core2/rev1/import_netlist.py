@@ -10,6 +10,27 @@ PLACEHOLDER_<ref> with correct pad count.
 import os, re, csv, sys, math, json, xml.etree.ElementTree as ET
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+CORE_REAL = {
+ 'A1':(100,55,92,30,'custom:A1_P4_MODULE_ADAPTER'),
+ 'U31':(46,80,16,19,'custom:C6_MINI_1'),
+ 'U26':(30,22,24,20,'custom:MP1584_MODULE'),
+ 'U22':(75,22,5,5,'lib:Package_DFN_QFN:QFN-16-1EP_3x3mm_P0.5mm_EP1.75x1.75mm'),
+ 'J6':(20,94,8,14,'lib:Connector_Audio:Jack_3.5mm_CUI_SJ1-3535NG_Horizontal'),
+ 'J7':(36,94,8,14,'lib:Connector_Audio:Jack_3.5mm_CUI_SJ1-3535NG_Horizontal'),
+ 'J8':(52,94,8,14,'lib:Connector_Audio:Jack_3.5mm_CUI_SJ1-3535NG_Horizontal'),
+ 'J9':(68,94,8,14,'lib:Connector_Audio:Jack_3.5mm_CUI_SJ1-3535NG_Horizontal'),
+ 'J10':(84,94,8,14,'lib:Connector_Audio:Jack_3.5mm_CUI_SJ1-3535NG_Horizontal'),
+ 'J11':(100,94,8,14,'lib:Connector_Audio:Jack_3.5mm_CUI_SJ1-3535NG_Horizontal'),
+ 'J13':(116,94,8,14,'lib:Connector_Audio:Jack_3.5mm_CUI_SJ1-3535NG_Horizontal'),
+ 'J20':(132,94,8,14,'lib:Connector_Audio:Jack_3.5mm_CUI_SJ1-3535NG_Horizontal'),
+ 'J12':(180,94,14,12,'lib:Connector_BarrelJack:BarrelJack_CUI_PJ-063AH_Horizontal'),
+ 'SW1':(40,34,7,7,'lib:Button_Switch_THT:SW_PUSH_6mm'),
+ 'SW2':(54,34,7,7,'lib:Button_Switch_THT:SW_PUSH_6mm'),
+ 'SW3':(68,34,7,7,'lib:Button_Switch_THT:SW_PUSH_6mm'),
+}
+PANEL_KEY_SIZE=(19,19,'custom:CHOC_V1')
+REAL_MAP={'CORE-2':{}}
+
 
 # ---------- sexpr parser (panel2 legacy netlist) ----------
 def tok(s):
@@ -138,45 +159,69 @@ def pseudo_size(pins):
     return max(2.0, cols*1.0+1.0), max(2.0, rows*1.0+1.0)
 
 def place(comps, W, H, holes, special, forbidden):
-    placed={}; occupied=[]
+    """Uniform 7 mm grid for generic (simplified-pad) footprints; real footprints occupy
+    reserved slots passed via `forbidden`; holes/antenna are avoided."""
+    placed={}; occ=[]
     def clash(x,y,w,h):
-        for (ox,oy,ow,oh) in occupied:
-            if abs(x-ox) < (w+ow)/2.0+1.0 and abs(y-oy) < (h+oh)/2.0+1.0: return True
+        for ox,oy,ow,oh in occ:
+            if abs(x-ox) < (w+ow)/2+0.6 and abs(y-oy) < (h+oh)/2+0.6: return True
         for (hx,hy) in holes:
-            if math.hypot(x-hx, y-hy) < 5.0: return True
-        for (_fn,fx0,fy0,fx1,fy1) in forbidden:
-            if x+w/2 > fx0 and x-w/2 < fx1 and y+h/2 > fy0 and y-h/2 < fy1: return True
+            nx=min(max(hx,x-w/2), x+w/2); ny=min(max(hy,y-h/2), y+h/2)
+            if math.hypot(hx-nx, hy-ny) < 2.5: return True
+        for (_n,fx0,fy0,fx1,fy1) in forbidden:
+            if x+w/2>fx0 and x-w/2<fx1 and y+h/2>fy0 and y-h/2<fy1: return True
         return False
-    def put(ref):
-        x,y=special[ref]
-        x=min(max(x,12.0), W-12.0); y=min(max(y,12.0), H-12.0)
-        w,h=pseudo_size(comps[ref]['pins']); placed[ref]=(x,y,w,h); occupied.append((x,y,w,h))
-    for ref in list(comps):
-        if ref in special: put(ref)
+    for ref in comps:
+        if ref in special:
+            x,y=special[ref]; x=min(max(x,12),W-12); y=min(max(y,12),H-12)
+            w,h=pseudo_size(comps[ref]['pins']); placed[ref]=(x,y,w,h); occ.append((x,y,w,h))
     refs=[r for r in comps if r not in special]
-    x0=12.0; y0=12.0; gap=2.0; row_h=0; x=x0; y=y0
+    cell=7.0; cols=max(1,int((W-20)//cell)); rows=max(1,int((H-20)//cell))
+    if W*H < 12000 or cols*rows < len(refs)*1.2:   # small/tight board: shelf packing
+        x0=10.0; y0=10.0; gap=1.8; row_h=0; x=x0; y=y0
+        for ref in sorted(refs, key=lambda r: -(pseudo_size(comps[r]['pins'])[0]*pseudo_size(comps[r]['pins'])[1])):
+            w,h=pseudo_size(comps[ref]['pins'])
+            while True:
+                if x+w/2 > W-3: x=x0; y+=row_h+gap; row_h=0
+                if y+h/2 > H-3: y=H/2
+                if not clash(x,y,w,h): break
+                x+=w+gap
+            placed[ref]=(x,y,w,h); occ.append((x,y,w,h)); row_h=max(row_h,h); x+=w+gap
+        return placed
+    cells=[(10+cell/2+c*cell, 10+cell/2+r*cell) for r in range(rows) for c in range(cols)]
+    idx=0
     for ref in refs:
-        w,h=pseudo_size(comps[ref]['pins']); tries=0
-        while True:
-            if x+w/2 > W-2: x=x0; y += row_h+gap; row_h=0; tries+=1
-            if y+h/2 > H-2:
-                # fallback: safe inner band (scaffold; may overlap visually)
-                x=max(12.0, min(W-12.0, x0+((len(placed)*7) % max(1,int((W-24)//5)))*5)); y=H/2
-            if not clash(x,y,w,h): break
-            x += w+gap; tries+=1
-            if tries>3000: break
-        placed[ref]=(x,y,w,h); occupied.append((x,y,w,h)); row_h=max(row_h,h); x += w+gap
+        w,h=pseudo_size(comps[ref]['pins']); placed_ok=False
+        while idx<len(cells):
+            x,y=cells[idx]; idx+=1
+            if clash(x,y,w,h): continue
+            placed[ref]=(x,y,w,h); occ.append((x,y,w,h)); placed_ok=True; break
+        if not placed_ok:
+            placed[ref]=(W/2,H/2,w,h); occ.append((W/2,H/2,w,h))
     return placed
 
 def inject(pcb_path, comps, nets, special, forbidden, W, H, holes):
+    bid_key = 'PANEL-2' if 'panel2' in pcb_path else ('CORE-2' if 'core2' in pcb_path else 'PWR-2')
     txt=open(pcb_path, encoding='utf-8').read()
     netnums={}; net_lines=[]
     for i,(name,nodes) in enumerate(sorted(nets.items()), 1):
-        safe=name.replace('"','')
+        safe=name.lstrip('/').replace('"','')
         netnums[name]=(i,safe); net_lines.append('\t(net %d "%s")' % (i,safe))
+    real_specs={}
+    if bid_key.startswith('CORE-2'):
+        real_specs=dict(CORE_REAL)
+    elif bid_key.startswith('PANEL-2'):
+        # keys are real CHOC footprints; positions come from `special`
+        for ref in comps:
+            if ref.startswith('KEY') and ref in special:
+                x,y=special[ref]; real_specs[ref]=(x,y,PANEL_KEY_SIZE[0],PANEL_KEY_SIZE[1],PANEL_KEY_SIZE[2])
+    for ref,(x,y,w,h,spec) in real_specs.items():
+        forbidden.append((ref,x-w/2-4.0,y-h/2-4.0,x+w/2+4.0,y+h/2+4.0))
     placed=place(comps, W, H, holes, special, forbidden)
     fp_lines=[]
+    placeholders=[]
     for ref in sorted(comps):
+        if ref in real_specs: continue
         pins=comps[ref]['pins']
         if not pins: pins={'1','2'}
         x,y=placed[ref][0],placed[ref][1]
@@ -186,7 +231,18 @@ def inject(pcb_path, comps, nets, special, forbidden, W, H, holes):
         for name,nodes in nets.items():
             for r,p in nodes:
                 if r==ref: pinned[p]=netnums[name]
+        real=None
+        if bid_key.startswith('CORE-2'):
+            real=REAL_MAP.get('CORE-2',{}).get(ref)
+        elif bid_key.startswith('PANEL-2') and ref.startswith('KEY'):
+            real=('custom','CHOC_V1')
+        if real:
+            txt=embed_mod(bid_key, real[0], real[1], ref, comps[ref]['value'], x, y, pinned)
+            if txt: fp_lines.append(txt); continue
+        if str(fplib).startswith('PLACEHOLDER'): placeholders.append(ref)
         fp_lines.append(make_footprint(ref, comps[ref]['value'], fplib, pins, pinned, x, y))
+    import json as _json
+    _json.dump({r:{'x':v[0],'y':v[1],'spec':v[4]} for r,v in real_specs.items()}, open(pcb_path.replace('.kicad_pcb','.real_footprints.json'),'w'), indent=1)
     txt=txt.replace('\t(net 0 "")\n', '\t(net 0 "")\n'+'\n'.join(net_lines)+'\n')
     idx=txt.rstrip().rfind('\n)')
     txt=txt[:idx]+'\n'+'\n'.join(fp_lines)+txt[idx:]

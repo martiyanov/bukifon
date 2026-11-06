@@ -1,4 +1,4 @@
-# Букифон / Bukifon — https://martiyanov.github.io/bukifon/
+# Букифон / Bukifon — https://bukifon.com/
 User-agent: *
 Allow: /
 
@@ -27,4 +27,4 @@ Allow: /
 User-agent: YandexBot
 Allow: /
 
-Sitemap: https://martiyanov.github.io/bukifon/sitemap.xml
+Sitemap: https://bukifon.com/sitemap.xml

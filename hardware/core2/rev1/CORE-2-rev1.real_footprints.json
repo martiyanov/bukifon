@@ -1,0 +1,82 @@
+{
+ "A1": {
+  "x": 100,
+  "y": 55,
+  "spec": "custom:A1_P4_MODULE_ADAPTER"
+ },
+ "U31": {
+  "x": 46,
+  "y": 80,
+  "spec": "custom:C6_MINI_1"
+ },
+ "U26": {
+  "x": 30,
+  "y": 22,
+  "spec": "custom:MP1584_MODULE"
+ },
+ "U22": {
+  "x": 75,
+  "y": 22,
+  "spec": "lib:Package_DFN_QFN:QFN-16-1EP_3x3mm_P0.5mm_EP1.75x1.75mm"
+ },
+ "J6": {
+  "x": 20,
+  "y": 94,
+  "spec": "lib:Connector_Audio:Jack_3.5mm_CUI_SJ1-3535NG_Horizontal"
+ },
+ "J7": {
+  "x": 36,
+  "y": 94,
+  "spec": "lib:Connector_Audio:Jack_3.5mm_CUI_SJ1-3535NG_Horizontal"
+ },
+ "J8": {
+  "x": 52,
+  "y": 94,
+  "spec": "lib:Connector_Audio:Jack_3.5mm_CUI_SJ1-3535NG_Horizontal"
+ },
+ "J9": {
+  "x": 68,
+  "y": 94,
+  "spec": "lib:Connector_Audio:Jack_3.5mm_CUI_SJ1-3535NG_Horizontal"
+ },
+ "J10": {
+  "x": 84,
+  "y": 94,
+  "spec": "lib:Connector_Audio:Jack_3.5mm_CUI_SJ1-3535NG_Horizontal"
+ },
+ "J11": {
+  "x": 100,
+  "y": 94,
+  "spec": "lib:Connector_Audio:Jack_3.5mm_CUI_SJ1-3535NG_Horizontal"
+ },
+ "J13": {
+  "x": 116,
+  "y": 94,
+  "spec": "lib:Connector_Audio:Jack_3.5mm_CUI_SJ1-3535NG_Horizontal"
+ },
+ "J20": {
+  "x": 132,
+  "y": 94,
+  "spec": "lib:Connector_Audio:Jack_3.5mm_CUI_SJ1-3535NG_Horizontal"
+ },
+ "J12": {
+  "x": 180,
+  "y": 94,
+  "spec": "lib:Connector_BarrelJack:BarrelJack_CUI_PJ-063AH_Horizontal"
+ },
+ "SW1": {
+  "x": 40,
+  "y": 34,
+  "spec": "lib:Button_Switch_THT:SW_PUSH_6mm"
+ },
+ "SW2": {
+  "x": 54,
+  "y": 34,
+  "spec": "lib:Button_Switch_THT:SW_PUSH_6mm"
+ },
+ "SW3": {
+  "x": 68,
+  "y": 34,
+  "spec": "lib:Button_Switch_THT:SW_PUSH_6mm"
+ }
+}

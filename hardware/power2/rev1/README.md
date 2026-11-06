@@ -40,3 +40,13 @@
 - Зоны: силовая зона (hot-loop/battery-conn) — при ручной разводке; сетка — черновая.
 - Перегенерация: `python hardware/core2/rev1/gen_scaffold.py && python hardware/core2/rev1/import_netlist.py`.
 - Дальше: трассировка 3 А/тепловые полигоны после PWR 13/13; J3 (IDC vs Micro-Fit).
+
+## Реальные футпринты и DRC-правила (2026-11-06)
+
+- **Placeholder'ы: 0** (все footprint'ы из BOM/KiCad). Footprints 128 (+4 NPTH), pads 332,
+  refs 128/128; **DRC 0/0**, unconnected 263.
+- **DRC-правила** (`PWR-2-rev1.kicad_pro`): класс `Power` — ширина 1.0 мм (силовые 3 А — при
+  разводке до 2 мм/полигоны), via 0.8/0.45; diff pair 0.2/0.2; каркасные silk/courtyard ignore.
+- **GND-полигоны (план):** PGND-заливка на F.Cu/B.Cu, звезда у входных ёмкостей; силовая зона
+  (hot-loop) — тепловые полигоны/viи; батарейный разъём — отдельный возврат; заливка — после
+  PWR 13/13 и трассировки.

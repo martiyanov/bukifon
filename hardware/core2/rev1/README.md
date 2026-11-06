@@ -54,3 +54,25 @@
 - Перегенерация: `python gen_scaffold.py && python import_netlist.py && python verify_import.py`
   (из корня репозитория пути уже учтены; скрипты лежат в `hardware/core2/rev1/`).
 - Дальше: заменить 16 placeholder на реальные посадочные места, затем трассировка — после MCU freeze.
+
+## Реальные футпринты и DRC-правила (2026-11-06)
+
+- **Placeholder'ы заменены полностью (0):** A1 — custom `A1_P4_MODULE_ADAPTER` (2×32, шаг 2.54,
+  габарит адаптера 90×28), U31 — custom `C6_MINI_1` (13.2×16.6), U26 — custom `MP1584_MODULE`
+  (4 пада), U22 — `Package_DFN_QFN:QFN-16-1EP_3x3mm_P0.5mm_EP1.75x1.75mm`, J6–J11/J13/J20 —
+  `Connector_Audio:Jack_3.5mm_CUI_SJ1-3535NG_Horizontal`, J12 — `Connector_BarrelJack:BarrelJack_CUI_PJ-063AH_Horizontal`,
+  SW1–SW3 — `Button_Switch_THT:SW_PUSH_6mm`. Кастомные `.kicad_mod` — в `footprints/`
+  (+`fp-lib-table`), вставлены через **pcbnew Python API** (реальная геометрия, пады с net).
+- **Стандартные пассивные/IC**: footprint-имена из BOM (KiCad-библиотеки); в каркасе пады
+  упрощённые (0.5×0.8/шаг 1.0) — полные `.kicad_mod` подтягиваются при разводке
+  (`import_netlist.py`: generic-пады; `add_real_footprints.py`: реальные для заменённых).
+- **Footprints: 373** (+4 NPTH), pads **1259**; refs 373/373; **DRC 0 errors / 0 warnings**,
+  unconnected 499 (неразведённые).
+- **DRC-правила/классы** (`CORE-2-rev1.kicad_pro`): `Default`, `Power` (+12/−12/5/3.3/VSYS…,
+  ширина 1.0 мм), `USB_HS` (90 Ω: diff 0.2/0.2, clearance 0.15), `Audio` (0.25 мм),
+  `RF` (C6 SPI); track widths 0.2–2.0, via 0.6/0.3 и 0.8/0.45, diff pair 0.2/0.2;
+  правила-исключения для каркаса (silk/courtyard) — в `rule_severities`.
+- **GND-полигоны (план, без заливки):** F.Cu/B.Cu GND-заливка после трассировки; аналоговая
+  зона (DAC/ADC) — отдельный AGND-полигон, звезда в NT1/NT2; PGND — силовая зона, соединение
+  в одной точке у J17; под антенной C6 — запрет меди (keepout 40×20 + ≥15 мм). Заливку делать
+  только после MCU freeze/трассировки.

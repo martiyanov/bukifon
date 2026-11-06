@@ -2,6 +2,20 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.47.0] — 2025-11-06 — «Футпринты и правила»
+
+### Добавлено
+- **Реальные футпринты в PCB rev.1**: **0 placeholder** (было 16 + 42); кастомные `.kicad_mod`
+  (`A1_P4_MODULE_ADAPTER`, `C6_MINI_1`, `MP1584_MODULE`, `CHOC_V1`) + стандартные KiCad
+  (TRS, BarrelJack, SW_PUSH, QFN BQ24074); вставка через pcbnew API, пады с net.
+- **DRC-правила/классы**: `Default`, `Power` (1–2 мм), `USB_HS` (**90 Ω diff 0.2/0.2**),
+  `Audio` 0.25, `RF`; via 0.6/0.3 и 0.8/0.45; проверка **RULES PASS** (5 классов + USB_DP/DM,
+  +12V, AUDOUT_L, C6_CS).
+- **План GND-полигонов** (F/B.Cu, AGND/PGND/звезда, LED-возврат, keepout антенны) — без заливки.
+- DRC **0/0** на всех 4 платах; refs/pads: CORE-2 373/1259, PANEL-2 181/174 (630/488), PWR-2 128/332.
+- **Сайт**: canonical/OG/hreflang/sitemap/robots переключены на **https://bukifon.com/**
+  (HTTPS live); GitHub Pages остаётся зеркалом.
+
 ## [0.46.0] — 2025-11-06 — «Нетлист в каркасах rev.1»
 
 ### Добавлено
