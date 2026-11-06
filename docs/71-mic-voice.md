@@ -233,7 +233,7 @@ ERC 0 errors / 6 warnings (прежние `isolated_pin_label` на `SPI2_*` DNP
 
 | Узел | Компоненты/цепи | Пины (P4) |
 |---|---|---|
-| MEMS I2S1 RX с PANEL-2 | J19 IDC-6: `3V3_MIC`, DGND, `MIC_BCK`, `MIC_WS`, `MIC_DATA`, DGND (shield); FB8 + C128 10 мкФ + C129 100 нФ; ESD U48/U49 (USBLC6) | GPIO40 `MIC_BCK`, GPIO41 `MIC_WS`, GPIO42 `MIC_DATA` |
+| MEMS I2S1 RX с PANEL-2 | J19 IDC-6 canon: **1 `MIC_BCK`, 2 DGND, 3 `MIC_WS`, 4 DGND, 5 `MIC_DATA`, 6 `3V3_MIC`** (PANEL-2 J16 1:1); FB8 + C128 10 мкФ + C129 100 нФ; ESD U48/U49 (USBLC6) | GPIO40 `MIC_BCK`, GPIO41 `MIC_WS`, GPIO42 `MIC_DATA` |
 | 3.5 мм mic jack | J20 TRS (tip=`MIC_IN`, ring=`MIC_BIAS`, sleeve=AGND); D30 SMAJ5.0A; C127 100 нФ; R106 2.2 к bias | — |
 | MAX9814 AGC | U46 (TDFN-14): CT/CG/BIAS-конденсаторы C125/C124/C123, MICBIAS C122, выход `MIC_AGC` → C126 1 мкФ | — |
 | Line/mic switch | U47 TS5A23157: COM1/COM2 → C78/C80 → PCM1808 VINL/VINR; NO=LINE (`AUDIN_L_F/R_F`), NC=MIC (`SW_MIC`); R110 100k PD | GPIO54 `MIC_SEL` (0=LINE, 1=MIC) |

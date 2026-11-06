@@ -417,9 +417,9 @@ add('C80', ('Device','C'), '1uF/16V', {'1':'SW_R_COM','2':'AUDIN_R_C'}, FP['C'],
 
 # ---------------------------- MIC INPUT (D-91) ----------------------------
 add('J19', ('Connector_Generic','Conn_02x03_Odd_Even'), 'PANEL-2 MEMS mic (IDC-6)',
-    {'1':'3V3_MIC','2':'DGND','3':'MIC_BCK','4':'MIC_WS','5':'MIC_DATA','6':'DGND'},
+    {'1':'MIC_BCK','2':'DGND','3':'MIC_WS','4':'DGND','5':'MIC_DATA','6':'3V3_MIC'},
     'Connector_IDC:IDC-Header_2x03_P2.54mm_Vertical',
-    'rev.3: MEMS I2S1 BCK/WS/DATA + 3V3/GND; shielded cable, ESD', A)
+    'rev.3: MEMS I2S1 canon 1=BCK 2=GND 3=WS 4=GND 5=DATA 6=3V3 (mates PANEL-2 J16, 1:1); shielded, ESD', A)
 add('FB8', ('Device','FerriteBead'), '600R@100MHz', {'1':'3V3','2':'3V3_MIC'}, FP['FB'], 'mic 3.3 V filter', A)
 add('C128', ('Device','C_Polarized'), '10uF/10V', {'1':'3V3_MIC','2':'AGND'}, FP['CP'], '', A)
 add('C129', ('Device','C'), '100nF', {'1':'3V3_MIC','2':'AGND'}, FP['C'], '', A)

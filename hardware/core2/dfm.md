@@ -44,7 +44,7 @@ BOOT/RESET/UART0 — TP17/TP18 + J4 (UART0 TP), отдельных падов н
 | 29 | TP29 | `I2S_BCK` | пад у PCM5102A/PCM1808 | аудио BCK |
 | 30 | TP30 | `I2S_LRCK` | пад у кодека | аудио LRCK |
 | 31 | TP31 | `MIC_DATA` | J19.5 / пад | MEMS I2S1 data (D-91) |
-| 32 | TP32 | `MIC_BCK` | J19.3 / пад | MEMS I2S1 bit clock (D-91) |
+| 32 | TP32 | `MIC_BCK` | J19.1 / пад | MEMS I2S1 bit clock (D-91) |
 
 Групповой доступ (не отдельные TP): I2C — J16.1/3 и J18.3/4; SPI2 — J16?/U40 пады + C6 (TP21);
 CV OUT1-4/CV IN1-4/GATE — J14; MIDI — J6/J7; SDIO D0-D3/CMD — пады J5; UART0 — J4 (TX/RX/GND);
@@ -131,7 +131,7 @@ I2C при boot, пишет в USB-дескриптор (iSerial) и лог.
   SN/QR-зона, TP-подписи, предупреждение о 20 В; не ставить шелкографию под FPC.
 - **TP/пады:** не под разъёмами и не в зоне шлейфов, доступ после сборки, маска открыта.
 - **ESD/защита:** USBLC6, TVS на входы/джеках, polyfuse; проверка после сборки.
-- **Mic (D-91):** J19 — экранированный кабель ≤150 мм, BCK/WS/DATA в отдельной зоне от BL_20V и
+- **Mic (D-91):** J19 canon (1 BCK, 2 GND, 3 WS, 4 GND, 5 DATA, 6 +3V3; PANEL-2 J16 1:1) — экранированный кабель ≤150 мм, BCK/WS/DATA в отдельной зоне от BL_20V и
   WS2812 (guard GND между), 3V3_MIC через FB8; аналоговая часть MAX9814/PCM1808 — keepout от
   цифровых/20 В; TP31/32 не под шлейфом; SW3 mute доступен снаружи; loopback mic→PCM1808→DAC.
 

@@ -1,8 +1,8 @@
 signal;gpio;peripheral;voltage;direction;pull;boot_state;mcu_slot_pin;connector;note
 SD_D0;39;SDMMC SLOT0 D0;3.3;bidir;10k PU;high;23;J-SD.DAT0;IO MUX SD1_CDATA0
-MIC_BCK;40;I2S1 RX BCK (MEMS);3.3;in;none;low;24;J19.3;"ex-SD_D1; SDIO now 1-bit; series/ESD at J19"
-MIC_WS;41;I2S1 RX WS (MEMS);3.3;in;none;low;25;J19.4;"ex-SD_D2; SDIO now 1-bit"
-MIC_DATA;42;I2S1 RX DATA (MEMS);3.3;in;none;low;26;J19.5;"ex-SD_D3; SDIO now 1-bit"
+MIC_BCK;40;I2S1 RX BCK (MEMS);3.3;in;none;low;24;J19.1;"ex-SD_D1; SDIO now 1-bit; J19 canon 1=BCK"
+MIC_WS;41;I2S1 RX WS (MEMS);3.3;in;none;low;25;J19.3;"ex-SD_D2; SDIO now 1-bit; J19 canon 3=WS"
+MIC_DATA;42;I2S1 RX DATA (MEMS);3.3;in;none;low;26;J19.5;"ex-SD_D3; SDIO now 1-bit; J19 canon 5=DATA"
 SD_CLK;43;SDMMC SLOT0 CLK;3.3;out;none;low;27;J-SD.CLK;IO MUX SD1_CCLK
 SD_CMD;44;SDMMC SLOT0 CMD;3.3;bidir;10k PU;high;28;J-SD.CMD;IO MUX SD1_CCMD
 SD_CD;45;GPIO in (card detect);3.3;in;10k PU;high;29;J-SD.DET;card detect switch to GND

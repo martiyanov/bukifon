@@ -115,7 +115,7 @@ PM-C2-100;;1uF/16V;1;C78;Capacitor_SMD:C_0805_2012Metric;;AC coupling to VINL (a
 PM-C2-101;;BAT54S;3;D9 D16 D17;Package_TO_SOT_SMD:SOT-23;;
 PM-C2-101;;BAT54S;2;D24 D25;Package_TO_SOT_SMD:SOT-23;NEW;
 PM-C2-102;;1uF/16V;1;C80;Capacitor_SMD:C_0805_2012Metric;;AC coupling to VINR (after switch)
-PM-C2-103;;PANEL-2 MEMS mic (IDC-6);1;J19;Connector_IDC:IDC-Header_2x03_P2.54mm_Vertical;;"rev.3: MEMS I2S1 BCK/WS/DATA + 3V3/GND; shielded cable, ESD"
+PM-C2-103;;PANEL-2 MEMS mic (IDC-6);1;J19;Connector_IDC:IDC-Header_2x03_P2.54mm_Vertical;;"rev.3: MEMS I2S1 canon 1=BCK 2=GND 3=WS 4=GND 5=DATA 6=3V3 (mates PANEL-2 J16, 1:1); shielded, ESD"
 PM-C2-104;;600R@100MHz;1;FB8;Inductor_SMD:L_0805_2012Metric;;mic 3.3 V filter
 PM-C2-105;;USBLC6-2SC6;1;U48;Package_TO_SOT_SMD:SOT-23-6;;ESD mic I2S BCK/WS
 PM-C2-106;;USBLC6-2SC6;1;U49;Package_TO_SOT_SMD:SOT-23-6;;ESD mic I2S DATA

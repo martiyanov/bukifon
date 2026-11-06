@@ -36,9 +36,9 @@ SDMMC slot0 на падах GPIO39…GPIO48, LCD_CAM (parallel RGB 16 бит) и
 | # | Сигнал | GPIO | Периферия | Напряжение | Направление | Подтяжка | Boot-состояние | Слот J-MCU | Разъём | Примечание |
 |---|---|---|---|---|---|---|---|---|---|---|
 | 1 | `SD_D0` | GPIO39 | SDMMC SLOT0 D0 | 3.3 | bidir | 10k PU | high | 23 | J-SD.DAT0 | IO MUX SD1_CDATA0 |
-| 2 | `MIC_BCK` | GPIO40 | I2S1 RX BCK (MEMS) | 3.3 | in | none | low | 24 | J19.3 | ex-SD_D1; SDIO now 1-bit; series/ESD at J19 |
-| 3 | `MIC_WS` | GPIO41 | I2S1 RX WS (MEMS) | 3.3 | in | none | low | 25 | J19.4 | ex-SD_D2; SDIO now 1-bit |
-| 4 | `MIC_DATA` | GPIO42 | I2S1 RX DATA (MEMS) | 3.3 | in | none | low | 26 | J19.5 | ex-SD_D3; SDIO now 1-bit |
+| 2 | `MIC_BCK` | GPIO40 | I2S1 RX BCK (MEMS) | 3.3 | in | none | low | 24 | J19.1 | ex-SD_D1; SDIO now 1-bit; J19 canon 1=BCK |
+| 3 | `MIC_WS` | GPIO41 | I2S1 RX WS (MEMS) | 3.3 | in | none | low | 25 | J19.3 | ex-SD_D2; SDIO now 1-bit; J19 canon 3=WS |
+| 4 | `MIC_DATA` | GPIO42 | I2S1 RX DATA (MEMS) | 3.3 | in | none | low | 26 | J19.5 | ex-SD_D3; SDIO now 1-bit; J19 canon 5=DATA |
 | 5 | `SD_CLK` | GPIO43 | SDMMC SLOT0 CLK | 3.3 | out | none | low | 27 | J-SD.CLK | IO MUX SD1_CCLK |
 | 6 | `SD_CMD` | GPIO44 | SDMMC SLOT0 CMD | 3.3 | bidir | 10k PU | high | 28 | J-SD.CMD | IO MUX SD1_CCMD |
 | 7 | `SD_CD` | GPIO45 | GPIO in (card detect) | 3.3 | in | 10k PU | high | 29 | J-SD.DET | card detect switch to GND |

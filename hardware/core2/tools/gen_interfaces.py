@@ -74,7 +74,7 @@ def md():
     w('')
     w('| Вход | Тракт | Пины/линии |')
     w('|---|---|---|')
-    w('| MEMS (PANEL-2) | I2S1 RX (BCK/WS/DATA), 24 бит/48 кГц, slave | GPIO40/41/42, J19 (IDC-6: 3V3_MIC, GND, BCK, WS, DATA, GND) |')
+    w('| MEMS (PANEL-2) | I2S1 RX (BCK/WS/DATA), 24 бит/48 кГц, slave | GPIO40/41/42, J19 (IDC-6 canon: 1 BCK, 2 GND, 3 WS, 4 GND, 5 DATA, 6 +3V3; mates PANEL-2 J16 1:1) |')
     w('| 3.5 мм electret | MAX9814 AGC → C126 1 мкФ → TS5A23157 (line/mic) → C78/C80 → PCM1808 VINL/VINR | MIC_SEL = GPIO54 (0=LINE, 1=MIC), U46/U47, J20 (TRS: tip=signal, ring=bias 2.2 к) |')
     w('| Приватность | SW3 MIC MUTE тянет SHDN→GND; LED «MIC ON» (Q5/D31); прошивка запрещает запись при mute | D-92 |')
     w('')

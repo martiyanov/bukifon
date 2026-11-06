@@ -56,6 +56,9 @@ def expected():
     sd = {'1':'NC','2':'NC','3':'SD_CMD','4':'3V3','5':'SD_CLK','6':'DGND',
           '7':'SD_D0','8':'NC','9':'SD_CD','SH':'DGND'}
     for p, n in sd.items(): exp[('J5', p)] = n
+    # J19 mic canon (mates PANEL-2 J16 1:1): 1 BCK, 2 GND, 3 WS, 4 GND, 5 DATA, 6 +3V3
+    j19 = {'1':'MIC_BCK','2':'DGND','3':'MIC_WS','4':'DGND','5':'MIC_DATA','6':'3V3_MIC'}
+    for p, n in j19.items(): exp[('J19', p)] = n
     return exp
 
 def main():

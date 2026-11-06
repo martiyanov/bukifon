@@ -19,7 +19,7 @@
 | 8 | Питание | +3V3/+3V3_C6/+3V3_MCU; +5/±12/5V_LED с PWR-2 J17 | сохранить; при H743 — те же 3.3 В (ядро 1.2 В внутр.), бюджет +0.3–0.5 А проверить | частично |
 | 9 | Wi-Fi/BLE | ESP32-C6 по SPI (D-21) | сохранить C6 (для H743 — единственный радио-путь), footprint оставить | да: C6 vs без |
 | 9a | **Mic-вход (D-91)** | нет | **I2S1 RX** MEMS с PANEL-2 (BCK/WS/DATA, GPIO40/41/42, J19 IDC-6) + **3.5 мм jack → MAX9814 AGC → TS5A23157 line/mic → PCM1808 VINL/VINR**; MIC_SEL=GPIO54; TP31/TP32; SW3 mute + LED «MIC ON» (D-92); **SDIO 4-bit→1-bit** (D1–D3 отданы I2S1; ~6 МБ/с) | нет (можно до P1) |
-| 10 | PANEL-2 | J14/J15/J16 canon rev.2 | canon rev.3: RGB565 FPC-40 + J14/J16; **J19 IDC-6 mic (MEMS I2S1)**; DSI — J19? → выделить J21 (опция); PANEL-2 rev.3: MEMS ICS-43434/SPH0645 | да (D-19/D-91) |
+| 10 | PANEL-2 | J14/J15/J16 canon rev.2 | canon rev.3: RGB565 FPC-40 + J14/J16; **J19 IDC-6 mic (MEMS I2S1, canon 1=BCK 2=GND 3=WS 4=GND 5=DATA 6=+3V3)**; DSI — J19? → выделить J21 (опция); PANEL-2 rev.3: MEMS ICS-43434/SPH0645 | да (D-19/D-91) |
 | 11 | Несущая/крепёж | 6×M3, docs/21 | 6×M3 + зона под pogo/шлейфы, панелизация 2×2, antenna keepout C6 | нет |
 | 12 | DFM-стек | — | 6 слоёв, USB HS 90 Ω, RGB matched, 20 В BL зазоры, FPC key, **mic: экран J19/аналоговый keepout** | нет (цена/фабрика) |
 
@@ -72,7 +72,7 @@ recovery-пады; при DSI — дополнительный FFC и переп
 | Узел | Реализация | Nets/пины |
 |---|---|---|
 | MEMS на PANEL-2 | I2S1 RX, slave, 24 бит/48 кГц; PANEL-2 rev.3 (ICS-43434/SPH0645), акустический порт/сетка | `MIC_BCK` GPIO40, `MIC_WS` GPIO41, `MIC_DATA` GPIO42; `3V3_MIC` |
-| Разъём MEMS | J19 IDC-6: 3V3_MIC, DGND, BCK, WS, DATA, DGND (shield); экранированный кабель ≤150 мм | 3.3 В через FB8 + 10 мкФ/100 нФ; ESD USBLC6 ×2 |
+| Разъём MEMS | J19 IDC-6 canon: **1 BCK, 2 GND, 3 WS, 4 GND, 5 DATA, 6 +3V3** (mates PANEL-2 J16 1:1); экранированный кабель ≤150 мм | 3.3 В через FB8 + 10 мкФ/100 нФ; ESD USBLC6 ×2 |
 | 3.5 мм jack | J20 TRS (tip=signal, ring=bias 2.2 к), D30 SMAJ5.0A, C127 100 нФ | `MIC_IN`, `MIC_BIAS` |
 | MAX9814 | AGC 40–60 дБ, MICBIAS, SHDN, MICOUT; CT/CG/BIAS-конденсаторы | U46; `MIC_AGC` → C126 1 мкФ |
 | Line/mic switch | TS5A23157: COM1/COM2 → C78/C80 → PCM1808 VINL/VINR; NO=LINE, NC=MIC | U47; `MIC_SEL` GPIO54 (0=LINE, 1=MIC), R110 100k PD |
