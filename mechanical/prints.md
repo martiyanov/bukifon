@@ -347,7 +347,7 @@ battery_lid, stand, panel_L/R, foot, keycap_v17 + 3MF + сборка).
 > «максимальный клин» для тех, кому нужен сильный наклон и встроенная батарея
 > с подставкой. Масса/время +13 % к A и +36 % к B-light.
 
-Сравнение профилей: `mechanical/preview_v05_compare/side_profile_all.png`
+Сравнение профилей: `mechanical/preview_v05_compare/side_profile_all.jpg`
 (0° / 8° / 12° в одном масштабе).
 <!-- section:mic -->
 

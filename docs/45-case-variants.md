@@ -67,6 +67,6 @@
 | B-light | v0.5-B-light: 32, 0 | да | ≤220 | JSON ±0.05, 0 промахов |
 | C | v0.5-C: **37, 0** | да | ≤220 (190×210×73.7 и др.) | JSON ±0.05, 0 промахов |
 
-Сравнение профилей: `mechanical/preview_v05_compare/side_profile_all.png` (0°/8°/12°);
+Сравнение профилей: `mechanical/preview_v05_compare/side_profile_all.jpg` (0°/8°/12°);
 3D-виды: `mechanical/preview_v05_{B,B_light,C}/` (iso_top, side_profile, exploded,
 top_ortho).
