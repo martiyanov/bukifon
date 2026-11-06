@@ -2,6 +2,19 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.42.0] — 2025-11-06 — «Сайт на VDS»
+
+### Добавлено
+- **Сайт задеплоен на VDS** (тот же, что agonarena.ru): `/var/www/bukifon` (RU/EN, `/demo/`,
+  пресскит, sitemap/robots/llms), nginx vhost + **HTTPS** (certbot) — временный адрес
+  `https://bukifon.37-46-18-40.sslip.io/` (200 на `/`, `/en/`, `/demo/`, `/demo/?lang=en`, `/app/`).
+- `tools/deploy_vds.sh` (rsync + vhost + certbot по `VDS_HOST`), `deploy/nginx/bukifon.conf`.
+- **docs/88 «Деплой на VDS»**: DNS-записи (A @/www → VDS, удалить старые AAAA), TLS,
+  обновление/откат, проверки, безопасность; docs/86 — статус.
+
+### Ожидает
+- DNS bukifon.ru/.com → 37.46.18.40 (сейчас старые A/AAAA), затем certbot для 4 имён.
+
 ## [0.41.0] — 2025-11-06 — «Бэклог веб/плагин и черновик RC»
 
 ### Добавлено
