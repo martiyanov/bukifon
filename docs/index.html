@@ -88,10 +88,10 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
 </head>
 <body>
 <header><div class="wrap">
-  <nav><a href="#about">О проекте</a><a href="#modes">Режимы</a><a href="#hardware">Железо</a><a href="#status">Статус</a><a href="#demo">Демо</a><a href="#design">Дизайн</a><a href="#build">Сборка</a><a href="#limitations">Ограничения</a><a href="#kit">Комплект</a><a href="#cases">Корпуса</a><a href="#bench">Бенчмарк</a><a href="#modules">Модули</a><a href="#docs">Документы</a><a href="en/" hreflang="en">English</a></nav>
+  <nav><a href="#about">О проекте</a><a href="#modes">Режимы</a><a href="#hardware">Железо</a><a href="#status">Статус</a><a href="#demo">Демо</a><a href="#design">Дизайн</a><a href="#build">Сборка</a><a href="#faq">FAQ</a><a href="#limitations">Ограничения</a><a href="#kit">Комплект</a><a href="#cases">Корпуса</a><a href="#bench">Бенчмарк</a><a href="#modules">Модули</a><a href="#docs">Документы</a><a href="en/" hreflang="en">English</a></nav>
   <h1>Букифон <span style="color:var(--mut);font-weight:400">/ Bukifon</span></h1>
   <p class="sub">Открытый настольный <strong>синтезатор + сэмплер + платформа модулей</strong>. 3D-печатный корпус, открытые схемы KiCad, открытая прошивка C++.<br><strong>Народный инструмент:</strong> комплект от <strong>≤ $200</strong> (S3) до <strong>≤ $400</strong> (полный с P4 и картриджами).</p>
-  <span class="badge">v0.33.0</span><span class="badge">CERN-OHL-S-2.0</span><span class="badge">GPL-3.0-or-later</span><span class="badge">клин 8° · 380×210×61.5</span><span class="badge">Wi-Fi + BT</span><span class="badge">USB HID + MIDI + UAC2</span>
+  <span class="badge">v0.34.0</span><span class="badge">CERN-OHL-S-2.0</span><span class="badge">GPL-3.0-or-later</span><span class="badge">клин 8° · 380×210×61.5</span><span class="badge">Wi-Fi + BT</span><span class="badge">USB HID + MIDI + UAC2</span>
   <p style="margin-top:20px">
     <a class="cta" href="https://github.com/martiyanov/bukifon">GitHub</a>
     <a class="cta alt" href="https://github.com/martiyanov/bukifon/blob/main/docs/12-roadmap.md">Дорожная карта</a>
@@ -151,7 +151,7 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
 </section>
 
 <section id="status">
-  <h2>Статус (v0.33.0)</h2>
+  <h2>Статус (v0.34.0)</h2>
     <li>✅ <strong>P4 собирается по ESP-IDF v5.5</strong> (idf.py build → bukifon_p4.bin 250 КБ, 83 % app-раздела свободно);</li>
     <li>✅ прошивка: <strong>248/248 тестов</strong>, GEN-движок (PROB/EUCLID/MUTATE/SCALE/ARP/EVOLVE/SEED), UI 5 страниц, 8 пресетов, 4 темы экрана;</li>
     <li>✅ веб-демо <a href="demo/">/demo/</a>: 16 энкодеров, кластеры ±18°, фейдеры TRACK/SCENE/DJ, REC-ресемплинг, пресеты, 4 темы — UX-рубрика 9/10;</li>
@@ -179,6 +179,19 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
      микрофон — для идей/битбокса/вокодера, не студийный вокал; батарея — опция, не в первой партии;
      p-lock CC — только внешние MIDI-треки (1 CC на шаг); Module API v0 — экспериментальный.
      Полный список — <a href="https://github.com/martiyanov/bukifon/blob/main/docs/76-known-limitations.md">docs/76</a>.</p>
+</section>
+
+<section id="faq">
+  <h2>FAQ</h2>
+  <div class="grid three">
+    <div class="card"><h3>Сколько стоит?</h3><p>Цель: P4 Standard <strong>$299</strong> (Full $399), S3-lite $199. Пока не продаётся — ждём PWR 13/13, P1 и PCB rev.1 (docs/75).</p></div>
+    <div class="card"><h3>Можно собрать самому?</h3><p>Да: KiCad + C++ + STL + paperkit 1:1. Корпус B-light 231 г / 11.2 ч; мастерские — docs/72.</p></div>
+    <div class="card"><h3>Микрофон?</h3><p>Запись голоса → пэд, битбокс → шаги; вокодер v1.1. Аппаратный mute + LED.</p></div>
+    <div class="card"><h3>P4 или S3?</h3><p>P4 — RGB565/USB HS 8×8; S3-lite — SPI-экран и стерео USB. Решение после P1 (docs/56).</p></div>
+    <div class="card"><h3>Чем лучше Digitakt/Move?</h3><p>42 клавиши, 16 энкодеров, CV/GATE, микрофон, открытые схемы/прошивка/STL за $299 (docs/79).</p></div>
+    <div class="card"><h3>Как помочь?</h3><p>Пройти UX-тест (demo/?test=1), собрать по paperkit, предложить модуль, помочь с BOM/поставками.</p></div>
+  </div>
+  <p><a class="cta" href="https://github.com/martiyanov/bukifon/blob/main/docs/81-faq.md">Полный FAQ (RU)</a> <a class="cta" href="https://github.com/martiyanov/bukifon/tree/main/docs/press">Пресс-кит</a></p>
 </section>
 
 <section id="build">
