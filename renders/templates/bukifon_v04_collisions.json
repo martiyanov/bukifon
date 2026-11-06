@@ -1,4 +1,6 @@
 {
  "collisions": [],
- "count": 0
+ "count": 0,
+ "outside_panel": [],
+ "outside_count": 0
 }

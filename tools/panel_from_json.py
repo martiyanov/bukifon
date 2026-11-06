@@ -28,6 +28,12 @@ ROOT = os.path.dirname(HERE)
 SPEC = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, "spec", "panel-spec-v0.3.json")
 PREFIX = sys.argv[2] if len(sys.argv) > 2 else "bukifon_v03"
 OUT = os.path.join(ROOT, "renders", "templates")
+try:
+    SPEC_DATA = json.load(open(SPEC, encoding="utf-8"))
+except Exception:
+    SPEC_DATA = {"controls": {}}
+PW = SPEC_DATA.get("panel", {}).get("width_mm", 380.0)
+PH = SPEC_DATA.get("panel", {}).get("height_mm", 210.0)
 A4W, A4H = 297.0, 210.0
 os.makedirs(OUT, exist_ok=True)
 
@@ -171,33 +177,66 @@ def draw(ax, dx, dy, style="template"):
                 ha="right", va="center", zorder=4)
 
 
-def page(pdf, x_from, x_to, title, png=None):
+def page_a3(pdf, png=None):
+    A3W, A3H = 420.0, 297.0
+    fig = plt.figure(figsize=(A3W / 25.4, A3H / 25.4))
+    ax = fig.add_axes([0, 0, 1, 1])
+    ax.set_xlim(0, A3W); ax.set_ylim(A3H, 0)
+    ax.set_aspect("equal"); ax.axis("off")
+    ax.add_patch(mp.Rectangle((10, 10), A3W - 20, A3H - 20, fc="white", ec="#ddd", lw=0.5))
+    ax.text(A3W / 2, 16, f"Букифон {PREFIX} · панель 1:1 · A3 (420×297 мм) · печать 100%",
+            ha="center", fontsize=12, fontweight="bold")
+    ax.text(A3W / 2, 24, f"Канон: {os.path.relpath(SPEC, ROOT)} · панель 380×210 · "
+                         "проверьте линейкой 50 мм", ha="center", fontsize=7, color="#555")
+    ox, oy = 20.0, 40.0
+    draw(ax, ox, oy, style="template")
+    ax.add_patch(mp.Rectangle((ox, oy), PW, PH, fc="none", ec="#c33", lw=0.8, ls=(0, (2, 2))))
+    # crop marks
+    for x in (ox, ox + PW):
+        ax.plot([x, x], [oy - 6, oy - 2], color="#333", lw=0.6)
+        ax.plot([x, x], [oy + PH + 2, oy + PH + 6], color="#333", lw=0.6)
+    for y in (oy, oy + PH):
+        ax.plot([ox - 6, ox - 2], [y, y], color="#333", lw=0.6)
+        ax.plot([ox + PW + 2, ox + PW + 6], [y, y], color="#333", lw=0.6)
+    ax.plot([ox + 4, ox + 54], [oy + PH + 18, oy + PH + 18], color="#111", lw=1.6)
+    for t in (0, 25, 50):
+        ax.plot([ox + 4 + t, ox + 4 + t], [oy + PH + 16, oy + PH + 20], color="#111", lw=0.9)
+    ax.text(ox + 29, oy + PH + 22, "50 мм", ha="center", va="top", fontsize=6, color="#111")
+    pdf.savefig(fig)
+    if png:
+        fig.savefig(os.path.join(OUT, png), facecolor="white", dpi=140)
+    plt.close(fig)
+
+
+def page_tile(pdf, x_from, x_to, y_from, y_to, title, png=None):
+    A4W, A4H = 297.0, 210.0
     fig = plt.figure(figsize=(A4W / 25.4, A4H / 25.4))
     ax = fig.add_axes([0, 0, 1, 1])
     ax.set_xlim(0, A4W); ax.set_ylim(A4H, 0)
     ax.set_aspect("equal"); ax.axis("off")
     ax.add_patch(mp.Rectangle((6, 6), A4W - 12, A4H - 12, fc="white", ec="#ddd", lw=0.5))
-    ax.text(A4W / 2, 9, title, ha="center", fontsize=10.5, fontweight="bold")
-    ax.text(A4W / 2, 15, f"Канон: {os.path.relpath(SPEC, ROOT)}. Печать A4 100%, 2 листа, "
-                         "перекрытие 10 мм.", ha="center", fontsize=5.6, color="#555")
-    ox, oy = 8.0, 22.0
-    show = x_to - x_from
+    ax.text(A4W / 2, 10, title, ha="center", fontsize=9.5, fontweight="bold")
+    ax.text(A4W / 2, 16, f"Печать A4 100% · перекрытие 10 мм · канон {os.path.relpath(SPEC, ROOT)}",
+            ha="center", fontsize=5.6, color="#555")
+    ox, oy = 8.0, 26.0
+    show_w, show_h = x_to - x_from, y_to - y_from
     n0 = len(ax.get_children())
-    draw(ax, ox - x_from, oy, style="template")
-    clip = mp.Rectangle((ox, oy), show, PH, transform=ax.transData)
+    draw(ax, ox - x_from, oy - y_from, style="template")
+    clip = mp.Rectangle((ox, oy), show_w, show_h, transform=ax.transData)
     for art in ax.get_children()[n0:]:
         try:
             art.set_clip_on(True); art.set_clip_path(clip)
         except Exception:
             pass
-    ax.add_patch(mp.Rectangle((ox, oy), show, PH, fc="none", ec="#c33", lw=0.7, ls=(0, (2, 2))))
+    ax.add_patch(mp.Rectangle((ox, oy), show_w, show_h, fc="none", ec="#c33", lw=0.7, ls=(0, (2, 2))))
     if x_from > 0:
-        ax.add_patch(mp.Rectangle((ox, oy), 10, PH, fc="#fffbe8", ec="none", alpha=0.6, zorder=7))
-    ax.plot([ox + 4, ox + 54], [oy + PH + 9, oy + PH + 9], color="#111", lw=1.5)
+        ax.add_patch(mp.Rectangle((ox, oy), 10, show_h, fc="#fffbe8", ec="none", alpha=0.6, zorder=7))
+    if y_from > 0:
+        ax.add_patch(mp.Rectangle((ox, oy), show_w, 10, fc="#fffbe8", ec="none", alpha=0.6, zorder=7))
+    ax.plot([ox + 4, ox + 54], [oy + show_h + 9, oy + show_h + 9], color="#111", lw=1.4)
     for t in (0, 25, 50):
-        ax.plot([ox + 4 + t, ox + 4 + t], [oy + PH + 7.5, oy + PH + 10.5], color="#111", lw=0.8)
-    ax.text(ox + 29, oy + PH + 12, "50 мм — проверка масштаба", ha="center", va="top",
-            fontsize=5.4, color="#333")
+        ax.plot([ox + 4 + t, ox + 4 + t], [oy + show_h + 7.5, oy + show_h + 10.5], color="#111", lw=0.8)
+    ax.text(ox + 29, oy + show_h + 12, "50 мм", ha="center", va="top", fontsize=5.4, color="#333")
     pdf.savefig(fig)
     if png:
         fig.savefig(os.path.join(OUT, png), facecolor="white", dpi=150)
@@ -227,14 +266,36 @@ def vs_concept():
 
 def main():
     bad = collisions()
-    json.dump({"collisions": bad, "count": len(bad)},
+    # проверка: все колпачки (с учётом поворота) внутри панели с полем 3 мм
+    outside = []
+    for half in ("keyboard_left", "keyboard_right"):
+        for k in SPEC_DATA["controls"][half]:
+            cx, cy = k["center_mm"]; w, h = k["size_mm"]; a = math.radians(k["angle_deg"])
+            ca, sa = math.cos(a), math.sin(a)
+            xs, ys = [], []
+            for dx, dy in ((w/2, h/2), (-w/2, h/2), (-w/2, -h/2), (w/2, -h/2)):
+                xs.append(cx + dx*ca - dy*sa); ys.append(cy + dx*sa + dy*ca)
+            if min(xs) < 3 or max(xs) > PW - 3 or min(ys) < 3 or max(ys) > PH - 3:
+                outside.append(k["id"])
+    json.dump({"collisions": bad, "count": len(bad),
+               "outside_panel": outside, "outside_count": len(outside)},
               open(os.path.join(OUT, f"{PREFIX}_collisions.json"), "w"), indent=1)
-    print(f"пересечения: {len(bad)}", bad[:5])
+    print(f"пересечения: {len(bad)}; колпачки вне панели: {len(outside)}", bad[:5])
     with PdfPages(os.path.join(OUT, f"{PREFIX}_panel_1to1.pdf")) as pdf:
-        page(pdf, 0.0, 190.0, f"Букифон {PREFIX} · панель 1:1 · левая часть (X 0…190 мм)",
-             f"{PREFIX}_page1.png")
-        page(pdf, 180.0, 380.0, f"Букифон {PREFIX} · панель 1:1 · правая часть (X 180…380 мм)",
-             f"{PREFIX}_page2.png")
+        page_a3(pdf, f"{PREFIX}_a3.png")
+    with PdfPages(os.path.join(OUT, f"{PREFIX}_panel_tiles_A4.pdf")) as pdf:
+        page_tile(pdf, 0.0, 195.0, 0.0, 115.0,
+                  f"Букифон {PREFIX} · панель 1:1 · A4 / лист 1: X 0…195, Y 0…115",
+                  f"{PREFIX}_tile1.png")
+        page_tile(pdf, 185.0, 380.0, 0.0, 115.0,
+                  f"Букифон {PREFIX} · панель 1:1 · A4 / лист 2: X 185…380, Y 0…115",
+                  f"{PREFIX}_tile2.png")
+        page_tile(pdf, 0.0, 195.0, 100.0, 210.0,
+                  f"Букифон {PREFIX} · панель 1:1 · A4 / лист 3: X 0…195, Y 100…210",
+                  f"{PREFIX}_tile3.png")
+        page_tile(pdf, 185.0, 380.0, 100.0, 210.0,
+                  f"Букифон {PREFIX} · панель 1:1 · A4 / лист 4: X 185…380, Y 100…210",
+                  f"{PREFIX}_tile4.png")
     render_png(f"{PREFIX}_render.png", dark=True)
     render_png(f"{PREFIX}_template.png", dark=False)
     vs_concept()

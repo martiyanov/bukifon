@@ -41,12 +41,13 @@
 
 ## 2. Печатные шаблоны 1:1 (PDF)
 
-Печать **A4, 100 %, без «по размеру страницы»**; проверьте линейку 50 мм на листе.
+Печать **A3 100 %** (полная панель) или **4×A4 с перекрытием 10 мм**; проверьте линейку 50 мм.
 Все файлы — [`renders/templates/`](../renders/templates/).
 
 | Шаблон | Файл |
 |---|---|
-| Панель v0.4, 1:1 (2 листа A4, перекрытие 10 мм) | [`bukifon_v04_panel_1to1.pdf`](../renders/templates/bukifon_v04_panel_1to1.pdf) |
+| Панель v0.4, 1:1 — **A3** (420×297, полная) | [`bukifon_v04_panel_1to1.pdf`](../renders/templates/bukifon_v04_panel_1to1.pdf) |
+| Панель v0.4, 1:1 — **4×A4** с перекрытием 10 мм | [`bukifon_v04_panel_tiles_A4.pdf`](../renders/templates/bukifon_v04_panel_tiles_A4.pdf) |
 | Профиль клина 8°, 1:1 | [`bukifon_v05_wedge8_profile_1to1.pdf`](../renders/templates/bukifon_v05_wedge8_profile_1to1.pdf) |
 | Бумажный макет (paperkit: панель + профиль + карта) | [`bukifon_paperkit_1to1.pdf`](../renders/templates/bukifon_paperkit_1to1.pdf) |
 | Сборочная карта (слои 1→7) | [`bukifon_assembly_map_1to1.pdf`](../renders/templates/bukifon_assembly_map_1to1.pdf) |

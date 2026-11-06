@@ -13,8 +13,8 @@ $PY tools/panel_from_json.py spec/panel-spec-v0.4.json bukifon_v04 2>&1 | tail -
 $PY - <<'PY' || fail=1
 import json,sys
 d=json.load(open('renders/templates/bukifon_v04_collisions.json'))
-print("пересечения:", d["count"])
-sys.exit(1 if d["count"] else 0)
+print("пересечения:", d["count"], "вне панели:", d.get("outside_count", 0))
+sys.exit(1 if (d["count"] or d.get("outside_count", 0)) else 0)
 PY
 
 say "2/8 Корпус v0.5-B-light: STL + fitcheck"
