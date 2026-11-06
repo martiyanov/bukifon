@@ -1,6 +1,6 @@
 # Букифон (Bukifon) — открытая платформа: сэмплер + синтезатор + модули
 
-**Версия: 0.24.2** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
+**Версия: 0.25.0** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
 
 **Букифон** — настольный музыкальный инструмент-платформа, который собирается из
 доступных компонентов, печатается на 3D-принтере, расширяется модулями и полностью
@@ -32,7 +32,7 @@ BLE HID, передача проектов). То есть Букифон — е
 аналоговый картридж на шине 26-pin или сменная панельная дека (18 пэдов / 42 клавиши).
 Подробнее — [spec/00-vision.md §12](spec/00-vision.md).
 
-## Текущее состояние (v0.24.2)
+## Текущее состояние (v0.25.0)
 
 | Блок | Состояние |
 |---|---|
@@ -132,8 +132,10 @@ BLE HID, передача проектов). То есть Букифон — е
 | [docs/71-mic-voice.md](docs/71-mic-voice.md) | микрофон/голос: запись, битбокс, вокодер, приватность |
 | [docs/72-assembly-workshops.md](docs/72-assembly-workshops.md) | где собрать: мастерские Москвы/СПб/НН, RFQ, цены |
 | [docs/73-morning-report.md](docs/73-morning-report.md) | утренний отчёт: состояние, блокеры, план, риски |
+| [docs/74-usability-test-harness.md](docs/74-usability-test-harness.md) | blind UX-тест: 8 задач, таймер, JSON (`/demo/?test=1`) |
 | [docs/72-assembly-workshops.md](docs/72-assembly-workshops.md) | где собрать: мастерские Москвы/СПб/НН, RFQ, цены |
 | [docs/73-morning-report.md](docs/73-morning-report.md) | утренний отчёт: состояние, блокеры, план, риски |
+| [docs/74-usability-test-harness.md](docs/74-usability-test-harness.md) | blind UX-тест: 8 задач, таймер, JSON (`/demo/?test=1`) |
 | [docs/53-pwr-log.md](docs/51-pwr-log.md) | журнал 13 измерений PWR и go/no-go |
 | [docs/33-bom-s3.md](docs/33-bom-s3.md) | product BOM S3-base: COGS 1/10/25, опции, маржа |
 | [docs/34-assembly.md](docs/34-assembly.md) | пошаговая сборка S3-base (B-light) |

@@ -35,7 +35,7 @@ const EXT_MIN=[1,0,1,1,0,0,50,0], EXT_MAX=[16,127,127,16,127,127,75,1];
 const JACKS = ["CV OUT 1","CV OUT 2","CV OUT 3","CV OUT 4","CV IN 1","CV IN 2","GATE OUT","GATE IN","CLK OUT","CLK IN"];
 const CC_BASE = [[74,71,73,91,73,75,76,72],[20,21,22,23,24,25,26,27],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0]];
 
-const state = { mode:0, page:0, theme:"night", faderMode:"TRACK", selParts:new Set([0]), modOn:true, seed:7, extSel:0, extStep:0, extTracks:[], extClock:false, mic:{on:false,gain:1,level:0,beat:false}, bpm:120, playing:false, step:0, selPart:0, volume:0.7, delayMix:0.25, cables:new Set(), parts:[], capture:false, pads:[], recording:false, recStarted:0 };
+const state = { mode:0, page:0, theme:"night", faderMode:"TRACK", selParts:new Set([0]), modOn:true, seed:7, extSel:0, extStep:0, extTracks:[], extClock:false, mic:{on:false,gain:1,level:0,beat:false}, test:{active:false,idx:0,t0:0,results:[],done:false}, bpm:120, playing:false, step:0, selPart:0, volume:0.7, delayMix:0.25, cables:new Set(), parts:[], capture:false, pads:[], recording:false, recStarted:0 };
 function defaultPart(i) {
   return {
     name: PART_NAMES[i], active: i < 2, mute:false, level: 0.85, sceneX: 0,
@@ -69,7 +69,7 @@ function extVal(i){ const t=extTrack(); return [t.ch,t.prog,100,t.len||4,t.ccNum
 function extSet(i,v){ const t=extTrack(); if(i===0)t.ch=clamp(Math.round(v),1,16); else if(i===1)t.prog=clamp(Math.round(v),0,127); else if(i===3)t.len=clamp(Math.round(v),1,16); else if(i===4)t.ccNum=clamp(Math.round(v),0,127); else if(i===5)t.steps[state.extStep].cc=clamp(Math.round(v),0,127); else if(i===6)state.extSwing=clamp(Math.round(v),50,75); else if(i===7)state.extClock=!!Math.round(v); }
 function applyParam(page,i,val){ for(const pi of selectedParts()) state.parts[pi].pages[page][i]=val; }
 function snapshot(){ try { undoStack.push(JSON.stringify(state.parts)); if (undoStack.length>30) undoStack.shift(); } catch(e){} }
-function undo(){ const s=undoStack.pop(); if(!s) return; try { state.parts=JSON.parse(s); paintKnobs(); save(); flashMsg("undo"); } catch(e){} }
+function undo(){ const s=undoStack.pop(); if(!s) return; if(TEST && TEST.chgMutate) TEST.mutundo=true; try { state.parts=JSON.parse(s); paintKnobs(); save(); flashMsg("undo"); } catch(e){} }
 
 /* ---------- audio ---------- */
 let AC=null, master, comp, delay, delayGain, analyser, masterData, recNode=null;
@@ -99,6 +99,7 @@ const mtof=(m)=>440*Math.pow(2,(m-69)/12);
 const voices=[];
 let recChunks=[];
 function noteOn(midi, vel=0.8, part=state.parts[state.selPart]){
+  if(TEST) TEST.sound=true;
   audioInit(); if (AC.state==="suspended") AC.resume();
   const now=AC.currentTime;
   const m=part.pages[0], f=part.pages[1], e=part.pages[2], x=part.pages[3];
@@ -131,6 +132,58 @@ function killVoice(v, rel=null){
 function noteOff(midi){ voices.filter(v=>v.midi===midi&&!v.dead).forEach(v=>killVoice(v)); }
 function allNotesOff(){ voices.forEach(v=>killVoice(v)); }
 
+/* ---------- UX-тест (blind-usability): ?test=1 ---------- */
+const UTASKS=[
+ {id:"sound",   text:"1/8 · Получи звук (клавиши, PLAY или MIC/битбокс)"},
+ {id:"env",     text:"2/8 · Открой страницу ENV"},
+ {id:"mute2",   text:"3/8 · Замьють две партии"},
+ {id:"euclid",  text:"4/8 · Создай евклидов ритм (GEN → EUCLID)"},
+ {id:"mutundo", text:"5/8 · Сделай MUTATE и верни назад (UNDO)"},
+ {id:"record",  text:"6/8 · Запиши выход на пэд (REC)"},
+ {id:"scene",   text:"7/8 · Переключи фейдеры в SCENE"},
+ {id:"home",    text:"8/8 · Вернись в MAIN одним жестом (HOME)"},
+];
+const TFLAGS={sound:false,env:false,mute2:false,euclid:false,chgMutate:false,mutundo:false,record:false,scene:false,home:false,leftMain:false};
+let TEST=null;
+function startTest(){ state.test={active:true,idx:0,t0:performance.now(),results:[],done:false}; TEST=TFLAGS; for(const k in TEST) TEST[k]=false; state.page=0; state.mode=0; flashMsg("UX-тест: 8 задач, без подсказок"); }
+function finishTest(){ state.test.active=false; state.test.done=true; }
+function copyTestResults(){ const r={date:new Date().toISOString(),tasks:state.test.results,score:state.test.results.filter(x=>x.ok).length,total:UTASKS.length}; const t=JSON.stringify(r,null,1); if(navigator.clipboard) navigator.clipboard.writeText(t).catch(()=>{}); flashMsg("результаты скопированы"); }
+function checkTest(){
+  if(!state.test.active) return;
+  const t=TEST, idx=state.test.idx, task=UTASKS[idx]; if(!task) return;
+  let ok=false;
+  switch(task.id){
+    case "sound": ok=t.sound; break;
+    case "env": ok=(state.page===2); break;
+    case "mute2": ok=state.parts.filter(p=>p.mute).length>=2; break;
+    case "euclid": ok=(t.euclid); break;
+    case "mutundo": ok=t.mutundo; break;
+    case "record": ok=(state.pads.length>0 || t.record); break;
+    case "scene": ok=(state.faderMode==="SCENE"); break;
+    case "home": ok=(state.page===0 && t.leftMain); break;
+  }
+  if((state.page!==0)||state.mode!==0) t.leftMain=true;
+  if(ok){ state.test.results.push({task:task.id, ok:true, sec:Math.round((performance.now()-state.test.t0)/100)/10}); state.test.idx++; state.test.t0=performance.now(); if(state.test.idx>=UTASKS.length) finishTest(); }
+}
+function drawTestOverlay(){
+  const res=state.test;
+  ctx.fillStyle="rgba(4,10,12,0.9)"; roundRect(20,64,W-40,H-160,10); ctx.fill();
+  ctx.strokeStyle=T.accent; ctx.lineWidth=2; roundRect(20,64,W-40,H-160,10); ctx.stroke();
+  if(res.done){
+    ctx.fillStyle=T.accent; ctx.font="700 18px Inter"; ctx.fillText("РЕЗУЛЬТАТЫ UX-ТЕСТА",40,96);
+    ctx.fillStyle=T.text; ctx.font="600 13px Inter";
+    let y=128; res.results.forEach(r=>{ ctx.fillText(`${r.ok?"✅":"❌"} ${r.task}: ${r.sec} с`,48,y); y+=24; });
+    ctx.fillStyle=T.muted; ctx.font="600 12px Inter"; ctx.fillText("Скопируйте JSON и отправьте в чат проекта. Спасибо!",40,y+12);
+    ctx.fillStyle=T.text; ctx.font="700 13px Inter"; ctx.fillText("Нажмите 'COPY JSON' в панели снизу.",40,y+36);
+    return;
+  }
+  const task=UTASKS[res.idx];
+  ctx.fillStyle=T.muted; ctx.font="600 12px Inter"; ctx.fillText("UX-ТЕСТ · без подсказок · таймер идёт",40,96);
+  ctx.fillStyle=T.text; ctx.font="700 18px Inter"; ctx.fillText(task?task.text:"",40,130);
+  const sec=((performance.now()-res.t0)/1000).toFixed(1); ctx.fillStyle=T.accent; ctx.font="700 28px Inter"; ctx.fillText(sec+" с",40,178);
+  ctx.fillStyle=T.muted; ctx.font="600 12px Inter"; ctx.fillText("Задача считается выполненной автоматически при правильном действии.",40,214);
+  ctx.fillStyle=T.line; ctx.fillRect(40,240,W-80,6); ctx.fillStyle=T.green; ctx.fillRect(40,240,(W-80)*(res.idx/UTASKS.length),6);
+}
 /* ---------- микрофон: уровень, запись, битбокс ---------- */
 let micStream=null, micAnalyser=null, micData=null, beatTimer=null, beatHits=[];
 async function micToggle(){
@@ -179,7 +232,7 @@ function finishRec(){
   const L=buf.getChannelData(0), R=buf.getChannelData(1);
   let off=0; for(const [l,r] of recChunks){ L.set(l,off); R.set(r,off); off+=l.length; }
   const n=state.pads.length+1;
-  state.pads.push({name:`REC ${String(n).padStart(2,"0")}`, buffer:buf, loop:false});
+  state.pads.push({name:`REC ${String(n).padStart(2,"0")}`, buffer:buf, loop:false}); if(TEST) TEST.record=true;
   recChunks=[];
   flashMsg(`REC → PAD ${state.pads.length} (${(len/AC.sampleRate).toFixed(1)} с)`);
   save();
@@ -236,7 +289,7 @@ const stepDur=()=>60/state.bpm/4;
 let midiClockTimer=null;
 function startMidiClock(){ if(!midiOut||midiClockTimer) return; try{ midiOut.send([0xFA]); }catch(e){} midiClockTimer=setInterval(()=>{ if(!state.playing) return; try{ midiOut.send([0xF8]); }catch(e){} }, 60000/state.bpm/24); }
 function stopMidiClock(){ if(midiClockTimer){ clearInterval(midiClockTimer); midiClockTimer=null; } if(midiOut){ try{ midiOut.send([0xFC]); }catch(e){} } }
-function startSeq(){ audioInit(); startMidiClock(); if(midiOut){ state.extTracks.forEach(t=>{ try{ midiOut.send([0xC0|((t.ch-1)&0xF), t.prog&0x7F]); }catch(e){} }); } if(AC.state==="suspended")AC.resume(); state.playing=true; nextStepTime=AC.currentTime+0.05; state.step=0; if(seqTimer)clearInterval(seqTimer); seqTimer=setInterval(scheduler,25); save(); }
+function startSeq(){ if(TEST) TEST.sound=true; audioInit(); startMidiClock(); if(midiOut){ state.extTracks.forEach(t=>{ try{ midiOut.send([0xC0|((t.ch-1)&0xF), t.prog&0x7F]); }catch(e){} }); } if(AC.state==="suspended")AC.resume(); state.playing=true; nextStepTime=AC.currentTime+0.05; state.step=0; if(seqTimer)clearInterval(seqTimer); seqTimer=setInterval(scheduler,25); save(); }
 function stopSeq(){ state.playing=false; stopMidiClock(); if(seqTimer){clearInterval(seqTimer);seqTimer=null;} voices.forEach(v=>killVoice(v,0.08)); save(); }
 function scheduler(){ if(!state.playing) return; while(nextStepTime<AC.currentTime+lookahead){ scheduleStep(state.step,nextStepTime); nextStepTime+=stepDur(); state.step=(state.step+1)%16; } }
 function scheduleStep(step,when){
@@ -333,9 +386,9 @@ addEventListener("keydown",(e)=>{
   if(state.mode===4 && ["Digit5","Digit6","Digit7","Digit8"].includes(e.code)){ state.extSel=+e.code.slice(-1)-1; paintKnobs(); save(); e.preventDefault(); }
   if(e.code==="KeyM" && !e.metaKey && !e.ctrlKey){ state.modOn=!state.modOn; save(); flashMsg(state.modOn?"MOD ON":"MOD OFF"); e.preventDefault(); }
   if(e.code==="Home" && !e.metaKey && !e.ctrlKey){ goHome(); e.preventDefault(); }
-  if(e.code==="PageUp"){ state.page=(state.page+4)%5; paintKnobs(); syncPageChips(); e.preventDefault(); }
-  if(e.code==="PageDown"){ state.page=(state.page+1)%5; paintKnobs(); syncPageChips(); e.preventDefault(); }
-  if((e.metaKey||e.ctrlKey) && e.code==="KeyZ"){ undo(); e.preventDefault(); }
+  if(e.code==="PageUp"){ state.page=(state.page+4)%5; paintKnobs(); syncPageChips(); if(state.page===2&&TEST)TEST.env=true; e.preventDefault(); }
+  if(e.code==="PageDown"){ state.page=(state.page+1)%5; paintKnobs(); syncPageChips(); if(state.page===2&&TEST)TEST.env=true; e.preventDefault(); }
+  if((e.metaKey||e.ctrlKey) && e.code==="KeyZ"){ undo(); if(TEST && TEST.chgMutate) TEST.mutundo=true; e.preventDefault(); }
   if((e.metaKey||e.ctrlKey) && e.code==="KeyC"){ copyPattern(); e.preventDefault(); }
   if((e.metaKey||e.ctrlKey) && e.code==="KeyV"){ pastePattern(); e.preventDefault(); }
 });
@@ -432,7 +485,7 @@ function ensureScenes(part){
     part.sceneB={cut:Math.min(12000,p0[0]*2.2),res:Math.min(100,p0[1]+35),drive:Math.min(100,p0[3]+30),atk:Math.max(2,part.pages[2][0]*0.5),dec:Math.max(30,part.pages[2][1]*0.7),rel:Math.max(40,part.pages[2][3]*0.7),depth:Math.min(100,part.pages[1][1]+30),fbk:Math.min(100,part.pages[3][1]+25)};
   }
 }
-function setFaderMode(m){
+function setFaderMode(m){ if(TEST && m==="SCENE") TEST.scene=true;
   state.faderMode=m;
   document.querySelectorAll("[data-fmode]").forEach(b=>b.classList.toggle("active",b.dataset.fmode===m));
   paintFaderLabels(); save(); flashMsg("фейдеры: "+m);
@@ -523,12 +576,12 @@ function renderContextBar(){
   ];
   el.innerHTML=chips.map(c=>`<span class="chip${c.w?" warn":""}${c.rec?" rec":""}">${c.t}</span>`).join("");
 }
-function buildPageChips(){
+function buildPageChips(){ if(TEST && state.page===2) TEST.env=true;
   const host=$("pagechips"); if(!host) return; host.innerHTML="";
-  PAGES.forEach((pg,i)=>{ const b=document.createElement("button"); b.textContent=pg; b.className=i===state.page?"active":""; b.addEventListener("click",()=>{ state.page=i; paintKnobs(); syncPageChips(); save(); }); host.appendChild(b); });
+  PAGES.forEach((pg,i)=>{ const b=document.createElement("button"); b.textContent=pg; b.className=i===state.page?"active":""; b.addEventListener("click",()=>{ state.page=i; paintKnobs(); syncPageChips(); if(i===2&&TEST)TEST.env=true; save(); }); host.appendChild(b); });
 }
 function syncPageChips(){ document.querySelectorAll("#pagechips button").forEach((b,i)=>b.classList.toggle("active",i===state.page)); }
-function goHome(){ state.page=0; paintKnobs(); syncPageChips(); save(); flashMsg("HOME · MAIN"); }
+function goHome(){ state.page=0; paintKnobs(); syncPageChips(); if(TEST && TEST.leftMain) TEST.home=true; save(); flashMsg("HOME · MAIN"); }
 let shiftOverlay=false;
 addEventListener("keydown",(e)=>{ if(e.key==="Shift"){ shiftOverlay=true; } });
 addEventListener("keyup",(e)=>{ if(e.key==="Shift"){ shiftOverlay=false; } });
@@ -557,6 +610,7 @@ function draw(){
   else drawUsbKbd();
   drawStatusBar();
   if(shiftOverlay) drawShiftOverlay();
+  if(state.test.active) drawTestOverlay();
   if(Date.now()-lastCtx>400){ lastCtx=Date.now(); renderContextBar(); }
   if(msg && Date.now()-msgT<1600){ ctx.fillStyle=T.accent; ctx.font="700 12px Inter"; ctx.fillText(msg,W-220,462); }
 }
@@ -749,7 +803,7 @@ cv.addEventListener("pointerdown",(e)=>{
   }
   if(state.mode!==0) return;
   // страницы параметров
-  if(y>370&&y<390&&x>18&&x<18+5*92){ const i=Math.floor((x-18)/92); if(i>=0&&i<5){ state.page=i; paintKnobs(); syncPageChips(); save(); return; } }
+  if(y>370&&y<390&&x>18&&x<18+5*92){ const i=Math.floor((x-18)/92); if(i>=0&&i<5){ state.page=i; paintKnobs(); syncPageChips(); if(i===2&&TEST)TEST.env=true; save(); return; } }
   // смена темы — правый нижний угол
   if(y>12&&y<32&&x>W-90){ const names=Object.keys(THEMES); const idx=Math.round((x-(W-74))/18); const n=names[idx]; if(n) setTheme(n); return; }
   const pi=Math.floor((y-96)/66);
@@ -757,7 +811,7 @@ cv.addEventListener("pointerdown",(e)=>{
   // mute по клику на имя партии
   if(x<120){
     if(e.shiftKey){ state.selParts.has(pi)?state.selParts.delete(pi):state.selParts.add(pi); if(!state.selParts.size) state.selParts.add(pi); state.selPart=pi; paintKnobs(); }
-    else { state.parts[pi].mute=!state.parts[pi].mute; }
+    else { state.parts[pi].mute=!state.parts[pi].mute; if(TEST && state.parts.filter(p=>p.mute).length>=2) TEST.mute2=true; }
     save(); return;
   }
   if(x>120&&x<776){ const s=Math.floor((x-128)/40); if(s>=0&&s<=15){ snapshot(); const part=state.parts[pi], st=part.steps[s]; st.on=!st.on; if(st.on) st.accent=s%4===0; state.selPart=pi; paintKnobs(); save(); startPreview(part,s); } }
@@ -799,6 +853,7 @@ function bindUI(){
   const mg=$("micGain"); if(mg) mg.addEventListener("input",(e)=>{ state.mic.gain=+e.target.value/100; });
   const home=$("btnHome"); if(home) home.addEventListener("click",goHome);
   const undoBtn=$("btnUndo"); if(undoBtn) undoBtn.addEventListener("click",undo);
+  if(new URLSearchParams(location.search).get("test")==="1"){ startTest(); setInterval(checkTest,100); const tb=document.getElementById("btnTest"); if(tb){tb.textContent="COPY JSON"; tb.onclick=copyTestResults; tb.style.display="inline-block";} }
   buildPageChips(); syncPageChips(); renderContextBar();
   const rand=$("btnRandom"); if(rand) rand.addEventListener("click",randomizePattern);
   const td=$("btnTransDown"); if(td) td.addEventListener("click",()=>transpose(-12));
