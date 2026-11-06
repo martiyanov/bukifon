@@ -54,7 +54,7 @@
    ],
    "watertight": true,
    "watertight_reload": true,
-   "volume_mm3": 202142.4
+   "volume_mm3": 201279.7
   },
   "body_R": {
    "file": "body_R.stl",

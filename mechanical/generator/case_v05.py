@@ -26,6 +26,7 @@ from shapely.geometry import box as sbox
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import params_v05 as P
 import params_v04 as P04
+import conn_cuts_v05
 import case as C
 import case_v04 as C04
 
@@ -201,6 +202,9 @@ def build_body(v):
         for sx in (116.0, 264.0):
             cuts.append(C.cyl_y(2.3, -1.0, 9.0, sx, 8.0, 20))
             cuts.append(C.cyl_y(P.M3_CLEAR_D / 2, 2.0, 9.0, sx, 8.0, 20))
+    # ---- вырезы разъёмов (docs/82, board-fit) ----------------------------
+    cuts += conn_cuts_v05.cutters(P.WALL)
+
     solid = C.DIFF(solid, cuts)
 
     # ---- разрез X = 190 + шип пола ---------------------------------------
@@ -322,8 +326,9 @@ def copy_shared(stl_dir):
         for ext in (".stl", ".3mf"):
             for src in src_dirs:
                 srcf = os.path.join(src, part + ext)
-                if os.path.exists(srcf):
-                    shutil.copy2(srcf, os.path.join(stl_dir, part + ext))
+                dstf = os.path.join(stl_dir, part + ext)
+                if os.path.exists(srcf) and os.path.abspath(srcf) != os.path.abspath(dstf):
+                    shutil.copy2(srcf, dstf)
                     break
 
 

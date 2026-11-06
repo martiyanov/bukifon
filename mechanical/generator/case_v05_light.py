@@ -26,6 +26,7 @@ from shapely.geometry import box as sbox
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import params_v05 as P
 import params_v04 as P04
+import conn_cuts_v05
 import case as C
 import case_v04 as C04
 
@@ -210,6 +211,9 @@ def build_body(v):
         cuts.append(C.box(150.0, 250.0, -1.0, 10.0, P.FLOOR_T, 12.0))
         for cx in (170.0, 230.0):
             cuts.append(C.cyl_z(2.0, -0.1, P.FLOOR_T + 0.1, cx, 6.0, 16))
+    # ---- вырезы разъёмов (docs/82, board-fit): задняя/левая стенки ---------
+    cuts += conn_cuts_v05.cutters(LW)
+
     # отверстия под подставку (C): горизонтальные M3 сзади, ось Y
     if v["stand"]:
         for sx in (116.0, 264.0):

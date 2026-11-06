@@ -2,6 +2,20 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.45.0] — 2025-11-06 — «Каркасы PCB и вырезы»
+
+### Добавлено
+- **Каркасы PCB rev.1 в KiCad** из `mechanical/board-fit/`: CORE-2 **200×108** (6 слоёв),
+  PANEL-2 две платы **180×190** (4 слоя), PWR-2 **90×70** (4 слоя, 2 oz); Edge.Cuts, NPTH-крепёж
+  H1…, подписанные keepout (C6-антенна/аналог/DC-DC, экран/клавиши/энкодеры/фейдер/MIC_LED,
+  батарея, hot-loop), шелкография «PRE-FREEZE»; `gen_scaffold.py`/`verify_scaffold.py`;
+  **DRC 0 errors/0 warnings/0 unconnected**, verify **PASS ±0.05 мм**; SVG/PDF/README в каждом `rev1/`;
+  docs/82 §9, spec/90 D-101.
+- **Вырезы разъёмов в корпусе** (B-light/B/C/B_mic/C_mic): **MIDI Ø14 X76**, **DC Ø9 X91**,
+  **EXPRESSION Ø8.2 X120.5**, **mic Ø8.2 X140**, **SD 12×2** слева, USB-C; перемычки **≥3.5 мм**
+  (было 2.5); `conn_cuts_v05.py`; fitcheck **16/0**; B-light **231.1 г/11.2 ч** (B 276.6, C 313.6);
+  превью `rear_ports`, `left_ports`; docs/45/71/prints/board-fit обновлены.
+
 ## [0.44.1] — 2025-11-06 — «HTTPS bukifon.com»
 
 ### Исправлено/добавлено

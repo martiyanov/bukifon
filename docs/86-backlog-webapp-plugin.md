@@ -5,9 +5,9 @@
 
 ## A. Сайт на VDS (как agonarena.ru)
 
-**Статус 06.11:** сайт **задеплоен** на VDS и доступен по HTTPS через временный
-`https://bukifon.37-46-18-40.sslip.io/` (сайт RU/EN, `/demo/`, пресскит, sitemap). Кастомные
-домены ждут DNS: A `@`/`www` → **37.46.18.40**, старые A/AAAA удалить; после — certbot.
+**Статус 06.11:** сайт **задеплоен** на VDS; **https://bukifon.com/** уже с HTTPS (www→apex 301),
+временный адрес `https://bukifon.37-46-18-40.sslip.io/`; `bukifon.ru` ждёт делегации NS
+(A `@`/`www` → 37.46.18.40), затем TLS автоматически (watcher).
 
 **Цель:** bukifon.ru/.com — витрина + веб-приложение; тот же VDS, что agonarena.ru.
 
