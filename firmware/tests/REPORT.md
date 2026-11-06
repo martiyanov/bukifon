@@ -305,10 +305,10 @@ deterministic budget injection/bypass, `frames>64` rejection.
 
 # P1 benchmark (task-17, 2026-11-05)
 
-Frozen workload: [`docs/05-benchmark-workload.md`](../docs/05-benchmark-workload.md)
+Frozen workload: [`docs/05-benchmark-workload.md`](../../docs/05-benchmark-workload.md)
 (v1.0, schema `bukifon-bench-v1`).  Devkit procedure:
-[`docs/05a-benchmark-howto.md`](../docs/05a-benchmark-howto.md).
-Harness: [`firmware/bench/`](bench/README.md).
+[`docs/05a-benchmark-howto.md`](../../docs/05a-benchmark-howto.md).
+Harness: [`firmware/bench/`](../bench/README.md).
 
 ## Commands
 
@@ -658,7 +658,7 @@ MIDI 100 packets 0 errors.
 host `MockHardware` is deterministic with failure/timeout injection;
 `P4FactoryHardware` methods and flash `factory_data`/24C32 identity/QR are
 `TODO(hw)` stubs returning false (no fabricated PASS).  Docs:
-[`docs/46-factory-test.md`](../docs/46-factory-test.md) — loopback plug, table,
+[`docs/46-factory-test.md`](../../docs/46-factory-test.md) — loopback plug, table,
 EOL timing, JSON, serial/QR, risks.
 
 ## Tests
@@ -705,7 +705,7 @@ feedback, MIDI+HID+CDC alongside.
   subslot, ISO packet **144 B/microframe** (8ch×3B×6), feedback endpoint 0x82
   (4 B, interval 4), 6KRO HID report 45 B.
 - **JSON dump** for the USB analyser: `make -C firmware/host usbdump` →
-  [`firmware/artifacts/usb/uac2_8x8.json`](artifacts/usb/uac2_8x8.json)
+  [`firmware/artifacts/usb/uac2_8x8.json`](../artifacts/usb/uac2_8x8.json)
   (hex device/config + budget + lengths).  This is a byte-level reference, not a
   real enumeration test (TinyUSB glue is still TODO(hw)).
 - Tests: wTotalLength/walk consistency, unique endpoint addresses, budget both
@@ -731,7 +731,7 @@ faders, CV→CV/GATE loopback, MIDI→DIN loopback.  Tests prove: all-MOCK 14/14
 PASS; all-REAL with P4 stubs 14/14 FAIL (**mock never fabricates PASS**); each
 backend switched individually fails exactly its mapped tests while mock-backed
 tests stay PASS; runtime flags independent.  Bench enable order and protection
-rules are in [docs/46-factory-test.md](../docs/46-factory-test.md) §9
+rules are in [docs/46-factory-test.md](../../docs/46-factory-test.md) §9
 (I2C → panel/controls → codec → display → SD → USB → CV/MIDI).
 
 ## Tests
@@ -770,7 +770,7 @@ Pillow) installed in `/tmp/msvenv`; no system packages assumed.
 - Generated dev sheet: `dist/labels/labels_26A.pdf` (24 labels, 125 KB),
   `labels_26A.json`, `labels_26A_preview.png` (300 dpi preview inspected: SN,
   revs/date/batch/test, QR all legible).
-- Media/placement/RMA rules: [`docs/55-labels-traceability.md`](../docs/55-labels-traceability.md).
+- Media/placement/RMA rules: [`docs/55-labels-traceability.md`](../../docs/55-labels-traceability.md).
 
 ## Factory identity (`firmware/src/factory/identity.*`)
 

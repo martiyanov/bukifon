@@ -2,6 +2,20 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.33.0] — 2025-11-06 — «День 1 и ссылки»
+
+### Добавлено
+- **docs/80 «День 1 с железом»**: runbook PWR (13 измерений + gate) → CORE-2 (15 шагов
+  bring-up: rails/I2C/display/matrix/loopback/микрофон/self-test/burn-in) → P1 (P4 vs H743,
+  критерии MCU) + таблица «если что-то не так».
+- **`tools/check_docs_links.py`**: проверка относительных ссылок во всех markdown
+  (**617 ссылок, 0 битых**), встроена в `check_all` шагом **8/8**.
+
+### Исправлено
+- 20 битых ссылок: legacy-документы (00/01/02) переведены на актуальные артефакты
+  (stl_v05_*, preview_v05_*, renders/templates), docs/34 (.jpg), docs/51 (`../hardware/...`),
+  docs/reviews (`:line` из ссылок), firmware/tests/REPORT.md (`../../docs/`).
+
 ## [0.32.0] — 2025-11-06 — «Проверки BOM и PWR»
 
 ### Добавлено

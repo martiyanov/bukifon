@@ -152,7 +152,7 @@ TRS MIDI IN/OUT Type A сохраняются и работают одновре
 (~200 × 110) и **CORE-1B** (та же архитектура + PCM1808 + батарейное питание), корпус
 без рукояток; прошивка ядра не меняется, добавляются страница «16 параметров» и Audio In.
 Раскладка и координаты — [`spec/50-v1.1.md`](../spec/50-v1.1.md) §4; черновая
-визуализация — [`renders/variantB_panel.png`](../renders/variantB_panel.png).
+визуализация — [`renders/templates/bukifon_v04_render.png`](../renders/templates/bukifon_v04_render.png).
 Артефакты v1.0 (handheld 315 × 145) остаются в силе.
 
 ## 6. Что в коробке (после сборки)

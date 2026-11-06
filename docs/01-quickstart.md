@@ -290,7 +290,7 @@ MCP3208, 24C32, MIDI, порты, джеки, LED_DATA, AGND/DGND в одной 
 - [ ] AUDIO IN и педаль видны прошивке.
 
 **Вариант B «A5»:** отдельная плата PANEL-1B и CORE-1B + корпус 210 × 148 × 40
-(см. [`spec/50-v1.1.md`](../spec/50-v1.1.md) §4, [`renders/variantB_panel.png`](../renders/variantB_panel.png)) —
+(см. [`spec/50-v1.1.md`](../spec/50-v1.1.md) §4, [`renders/templates/bukifon_v04_render.png`](../renders/templates/bukifon_v04_render.png)) —
 на дату документа это следующий этап, схем/STL ещё нет.
 
 ## 5. Калибровка и приёмка (неделя 5–6)

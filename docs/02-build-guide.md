@@ -29,10 +29,10 @@
    150 × 62 × 16, высота 63–64 мм, [`spec/50-v1.1.md`](../spec/50-v1.1.md) §1a) и разъёмами.
    До публикации v0.5 доступен корпус v0.4: [`mechanical/stl_v04/`](../mechanical/stl_v04/)
    (6 деталей, 380 × 210 × 63, панель режется 193 + 190 мм с шипом) и v1.7/v1.8:
-   [`mechanical/stl_v17/`](../mechanical/stl_v17/), [`mechanical/stl_v18/`](../mechanical/stl_v18/).
+   [`mechanical/stl_v05_B_light/`](../mechanical/stl_v05_B_light/), [`mechanical/stl_v05_A/`](../mechanical/stl_v05_A/).
 2. Материал PETG, сопло 0.4, слой 0.2, **без поддержек**, детали ≤ 220×220;
    карта печати: [`mechanical/prints.md`](../mechanical/prints.md).
-3. Сначала калибровочный крест [`mechanical/test_fit/test_cross.stl`](../mechanical/test_fit/test_cross.stl)
+3. Сначала калибровочный крест [`mechanical/prints.md`](../mechanical/prints.md) (калибровка)
    (втулка M3 + шип + паз 0.25). Затем — панель/скорлупа; wedge 8° печатать как отдельную
    деталь-клин (ориентация по `prints.md`, иначе появятся поддержки).
 4. Проверки: watertight, 0 пересечений (`renders/templates/bukifon_v04_collisions.json`,
@@ -348,10 +348,10 @@ ERC 5/5 = 0 ошибок.
 Файлы: [`mechanical/prints.md`](../mechanical/prints.md) (карта печати),
 [`assembly.md`](../mechanical/assembly.md) (порядок сборки),
 [`fit_check.md`](../mechanical/fit_check.md) (проверка коллизий: 51 строка, 0 конфликтов),
-[`README.md`](../mechanical/README.md) (отклонения от spec), STL — [`mechanical/stl/`](../mechanical/stl/),
-рендеры — [`preview/iso_assembly.png`](../mechanical/preview/iso_assembly.png),
-[`preview/exploded.png`](../mechanical/preview/exploded.png),
-[`preview/front_panel.png`](../mechanical/preview/front_panel.png).
+[`README.md`](../mechanical/README.md) (отклонения от spec), STL — [`mechanical/stl_v05_A/`](../mechanical/stl_v05_A/),
+рендеры — [`preview_v05_B_light/iso_top.jpg`](../mechanical/preview_v05_B_light/iso_top.jpg),
+[`preview_v05_B_light/exploded.jpg`](../mechanical/preview_v05_B_light/exploded.jpg),
+[`preview_v05_B_light/front_panel.jpg`](../mechanical/preview_v05_B_light/front_panel.jpg).
 
 ### 4.1 Печать
 
@@ -609,7 +609,7 @@ params, version, name, CV-маршруты, ток, CRC16). Утилита за�
 | CORE-1 | [README](../hardware/core/README.md) · [PDF](../hardware/core/CORE-1.pdf) · [SVG](../hardware/core/svg/CORE-1.svg.gz) · [netlist](../hardware/core/netlist.net) · [BOM](../hardware/core/BOM-core.csv) · [джек-карта](../hardware/core/wiring-jacks.md) · [ERC](../hardware/core/erc/erc.rpt) · [блок-схема](../hardware/core/CORE-1-blocks.png) |
 | PANEL-1 / деки | [README](../hardware/panel/README.md) · [PDF PANEL](../hardware/panel/panel-1/panel-1.pdf) · [PDF PAD](../hardware/panel/deck-pad/deck-pad.pdf) · [PDF KEYS](../hardware/panel/deck-keys/deck-keys.pdf) · [матрицы](../hardware/panel/matrix-tables.md) · [координаты](../hardware/panel/coords-panel.csv) · [BOM](../hardware/panel/BOM-panel.csv) |
 | Модули | [README](../hardware/modules/README.md) · [расчёты](../hardware/modules/Calc.md) · [доступность](../hardware/modules/availability.md) · [картридж](../hardware/modules/CARTRIDGE.md) · [BOM](../hardware/modules/BOM-modules.csv) · PDF: [VCO](../hardware/modules/pdf/MOD-VCO-1.pdf), [FILTER](../hardware/modules/pdf/MOD-FILTER-1.pdf), [LADDER](../hardware/modules/pdf/MOD-LADDER-1.pdf), [ENSEMBLE](../hardware/modules/pdf/MOD-ENSEMBLE-1.pdf), [PROTO](../hardware/modules/pdf/MOD-PROTO-1.pdf) |
-| Механика | [README](../mechanical/README.md) · [печать](../mechanical/prints.md) · [сборка](../mechanical/assembly.md) · [fit-check](../mechanical/fit_check.md) · [STL](../mechanical/stl/) · [рендеры](../mechanical/preview/) |
+| Механика | [README](../mechanical/README.md) · [печать](../mechanical/prints.md) · [сборка](../mechanical/assembly.md) · [fit-check](../mechanical/fit_check.md) · [STL](../mechanical/stl/) · [рендеры](../mechanical/preview_v05_B_light/) |
 | Прошивка | [README](../firmware/README.md) · [platformio.ini](../firmware/Bukifon/platformio.ini) · [host Makefile](../firmware/host/Makefile) · [тесты](../firmware/tests/run_tests.sh) · [метрики](../firmware/tests/out/fft_metrics.json) |
 | Документы | [BOM](BOM.md) · [обзор](00-overview.md) · [quickstart](01-quickstart.md) · [лицензии](09-licensing.md) |
 | Спецификация | [vision](../spec/00-vision.md) · [panel-ui](../spec/10-panel-ui.md) · [electronics](../spec/20-electronics.md) · [mechanics](../spec/30-mechanics.md) · [firmware](../spec/40-firmware.md) |

@@ -8,7 +8,7 @@ export MPLCONFIGDIR=/tmp/mplcache
 fail=0
 say() { printf '\n=== %s\n' "$1"; }
 
-say "1/7 Панель v0.4: 1:1 шаблон + рендер + пересечения"
+say "1/8 Панель v0.4: 1:1 шаблон + рендер + пересечения"
 $PY tools/panel_from_json.py spec/panel-spec-v0.4.json bukifon_v04 2>&1 | tail -3 || fail=1
 $PY - <<'PY' || fail=1
 import json,sys
@@ -17,14 +17,14 @@ print("пересечения:", d["count"])
 sys.exit(1 if d["count"] else 0)
 PY
 
-say "2/7 Корпус v0.5-B-light: STL + fitcheck"
+say "2/8 Корпус v0.5-B-light: STL + fitcheck"
 if [ -f mechanical/generator/case_v05_light.py ]; then $PY mechanical/generator/case_v05_light.py 2>&1 | tail -3 || fail=1; fi
 if [ -f mechanical/generator/fitcheck_v05_light.py ]; then $PY mechanical/generator/fitcheck_v05_light.py 2>&1 | tail -3 || fail=1; fi
 
-say "3/7 Прошивка: host-тесты"
+say "3/8 Прошивка: host-тесты"
 if [ -f firmware/host/Makefile ]; then (cd firmware/host && make -s test 2>&1 | tail -5) || fail=1; else echo "skip: firmware/host/Makefile нет"; fi
 
-say "4/7 Сайт: HTML/ассеты/SEO-файлы"
+say "4/8 Сайт: HTML/ассеты/SEO-файлы"
 $PY - <<'PY' || fail=1
 import os,sys
 from html.parser import HTMLParser
@@ -53,7 +53,7 @@ print("сайт:", "ok" if not bad else bad)
 sys.exit(1 if bad else 0)
 PY
 
-say "5/7 Версии и документация"
+say "5/8 Версии и документация"
 $PY - <<'PY' || fail=1
 import json,re,sys
 ver=open('VERSION').read().strip()
@@ -64,14 +64,17 @@ print(f"VERSION={ver}; в CHANGELOG: {f'[{ver}]' in cl}; в README: {ver in rd} 
 sys.exit(0 if ok else 1)
 PY
 
-say "6/7 Требования/реестр"
+say "6/8 Требования/реестр"
 [ -f spec/90-requirements-registry.md ] && echo "реестр: ok" || { echo "реестр: НЕТ"; fail=1; }
 
-say "7/7 BOM ↔ netlist (CORE-2/PANEL-2/PWR-2)"
+say "7/8 BOM ↔ netlist (CORE-2/PANEL-2/PWR-2)"
 $PY tools/check_bom_netlist.py --netlist hardware/core2/netlist.net --bom hardware/core2/BOM-core2.csv 2>&1 | tail -1 || fail=1
 $PY tools/check_bom_netlist.py --netlist hardware/panel2/PANEL-2.net --bom hardware/panel2/BOM-panel2.csv 2>&1 | tail -1 || fail=1
 $PY tools/check_bom_netlist.py --netlist hardware/power2/netlist.net --bom hardware/power2/BOM-power2.csv 2>&1 | tail -1 || fail=1
 $PY tools/pwr_bench_check.py docs/pwr-results-template.csv 2>&1 | tail -1 || fail=1
+
+say "8/8 Ссылки в документации"
+$PY tools/check_docs_links.py 2>&1 | tail -2 || fail=1
 
 say "ИТОГ"
 if [ "$fail" = "0" ]; then echo "✅ все проверки пройдены"; else echo "❌ есть ошибки (см. выше)"; fi
