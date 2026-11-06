@@ -2,6 +2,19 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.36.0] — 2025-11-06 — «Разводка и fab-пакет»
+
+### Добавлено
+- **docs/82 «План разводки PCB rev.1»**: стеки (CORE-2 6L, PANEL-2/PWR-2 4L, 2 oz на PWR-2),
+  контуры/крепёж (6×M3 PANEL-2), floorplan зон (USB/антенна C6/аналог/DC-DC/MEMS), критичные
+  цепи (USB HS 90 Ω, I2S, микрофон, LED, CV/GATE), DRC/DFM-минимум, процесс и риски.
+- **docs/83 «Fab-пакет»**: состав (`gerbers/`, `drill/`, `bom.csv`, `cpl.csv`, stackup,
+  fab/assembly drawings, README), правила имён, CPL/BOM-схема, чек-лист перед отправкой,
+  приёмка (AOI/X-ray/тест-лог/ESD), хранение.
+- **`fab/README.md`** — заготовка пакетов core2/panel2/power2 rev1 (появятся после freeze).
+- **`tools/check_fab_package.py`**: проверка состава, Gerber≥8 слоёв, drill, CPL-колонки,
+  CPL↔BOM (refs, DNP), PII — проверено на фикстуре (**пакет готов**).
+
 ## [0.35.1] — 2025-11-06 — «Медиа-политика превью»
 
 ### Исправлено
