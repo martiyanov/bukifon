@@ -2,6 +2,11 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.29.3] — 2025-11-06 — «README версия»
+
+### Исправлено
+- README: VERSION/заголовок приведены к 0.29.x (check_all снова ✅).
+
 ## [0.29.2] — 2025-11-06 — «README: 21 self-test»
 
 ### Исправлено
