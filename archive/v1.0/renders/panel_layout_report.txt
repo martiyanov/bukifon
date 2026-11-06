@@ -1,7 +1,0 @@
-Bukifon panel layout check
-
-DECK-PAD:
-OK: коллизий нет
-
-DECK-KEYS:
-OK: коллизий нет

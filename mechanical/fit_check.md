@@ -281,7 +281,7 @@
 ---
 
 # fit_check — Букифон v0.5-A (flat, 0°, студийный/настольный)
-Сгенерировано `mechanical/generator/fitcheck_v05_A.py`. A — точная копия v0.4 (body/panel/foot/keycap, `archive/v0.4`), вырезы — канон `spec/panel-spec-v0.4.json` (83, без изменений).
+Сгенерировано `mechanical/generator/fitcheck_v05_A.py`. A — точная копия v0.4 (body/panel/foot/keycap, историческая копия v0.4 (git-тег)), вырезы — канон `spec/panel-spec-v0.4.json` (83, без изменений).
 
 **Итог:** проверок 19, конфликтов: **0**.
 
@@ -319,7 +319,7 @@
 ---
 
 # fit_check — Букифон v0.5-A (flat, 0°, + mic)
-Сгенерировано `mechanical/generator/fitcheck_v05_A.py`. A — точная копия v0.4 (body/panel/foot/keycap, `archive/v0.4`), вырезы — канон `spec/panel-spec-v0.4.json` (83, без изменений).
+Сгенерировано `mechanical/generator/fitcheck_v05_A.py`. A — точная копия v0.4 (body/panel/foot/keycap, историческая копия v0.4 (git-тег)), вырезы — канон `spec/panel-spec-v0.4.json` (83, без изменений).
 
 **Итог:** проверок 31, конфликтов: **0**.
 

@@ -91,7 +91,7 @@ def build_body(v):
         # stl_v04 в рабочей папке больше нет (AGENTS §4a)
         src_dir = STL_V04
         if not os.path.exists(os.path.join(src_dir, "body_L.stl")):
-            src_dir = os.path.join(ROOT, "archive", "v0.4", "mechanical", "stl_v04")
+            src_dir = os.path.join(ROOT, "mechanical", "stl_v05_A")
         out = {}
         for part in ("body_L", "body_R"):
             m = trimesh.load(os.path.join(src_dir, part + ".stl"))

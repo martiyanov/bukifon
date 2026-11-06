@@ -1,8 +1,8 @@
 # Структура репозитория (текущая версия)
 
-Правило: **текущая версия — только в рабочих папках; всё старое — в `archive/<version>/`.**
+Правило: **текущая версия — только в рабочих папках; старые версии — в git-тегах/fresh-bundle** (рабочие `archive/` удалены 06.11.2025 для чистоты дерева; история сохраняется в тегах).
 При релизе: обновить версию → перенести устаревшее (`tools/archive_versions.sh`) → обновить
-этот файл и `archive/README.md` → тег.
+этот файл и теги версий → история.
 
 ```
 spec/                       требования и текущая геометрия
@@ -31,7 +31,6 @@ mechanical/                 текущий корпус и печать
   prints.md, assembly.md, fit_check.md
 renders/                    текущие шаблоны и превью
   templates/                панель 1:1, профиль 8°, paperkit, assembly map, референсы (Lapka/Digitone/Octatrack)
-archive/                    замороженные версии (v1.0, v0.3, v0.4, v1.4…v1.8)
 music/ modules/ tools/ refs/ site-files в docs/
 BOM-p4.csv, BOM-s3.csv, BOM.csv (мастерский), CHANGELOG.md, VERSION
 ```
@@ -49,4 +48,4 @@ BOM-p4.csv, BOM-s3.csv, BOM.csv (мастерский), CHANGELOG.md, VERSION
 | Прошивка | `firmware/src/`, `firmware/spike_s3/`, `firmware/bench/` |
 | RC DoD / compliance | `docs/36-rc-definition.md`, `docs/37-compliance.md` |
 | DFM/DFT | `docs/38-dfm-testability.md`, `docs/42-dfm-review-gpt.md` |
-| Старые версии | `archive/README.md` |
+| Старые версии | git-теги + fresh-bundle (docs/41) |

@@ -444,8 +444,8 @@ B/C/B_mic/C_mic **−0.70 г / −0.046 ч**. Итоги: B-light ≈**228.9 г 
 board-fit 22/0.
 
 **Превью:** `preview_v05_B_light/`, `preview_v05_B_mic/`, `preview_v05_C_mic/` —
-`rear_ports.png` (видны все разъёмы: MIDI IN/OUT, DC, EXPR, mic, LINE, PHONES,
-AUDIO IN L/R, CV5/6, USB-C), `left_ports.png` (SD), `side_profile.png`.
+`rear_ports.jpg` (видны все разъёмы: MIDI IN/OUT, DC, EXPR, mic, LINE, PHONES,
+AUDIO IN L/R, CV5/6, USB-C), `left_ports.jpg` (SD), `side_profile.jpg`.
 <!-- section:panel2-parallel -->
 
 ---
@@ -475,5 +475,5 @@ AUDIO IN L/R, CV5/6, USB-C), `left_ports.png` (SD), `side_profile.png`.
 B ≈275.5/18.2; B+mic ≈276.8/18.3; C ≈313.2/20.7; C+mic ≈314.6/20.8;
 A ≈301.0/19.9; A+mic ≈302.3/20.0.
 
-**Превью:** `preview_v05_*/side_profile.png` — с осями энкодеров (⊥ панели),
-`preview_v05_*/panel_parallel.png` — крупно панель, плата ∥, стойки, энкодеры.
+**Превью:** `preview_v05_*/side_profile.jpg` — с осями энкодеров (⊥ панели),
+`preview_v05_*/panel_parallel.jpg` — крупно панель, плата ∥, стойки, энкодеры.

@@ -154,7 +154,7 @@ keepout/стек — **без компонентов, netlist и меди**; PCB
   (0.5×0.8 мм, шаг 1.0) с корректными номерами и числом — реальные `.kicad_mod` из KiCad-библиотек
   (имена footprint'ов уже в BOM) подтянуть при разводке; placeholder'ы и bare-имена требуют замены/
   связывания с библиотеками; DRC-unconnected (499/368/265/263) — ожидаемо на каркасе.
-- **Fab dry-run:** `bash tools/export_fab_dryrun.sh` → `fab/<board>/rev1-scaffold/` (gerbers/drill/CPL/BOM/PDF); checker PASS; см. `docs/83` §8. **Не для заказа.**
+- **Fab dry-run:** `bash tools/export_fab_dryrun.sh` → генерирует `fab/<board>/rev1-scaffold/` на месте (gerbers/drill/CPL/BOM/PDF); в git не хранится; checker PASS; см. docs/83 §8. **Не для заказа.**
 - **Дальше:** реальные футпринты кастомных (см. README), правила DRC/импедансов, медные полигоны/GND,
   затем трассировка — только после MCU freeze (docs/56) и PWR 13/13 (docs/51).
 
@@ -224,7 +224,7 @@ Lapka-42 (upstream `braindefender/lapka-42`, `KiCad/Lapka42.kicad_pcb`; пров
 
 **Попытка №2 (top+bottom) — DRC снова не 0/0; основная версия оставлена DRC-clean.**
 
-- Скрипт: `hardware/core2/rev1/build_two_sided.py`; результаты в **`hardware/*/rev1/two-sided/`**
+- Скрипт: `hardware/core2/rev1/build_two_sided.py`; результаты **удалены из дерева** после фиксации FAIL (воспроизводимы скриптом)
   (копии, **не промоутнуты** в основную). Main-платы по-прежнему DRC **0/0**, verify PASS.
 - Разделение сторон: top — IC/разъёмы/клавиши/энкодеры/джеки/фейдеры (A1/U/J/SW/KEY/ENC/F/LED/TB),
   bottom — пассивы (R/C/D/Q/L/TP/FB); баланс по площади ~60/40.
@@ -246,4 +246,4 @@ Lapka-42 (upstream `braindefender/lapka-42`, `KiCad/Lapka42.kicad_pcb`; пров
   каркас. Основные DRC-clean платы не тронуты; `SIMPLIFIED PADS` в них остаются **328**.
 
 **Статус:** основная версия — DRC 0/0, 0 placeholder, 328 упрощённых падов, GND-полигоны
-не залиты; двусторонний вариант сохранён как эксперимент (`rev1/two-sided/`, DRC FAIL).
+не залиты; двусторонний эксперимент зафиксирован как FAIL (DRC-числа в отчёте), артефакты удалены.

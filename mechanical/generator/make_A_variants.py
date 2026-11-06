@@ -21,7 +21,7 @@ import mic_v05 as MIC
 from case_v05 import _3mf, clean_mesh
 import params_v05 as PV
 
-ARCH = os.path.join(ROOT, "archive", "v0.4", "mechanical", "stl_v04")
+ARCH = os.path.join(ROOT, "mechanical", "stl_v05_A")
 SRC_PANEL = os.path.join(ROOT, "mechanical", "stl_v05_B")   # канон панели/ножки/колпачок
 MIC_PARTS = ("mic_guide", "mic_clip_rear", "mic_holder_top")
 LIGHT = os.path.join(ROOT, "mechanical", "stl_v05_B_light")

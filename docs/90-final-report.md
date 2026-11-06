@@ -10,7 +10,7 @@ v1.0-rc и что делать дальше. Обновляется при ка�
 | Панель/эргономика | канон 380×210, 83 выреза, paperkit 1:1, сборочная карта | `spec/panel-spec-v0.4.json`, fitcheck 0 |
 | Корпуса | A (flat), B, **B-light 228.9 г/11.0 ч**, C, B_mic/C_mic; 11 задних вырезов + SD/USB-C; 3MF/STL/STEP | `mechanical/`, docs/45/50, fitcheck 41/0… |
 | Электроника | CORE-2 rev.3 (P4+C6, USB HS, mic), PANEL-2 rev.3 (MEMS, J16), PWR-2 rev.1; ERC 0/0, 0/6w, 0/0 | `hardware/`, docs/38/42/71 |
-| PCB rev.1 | 4 каркаса KiCad, контуры/крепёж/keepout, нетлист/футпринты, **DRC 0/0**, fab dry-run PASS | `hardware/*/rev1/`, `fab/*/rev1-scaffold/`, docs/82/83 |
+| PCB rev.1 | 4 каркаса KiCad, контуры/крепёж/keepout, нетлист/футпринты, **DRC 0/0**, fab dry-run PASS | `hardware/*/rev1/`; fab-пакеты генерируются по требованию, docs/82/83 |
 | Прошивка | 407/407 тестов; UI 7 вкладок; 12 треков (4+8); GEN; project v2; storage A/B+recovery; self-test 21; SDK v0.2; RU/EN+кириллица; P4 bring-up | `firmware/`, docs/61/66/70/42 |
 | P4 | IDF 5.5: bin **369 552 Б**, factory 1 МиБ (65 % free), partitions/NVS | docs/59, `firmware/idf_p4/` |
 | Веб | **https://bukifon.ru/** (канон, HTTPS), .com→301; демо RU/EN, PWA/DAW-плагин — бэклог | docs/88, docs/86 |
