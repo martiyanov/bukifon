@@ -9,8 +9,8 @@
 |---|---|---|
 | Панель/эргономика | канон 380×210, 83 выреза, 4 корпуса (A/B/B-light/C), paperkit 1:1, сборочная карта | `spec/panel-spec-v0.4.json`, fitcheck 0 |
 | Электроника | CORE-2 rev.3, PANEL-2 rev.3, PWR-2 rev.1, CORE-S3 (lite) — все PRE-FREEZE | ERC 0/0 (CORE, PWR), 0/6w (PANEL), verify PASS |
-| Микрофон/голос | I2S MEMS + 3.5 мм jack, mute+LED, J16↔J19 канон, запись/битбокс | docs/71, 365/365 тестов |
-| Прошивка | UI 800×480 (7 вкладок, GEN, EXT, MIC), seq 12 треков (4+8), SDK v0.1, **factory self-test 21**, пресеты | `firmware/`, **365/365 тестов**, 11 UI PNG + selftest |
+| Микрофон/голос | I2S MEMS + 3.5 мм jack, mute+LED, J16↔J19 канон, запись/битбокс | docs/71, 391/391 тестов |
+| Прошивка | UI 800×480 (7 вкладок, GEN, EXT, MIC), seq 12 треков (4+8), SDK v0.1, **factory self-test 21**, пресеты | `firmware/`, **391/391 тестов**, 11 UI PNG + selftest |
 | P4 toolchain | ESP-IDF v5.5 собирает `bukifon_p4.bin` 250 КБ на домашнем ПК | docs/59 §8 |
 | Веб-демо | 9/10-рубрика, зеркальная карта ручек, GEN, EXT, MIC/битбокс, 4 темы | `/demo/` |
 | Документация | 73 документа: от концепции до DFM/сборки/философии | `docs/`, сайт RU/EN |

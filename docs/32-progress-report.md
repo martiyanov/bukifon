@@ -55,8 +55,8 @@
 | Читаемость | 5″ 800×480 = 188 PPI, 0.135 мм/px; шкала 12/18/24–28 px; Cream AA (docs/69) |
 | Внешний секвенсор | 8 MIDI-треков + 4 партии; clock in/out 24 ppqn, p-lock CC, GEN на внешних, save/load (docs/70) |
 | Микрофон/голос | I2S MEMS + 3.5 мм jack + MAX9814 + SW mute/LED; запись ≤30 с, битбокс kick/snare/hat, UI MIC (docs/71) |
-| Прошивка | 351/351 тестов; UI 7 вкладок; factory self-test **21**; Module SDK v0.2 (манифест/loader/2 примера) |
-| P4 | ESP-IDF 5.5 собирает bin 255 КБ; home-offload `sym@pole` (GCC 13) — 351/351 |
+| Прошивка | 391/391 тестов; UI 7 вкладок; factory self-test **21**; Module SDK v0.2 (манифест/loader/2 примера) |
+| P4 | ESP-IDF 5.5 собирает bin 255 КБ; home-offload `sym@pole` (GCC 13) — 391/391 |
 | Веб-демо | 9/10; EXT/MIC/битбокс; blind UX-тест 8 задач (`?test=1`) + авто-прогон 8/8 |
 | Корпуса | A 302 г · B 277 г · **B-light 231.4 г/11.2 ч** · C 314 г; 4 варианта в текущем генераторе |
 | Сборка/закупки | гид мастерских Москва/СПб/НН (docs/72); COGS P4 **$241/$215/$196**; к заказу ≈$800 |
