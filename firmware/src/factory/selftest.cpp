@@ -15,11 +15,14 @@ const char* kNames[kTestCount] = {
     "power_on",        "i2c_scan",      "mcp23017_walking", "mcp3208_vector",
     "dac_adc_loopback", "codec_loopback", "sd_scratch",     "display_patterns",
     "ws2812_current",  "max17048",      "usb_composite",   "controls",
-    "cv_gate_loopback", "midi_loopback"};
+    "cv_gate_loopback", "midi_loopback", "eeprom",         "mcp4728",
+    "c6_link",         "cv_inputs",     "uart_boot",       "serial_qr",
+    "mic"};
 
 // docs/42 §2 nominal times (ms).
 const uint32_t kNominalMs[kTestCount] = {1000, 300, 1500, 800, 1500, 2000, 2000,
-                                         1000, 1000, 400, 2500, 20000, 3000, 1000};
+                                         1000, 1000, 400, 2500, 20000, 3000, 1000,
+                                         800, 1200, 1500, 800, 500, 600, 2500};
 
 const uint8_t kExpectedI2c[] = {0x20, 0x21, 0x22, 0x23, 0x36, 0x57, 0x60, 0x61};
 
@@ -298,6 +301,145 @@ bool checkMidi(const MidiInfo& info, char* detail, size_t len) {
   return true;
 }
 
+
+bool checkEeprom(const EepromInfo& info, char* detail, size_t len) {
+  if (!info.magicOk) {
+    setDetail(detail, len, "24C32 magic BFSN missing");
+    return false;
+  }
+  if (info.bytesTotal < 32 || info.bytesOk != info.bytesTotal) {
+    std::snprintf(detail, len, "EEPROM %u/%u bytes read", info.bytesOk, info.bytesTotal);
+    return false;
+  }
+  if (!info.serialReads || info.serial[0] == '\0') {
+    setDetail(detail, len, "EEPROM serial not readable");
+    return false;
+  }
+  std::snprintf(detail, len, "24C32 %u/%u bytes, SN %s", info.bytesOk, info.bytesTotal,
+                info.serial);
+  return true;
+}
+
+bool checkMcp4728(const Mcp4728Info& info, char* detail, size_t len) {
+  if (!info.addressesAck[0] || !info.addressesAck[1]) {
+    setDetail(detail, len, "MCP4728 no ACK (expected 2 chips)");
+    return false;
+  }
+  if (info.channelsTotal != 8 || info.channelsOk != info.channelsTotal) {
+    std::snprintf(detail, len, "MCP4728 %u/%u channels written", info.channelsOk,
+                  info.channelsTotal);
+    return false;
+  }
+  if (std::abs(static_cast<int>(info.maxLsbError)) > 1) {
+    std::snprintf(detail, len, "MCP4728 readback error %d LSB (>1)", info.maxLsbError);
+    return false;
+  }
+  std::snprintf(detail, len, "2x MCP4728, 8/8 channels, readback +-%d LSB",
+                info.maxLsbError);
+  return true;
+}
+
+bool checkC6Link(const C6LinkInfo& info, char* detail, size_t len) {
+  if (!info.responded) {
+    setDetail(detail, len, "C6 esp-hosted RPC no response");
+    return false;
+  }
+  if (info.rpcLatencyUs >= 100000u) {
+    std::snprintf(detail, len, "C6 RPC latency %.1f ms (limit 100 ms)",
+                  static_cast<double>(info.rpcLatencyUs) / 1000.0);
+    return false;
+  }
+  if (info.firmwareVersion == 0 || !info.wifiScanOk) {
+    setDetail(detail, len, "C6 version/wifi scan failed");
+    return false;
+  }
+  std::snprintf(detail, len, "C6 RPC %.1f ms, version 0x%X, Wi-Fi scan OK",
+                static_cast<double>(info.rpcLatencyUs) / 1000.0,
+                static_cast<unsigned>(info.firmwareVersion));
+  return true;
+}
+
+bool checkCvInputs(const CvInputInfo& info, char* detail, size_t len) {
+  for (int i = 0; i < 4; ++i) {
+    if (std::fabs(info.errorsPercent[i]) > 1.0f) {
+      std::snprintf(detail, len, "CV IN%d error %.2f%% >1%%", i + 1,
+                    static_cast<double>(info.errorsPercent[i]));
+      return false;
+    }
+  }
+  if (!info.tvsOk) {
+    setDetail(detail, len, "CV input TVS/protection check failed");
+    return false;
+  }
+  setDetail(detail, len, "4x CV IN <=1% FS, TVS protection cold");
+  return true;
+}
+
+bool checkUartBoot(const UartBootInfo& info, char* detail, size_t len) {
+  if (!info.uartLog) {
+    setDetail(detail, len, "no UART0 log at 115200");
+    return false;
+  }
+  if (!info.bootStrap) {
+    setDetail(detail, len, "BOOT strap download mode failed");
+    return false;
+  }
+  if (info.baud != 115200u) {
+    std::snprintf(detail, len, "UART0 baud %u (expected 115200)", info.baud);
+    return false;
+  }
+  setDetail(detail, len, "UART0 log 115200 + BOOT download OK");
+  return true;
+}
+
+bool checkSerialQr(const SerialQrInfo& info, char* detail, size_t len) {
+  if (!info.serialMatches || !info.revisionMatches || !info.dateMatches || !info.qrMatches) {
+    setDetail(detail, len, "serial/rev/date/QR mismatch");
+    return false;
+  }
+  setDetail(detail, len, "SN/revision/date/QR all match EEPROM identity");
+  return true;
+}
+
+bool checkMic(const MicInfo& info, char* detail, size_t len) {
+  if (!info.memsRecording || !info.vad) {
+    setDetail(detail, len, "MEMS I2S1 record/VAD failed");
+    return false;
+  }
+  if (info.rmsDbfs < -60.0f || info.rmsDbfs > 0.0f) {
+    std::snprintf(detail, len, "mic RMS %.1f dBFS outside -60..0", static_cast<double>(info.rmsDbfs));
+    return false;
+  }
+  if (info.snrDb < 65.0f) {
+    std::snprintf(detail, len, "mic SNR %.1f dB <65 dB", static_cast<double>(info.snrDb));
+    return false;
+  }
+  if (!info.micSel) {
+    setDetail(detail, len, "MIC_SEL LINE/MIC switch failed");
+    return false;
+  }
+  if (!info.muteBlocks) {
+    setDetail(detail, len, "SW3 mute did not block recording");
+    return false;
+  }
+  if (!info.ledOn) {
+    setDetail(detail, len, "MIC ON LED failed");
+    return false;
+  }
+  if (!info.electretLoopback) {
+    setDetail(detail, len, "electret loopback mic->PCM1808 failed");
+    return false;
+  }
+  if (info.latencyMs > 5.0f) {
+    std::snprintf(detail, len, "mic latency %.2f ms >5 ms", static_cast<double>(info.latencyMs));
+    return false;
+  }
+  std::snprintf(detail, len, "MEMS 1 s RMS %.1f dBFS, SNR %.0f dB, mute+LED, %.1f ms",
+                static_cast<double>(info.rmsDbfs), static_cast<double>(info.snrDb),
+                static_cast<double>(info.latencyMs));
+  return true;
+}
+
 // --- runner -----------------------------------------------------------------
 namespace {
 
@@ -333,6 +475,15 @@ Report runSelfTest(Hardware& hardware, bool stopOnFail) {
 
   for (uint8_t i = 0; i < kTestCount; ++i) {
     const TestId id = static_cast<TestId>(i);
+    if (!hardware.isAvailable(id)) {
+      TestResult& skipped = report.tests[report.count++];
+      skipped.id = id;
+      skipped.nominalMs = nominalTimeMs(id);
+      skipped.status = TestStatus::Skip;
+      setDetail(skipped.detail, sizeof(skipped.detail), "not present on this hardware (SKIP)");
+      if (stopOnFail) break;
+      continue;
+    }
     const uint32_t start = hardware.nowMs();
     bool hardwareOk = false;
     bool valid = false;
@@ -422,6 +573,48 @@ Report runSelfTest(Hardware& hardware, bool stopOnFail) {
         valid = hardwareOk && checkMidi(info, detail, sizeof(detail));
         break;
       }
+      case TestId::Eeprom: {
+        EepromInfo info;
+        hardwareOk = hardware.eepromTest(&info);
+        valid = hardwareOk && checkEeprom(info, detail, sizeof(detail));
+        break;
+      }
+      case TestId::Mcp4728: {
+        Mcp4728Info info;
+        hardwareOk = hardware.mcp4728Test(&info);
+        valid = hardwareOk && checkMcp4728(info, detail, sizeof(detail));
+        break;
+      }
+      case TestId::C6Link: {
+        C6LinkInfo info;
+        hardwareOk = hardware.c6Link(&info);
+        valid = hardwareOk && checkC6Link(info, detail, sizeof(detail));
+        break;
+      }
+      case TestId::CvInputs: {
+        CvInputInfo info;
+        hardwareOk = hardware.cvInputs(&info);
+        valid = hardwareOk && checkCvInputs(info, detail, sizeof(detail));
+        break;
+      }
+      case TestId::UartBoot: {
+        UartBootInfo info;
+        hardwareOk = hardware.uartBoot(&info);
+        valid = hardwareOk && checkUartBoot(info, detail, sizeof(detail));
+        break;
+      }
+      case TestId::SerialQr: {
+        SerialQrInfo info;
+        hardwareOk = hardware.serialQr(&info);
+        valid = hardwareOk && checkSerialQr(info, detail, sizeof(detail));
+        break;
+      }
+      case TestId::Mic: {
+        MicInfo info;
+        hardwareOk = hardware.micTest(&info);
+        valid = hardwareOk && checkMic(info, detail, sizeof(detail));
+        break;
+      }
       default:
         break;
     }
@@ -431,7 +624,7 @@ Report runSelfTest(Hardware& hardware, bool stopOnFail) {
   }
 
   report.totalDurationMs = hardware.nowMs() - runStart;
-  report.overallPass = report.count == kTestCount;
+  report.overallPass = false;
   for (uint8_t i = 0; i < report.count; ++i) {
     switch (report.tests[i].status) {
       case TestStatus::Pass:
@@ -451,6 +644,7 @@ Report runSelfTest(Hardware& hardware, bool stopOnFail) {
         break;
     }
   }
+  report.overallPass = report.count == kTestCount && report.passCount == kTestCount;
   return report;
 }
 

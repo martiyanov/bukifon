@@ -29,10 +29,10 @@
 |---|---|---|---|
 | **L0** | фабрика/сборка | визуальный контроль, ICT/прозвонка рельсов, полярность, TP | 2–3 мин |
 | **L1** | прошивка bring-up | boot, рельсы (PWR_GOOD/BATT_MON), I2C-скан, EEPROM SN, USB enumerate | 30 с |
-| **L2** | BIST | C6 линк, MCP23017/MCP4728/MCP3208, кодек loopback, RGB-дисплей, SD, панель (матрица/энкодеры/фейдеры/LED), CV/GATE loopback, MAX17048/NTC | 2–5 мин |
+| **L2** | BIST | C6 линк, MCP23017/MCP4728/MCP3208, кодек loopback, RGB-дисплей, SD, панель (матрица/энкодеры/фейдеры/LED), CV/GATE loopback, MAX17048/NTC, **mic (I2S1/VAD/mute/LED)** | 2–5 мин |
 | **L3** | soak | audio/UI/USB/SD стресс 30–60 мин + 24 ч, тепловой контроль | 0.5–24 ч |
 
-Полные таблицы «тест → метод → pass/fail» — в §2 `hardware/core2/dfm.md` (20 тестов),
+Полные таблицы «тест → метод → pass/fail» — в §2 `hardware/core2/dfm.md` (**21 тест**, вкл. mic D-91),
 `hardware/panel2/dfm.md` §2 (8), `hardware/power2/dfm.md` §2 (8).
 
 ## 4. Связь с RC DoD (`docs/36`)
@@ -49,7 +49,7 @@
 | 5. SD corruption/recovery | L2 SDIO тест; L3 hot-remove; recovery-сценарий |
 | 6. 24 ч soak | L3; журнал метрик прошивки |
 | 7. Сборка 3–5 шт. | DFM/сборочный чек-лист, корпус docs/21 |
-| 8. Self-test PASS | L1+L2 BIST (этот пакет) |
+| 8. Self-test PASS | L1+L2 BIST (этот пакет), **21/21**: `firmware/src/factory/selftest.*`, mock PASS, P4 — SKIP до toolchain (docs/42 §8) |
 
 ## 5. Производственный тест (поток)
 

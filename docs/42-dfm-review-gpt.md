@@ -143,3 +143,41 @@ USB/boot, повторный brownout, BMS/заряд вне порогов, hot
 3. Серийник — flash/NVS + MAC-якорь, калибровки — 24C32, на корпусе — SN/QR.
 4. Стоп-факторы: PWR-стенд, devkit-spike, точный дисплей/FPC, TPS63802, recovery hardware.
 5. Сначала 3 платы каждой ревизии, затем 2 validation units; партия 10–25 — после soak.
+
+---
+
+## 8. Factory self-test v1.0-rc: 21 пункт (реализация в прошивке)
+
+`firmware/src/factory/selftest.*` расширен с 14 до **21** проверки по DFM CORE-2 §2;
+`Hardware`-интерфейс, mock и P4-заглушки; runner/report/JSON; CLI `factory [--json]`
+(`app/factory_main.cpp`). P4 без toolchain теперь отдаёт **SKIP** (`isAvailable=false`),
+а не фальшивый FAIL/PASS.
+
+| # | id | Что проверяется | Критерий | TODO(hw) |
+|---:|---|---|---|---|
+| 1 | power_on | rails, PWR_GOOD, reset reason, brownout | 1 старт, PWR_GOOD high, 0 brownout | реальные TP2–7/19/23–25 + PWR_GOOD |
+| 2 | i2c_scan | I2C0 400 кГц | адреса `20–23,36,57,60,61` | шина на CORE-2/PANEL-2/PWR-2 |
+| 3 | mcp23017_walking | 4 expander, IODIR/GPIO, INT | 4 ACK + IRQ toggles | панель + INT wire-OR |
+| 4 | mcp3208_vector | fixture vector CH0–7 | 0.25/1.25/2.50 В ±2 LSB | fixture-резисторы |
+| 5 | dac_adc_loopback | MCP4728→MCP3208/CV | ≤20 мВ | loopback-плаг |
+| 6 | codec_loopback | PCM5102A→PCM1808 1 кГц | −12 dBFS, THD+N <−60 dB | аудио-кабель/фикстура |
+| 7 | sd_scratch | 1 МиБ write/read | CRC32, ≥700 КБ/с | SDIO |
+| 8 | display_patterns | RGB/white/black/checker, BL | 4 паттерна, нет полос | оператор + BL_PWM |
+| 9 | ws2812_current | chase/current | все LED, ток ±20 % | LED_DATA/питание |
+| 10 | max17048 | VCELL vs DMM | ≤30 мВ | I2C 0x36 PWR-2 |
+| 11 | usb_composite | CDC+MIDI+HID+UAC | все классы, enumerate | USB HS |
+| 12 | controls | 42 клавиши 6×7, 16 энкодеров, 2 фейдера | 42/42, 16/16, 2/2 | оператор/скан |
+| 13 | cv_gate_loopback | CV OUT→IN, GATE | ≤20 мВ, gate OK | loopback-плаг |
+| 14 | midi_loopback | DIN/USB note/CC/PC/clock | 100 пакетов, 0 ошибок, без дублей | DIN TRS + TinyUSB |
+| 15 | eeprom | 24C32 @0x57, magic/SN | 32/32 байт, SN читается | I2C |
+| 16 | mcp4728 | 2× MCP4728, readback | 8/8 каналов, ±1 LSB | DAC-калибровка |
+| 17 | c6_link | esp-hosted RPC/version/Wi-Fi scan | <100 мс, версия, скан | C6 SPI-линк |
+| 18 | cv_inputs | CV IN1–4, TVS | ±1 % FS, TVS не греется | калибратор + TVS |
+| 19 | uart_boot | UART0 115200 + BOOT strap | лог + download boot | UART0/BOOT |
+| 20 | serial_qr | EEPROM SN/rev/date vs QR | всё совпадает | 24C32 + QR-сканер |
+| 21 | mic (D-91) | MEMS I2S1 1 с / VAD; MIC_SEL; SW3 mute; LED; electret loopback | RMS −60…0 dBFS, SNR ≥65 дБ, mute глушит, LED, ≤5 мс | I2S1/MAX9814/SW3/LED |
+
+**Результат:** mock PASS **21/21** (JSON: schema `bukifon-factory-selftest-v1`,
+`count:21`), P4 без toolchain — 21 SKIP. Скриншот станции:
+[`firmware/artifacts/factory/selftest.png`](../firmware/artifacts/factory/selftest.png).
+Тесты: 331/331 host (20 новых, включая SKIP, mic mute, MIDI no-duplicates, 42/16).

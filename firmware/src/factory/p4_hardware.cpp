@@ -34,6 +34,13 @@ BUKIFON_P4_STUB(usbComposite, UsbInfo)
 BUKIFON_P4_STUB(controls, ControlsInfo)
 BUKIFON_P4_STUB(cvGateLoopback, CvGateInfo)
 BUKIFON_P4_STUB(midiLoopback, MidiInfo)
+BUKIFON_P4_STUB(eepromTest, EepromInfo)
+BUKIFON_P4_STUB(mcp4728Test, Mcp4728Info)
+BUKIFON_P4_STUB(c6Link, C6LinkInfo)
+BUKIFON_P4_STUB(cvInputs, CvInputInfo)
+BUKIFON_P4_STUB(uartBoot, UartBootInfo)
+BUKIFON_P4_STUB(serialQr, SerialQrInfo)
+BUKIFON_P4_STUB(micTest, MicInfo)
 
 #undef BUKIFON_P4_STUB
 

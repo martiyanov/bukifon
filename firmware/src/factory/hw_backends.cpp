@@ -109,5 +109,16 @@ bool HybridHardware::midiLoopback(MidiInfo* out) {
   return pick(HwBackend::Midi).midiLoopback(out);
 }
 
+
+bool HybridHardware::eepromTest(EepromInfo* out) { return pick(HwBackend::I2c).eepromTest(out); }
+bool HybridHardware::mcp4728Test(Mcp4728Info* out) {
+  return pick(HwBackend::Dac).mcp4728Test(out);
+}
+bool HybridHardware::c6Link(C6LinkInfo* out) { return pick(HwBackend::Usb).c6Link(out); }
+bool HybridHardware::cvInputs(CvInputInfo* out) { return pick(HwBackend::Cv).cvInputs(out); }
+bool HybridHardware::uartBoot(UartBootInfo* out) { return pick(HwBackend::Usb).uartBoot(out); }
+bool HybridHardware::serialQr(SerialQrInfo* out) { return pick(HwBackend::I2c).serialQr(out); }
+bool HybridHardware::micTest(MicInfo* out) { return pick(HwBackend::I2s).micTest(out); }
+
 }  // namespace factory
 }  // namespace bukifon

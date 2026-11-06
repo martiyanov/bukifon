@@ -33,6 +33,13 @@ class MockHardware : public Hardware {
   bool controls(ControlsInfo* out) override;
   bool cvGateLoopback(CvGateInfo* out) override;
   bool midiLoopback(MidiInfo* out) override;
+  bool eepromTest(EepromInfo* out) override;
+  bool mcp4728Test(Mcp4728Info* out) override;
+  bool c6Link(C6LinkInfo* out) override;
+  bool cvInputs(CvInputInfo* out) override;
+  bool uartBoot(UartBootInfo* out) override;
+  bool serialQr(SerialQrInfo* out) override;
+  bool micTest(MicInfo* out) override;
 
  private:
   uint32_t advance(TestId id);

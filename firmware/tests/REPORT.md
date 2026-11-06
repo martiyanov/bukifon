@@ -954,3 +954,30 @@ Pillow) installed in `/tmp/msvenv`; no system packages assumed.
 - **TODO(hw)**: I2S1 DMA (MEMS), MAX9814/PCM1808 line/mic mux, PSRAM/SD sample
   write/playback, hardware mute switch/LED GPIO, beatbox robustness v1.1,
   privacy audit of the BLE/Wi-Fi stacks.
+
+---
+
+# Round 19 — factory self-test 21 checks (2026-11-06)
+
+- **Factory self-test extended 14 → 21** (`src/factory/selftest.*`) per
+  `hardware/core2/dfm.md` §2:
+  - power/rails, I2C scan, MCP23017 walking-bit, MCP3208 vector, DAC/ADC and
+    codec loopback, SD, display, WS2812, MAX17048, USB composite, controls
+    (42 keys/16 encoders/2 faders), CV/GATE, MIDI loopback (existing 14);
+  - **new**: 24C32 EEPROM+SN, MCP4728 ×2 readback, C6 esp-hosted link,
+    CV IN1–4/TVS, UART0/BOOT, serial/QR identity match, **mic (D-91)**:
+    MEMS 1 s record/VAD, RMS is inside −60..0 dBFS, SNR ≥65 dB, MIC_SEL,
+    SW3 mute blocks recording, MIC ON LED, electret loopback, latency ≤5 ms.
+- **Runner/report**: 21 enumerated items with id/name/status(PASS/FAIL/TIMEOUT/
+  SKIP)/detail/duration; JSON schema `bukifon-factory-selftest-v1` count 21;
+  P4 without toolchain reports **21 SKIP** via `isAvailable()` (honest, no
+  fabricated PASS/FAIL); mock hardware remains 21/21 PASS.
+- **MIDI/EXT**: factory tests reuse the external sequencer router
+  (`MidiOutRouter`): DIN+USB one logical note/CC/PC/clock/transport each, no
+  duplicates; clock 24 ppqn (24 ticks/quarter at 120 BPM).
+- **Screenshot**: `artifacts/factory/selftest.png` (800×480 station screen,
+  21/21 PASS, generated from the real mock CLI report).
+- **Tests**: **331/331 PASS** (311 pre-existing + 20 new; existing factory/
+  backend expectations updated from 14 to 21). `run_tests.sh` → PASS.
+- **Docs**: `docs/42` §8 table 21 tests with TODO(hw); `docs/38` synced
+  (21 incl. mic, P4 SKIP, docs/42 §8).

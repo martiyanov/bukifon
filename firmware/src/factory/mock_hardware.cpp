@@ -143,5 +143,61 @@ bool MockHardware::midiLoopback(MidiInfo* out) {
   return true;
 }
 
+
+bool MockHardware::eepromTest(EepromInfo* out) {
+  advance(TestId::Eeprom);
+  if (failing(TestId::Eeprom) || !out) return false;
+  *out = EepromInfo{true, 32, 32, "BKF-2026A1", true};
+  return true;
+}
+
+bool MockHardware::mcp4728Test(Mcp4728Info* out) {
+  advance(TestId::Mcp4728);
+  if (failing(TestId::Mcp4728) || !out) return false;
+  out->addressesAck[0] = true;
+  out->addressesAck[1] = true;
+  out->channelsOk = 8;
+  out->channelsTotal = 8;
+  out->maxLsbError = 0;
+  return true;
+}
+
+bool MockHardware::c6Link(C6LinkInfo* out) {
+  advance(TestId::C6Link);
+  if (failing(TestId::C6Link) || !out) return false;
+  *out = C6LinkInfo{true, 25000u, 0x0301u, true};
+  return true;
+}
+
+bool MockHardware::cvInputs(CvInputInfo* out) {
+  advance(TestId::CvInputs);
+  if (failing(TestId::CvInputs) || !out) return false;
+  const float errors[4] = {0.2f, -0.4f, 0.3f, -0.5f};
+  std::memcpy(out->errorsPercent, errors, sizeof(errors));
+  out->tvsOk = true;
+  return true;
+}
+
+bool MockHardware::uartBoot(UartBootInfo* out) {
+  advance(TestId::UartBoot);
+  if (failing(TestId::UartBoot) || !out) return false;
+  *out = UartBootInfo{true, true, 115200u};
+  return true;
+}
+
+bool MockHardware::serialQr(SerialQrInfo* out) {
+  advance(TestId::SerialQr);
+  if (failing(TestId::SerialQr) || !out) return false;
+  *out = SerialQrInfo{true, true, true, true};
+  return true;
+}
+
+bool MockHardware::micTest(MicInfo* out) {
+  advance(TestId::Mic);
+  if (failing(TestId::Mic) || !out) return false;
+  *out = MicInfo{true, -18.0f, true, true, true, true, true, 70.0f, 3.5f};
+  return true;
+}
+
 }  // namespace factory
 }  // namespace bukifon

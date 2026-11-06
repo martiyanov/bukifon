@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Factory self-test — 14 tests from docs/42 §2 (bring-up + EOL production test).
+// Factory self-test — 21 tests from docs/42 §2 / hardware/core2/dfm.md (bring-up + EOL production test).
 //
 // Portable core: hardware access is behind the `Hardware` interface, so the
 // same runner/validators run on the P4 (P4FactoryHardware, TODO(hw) stubs) and
@@ -16,7 +16,7 @@ namespace factory {
 
 class IdentityStore;  // factory/identity.hpp
 
-constexpr int kTestCount = 14;
+constexpr int kTestCount = 21;
 
 enum class TestId : uint8_t {
   PowerOn = 0,
@@ -33,7 +33,14 @@ enum class TestId : uint8_t {
   Controls,
   CvGateLoopback,
   MidiLoopback,
-  Count = 14
+  Eeprom,
+  Mcp4728,
+  C6Link,
+  CvInputs,
+  UartBoot,
+  SerialQr,
+  Mic,
+  Count = 21
 };
 
 enum class TestStatus : uint8_t { Pending = 0, Pass, Fail, Timeout, Skip };
@@ -128,6 +135,51 @@ struct MidiInfo {
   uint16_t received = 0;
   uint16_t errors = 0;
 };
+struct EepromInfo {
+  bool magicOk = false;
+  uint8_t bytesOk = 0;
+  uint8_t bytesTotal = 0;
+  char serial[16] = {};
+  bool serialReads = false;
+};
+struct Mcp4728Info {
+  bool addressesAck[2] = {};
+  uint8_t channelsOk = 0;
+  uint8_t channelsTotal = 8;
+  int8_t maxLsbError = 0;
+};
+struct C6LinkInfo {
+  bool responded = false;
+  uint32_t rpcLatencyUs = 0;
+  uint32_t firmwareVersion = 0;
+  bool wifiScanOk = false;
+};
+struct CvInputInfo {
+  float errorsPercent[4] = {};
+  bool tvsOk = false;
+};
+struct UartBootInfo {
+  bool uartLog = false;
+  bool bootStrap = false;
+  uint32_t baud = 0;
+};
+struct SerialQrInfo {
+  bool serialMatches = false;
+  bool revisionMatches = false;
+  bool dateMatches = false;
+  bool qrMatches = false;
+};
+struct MicInfo {
+  bool memsRecording = false;
+  float rmsDbfs = -120.0f;
+  bool vad = false;
+  bool micSel = false;      // TS5A MIC_SEL: LINE/MIC switch
+  bool muteBlocks = false;  // SW3 mute stops recording
+  bool ledOn = false;       // LED MIC ON model
+  bool electretLoopback = false;
+  float snrDb = 0.0f;
+  float latencyMs = 100.0f;
+};
 
 // Common bus/class masks.
 constexpr uint32_t kUsbCdc = 1u << 0;
@@ -155,6 +207,18 @@ class Hardware {
   virtual bool controls(ControlsInfo* out) = 0;
   virtual bool cvGateLoopback(CvGateInfo* out) = 0;
   virtual bool midiLoopback(MidiInfo* out) = 0;
+  virtual bool eepromTest(EepromInfo* out) = 0;
+  virtual bool mcp4728Test(Mcp4728Info* out) = 0;
+  virtual bool c6Link(C6LinkInfo* out) = 0;
+  virtual bool cvInputs(CvInputInfo* out) = 0;
+  virtual bool uartBoot(UartBootInfo* out) = 0;
+  virtual bool serialQr(SerialQrInfo* out) = 0;
+  virtual bool micTest(MicInfo* out) = 0;
+  // Hardware may report a test as not present (SKIP) instead of failing it.
+  virtual bool isAvailable(TestId id) {
+    (void)id;
+    return true;
+  }
 };
 
 // --- validators (exposed for unit tests) -----------------------------------
@@ -172,6 +236,13 @@ bool checkUsb(const UsbInfo& info, char* detail, size_t len);
 bool checkControls(const ControlsInfo& info, char* detail, size_t len);
 bool checkCvGate(const CvGateInfo& info, char* detail, size_t len);
 bool checkMidi(const MidiInfo& info, char* detail, size_t len);
+bool checkEeprom(const EepromInfo& info, char* detail, size_t len);
+bool checkMcp4728(const Mcp4728Info& info, char* detail, size_t len);
+bool checkC6Link(const C6LinkInfo& info, char* detail, size_t len);
+bool checkCvInputs(const CvInputInfo& info, char* detail, size_t len);
+bool checkUartBoot(const UartBootInfo& info, char* detail, size_t len);
+bool checkSerialQr(const SerialQrInfo& info, char* detail, size_t len);
+bool checkMic(const MicInfo& info, char* detail, size_t len);
 
 // Runs all 14 tests (allocation-free, fixed arrays).  Stops early only when
 // `stopOnFail` is true (production may continue to log all failures).

@@ -14,21 +14,21 @@ using namespace bukifon::factory;
 namespace {
 
 // Expected factory-test ids failing when a single backend uses the P4 stub.
-const int kExpectedFailing[][3] = {
-    {0, 1, 2},   // I2C: power, i2c scan, mcp23017 (MAX17048 handled below)
-    {3, -1, -1}, // ADC
-    {4, -1, -1}, // DAC
-    {5, -1, -1}, // I2S
-    {6, -1, -1}, // SD
-    {7, 8, -1},  // DISPLAY: display patterns + WS2812 current
-    {10, -1, -1},// USB
-    {11, -1, -1},// CONTROLS
-    {12, -1, -1},// CV
-    {13, -1, -1},// MIDI
+const int kExpectedFailing[][5] = {
+    {0, 1, 2, 14, 19},  // I2C: power, scan, mcp23017, eeprom, serial/qr
+    {3, -1, -1, -1, -1}, // ADC
+    {4, 15, -1, -1, -1}, // DAC + MCP4728
+    {5, 20, -1, -1, -1}, // I2S + mic
+    {6, -1, -1, -1, -1}, // SD
+    {7, 8, -1, -1, -1},  // DISPLAY + WS2812
+    {10, 16, 18, -1, -1},// USB: composite, C6 link, UART/BOOT
+    {11, -1, -1, -1, -1},// CONTROLS
+    {12, 17, -1, -1, -1},// CV + CV inputs
+    {13, -1, -1, -1, -1},// MIDI
 };
 
 bool isExpected(int backend, int testId) {
-  for (int i = 0; i < 3; ++i) {
+  for (int i = 0; i < 5; ++i) {
     if (kExpectedFailing[backend][i] == testId) return true;
   }
   if (backend == 0 && testId == 9) return true;  // MAX17048 is I2C
@@ -58,10 +58,10 @@ TEST(FactoryHwAllMockPasses) {
   HwConfig config;
   HybridHardware hybrid(real, mock, config);
   const Report report = runSelfTest(hybrid);
-  CHECK(report.count == 14);
-  CHECK(report.passCount == 14);
+  CHECK(report.count == 21);
+  CHECK(report.passCount == 21);
   CHECK(report.overallPass);
-  INFO("all backends MOCK: 14/14 PASS (mock is not a hardware test)");
+  INFO("all backends MOCK: 21/21 PASS (mock is not a hardware test)");
 }
 
 TEST(FactoryHwAllRealP4StubsFail) {
@@ -71,10 +71,10 @@ TEST(FactoryHwAllRealP4StubsFail) {
   for (int i = 0; i < kHwBackendCount; ++i) config.set(static_cast<HwBackend>(i), HwMode::Real);
   HybridHardware hybrid(real, mock, config);
   const Report report = runSelfTest(hybrid);
-  CHECK(report.failCount == 14);
+  CHECK(report.failCount == 21);
   CHECK(!report.overallPass);
   CHECK(report.passCount == 0);  // mock must NOT fabricate PASS for REAL backends
-  INFO("all backends REAL (P4 stubs): 14/14 FAIL — no fabricated PASS");
+  INFO("all backends REAL (P4 stubs): 21/21 FAIL — no fabricated PASS");
 }
 
 TEST(FactoryHwSingleBackendSwitches) {
@@ -107,8 +107,8 @@ TEST(FactoryHwRealProviderWorkingPasses) {
   HybridHardware hybrid(real, mock, config);
   const Report report = runSelfTest(hybrid);
   CHECK(report.overallPass);
-  CHECK(report.passCount == 14);
-  INFO("all backends REAL with working providers: 14/14 PASS (enable order is runtime)");
+  CHECK(report.passCount == 21);
+  INFO("all backends REAL with working providers: 21/21 PASS (enable order is runtime)");
 }
 
 TEST(FactoryHwFlagsAreIndependent) {

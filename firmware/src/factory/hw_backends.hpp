@@ -112,6 +112,13 @@ class HybridHardware : public Hardware {
   bool controls(ControlsInfo*) override;
   bool cvGateLoopback(CvGateInfo*) override;
   bool midiLoopback(MidiInfo*) override;
+  bool eepromTest(EepromInfo*) override;
+  bool mcp4728Test(Mcp4728Info*) override;
+  bool c6Link(C6LinkInfo*) override;
+  bool cvInputs(CvInputInfo*) override;
+  bool uartBoot(UartBootInfo*) override;
+  bool serialQr(SerialQrInfo*) override;
+  bool micTest(MicInfo*) override;
 
  private:
   Hardware& pick(HwBackend backend);

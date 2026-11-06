@@ -2,6 +2,17 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.29.1] — 2025-11-06 — «Self-test 21»
+
+### Добавлено
+- **Factory self-test расширен 14 → 21 пункт** (`firmware/src/factory/selftest.*`): EEPROM 24C32+SN,
+  MCP4728, C6 link, CV inputs/TVS, UART0/BOOT, serial/QR и **microphone** (MEMS 1 с/VAD,
+  RMS −60…0 dBFS, SNR ≥65 дБ, MIC_SEL, SW3 mute блокирует запись, LED, loopback ≤5 мс).
+- Каждый пункт: PASS/FAIL/TIMEOUT/**SKIP**/detail/время, JSON `count:21`; mock 21/21 PASS,
+  P4 без toolchain — 21 SKIP (`isAvailable`), без фальшивых результатов.
+- **331/331 тестов** (+20); скриншот станции 21/21 `firmware/artifacts/factory/selftest.png`;
+  docs/42 §8 — таблица 21 пунктов с TODO(hw), docs/38 синхронизирован.
+
 ## [0.29.0] — 2025-11-06 — «Быстрый старт»
 
 ### Добавлено

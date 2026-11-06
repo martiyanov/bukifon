@@ -1,25 +1,34 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Factory self-test tests: 14 docs/42 tests, validators, timeouts, JSON report,
+// Factory self-test tests: 21 docs/42/DFM tests, validators, timeouts, JSON report,
 // CLI and mock hardware.
 #include <cmath>
 #include <cstdio>
 #include <cstring>
 #include <string>
+#include <vector>
 
 #include "factory/mock_hardware.hpp"
 #include "factory/selftest.hpp"
+#include "io/ext_sequencer.hpp"
+#include "factory/p4_hardware.hpp"
 #include "test_framework.hpp"
 
 using namespace bukifon::factory;
+using bukifon::ExtSeqSink;
+using bukifon::ExtSequencer;
+using bukifon::MidiOutRouter;
+using bukifon::RouterExtSink;
 
 
 TEST(FactoryTestList) {
-  CHECK(kTestCount == 14);
-  static const char* expected[14] = {
+  CHECK(kTestCount == 21);
+  static const char* expected[21] = {
       "power_on",         "i2c_scan",       "mcp23017_walking", "mcp3208_vector",
       "dac_adc_loopback", "codec_loopback", "sd_scratch",       "display_patterns",
       "ws2812_current",   "max17048",       "usb_composite",    "controls",
-      "cv_gate_loopback", "midi_loopback"};
+      "cv_gate_loopback", "midi_loopback",  "eeprom",           "mcp4728",
+      "c6_link",          "cv_inputs",      "uart_boot",        "serial_qr",
+      "mic"};
   uint32_t totalNominal = 0;
   for (int i = 0; i < kTestCount; ++i) {
     CHECK(std::strcmp(testName(static_cast<TestId>(i)), expected[i]) == 0);
@@ -27,21 +36,21 @@ TEST(FactoryTestList) {
     CHECK(timeoutMs(static_cast<TestId>(i)) > nominalTimeMs(static_cast<TestId>(i)));
     totalNominal += nominalTimeMs(static_cast<TestId>(i));
   }
-  CHECK(totalNominal > 35000 && totalNominal < 45000);  // ~38 s automation
-  INFO("factory: 14 tests, nominal automation %.1f s (EOL 2-2.5 min with operator)",
+  CHECK(totalNominal > 40000 && totalNominal < 55000);  // ~46 s automation
+  INFO("factory: 21 tests, nominal automation %.1f s (EOL 2-2.5 min with operator)",
        static_cast<double>(totalNominal) / 1000.0);
 }
 
 TEST(FactoryAllPassMock) {
   MockHardware hardware;
   const Report report = runSelfTest(hardware);
-  CHECK(report.count == 14);
-  CHECK(report.passCount == 14);
+  CHECK(report.count == 21);
+  CHECK(report.passCount == 21);
   CHECK(report.failCount == 0);
   CHECK(report.overallPass);
   CHECK(report.totalDurationMs > 0);
   CHECK(hardware.clockMs() >= report.totalDurationMs);
-  INFO("factory all-pass mock: 14/14, total %u ms", report.totalDurationMs);
+  INFO("factory all-pass mock: 21/21, total %u ms", report.totalDurationMs);
 }
 
 TEST(FactoryValidatorsPowerI2cMcp) {
@@ -163,9 +172,9 @@ TEST(FactoryFailInjection) {
   const Report report = runSelfTest(hardware);
   CHECK(!report.overallPass);
   CHECK(report.failCount == 1);
-  CHECK(report.passCount == 13);
+  CHECK(report.passCount == 20);
   CHECK(report.tests[static_cast<int>(TestId::CodecLoopback)].status == TestStatus::Fail);
-  INFO("fail injection: single failed test -> overall FAIL, 13 pass");
+  INFO("fail injection: single failed test -> overall FAIL, 20 pass");
 }
 
 TEST(FactoryTimeoutDetection) {
@@ -195,34 +204,34 @@ TEST(FactoryEveryTestCanFail) {
     MockHardware hardware;
     hardware.failTest(static_cast<TestId>(i), true);
     const Report report = runSelfTest(hardware);
-    CHECK(report.count == 14);  // without stopOnFail all tests still run
+    CHECK(report.count == 21);  // without stopOnFail all tests still run
     CHECK(!report.overallPass);
     CHECK(report.tests[i].status == TestStatus::Fail);
   }
-  INFO("all 14 tests can independently fail and are reported");
+  INFO("all 21 tests can independently fail and are reported");
 }
 
 TEST(FactoryJsonReport) {
   MockHardware hardware;
   const Report report = runSelfTest(hardware);
-  char json[4096];
+  char json[16384];
   CHECK(reportToJson(report, json, sizeof(json)));
   CHECK(std::strstr(json, "\"schema\":\"bukifon-factory-selftest-v1\"") != nullptr);
   CHECK(std::strstr(json, "\"overall_pass\":true") != nullptr);
-  CHECK(std::strstr(json, "\"count\":14") != nullptr);
+  CHECK(std::strstr(json, "\"count\":21") != nullptr);
   CHECK(std::strstr(json, "\"power_on\"") != nullptr);
   CHECK(std::strstr(json, "\"midi_loopback\"") != nullptr);
   CHECK(std::strstr(json, "\"status\":\"PASS\"") != nullptr);
   char tiny[8];
   CHECK(!reportToJson(report, tiny, sizeof(tiny)));
-  INFO("JSON report: schema, 14 tests, statuses, details; small buffer rejected");
+  INFO("JSON report: schema, 21 tests, statuses, details; small buffer rejected");
 }
 
 TEST(FactoryJsonFailPath) {
   MockHardware hardware;
   hardware.failTest(TestId::UsbComposite, true);
   const Report report = runSelfTest(hardware);
-  char json[4096];
+  char json[16384];
   CHECK(reportToJson(report, json, sizeof(json)));
   CHECK(std::strstr(json, "\"overall_pass\":false") != nullptr);
   CHECK(std::strstr(json, "\"name\":\"usb_composite\",\"status\":\"FAIL\"") != nullptr);
@@ -293,4 +302,262 @@ TEST(FactoryCliFailExitCode) {
   CHECK(factoryCliMain(2, argv, hardware, tmp) == 1);
   std::fclose(tmp);
   INFO("CLI: failed report exits with code 1 (production station gate)");
+}
+
+// --------------------------------------------------------------------------
+// Round 19: factory self-test 21 items (DFM CORE-2 §2), SKIP, mic, MIDI/EXT.
+// --------------------------------------------------------------------------
+#include "io/mic.hpp"
+
+TEST(FactoryReportTwentyOne) {
+  MockHardware hardware;
+  const Report report = runSelfTest(hardware);
+  CHECK(report.count == 21);
+  CHECK(report.passCount == 21);
+  CHECK(report.failCount == 0);
+  CHECK(report.skipCount == 0);
+  CHECK(report.overallPass);
+  CHECK(report.totalDurationMs > 0);
+  INFO("factory report: 21/21 PASS, %u ms", report.totalDurationMs);
+}
+
+TEST(FactoryNewItemsInList) {
+  static const char* newNames[7] = {"eeprom", "mcp4728", "c6_link",
+                                    "cv_inputs", "uart_boot", "serial_qr", "mic"};
+  for (int i = 0; i < 7; ++i) {
+    const TestId id = static_cast<TestId>(14 + i);
+    CHECK(std::strcmp(testName(id), newNames[i]) == 0);
+    CHECK(nominalTimeMs(id) > 0);
+    CHECK(timeoutMs(id) > nominalTimeMs(id));
+  }
+  CHECK(std::strcmp(testName(TestId::Mic), "mic") == 0);
+  INFO("21-item list includes EEPROM/MCP4728/C6/CV-in/UART-boot/QR/mic");
+}
+
+TEST(FactoryNewValidatorsPass) {
+  char detail[96];
+  CHECK(checkEeprom(EepromInfo{true, 32, 32, "BKF-2026A1", true}, detail, sizeof(detail)));
+  Mcp4728Info dac{};
+  dac.addressesAck[0] = true;
+  dac.addressesAck[1] = true;
+  dac.channelsOk = 8;
+  dac.channelsTotal = 8;
+  dac.maxLsbError = 1;
+  CHECK(checkMcp4728(dac, detail, sizeof(detail)));
+  CHECK(checkC6Link(C6LinkInfo{true, 25000u, 0x0301u, true}, detail, sizeof(detail)));
+  CvInputInfo cv{};
+  cv.errorsPercent[0] = 0.2f;
+  cv.errorsPercent[1] = -0.4f;
+  cv.errorsPercent[2] = 0.3f;
+  cv.errorsPercent[3] = -0.5f;
+  cv.tvsOk = true;
+  CHECK(checkCvInputs(cv, detail, sizeof(detail)));
+  CHECK(checkUartBoot(UartBootInfo{true, true, 115200u}, detail, sizeof(detail)));
+  CHECK(checkSerialQr(SerialQrInfo{true, true, true, true}, detail, sizeof(detail)));
+  CHECK(checkMic(MicInfo{true, -18.0f, true, true, true, true, true, 70.0f, 3.5f},
+                 detail, sizeof(detail)));
+  INFO("new validators: EEPROM/MCP4728/C6/CV in/UART/QR/MIC accept nominal values");
+}
+
+TEST(FactoryEepromFails) {
+  char detail[96];
+  CHECK(!checkEeprom(EepromInfo{false, 32, 32, "SN", true}, detail, sizeof(detail)));
+  CHECK(!checkEeprom(EepromInfo{true, 31, 32, "SN", true}, detail, sizeof(detail)));
+  CHECK(!checkEeprom(EepromInfo{true, 32, 32, "", true}, detail, sizeof(detail)));
+  INFO("EEPROM validator rejects missing magic/short read/no serial");
+}
+
+TEST(FactoryMcp4728Fails) {
+  char detail[96];
+  Mcp4728Info dac{};
+  dac.addressesAck[0] = true;
+  dac.channelsOk = 8;
+  dac.channelsTotal = 8;
+  CHECK(!checkMcp4728(dac, detail, sizeof(detail)));  // second chip missing
+  dac.addressesAck[1] = true;
+  dac.channelsOk = 7;
+  CHECK(!checkMcp4728(dac, detail, sizeof(detail)));  // channel missing
+  dac.channelsOk = 8;
+  dac.maxLsbError = 2;
+  CHECK(!checkMcp4728(dac, detail, sizeof(detail)));  // readback error >1 LSB
+  INFO("MCP4728 validator rejects missing chip/channel/readback error");
+}
+
+TEST(FactoryC6LinkFails) {
+  char detail[96];
+  CHECK(!checkC6Link(C6LinkInfo{false, 25000u, 1u, true}, detail, sizeof(detail)));
+  CHECK(!checkC6Link(C6LinkInfo{true, 150000u, 1u, true}, detail, sizeof(detail)));
+  CHECK(!checkC6Link(C6LinkInfo{true, 25000u, 0u, true}, detail, sizeof(detail)));
+  CHECK(!checkC6Link(C6LinkInfo{true, 25000u, 1u, false}, detail, sizeof(detail)));
+  INFO("C6 link validator rejects no response, >100 ms, bad version, no Wi-Fi scan");
+}
+
+TEST(FactoryCvInputsFails) {
+  char detail[96];
+  CvInputInfo cv{};
+  cv.tvsOk = true;
+  cv.errorsPercent[2] = 1.5f;
+  CHECK(!checkCvInputs(cv, detail, sizeof(detail)));
+  cv.errorsPercent[2] = 0.2f;
+  cv.tvsOk = false;
+  CHECK(!checkCvInputs(cv, detail, sizeof(detail)));
+  INFO("CV input validator rejects >1% error and TVS/protection failure");
+}
+
+TEST(FactoryUartBootFails) {
+  char detail[96];
+  CHECK(!checkUartBoot(UartBootInfo{false, true, 115200u}, detail, sizeof(detail)));
+  CHECK(!checkUartBoot(UartBootInfo{true, false, 115200u}, detail, sizeof(detail)));
+  CHECK(!checkUartBoot(UartBootInfo{true, true, 57600u}, detail, sizeof(detail)));
+  INFO("UART/BOOT validator rejects missing log/strap/wrong baud");
+}
+
+TEST(FactorySerialQrFails) {
+  char detail[96];
+  CHECK(!checkSerialQr(SerialQrInfo{false, true, true, true}, detail, sizeof(detail)));
+  CHECK(!checkSerialQr(SerialQrInfo{true, false, true, true}, detail, sizeof(detail)));
+  CHECK(!checkSerialQr(SerialQrInfo{true, true, false, true}, detail, sizeof(detail)));
+  CHECK(!checkSerialQr(SerialQrInfo{true, true, true, false}, detail, sizeof(detail)));
+  INFO("serial/QR validator rejects each SN/rev/date/QR mismatch");
+}
+
+TEST(FactoryMicValidatorPassAndMute) {
+  char detail[96];
+  CHECK(checkMic(MicInfo{true, -18.0f, true, true, true, true, true, 70.0f, 3.5f},
+                 detail, sizeof(detail)));
+  CHECK(std::strstr(detail, "mute+LED") != nullptr);
+  CHECK(!checkMic(MicInfo{true, -18.0f, true, true, false, true, true, 70.0f, 3.5f},
+                  detail, sizeof(detail)));
+  CHECK(std::strstr(detail, "mute") != nullptr);
+  INFO("MIC validator: SW3 mute blocks recording (fails without it)");
+}
+
+TEST(FactoryMicLedAndSnr) {
+  char detail[96];
+  CHECK(!checkMic(MicInfo{true, -18.0f, true, true, true, false, true, 70.0f, 3.5f},
+                  detail, sizeof(detail)));  // LED off
+  CHECK(!checkMic(MicInfo{true, -18.0f, true, true, true, true, true, 60.0f, 3.5f},
+                  detail, sizeof(detail)));  // SNR <65
+  CHECK(!checkMic(MicInfo{true, -18.0f, true, true, true, true, true, 70.0f, 8.0f},
+                  detail, sizeof(detail)));  // latency >5 ms
+  INFO("MIC validator rejects LED off, SNR <65 dB, latency >5 ms");
+}
+
+TEST(FactorySkipWithoutHardwareP4) {
+  P4FactoryHardware hardware;
+  const Report report = runSelfTest(hardware);
+  CHECK(report.count == 21);
+  CHECK(report.skipCount == 21);
+  CHECK(report.passCount == 0);
+  CHECK(report.failCount == 0);
+  CHECK(!report.overallPass);
+  for (int i = 0; i < report.count; ++i) CHECK(report.tests[i].status == TestStatus::Skip);
+  INFO("P4 without toolchain: 21 SKIP (honest, no fabricated PASS/FAIL)");
+}
+
+TEST(FactorySkipStatusName) {
+  CHECK(std::strcmp(statusName(TestStatus::Skip), "SKIP") == 0);
+  CHECK(std::strcmp(statusName(TestStatus::Pass), "PASS") == 0);
+  CHECK(std::strcmp(statusName(TestStatus::Fail), "FAIL") == 0);
+  INFO("factory status names include SKIP/PASS/FAIL/TIMEOUT");
+}
+
+TEST(FactoryControls42And16) {
+  char detail[96];
+  CHECK(checkControls(ControlsInfo{42, 42, 16, 16, 2, 2}, detail, sizeof(detail)));
+  CHECK(!checkControls(ControlsInfo{41, 42, 16, 16, 2, 2}, detail, sizeof(detail)));
+  CHECK(!checkControls(ControlsInfo{42, 42, 15, 16, 2, 2}, detail, sizeof(detail)));
+  INFO("keyboard matrix 42 keys + 16 encoders validated");
+}
+
+TEST(FactoryDisplayGradientCheck) {
+  char detail[96];
+  CHECK(checkDisplay(DisplayInfo{4, true}, detail, sizeof(detail)));
+  CHECK(!checkDisplay(DisplayInfo{3, true}, detail, sizeof(detail)));
+  CHECK(!checkDisplay(DisplayInfo{4, false}, detail, sizeof(detail)));
+  INFO("display gradient/checker test: 4 patterns + no bands required");
+}
+
+TEST(FactoryMidiRouterNoDuplicates) {
+  MidiOutRouter router;
+  RouterExtSink sink(&router);
+  sink.onExtProgramChange(0, 1, 0);
+  sink.onExtStart();
+  sink.onExtNoteOn(0, 1, 60, 100);
+  sink.onExtControlChange(0, 1, 74, 64);
+  sink.onExtClock();
+  sink.onExtStop();
+  CHECK(router.dinCount() == 6);
+  CHECK(router.usbCount() == 6);
+  CHECK(!router.hasDuplicates());
+  for (int i = 0; i < router.dinCount(); ++i) {
+    CHECK(router.dinAt(i).status == router.usbAt(i).status);
+    CHECK(router.dinAt(i).data1 == router.usbAt(i).data1);
+  }
+  INFO("factory MIDI/EXT loopback: DIN+USB no duplicates for note/CC/PC/clock/transport");
+}
+
+TEST(FactoryMidiClock24Ppqn) {
+  ExtSequencer seq;
+  struct ClockSink : ExtSeqSink {
+    int clocks = 0;
+    void onExtClock() override { ++clocks; }
+  } sink;
+  seq.init(48000.0f);
+  seq.setSink(&sink);
+  seq.setBpm(120.0f);
+  seq.start();
+  seq.process(24000);
+  CHECK(sink.clocks == 24);
+  seq.stop();
+  INFO("factory MIDI clock: 24 ppqn (24 clocks per quarter at 120 BPM)");
+}
+
+TEST(FactoryJsonTwentyOne) {
+  MockHardware hardware;
+  const Report report = runSelfTest(hardware);
+  char json[16384];
+  CHECK(reportToJson(report, json, sizeof(json)));
+  CHECK(std::strstr(json, "\"count\":21") != nullptr);
+  CHECK(std::strstr(json, "\"pass\":21") != nullptr);
+  CHECK(std::strstr(json, "\"eeprom\"") != nullptr);
+  CHECK(std::strstr(json, "\"mcp4728\"") != nullptr);
+  CHECK(std::strstr(json, "\"c6_link\"") != nullptr);
+  CHECK(std::strstr(json, "\"mic\"") != nullptr);
+  CHECK(std::strstr(json, "\"overall_pass\":true") != nullptr);
+  INFO("JSON factory report serializes 21/21 with new test names");
+}
+
+TEST(FactoryMicCaptureSelfTestModel) {
+  bukifon::MicCapture mic;
+  mic.init(48000.0f);
+  bukifon::MicConfig config = mic.config();
+  config.gainDb = 0.0f;
+  config.threshold = 0.02f;
+  mic.setConfig(config);
+  std::vector<float> oneSecond(48000, 0.2f);
+  mic.push(oneSecond.data(), static_cast<int>(oneSecond.size()));
+  CHECK(mic.level() > config.threshold);
+  CHECK(mic.vadActive());
+  CHECK(!mic.beginRecording("FACTORY", 0));  // mute by default
+  mic.privacy().setMuteSwitch(false);
+  CHECK(mic.beginRecording("FACTORY", 0));
+  mic.push(oneSecond.data(), 1000);
+  CHECK(mic.endRecording());
+  CHECK(mic.take().valid);
+  CHECK(mic.privacy().led);
+  INFO("factory mic model: 1 s record, VAD RMS>threshold, SW3 mute blocks, LED on");
+}
+
+TEST(FactoryNewItemsCanFailInRunner) {
+  for (int id = 14; id < 21; ++id) {
+    MockHardware hardware;
+    hardware.failTest(static_cast<TestId>(id), true);
+    const Report report = runSelfTest(hardware);
+    CHECK(report.count == 21);
+    CHECK(report.tests[id].status == TestStatus::Fail);
+    CHECK(report.passCount == 20);
+    CHECK(!report.overallPass);
+  }
+  INFO("each of the 7 new 21-item tests can fail independently");
 }
