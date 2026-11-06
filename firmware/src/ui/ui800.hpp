@@ -70,8 +70,8 @@ struct UiTrack {
 };
 
 struct UiParam {
-  char label[14] = "";
-  char value[12] = "";
+  char label[28] = "";   // UTF-8: RU labels are up to 2 bytes/char
+  char value[16] = "";
   float norm = 0.0f;
 };
 
@@ -103,7 +103,7 @@ struct UiSnapshot {
   UiTrack tracks[kMaxTracks];
   UiParam params[kNumParams];
   UiParam macros[kNumMacros];
-  char hints[kNumHints][12] = {};
+  char hints[kNumHints][24] = {};
   int selectedParam = 0;   // page parameter 0..7
   int selectedEncoder = 0; // 0..15 (mirror of the physical encoder)
   // Persistent context line (docs/68 §2): PART · SELECTED · PAGE · FADERS · REC · UNSAVED.

@@ -1038,3 +1038,30 @@ Pillow) installed in `/tmp/msvenv`; no system packages assumed.
 - **Docs**: `docs/70-external-sequencer.md` §9 project v2 schema/migration.
 - **TODO(hw)**: NVS/flash/SD persistence and signing; audio samples remain
   separate files; `.bkfp` host format is portable and ready.
+
+---
+
+# Round 24 — UI localisation RU/EN (2026-11-06)
+
+- **String table** `include/bukifon_i18n.h` + `src/ui/i18n.cpp`: `UiKey` enum
+  (90+ keys) covering 7 tabs/pages, transport/statuses, context line, MAIN/GEN/
+  EXT/MIC fields, macros, hints and self-test errors, with non-empty RU and EN;
+  EN strings ≤28 chars; `tr(key)/tr(key,lang)`, `uiKeyName`,
+  `setLanguage/getLanguage/languageName/languageFromName`, no missing key ever
+  returns "?".
+- **UI rendering**: `ui800.cpp` uses `tr()` for tabs/page/status/context/MAIN/
+  GEN/EXT/MIC labels and macros; `UiParam.label`/`hints` buffers enlarged for
+  UTF-8. Current 6×8 font is ASCII, so Cyrillic is displayed via
+  `uiAsciiForLabel` transliteration (documented font limitation; strings are
+  true UTF-8).
+- **Persistence**: project v2 header gains `language` (v1→RU, old v2 214-byte
+  header→RU, new 215-byte header roundtrips); host language settings stub
+  `i18nSaveLanguage/LoadLanguage` (NVS/flash TODO(hw)).
+- **Tests**: **377/377 PASS** (365 + 12 i18n: all keys bilingual/non-empty/
+  unique/no-missing, switch, snapshot text, EN context, RU context, project v2
+  persistence + v1→RU, both-language render, MIC/EXT/GEN RU labels, EN length
+  limit). `run_tests.sh` → PASS.
+- **Screenshots**: `artifacts/ui/synth_ru.png` + `synth_en.png`.
+- **Docs**: `docs/61`/`docs/66` localisation sections.
+- **TODO(hw/font)**: Cyrillic glyph package for the bitmap font, NVS/flash
+  language persistence, locale-aware value formatting (units/dates).

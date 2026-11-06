@@ -2,6 +2,19 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.38.0] — 2025-11-06 — «RU/EN и English docs»
+
+### Добавлено
+- **Локализация UI RU/EN**: `bukifon_i18n.h` + `i18n.cpp`, **90+ ключей** (`tr()`), покрыты
+  7 вкладок/страницы/контекст-строка/GEN/EXT/MIC/статусы/ошибки self-test; EN ≤28 символов;
+  переключение `setLanguage/getLanguage`, сохранение языка в project v2 (v1 и старый v2 → RU).
+- **377/377 тестов** (+12): все ключи непустые/уникальные, missing-key, snapshot RU/EN,
+  project v2 язык, обратная совместимость, рендер обеих локалей.
+- Скриншоты `firmware/artifacts/ui/synth_ru.png`, `synth_en.png`; `--lang RU|EN` в sim.
+- **English docs**: `docs/en/README.md` (индекс/факты/ограничения) и `docs/en/quick-start.md`.
+- `tools/ci_p4_remote.sh` — воспроизводимая P4-сборка + host-тесты (365/365 на home).
+- docs/61, docs/66 — разделы локализации.
+
 ## [0.37.0] — 2025-11-06 — «Проект v2 и cost-down»
 
 ### Добавлено

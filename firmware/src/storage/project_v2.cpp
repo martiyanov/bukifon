@@ -7,6 +7,7 @@
 #include <cstring>
 #include <vector>
 
+#include "bukifon_i18n.h"
 #include "bukifon_ui_theme.h"
 
 namespace bukifon {
@@ -18,7 +19,7 @@ constexpr uint32_t kTagGenp = 0x504E4547u;  // "GENP"
 constexpr uint32_t kTagExtp = 0x50545845u;  // "EXTP"
 constexpr uint32_t kTagMic1 = 0x3143494Du;  // "MIC1"
 constexpr uint32_t kTagMods = 0x53444F4Du;  // "MODS"
-constexpr size_t kHeaderBytes = 214;
+constexpr size_t kHeaderBytes = 215;
 constexpr size_t kCrcBytes = 4;
 constexpr size_t kSectionHeaderBytes = 8;
 constexpr size_t kGenPayloadBytes = 1 + (kSeqTracks + kExtTracks) * 12;
@@ -116,6 +117,7 @@ void projectV2Reset(ProjectV2* project) {
   project->themeId = static_cast<uint8_t>(bukifon_ui_theme_current());
   std::snprintf(project->themeName, sizeof(project->themeName), "%s",
                 bukifon_ui_theme_name(project->themeId));
+  project->language = static_cast<uint8_t>(Lang::Ru);  // old/new default RU
 }
 
 void captureProjectV2(const Sequencer& sequencer, ProjectV2* project) {
@@ -132,6 +134,7 @@ void captureProjectV2(const Sequencer& sequencer, ProjectV2* project) {
   project->themeId = static_cast<uint8_t>(bukifon_ui_theme_current());
   std::snprintf(project->themeName, sizeof(project->themeName), "%s",
                 bukifon_ui_theme_name(project->themeId));
+  project->language = static_cast<uint8_t>(getLanguage());
 }
 
 bool applyProjectV2(const ProjectV2& project, Sequencer* sequencer) {
@@ -190,6 +193,7 @@ size_t projectV2Serialize(const ProjectV2& project, uint8_t* out, size_t capacit
   putU8(buffer, static_cast<uint8_t>(project.currentPattern));
   putU8(buffer, project.themeId);
   putString(buffer, project.themeName, 16);
+  putU8(buffer, project.language);
   if (buffer.size() != kHeaderBytes) return 0;
 
   std::vector<uint8_t> internalBytes(projectSerializedSize(project.internal));
@@ -334,6 +338,7 @@ bool projectV2Deserialize(const uint8_t* data, size_t size, ProjectV2* out, char
     }
     migrated.bpm = migrated.internal.bpm;
     migrated.currentPattern = migrated.internal.activePattern;
+    migrated.language = static_cast<uint8_t>(Lang::Ru);
     if (!projectV2Validate(migrated, error, errorLen)) return false;
     *out = migrated;
     return true;
@@ -370,12 +375,23 @@ bool projectV2Deserialize(const uint8_t* data, size_t size, ProjectV2* out, char
   char theme[16];
   reader.bytes(theme, sizeof(theme));
   std::memcpy(project.themeName, theme, sizeof(project.themeName));
-  if (!reader.ok || reader.pos != kHeaderBytes) {
+  if (!reader.ok) {
     std::snprintf(error, errorLen, "header truncated");
     return false;
   }
-  if (bodySize != size - kHeaderBytes - kCrcBytes) {
-    std::snprintf(error, errorLen, "body size %u mismatch file size", bodySize);
+  // v2 originally had a 214-byte header (no language field): support it with
+  // RU default, the new header is 215 bytes.
+  const size_t bodyStart = size >= kCrcBytes ? size - kCrcBytes - bodySize : 0;
+  if (bodyStart == 215) {
+    project.language = reader.u8();
+  } else if (bodyStart == 214) {
+    project.language = static_cast<uint8_t>(Lang::Ru);
+  } else {
+    std::snprintf(error, errorLen, "header/body size mismatch (%zu)", bodyStart);
+    return false;
+  }
+  if (reader.pos != bodyStart) {
+    std::snprintf(error, errorLen, "header truncated");
     return false;
   }
   const uint32_t storedCrc = Reader{data + size - 4, 4}.u32();
@@ -572,9 +588,10 @@ bool projectV2ToJson(const ProjectV2& project, char* out, size_t capacity) {
       out, capacity,
       "{\"schema\":\"bukifon.project.v2\",\"name\":\"%s\",\"author\":\"%s\","
       "\"created\":\"%s\",\"app\":\"%s\",\"bpm\":%.1f,\"theme\":\"%s\","
-      "\"externalTracks\":8,\"data\":\"%s\"}",
+      "\"externalTracks\":8,\"lang\":\"%s\",\"data\":\"%s\"}",
       project.name, project.author, project.created, project.appVersion,
-      static_cast<double>(project.bpm), project.themeName, hexData.data());
+      static_cast<double>(project.bpm), project.themeName,
+      project.language == static_cast<uint8_t>(Lang::En) ? "EN" : "RU", hexData.data());
   return written > 0 && static_cast<size_t>(written) < capacity;
 }
 

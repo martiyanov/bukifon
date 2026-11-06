@@ -73,3 +73,28 @@
 - [ ] Контраст и размер шрифта читаются при 30 см?
 - [ ] Раскладка проверена paperkit (docs/28) и демо?
 - [ ] Ограничения честно показаны (SPI-экран/8×8 USB/…) до покупки?
+
+---
+
+## Локализация RU/EN (раунд 24)
+
+Интерфейс вынесен в строковую таблицу `firmware/include/bukifon_i18n.h`
+(`enum class UiKey`, RU+EN для каждого ключа) и рисуется через `tr(key)`.
+
+- **Ключи:** 7 вкладок (MAIN/SEQ/MIX/MOD/GEN/EXT/MIC), заголовки 7 страниц,
+  статусы (PLAY/STOP/REC/READY/ON/OFF/SAVED/UNSAVED/PASS/FAIL/SKIP/ERROR),
+  контекст-строка (PART/SELECTED/PAGE/PAT/BAR/FADERS/MIC), поля MAIN/GEN/EXT/MIC,
+  макросы И–П, подсказки, ошибки self-test. Всего **90+ ключей**, у каждого
+  непустые RU и EN; EN ≤28 символов (кроме описаний — их в таблице нет).
+- **Переключение:** `setLanguage(Lang::RU|EN)` / `getLanguage()`; `tr(key)`;
+  host-настройка `i18nSaveLanguage()/i18nLoadLanguage()` (TODO(hw): NVS/flash).
+- **Project v2:** поле `language` добавлено в заголовок `.bkfp`; старые v1
+  файлы мигрируют с `language=RU`; старый v2-заголовок (214 байт) читается с
+  RU по умолчанию. Загрузка не меняет глобальный язык неявно — приложение
+  применяет его явно.
+- **Отрисовка:** `ui800.cpp` использует `tr()` для вкладок/страниц/статусов/
+  контекст-строки/полей MIC/EXT/GEN/MAIN; буферы `UiParam.label/hints` увеличены
+  под UTF-8. Текущий 6×8-шрифт — ASCII, поэтому кириллица на экране выводится
+  ASCII-транслитерацией (`uiAsciiForLabel`); это ограничение шрифта (TODO:
+  отдельный кириллический glyph-пакет), строки таблицы уже настоящий UTF-8.
+- Скриншоты: `firmware/artifacts/ui/synth_en.png` и `synth_ru.png`.

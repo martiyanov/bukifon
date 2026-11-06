@@ -17,6 +17,7 @@
 #include "bukifon_ui_theme.h"
 #include "sim/simulator.hpp"
 #include "storage/preset_bank.hpp"
+#include "bukifon_i18n.h"
 #include "ui/ui800.hpp"
 
 using namespace bukifon;
@@ -29,6 +30,7 @@ struct Args {
   std::string theme;
   std::string themeConfig;  // empty: no auto-load; pass --theme-config explicitly
   std::string presetPath;   // optional 8-slot GEN preset bank (host file)
+  bukifon::Lang language = bukifon::Lang::En;  // UI language for screenshots
   int bars = 16;
   bool determinism = true;
 };
@@ -48,13 +50,15 @@ Args parseArgs(int argc, char** argv) {
       args.themeConfig = argv[++i];
     } else if (std::strcmp(argv[i], "--preset") == 0 && i + 1 < argc) {
       args.presetPath = argv[++i];
+    } else if (std::strcmp(argv[i], "--lang") == 0 && i + 1 < argc) {
+      bukifon::languageFromName(argv[++i], &args.language);
     } else if (std::strcmp(argv[i], "--no-determinism") == 0) {
       args.determinism = false;
     } else if (std::strcmp(argv[i], "--help") == 0) {
       std::printf(
           "usage: bukifon_sim [--out DIR] [--log FILE] [--bars N] [--no-determinism]\n"
           "                   [--theme Night|Amber|Phosphor|Cream] [--theme-config PATH]\n"
-          "                   [--preset PATH]\n");
+          "                   [--preset PATH] [--lang RU|EN]\n");
       std::exit(0);
     }
   }
@@ -121,6 +125,8 @@ int main(int argc, char** argv) {
   }
   std::printf("Bukifon host demo\n");
   std::printf("theme: %s\n", bukifon_ui_theme_name(bukifon_ui_theme_current()));
+  bukifon::setLanguage(args.language);
+  std::printf("language: %s\n", bukifon::languageName(bukifon::getLanguage()));
   if (!args.presetPath.empty()) {
     PresetBank bank;
     if (!bank.load(args.presetPath.c_str())) {

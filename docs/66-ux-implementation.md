@@ -120,3 +120,16 @@ between engine/demo/UI (`UiSnapshot::gen`, `paramModulated`, `genPartSelected`,
 master/slave, live record, versioned CRC32 payload, DIN+USB без дублей).
 Скриншот `firmware/artifacts/ui/ext.png`. Тесты: 288/288 (25 новых).
 Детали и TODO(hw) — в docs/70 §7–8.
+
+---
+
+## 9. Локализация RU/EN (раунд 24)
+
+UI-строки всех 7 вкладок/страниц, полей, контекст-строки, статусов и ошибок
+self-test вынесены в `firmware/include/bukifon_i18n.h` (`UiKey` + RU/EN таблица,
+90+ ключей). Рисование через `tr(key)`; переключение `setLanguage/getLanguage`;
+язык сохраняется в project v2 (`language` в заголовке, v1→RU, старый v2→RU),
+host-настройка `i18nSaveLanguage/LoadLanguage` (NVS/flash — TODO(hw)).
+Скриншоты `artifacts/ui/synth_ru.png` + `synth_en.png`. Ограничение: 6×8-шрифт
+ASCII, кириллица на экране — транслитерация до подключения кириллического
+glyph-пакета; строки уже UTF-8. Тесты: 377/377.

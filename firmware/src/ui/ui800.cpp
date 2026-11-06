@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ui/ui800.hpp"
+#include "bukifon_i18n.h"
 
 #include <cmath>
 #include <cstdio>
@@ -87,15 +88,21 @@ void drawHeader(ICanvas& c, const UiSnapshot& s) {
   drawTextRole(c, 300, 2, buf, textColor(), UiTextRole::Critical);
   std::snprintf(buf, sizeof(buf), "STEP %02d", s.activeStep + 1);
   drawTextRole(c, 450, 2, buf, textColor(), UiTextRole::Critical);
-  const char* status = s.transportRecord ? "REC" : (s.playing ? "PLAY" : "STOP");
+  const char* status = tr(s.transportRecord ? UiKey::Rec : (s.playing ? UiKey::Play : UiKey::Stop));
   const uint16_t statusColor = s.transportRecord ? redColor() : (s.playing ? greenColor() : redColor());
   drawTextRole(c, 620, 2, status, statusColor, UiTextRole::Critical);
   // Page label + 12 px tabs (L2 access, docs/68).
-  drawTextRole(c, 12, 44, s.page, mutedColor(), UiTextRole::Caption);
-  const char* tabs[7] = {"MAIN", "SEQ", "MIX", "MOD", "GEN", "EXT", "MIC"};
+  static const UiKey pageKeys[7] = {UiKey::PageMain, UiKey::PageSequencer, UiKey::PageMixer,
+                                    UiKey::PageModules, UiKey::PageGen, UiKey::PageExt,
+                                    UiKey::PageMic};
+  static const UiKey tabKeys[7] = {UiKey::Main, UiKey::Seq, UiKey::Mix, UiKey::Mod,
+                                   UiKey::Gen, UiKey::Ext, UiKey::Mic};
+  const int screen = static_cast<int>(s.screen);
+  drawTextRole(c, 12, 44, tr(pageKeys[screen >= 0 && screen < 7 ? screen : 0]), mutedColor(),
+               UiTextRole::Caption);
   for (int i = 0; i < 7; ++i) {
-    const bool active = static_cast<int>(s.screen) == i;
-    drawTextRole(c, 140 + i * 40, 44, tabs[i], active ? accentColor() : mutedColor(),
+    const bool active = screen == i;
+    drawTextRole(c, 140 + i * 40, 44, tr(tabKeys[i]), active ? accentColor() : mutedColor(),
                  UiTextRole::Caption);
   }
   char modeBuf[24];
@@ -274,12 +281,15 @@ void drawParamPanel(ICanvas& c, const UiSnapshot& s) {
     if (index < 0) continue;
     UiParam display = isMacro ? s.macros[index] : s.params[index];
     if (!isMacro && (s.screen == Screen::Main || s.screen == Screen::Mic)) {
-      static const char* mainShort[kNumParams] = {"CUTOFF", "RES", "ENVAMT", "DRIVE",
-                                                  "ATK", "DEC", "SUS", "REL"};
-      static const char* micShort[kNumParams] = {"SRC", "GAIN", "THR", "MON",
-                                                 "BEAT", "SENS", "PAD", "LVL"};
-      std::snprintf(display.label, sizeof(display.label), "%s",
-                    s.screen == Screen::Main ? mainShort[index] : micShort[index]);
+      static const UiKey mainShort[kNumParams] = {UiKey::Cutoff, UiKey::MacroRes,
+                                                  UiKey::EnvAmt, UiKey::Drive,
+                                                  UiKey::MacroAtk, UiKey::MacroDly,
+                                                  UiKey::MacroRes, UiKey::MacroRel};
+      static const UiKey micShort[kNumParams] = {UiKey::Source, UiKey::Gain, UiKey::Thresh,
+                                                 UiKey::Monitor, UiKey::Beatbox, UiKey::Sens,
+                                                 UiKey::RecPad, UiKey::Level};
+      const UiKey shortKey = s.screen == Screen::Main ? mainShort[index] : micShort[index];
+      std::snprintf(display.label, sizeof(display.label), "%s", tr(shortKey));
     }
     const UiParam& p = display;
     const bool selected = e == s.selectedEncoder;
@@ -323,8 +333,9 @@ void drawGenScreen(ICanvas& c, const UiSnapshot& s) {
     drawTextRole(c, x + 8, y + 27, buf, mutedColor(), UiTextRole::Caption);;
   }
   // Eight GEN functions (params page).
-  const char* labels[kNumParams] = {"PROB", "EUCLID", "MUTATE", "SCALE",
-                                    "ARP RATE", "ARP MODE", "EVOLVE", "SEED"};
+  const UiKey labelKeys[kNumParams] = {UiKey::Prob, UiKey::Euclid, UiKey::Mutate,
+                                       UiKey::Scale, UiKey::ArpRate, UiKey::ArpMode,
+                                       UiKey::Evolve, UiKey::Seed};
   char values[kNumParams][12] = {};
   std::snprintf(values[0], sizeof(values[0]), "%d%%", g.probability);
   std::snprintf(values[1], sizeof(values[1]), "%d/16", g.euclid);
@@ -340,11 +351,11 @@ void drawGenScreen(ICanvas& c, const UiSnapshot& s) {
     const int x = 10 + col * 194;
     const int y = 110 + row * 50;
     drawCard(c, x, y, 188, 44, cardColor(), i == 0 ? accentColor() : mutedColor());
-    drawTextRole(c, x + 6, y + 5, labels[i], mutedColor(), UiTextRole::Caption);;
+    drawTextRole(c, x + 6, y + 5, tr(labelKeys[i]), mutedColor(), UiTextRole::Caption);;
     drawTextRole(c, x + 6, y + 16, values[i], orangeColor(), UiTextRole::Value);;
   }
   // Euclid ring: 16 steps, gate = accent colour, accent steps orange.
-  drawTextRole(c, 10, 210, "EUCLID RING", mutedColor(), UiTextRole::Caption);;
+  drawTextRole(c, 10, 210, tr(UiKey::EuclidRing), mutedColor(), UiTextRole::Caption);;
   for (int step = 0; step < 16; ++step) {
     const bool on = (s.euclidMask & (1u << step)) != 0;
     const int x = 12 + step * 48;
@@ -395,7 +406,8 @@ void drawExtScreen(ICanvas& c, const UiSnapshot& s) {
     drawCard(c, 8, y, 784, rowH - 2, selected ? activeCardColor() : cardColor(),
              selected ? accentColor() : lineColor());
     char label[32];
-    std::snprintf(label, sizeof(label), "T%d CH%d PC%d", t + 1, track.channel, track.program);
+    std::snprintf(label, sizeof(label), "T%d %s%d %s%d", t + 1, tr(UiKey::Ch), track.channel,
+                  tr(UiKey::Prog), track.program);
     drawTextRole(c, 12, y + 3, label, track.muted ? mutedColor() : textColor(),
                  UiTextRole::Caption);
     if (track.muted) drawTextRole(c, 92, y + 3, "M", redColor(), UiTextRole::Caption);
@@ -416,29 +428,32 @@ void drawExtScreen(ICanvas& c, const UiSnapshot& s) {
 void drawMicScreen(ICanvas& c, const UiSnapshot& s) {
   // Privacy banner: MIC ON only when the hardware switch is on (LED model).
   const bool on = !s.micMuted;
-  drawTextRole(c, 12, kTracksY + 4, on ? "MIC ON" : "MIC MUTED",
+  drawTextRole(c, 12, kTracksY + 4, on ? tr(UiKey::MicOn) : tr(UiKey::MicMuted),
                on ? greenColor() : redColor(), UiTextRole::Critical);
   char buf[48];
-  std::snprintf(buf, sizeof(buf), "SOURCE %s", s.micSource);
+  std::snprintf(buf, sizeof(buf), "%s %s", tr(UiKey::Source), s.micSource);
   drawTextRole(c, 220, kTracksY + 8, buf, textColor(), UiTextRole::Value);
-  std::snprintf(buf, sizeof(buf), "%s", s.micBeatbox ? "BEATBOX ON" : "BEATBOX OFF");
+  std::snprintf(buf, sizeof(buf), "%s %s", tr(UiKey::Beatbox),
+                s.micBeatbox ? tr(UiKey::On) : tr(UiKey::Off));
   drawTextRole(c, 430, kTracksY + 8, buf, s.micBeatbox ? orangeColor() : mutedColor(),
                UiTextRole::Value);
-  std::snprintf(buf, sizeof(buf), "%s", s.micRecording ? "REC" : "READY");
+  std::snprintf(buf, sizeof(buf), "%s", tr(s.micRecording ? UiKey::Rec : UiKey::Ready));
   drawTextRole(c, 650, kTracksY + 4, buf, s.micRecording ? redColor() : mutedColor(),
                UiTextRole::Critical);
   // Input level meter (L1 indicator, docs/71 §4).
-  drawTextRole(c, 12, kTracksY + 44, "LEVEL", mutedColor(), UiTextRole::Caption);
+  drawTextRole(c, 12, kTracksY + 44, tr(UiKey::Level), mutedColor(), UiTextRole::Caption);
   drawBar(c, 90, kTracksY + 46, 420, 18, s.micLevel, on ? greenColor() : mutedColor());
   std::snprintf(buf, sizeof(buf), "PEAK %3d%%", static_cast<int>(s.micPeak * 100.0f));
   drawTextRole(c, 530, kTracksY + 44, buf, textColor(), UiTextRole::Caption);
   // REC -> PAD target and the recorded take name.
-  drawTextRole(c, 12, kTracksY + 82, "REC PAD", mutedColor(), UiTextRole::Caption);
+  drawTextRole(c, 12, kTracksY + 82, tr(UiKey::RecPad), mutedColor(), UiTextRole::Caption);
   std::snprintf(buf, sizeof(buf), "PAD %d  %s", 1, s.micTake);
   drawTextRole(c, 110, kTracksY + 82, buf, orangeColor(), UiTextRole::Value);
   // Beatbox classes legend (kick/snare/hat -> notes 36/38/42).
-  drawTextRole(c, 420, kTracksY + 82, "KICK 36  SNARE 38  HAT 42", mutedColor(),
-               UiTextRole::Caption);
+  char drumLegend[80];
+  std::snprintf(drumLegend, sizeof(drumLegend), "%s 36  %s 38  %s 42", tr(UiKey::Kick),
+                tr(UiKey::Snare), tr(UiKey::Hat));
+  drawTextRole(c, 420, kTracksY + 82, drumLegend, mutedColor(), UiTextRole::Caption);
   if (s.micMuted) {
     drawTextRole(c, 12, kTracksY + 120, "PRIVACY: recording disabled (hardware mute)",
                  redColor(), UiTextRole::Caption);
@@ -496,11 +511,14 @@ void uiSnapshotInit(UiSnapshot* snapshot) {
   for (int i = 0; i < kNumHints; ++i) {
     std::snprintf(snapshot->hints[i], sizeof(snapshot->hints[i]), "P%d", i + 1);
   }
-  const char* macroLabels[kNumMacros] = {"CUT", "RES", "ATK", "REL", "DLY", "DRV", "CRSH", "MST"};
+  const UiKey macroKeys[kNumMacros] = {UiKey::MacroCut, UiKey::MacroRes, UiKey::MacroAtk,
+                                       UiKey::MacroRel, UiKey::MacroDly, UiKey::MacroDrv,
+                                       UiKey::MacroCrsh, UiKey::MacroMst};
   const char* macroValues[kNumMacros] = {"2.40k", "62%", "10ms", "420ms", "250ms", "18%", "0%", "72%"};
   const float macroNorms[kNumMacros] = {0.61f, 0.62f, 0.20f, 0.42f, 0.25f, 0.18f, 0.0f, 0.72f};
   for (int i = 0; i < kNumMacros; ++i) {
-    std::snprintf(snapshot->macros[i].label, sizeof(snapshot->macros[i].label), "%s", macroLabels[i]);
+    std::snprintf(snapshot->macros[i].label, sizeof(snapshot->macros[i].label), "%s",
+                  tr(macroKeys[i]));
     std::snprintf(snapshot->macros[i].value, sizeof(snapshot->macros[i].value), "%s", macroValues[i]);
     snapshot->macros[i].norm = macroNorms[i];
   }
@@ -567,20 +585,23 @@ void uiSnapshotDemo(UiSnapshot* snapshot, Screen screen) {
   }
   // One p-lock marker on track 1 step 5 (the vertical slice's single p-lock).
   snapshot->tracks[0].stepPlocked[4] = true;
-  const char* labels[kNumParams] = {"CUTOFF", "RESONANCE", "ENV AMT", "DRIVE",
-                                    "ATK",    "DEC",       "SUS",     "REL"};
+  const UiKey labelKeys[kNumParams] = {UiKey::Cutoff, UiKey::Resonance, UiKey::EnvAmt,
+                                       UiKey::Drive, UiKey::Attack, UiKey::Decay,
+                                       UiKey::Sustain, UiKey::Release};
   const char* values[kNumParams] = {"2.40k", "62%",  "+35%", "18%",
                                     "10ms",  "340ms", "65%",  "420ms"};
   const float norms[kNumParams] = {0.61f, 0.62f, 0.35f, 0.18f, 0.2f, 0.34f, 0.65f, 0.42f};
   for (int i = 0; i < kNumParams; ++i) {
-    std::snprintf(snapshot->params[i].label, sizeof(snapshot->params[i].label), "%s", labels[i]);
+    std::snprintf(snapshot->params[i].label, sizeof(snapshot->params[i].label), "%s",
+                  tr(labelKeys[i]));
     std::snprintf(snapshot->params[i].value, sizeof(snapshot->params[i].value), "%s", values[i]);
     snapshot->params[i].norm = norms[i];
   }
-  const char* hintLabels[kNumHints] = {"CUTOFF", "RESON", "ENVAMT", "DRIVE",
-                                       "ATK",    "DEC",   "SUS",    "REL"};
+  const UiKey hintKeys[kNumHints] = {UiKey::Cutoff, UiKey::Resonance, UiKey::EnvAmt,
+                                     UiKey::Drive, UiKey::Attack, UiKey::Decay,
+                                     UiKey::Sustain, UiKey::Release};
   for (int i = 0; i < kNumHints; ++i) {
-    std::snprintf(snapshot->hints[i], sizeof(snapshot->hints[i]), "%s", hintLabels[i]);
+    std::snprintf(snapshot->hints[i], sizeof(snapshot->hints[i]), "%s", tr(hintKeys[i]));
   }
   snapshot->selectedParam = 1;
   if (screen == Screen::Modules) {
@@ -667,19 +688,25 @@ void uiSnapshotDemo(UiSnapshot* snapshot, Screen screen) {
     snapshot->abCompare = true;
     snapshot->presetSlot = 2;
     std::snprintf(snapshot->selectedLabel, sizeof(snapshot->selectedLabel), "%s", "1+3");
-    const char* hints[8] = {"PROB", "EUCLID", "MUTATE", "SCALE",
-                            "ARP RATE", "ARP MODE", "EVOLVE", "SEED"};
+    const UiKey hintKeys[8] = {UiKey::Prob, UiKey::Euclid, UiKey::Mutate, UiKey::Scale,
+                               UiKey::ArpRate, UiKey::ArpMode, UiKey::Evolve, UiKey::Seed};
     for (int i = 0; i < kNumHints; ++i) {
-      std::snprintf(snapshot->hints[i], sizeof(snapshot->hints[i]), "%s", hints[i]);
+      std::snprintf(snapshot->hints[i], sizeof(snapshot->hints[i]), "%s", tr(hintKeys[i]));
+    }
+    for (int i = 0; i < kNumParams; ++i) {
+      std::snprintf(snapshot->params[i].label, sizeof(snapshot->params[i].label), "%s",
+                    tr(hintKeys[i]));
     }
     std::snprintf(snapshot->footer, sizeof(snapshot->footer),
                   "GEN | A/B compare | group edit parts 1+3 | 8 presets");
   }
   if (screen == Screen::Ext) {
-    const char* labels[8] = {"CH", "PROG", "VEL", "LEN", "CC#", "CC VAL", "SWING", "CLK"};
+    const UiKey labelKeys[8] = {UiKey::Ch, UiKey::Prog, UiKey::Vel, UiKey::Len,
+                               UiKey::CcHash, UiKey::CcVal, UiKey::Swing, UiKey::Clk};
     const char* values[8] = {"1", "0", "100", "50%", "74", "64", "54%", "INT"};
     for (int i = 0; i < kNumParams; ++i) {
-      std::snprintf(snapshot->params[i].label, sizeof(snapshot->params[i].label), "%s", labels[i]);
+      std::snprintf(snapshot->params[i].label, sizeof(snapshot->params[i].label), "%s",
+                  tr(labelKeys[i]));
       std::snprintf(snapshot->params[i].value, sizeof(snapshot->params[i].value), "%s", values[i]);
       snapshot->params[i].norm = 0.2f + 0.08f * static_cast<float>(i);
     }
@@ -703,18 +730,19 @@ void uiSnapshotDemo(UiSnapshot* snapshot, Screen screen) {
                   "EXT | 8 MIDI tracks | clock out 24 ppqn | p-lock step 5");
   }
   if (screen == Screen::Mic) {
-    const char* labels[8] = {"SOURCE", "GAIN", "THRESH", "MONITOR",
-                             "BEATBOX", "SENS", "REC PAD", "LEVEL"};
+    const UiKey labelKeys[8] = {UiKey::Source, UiKey::Gain, UiKey::Thresh, UiKey::Monitor,
+                                UiKey::Beatbox, UiKey::Sens, UiKey::RecPad, UiKey::Level};
     const char* values[8] = {"MIC", "+20dB", "2%", "OFF", "ON", "50%", "PAD 1", "-18dB"};
     for (int i = 0; i < kNumParams; ++i) {
-      std::snprintf(snapshot->params[i].label, sizeof(snapshot->params[i].label), "%s", labels[i]);
+      std::snprintf(snapshot->params[i].label, sizeof(snapshot->params[i].label), "%s",
+                  tr(labelKeys[i]));
       std::snprintf(snapshot->params[i].value, sizeof(snapshot->params[i].value), "%s", values[i]);
       snapshot->params[i].norm = 0.2f + 0.08f * static_cast<float>(i);
     }
-    const char* hints[8] = {"SOURCE", "GAIN", "THRESH", "MONITOR",
-                            "BEATBOX", "SENS", "REC", "PAD"};
+    const UiKey hintKeys[8] = {UiKey::Source, UiKey::Gain, UiKey::Thresh, UiKey::Monitor,
+                               UiKey::Beatbox, UiKey::Sens, UiKey::Rec, UiKey::RecPad};
     for (int i = 0; i < kNumHints; ++i) {
-      std::snprintf(snapshot->hints[i], sizeof(snapshot->hints[i]), "%s", hints[i]);
+      std::snprintf(snapshot->hints[i], sizeof(snapshot->hints[i]), "%s", tr(hintKeys[i]));
     }
     std::snprintf(snapshot->micSource, sizeof(snapshot->micSource), "%s", "MIC");
     snapshot->micLevel = 0.42f;
@@ -734,13 +762,15 @@ void uiSnapshotDemo(UiSnapshot* snapshot, Screen screen) {
 void uiBuildContextLine(const UiSnapshot* snapshot, char* out, size_t capacity) {
   if (!snapshot || !out || capacity == 0) return;
   std::snprintf(out, capacity,
-                "%s  SELECTED %s  PAGE %s  PAT %02d BAR %03d  FADERS %s  REC %s  MIC %s  %s",
-                snapshot->partLabel[0] ? snapshot->partLabel : "PART 1",
-                snapshot->selectedLabel[0] ? snapshot->selectedLabel : "1",
-                snapshot->page[0] ? snapshot->page : "MAIN", snapshot->pattern, snapshot->bar + 1,
-                snapshot->faderMode[0] ? snapshot->faderMode : "TRACK",
-                snapshot->transportRecord ? "ON" : "OFF", snapshot->micMuted ? "MUTE" : "ON",
-                snapshot->unsaved ? "UNSAVED" : "SAVED");
+                "%s %s  %s %s  %s %s  %s %02d %s %03d  %s %s  %s %s  %s %s  %s",
+                tr(UiKey::Part), snapshot->partLabel[0] ? snapshot->partLabel : "PART 1",
+                tr(UiKey::Selected), snapshot->selectedLabel[0] ? snapshot->selectedLabel : "1",
+                tr(UiKey::Page), snapshot->page[0] ? snapshot->page : "MAIN",
+                tr(UiKey::Pat), snapshot->pattern, tr(UiKey::Bar), snapshot->bar + 1,
+                tr(UiKey::Faders), snapshot->faderMode[0] ? snapshot->faderMode : "TRACK",
+                tr(UiKey::Rec), snapshot->transportRecord ? tr(UiKey::On) : tr(UiKey::Off),
+                tr(UiKey::Mic), snapshot->micMuted ? tr(UiKey::MicMuted) : tr(UiKey::MicOn),
+                snapshot->unsaved ? tr(UiKey::Unsaved) : tr(UiKey::Saved));
 }
 
 void uiHandleHome(UiSnapshot* snapshot) {

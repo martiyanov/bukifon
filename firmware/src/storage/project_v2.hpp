@@ -64,6 +64,7 @@ struct ProjectV2 {
   int currentPattern = 0;
   uint8_t themeId = 0;  // BukifonUiThemeId
   char themeName[16] = "Night";
+  uint8_t language = 0;  // Lang: 0=RU, 1=EN
   // Internal patterns/parts (v1 project embedded as the INTP section).
   Project internal{};
   GenParams gen[kSeqTracks + kExtTracks] = {};
