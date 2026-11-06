@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Букифон — интерактивное демо интерфейса</title>
+<meta name="description" content="Виртуальный Букифон: панель как у реального синтезатора — 16 энкодеров вокруг экрана 800×480, 42 клавиши Lapka-42 двумя кластерами ±18°, 2 фейдера, 10 джеков, FM-звук, генеративные функции.">
+<link rel="stylesheet" href="demo.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><b data-i18n="app.brand">БУКИФОН</b> <span>demo</span></div>
+  <div class="langswitch" id="langSwitch" role="group" aria-label="Язык интерфейса" data-i18n-aria="a11y.langGroup">
+    <button type="button" data-lang="ru" class="active" aria-pressed="true" title="Русский">RU</button>
+    <button type="button" data-lang="en" aria-pressed="false" title="English">EN</button>
+  </div>
+  <nav>
+    <a href="../index.html" data-i18n="nav.site">← сайт</a>
+    <a href="https://github.com/martiyanov/bukifon" rel="noopener">github</a>
+    <a href="https://github.com/martiyanov/bukifon/blob/main/docs/65-ux-patterns.md" rel="noopener">UX</a>
+  </nav>
+</header>
+
+<main>
+  <div class="contextbar" id="contextbar" aria-live="polite"></div>
+
+  <div class="device" role="application" aria-label="Виртуальная панель Букифона" data-i18n-aria="a11y.panel">
+    <div class="jacks" id="jacks" role="group" aria-label="10 джеков" data-i18n-aria="a11y.jacks"></div>
+
+    <div class="midrow">
+      <div class="knobblock left">
+        <div class="blocktitle" data-i18n="block.encodersPage">ЭНКОДЕРЫ А–З · ПАРАМЕТРЫ СТРАНИЦЫ</div>
+        <div class="knobgrid" id="knobs" role="group" aria-label="Энкодеры А–З: параметры страницы" data-i18n-aria="a11y.knobsPage"></div>
+      </div>
+
+      <div class="screen-wrap">
+        <canvas id="screen" width="800" height="480" role="img" aria-label="Экран Букифона 800×480" aria-describedby="hint" data-i18n-aria="a11y.screen"></canvas>
+        <div class="hint" id="hint" data-i18n="hint.screen">Экран 800×480 · 4 темы · табы страниц кликабельны · HOME = MAIN · Shift = подсказка слоя</div>
+      </div>
+
+      <div class="knobblock right">
+        <div class="blocktitle" data-i18n="block.encodersMacro">ЭНКОДЕРЫ И–П · МАКРОСЫ (выбранные партии)</div>
+        <div class="knobgrid" id="knobsMacro" role="group" aria-label="Энкодеры И–П: макросы выбранных партий" data-i18n-aria="a11y.knobsMacro"></div>
+      </div>
+    </div>
+
+    <div class="bottomrow">
+      <div class="keys" id="keysLeft" role="group" aria-label="Левая половина клавиатуры" data-i18n-aria="a11y.keysLeft"></div>
+      <div class="faders" role="group" aria-label="Фейдеры" data-i18n-aria="a11y.faders">
+        <div class="fader" data-fader="0" role="slider" tabindex="0" aria-valuemin="0" aria-valuemax="100"><div class="cap"></div><span>F1</span></div>
+        <div class="fader" data-fader="1" role="slider" tabindex="0" aria-valuemin="0" aria-valuemax="100"><div class="cap"></div><span>F2</span></div>
+      </div>
+      <div class="keys" id="keysRight" role="group" aria-label="Правая половина клавиатуры" data-i18n-aria="a11y.keysRight"></div>
+    </div>
+
+    <div class="controls">
+      <button id="btnPlay" class="primary" data-i18n="btn.play" data-i18n-label="a11y.play" title="Играть или остановить секвенсор (SPACE)">ИГРА</button>
+      <button id="btnStop" data-i18n="btn.stop" data-i18n-label="a11y.stop" title="Остановить секвенсор">СТОП</button>
+      <button id="btnRec" class="danger" data-i18n="btn.rec" data-i18n-label="a11y.rec" title="Запись выхода на пэд (R)">ЗАП</button>
+      <button id="btnMic" data-i18n="btn.mic" data-i18n-label="a11y.mic" title="Включить или выключить микрофон">МИК</button>
+      <button id="btnBeatbox" data-i18n="btn.beatbox" data-i18n-label="a11y.beatbox" title="Битбокс: стучать 4 секунды, удары станут шагами">БИТБОКС→ШАГИ</button>
+      <button id="btnRecMic" data-i18n="btn.recMic" data-i18n-label="a11y.recMic" title="Запись с микрофона на пэд, до 30 секунд">ЗАП МИК</button>
+      <button id="btnHome" data-i18n="btn.home" data-i18n-label="a11y.home" title="Вернуться в MAIN (HOME)">ГЛАВН</button>
+      <button id="btnUndo" data-i18n="btn.undo" data-i18n-label="a11y.undo" title="Отменить последнее действие (Ctrl+Z)">ОТМЕНА</button>
+      <div class="pagechips" id="pagechips" role="group" aria-label="Страницы параметров" data-i18n-aria="a11y.pages"></div>
+      <span class="fader-modes" id="faderModes" role="group" aria-label="Фейдеры" data-i18n-aria="a11y.faders">
+        <button type="button" data-fmode="TRACK" class="active" aria-pressed="true" data-i18n-title="title.track" title="Фейдеры: уровень партии и мастер">TRACK</button>
+        <button type="button" data-fmode="SCENE" aria-pressed="false" data-i18n-title="title.scene" title="Фейдеры: морфинг сцен A↔B">SCENE</button>
+        <button type="button" data-fmode="DJ" aria-pressed="false" data-i18n-title="title.dj" title="Фейдеры: DJ A/B equal-power">DJ</button>
+      </span>
+      <label><span data-i18n="label.bpm">BPM</span> <input id="bpm" type="number" min="40" max="220" value="120" aria-label="Темп, BPM" data-i18n-aria="a11y.bpm"></label>
+      <label><span data-i18n="label.volume">VOL</span> <input id="volume" type="range" min="0" max="100" value="70" aria-label="Громкость" data-i18n-aria="a11y.volume"></label>
+      <label><span data-i18n="label.theme">ТЕМА</span> <select id="themeSel" aria-label="Тема экрана" data-i18n-aria="a11y.theme"></select></label>
+      <label><span data-i18n="label.micGain">УСИЛ MIC</span> <input id="micGain" type="range" min="0" max="200" value="100" aria-label="Усиление микрофона" data-i18n-aria="a11y.micGain"></label>
+      <span class="presetgrp">
+        <select id="presetSel" aria-label="Слот пресета" data-i18n-aria="a11y.preset"></select>
+        <button id="btnPresetSave" data-i18n="btn.save" data-i18n-label="a11y.save" title="Сохранить пресет в слот">СОХР</button>
+        <button id="btnPresetLoad" data-i18n="btn.load" data-i18n-label="a11y.load" title="Загрузить пресет из слота">ЗАГР</button>
+        <button id="btnAB" data-i18n="btn.compare" data-i18n-label="a11y.compare" title="Сравнить A/B паттерна">СРАВН</button>
+      </span>
+      <button id="btnRandom" data-i18n="btn.random" data-i18n-label="a11y.random" title="Случайный паттерн">СЛУЧАЙНЫЙ</button>
+      <button id="btnTransDown" aria-label="Транспонировать вниз на 12 полутонов" data-i18n-label="a11y.transDown">−12</button>
+      <button id="btnTransUp" aria-label="Транспонировать вверх на 12 полутонов" data-i18n-label="a11y.transUp">+12</button>
+      <button id="btnShare" data-i18n="btn.share" data-i18n-label="a11y.share" title="Скопировать ссылку на паттерн">Поделиться</button>
+      <button id="btnTest" style="display:none" data-i18n="btn.copyJson" data-i18n-label="a11y.copyJson" title="Скопировать результаты UX-теста в JSON">COPY JSON</button>
+      <span id="shareState" class="badge" aria-live="polite"></span>
+      <span id="midiState" class="badge" data-i18n="midi.waiting">MIDI: ждём</span>
+    </div>
+  </div>
+  <span id="live" class="sr-only" aria-live="polite"></span>
+</main>
+
+<footer>
+  <p><span data-i18n="footer.before">Это</span> <strong data-i18n="footer.strong">демо интерфейса и звука</strong><span data-i18n="footer.after">, а не прошивка: FM-движок упрощён, сэмплер/DAW схематичны. Реальный инструмент — ESP32-P4, RGB565 800×480, 16 энкодеров EC11, 42 клавиши Lapka-42, 2 фейдера, 10 джеков. UX-исследование и рубрика —</span>
+     <a href="https://github.com/martiyanov/bukifon/blob/main/docs/65-ux-patterns.md">docs/65</a>.</p>
+</footer>
+<script src="demo.js"></script>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Букифон (Bukifon) — открытый модульный синтезатор и сэмплер на 3D-печати</title>
+<meta name="description" content="Букифон — открытый настольный синтезатор и сэмплер: 42 клавиши Lapka-42, 16 энкодеров, экран 5″, 10 mini-jack, 2 фейдера, корпус 380×210×63 мм на 3D-принтере. Схемы KiCad, прошивка C++, открытые модули сообщества.">
+<meta name="keywords" content="Букифон, Bukifon, открытый синтезатор, open source synthesizer, сэмплер, sampler, 3D-печать, 3D printed, Lapka-42, Choc, RP2040, ESP32-P4, KiCad, MIDI, CV, модульный синтезатор, DIY synth, открытое железо">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Bukifon project">
+<link rel="canonical" href="https://bukifon.ru/">
+<link rel="alternate" hreflang="ru" href="https://bukifon.ru/">
+<link rel="alternate" hreflang="en" href="https://bukifon.ru/en/">
+<link rel="alternate" hreflang="x-default" href="https://bukifon.ru/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Букифон / Bukifon">
+<meta property="og:title" content="Букифон (Bukifon) — открытый синтезатор и сэмплер, 3D-печать">
+<meta property="og:description" content="Открытая платформа: сэмплер уровня Digitakt + синтезатор уровня Syntakt + пользовательские модули. 380×210×63 мм, 42 клавиши, 16 энкодеров, экран 5″, 10 mini-jack.">
+<meta property="og:url" content="https://bukifon.ru/">
+<meta property="og:image" content="https://bukifon.ru/assets/panel-ru.jpg">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Букифон (Bukifon) — открытый синтезатор и сэмплер">
+<meta name="twitter:description" content="42 клавиши Lapka-42, 16 энкодеров, экран 5″, 10 mini-jack, корпус 380×210×63 на 3D-принтере. Открытые схемы и прошивка.">
+<meta name="twitter:image" content="https://bukifon.ru/assets/panel-ru.jpg">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎛️</text></svg>">
+<style>
+:root{--bg:#141414;--card:#1d1d1d;--fg:#eaeaea;--mut:#9a9a9a;--acc:#e8b047;--acc2:#7fb3d5}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Arial,sans-serif}
+a{color:var(--acc2)}
+.wrap{max-width:1060px;margin:0 auto;padding:0 20px}
+header{padding:56px 0 28px;border-bottom:1px solid #2a2a2a}
+h1{font-size:clamp(30px,5vw,46px);margin:0 0 8px;letter-spacing:.5px}
+.sub{color:var(--mut);font-size:clamp(16px,2.2vw,20px);margin:0 0 18px}
+.badge{display:inline-block;background:#232323;border:1px solid #333;border-radius:999px;padding:3px 12px;font-size:13px;color:var(--mut);margin:0 8px 8px 0}
+nav a{margin-right:18px;text-decoration:none;font-weight:600}
+section{padding:38px 0;border-bottom:1px solid #232323}
+h2{font-size:clamp(22px,3.2vw,30px);margin:0 0 14px}
+h3{font-size:19px;margin:22px 0 6px}
+p,li{color:#d6d6d6}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.card{background:var(--card);border:1px solid #2c2c2c;border-radius:14px;padding:18px}
+.card h3{margin-top:0}
+img{max-width:100%;border-radius:12px;border:1px solid #2c2c2c}
+table{width:100%;border-collapse:collapse;margin:12px 0}
+th,td{border-bottom:1px solid #2c2c2c;padding:8px 10px;text-align:left;font-size:15px}
+th{color:var(--acc)}
+code{background:#242424;padding:2px 6px;border-radius:6px;font-size:14px}
+footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
+.cta{display:inline-block;background:var(--acc);color:#1a1a1a;font-weight:700;padding:12px 22px;border-radius:10px;text-decoration:none;margin:6px 10px 6px 0}
+.cta.alt{background:#2a2a2a;color:var(--fg);border:1px solid #3a3a3a}
+.small{font-size:14px;color:var(--mut)}
+
+@media (max-width:760px){
+  header{padding:10px 12px;flex-wrap:wrap;gap:8px}
+  nav{display:flex;flex-wrap:wrap;gap:6px 12px}
+  nav a{margin-right:0!important;font-size:14px}
+  h1{font-size:clamp(26px,9vw,44px)!important;line-height:1.05}
+  h2{font-size:clamp(20px,6vw,30px)!important}
+  .wrap,main,section{padding-left:12px!important;padding-right:12px!important}
+  .grid,.grid.three,.grid.four{grid-template-columns:1fr!important;display:grid!important}
+  img,.hero-img{max-width:100%!important;height:auto!important}
+  table{display:block;overflow-x:auto;white-space:normal}
+  pre,code{overflow-x:auto;max-width:100%}
+  .cta{display:block;text-align:center}
+  .badge{font-size:12px}
+}
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Букифон (Bukifon)",
+  "alternateName": "Bukifon",
+  "operatingSystem": "Bare metal / RP2040, ESP32-P4 (план)",
+  "applicationCategory": "MultimediaApplication",
+  "description": "Открытая платформа настольного синтезатора и сэмплера: 42 клавиши Lapka-42, 16 энкодеров, экран 5\", 10 mini-jack, 2 фейдера, корпус 380×210×63 мм на 3D-принтере; открытые схемы KiCad и прошивка C++, пользовательские модули.",
+  "url": "https://bukifon.ru/",
+  "image": "https://bukifon.ru/assets/panel-ru.jpg",
+  "license": "https://www.cern.ch/ohl",
+  "author": {"@type": "Organization", "name": "Bukifon project", "url": "https://github.com/martiyanov/bukifon"},
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+  "inLanguage": "ru"
+}
+</script>
+</head>
+<body>
+<header><div class="wrap">
+  <nav><a href="#about">О проекте</a><a href="#modes">Режимы</a><a href="#hardware">Железо</a><a href="#status">Статус</a><a href="#demo">Демо</a><a href="#design">Дизайн</a><a href="#build">Сборка</a><a href="#faq">FAQ</a><a href="#limitations">Ограничения</a><a href="#kit">Комплект</a><a href="#downloads">Скачать</a><a href="#cases">Корпуса</a><a href="#bench">Бенчмарк</a><a href="#modules">Модули</a><a href="#docs">Документы</a><a href="en/" hreflang="en">English</a></nav>
+  <h1>Букифон <span style="color:var(--mut);font-weight:400">/ Bukifon</span></h1>
+  <p class="sub">Открытый настольный <strong>синтезатор + сэмплер + платформа модулей</strong>. 3D-печатный корпус, открытые схемы KiCad, открытая прошивка C++.<br><strong>Народный инструмент:</strong> комплект от <strong>≤ $200</strong> (S3) до <strong>≤ $400</strong> (полный с P4 и картриджами).</p>
+  <span class="badge">v0.49.0</span><span class="badge">CERN-OHL-S-2.0</span><span class="badge">GPL-3.0-or-later</span><span class="badge">клин 8° · 380×210×61.5</span><span class="badge">Wi-Fi + BT</span><span class="badge">USB HID + MIDI + UAC2</span>
+  <p style="margin-top:20px">
+    <a class="cta" href="https://github.com/martiyanov/bukifon">GitHub</a>
+    <a class="cta alt" href="https://github.com/martiyanov/bukifon/blob/main/docs/12-roadmap.md">Дорожная карта</a>
+    <a class="cta alt" href="https://github.com/martiyanov/bukifon/blob/main/renders/templates/bukifon_v04_panel_1to1.pdf">Шаблон панели 1:1 (PDF)</a>
+  </p>
+</div></header>
+
+<main class="wrap">
+<section id="about">
+  <h2>О проекте</h2>
+  <p><strong>Народный синтезатор</strong> — не лозунг, а требование к конструкции: один BOM, один набор STL, печатные шаблоны 1:1 и версии по SemVer, чтобы любой мастер или кружок мог собрать такой же инструмент. Открытые схемы, прошивка и геометрия — без заложников и облаков.</p>
+  <p><strong>Букифон</strong> — это музыкальный инструмент-платформа, который собирается из доступных
+  компонентов и печатается на обычном 3D-принтере. Идея в том, чтобы в одном корпусе совместить три
+  мира: <strong>сэмплер</strong> в духе Elektron Digitakt, <strong>синтезатор</strong> в духе Elektron
+  Syntakt и <strong>открытую платформу</strong>, для которой любой может писать свои модули —
+  программные (C++/Lua) и аналоговые (картриджи на шине).</p>
+  <p>Проект полностью открыт: схемы в KiCad, прошивка на C++, параметрическая механика (STL/3MF),
+  документация и правила версионирования. Название — от «буки» (вторая буква кириллицы) и греч.
+  <em>φωνή</em> — «звук букв», «голос знаков».</p>
+  <div class="grid">
+    <div class="card"><h3>Эргономика</h3><p>Две половины клавиатуры Lapka-42 развёрнуты наружу (±18°), тамбы смотрят к центру, между ними — два 60-мм фейдера. Руки лежат как на пульте, а не на ноутбуке.</p></div>
+    <div class="card"><h3>Звук</h3><p>4 части, 8 голосов, 4-операторный FM, wavetable, ZDF-фильтры, лестница Муга (AS3320), характер Поливокса, 3D-мод-матрица на 16 слотов.</p></div>
+    <div class="card"><h3>Секвенсор</h3><p>Воркфлоу Elektron: p-locks, условия триггеров, микротайминг, звуковые локи, макросы и ctrl-all.</p></div>
+    <div class="card"><h3>RF/дисплей</h3><p>ESP32-P4 + ESP32-C6: Wi-Fi 6/BLE 5.3, RGB565/DSI 800×480, 32 МБ PSRAM, USB HS.</p></div><div class="card"><h3>Клавиатура и DAW</h3><p>Работает как USB-клавиатура: 42 клавиши Lapka-42 как печатная раскладка со слоями, 16 энкодеров как CC-контроллеры, transport. Плюс BLE-MIDI и BLE HID.</p></div><div class="card"><h3>Модули</h3><p>Шина 26-pin для аналоговых картриджей (VCO, фильтры, PT2399), программные модули через SDK и сменные деки ввода: 18 пэдов или 42 клавиши.</p></div>
+  </div>
+</section>
+
+<section id="modes">
+  <h2>Три режима в одном корпусе</h2>
+  <table>
+    <tr><th>Режим</th><th>Что делает</th></tr>
+    <tr><td><strong>Sampler</strong></td><td>8 дорожек (моно/стерео — по итогам бенчмарка), запись и импорт по USB-C/SD, срезы, гранулярность, insert-FX, p-locks. Класс Digitakt.</td></tr>
+    <tr><td><strong>Synth</strong></td><td>8-голосный FM/wavetable, ZDF-фильтры, аналоговые модули на шине. Класс Syntakt.</td></tr>
+    <tr><td><strong>Hybrid</strong></td><td>Сэмплы как источники синтеза; общий секвенсор и мод-матрица для всех режимов.</td></tr>
+  </table>
+</section>
+
+<section id="hardware">
+  <h2>Железо</h2>
+  <p><strong>Корпус v0.5-B — клин 8°:</strong> передняя кромка 32 мм, задняя 61.5 мм, перепад 29.5 мм, фаска R4, экран 35° к панели. Печать без поддержек: 279 г / 18.3 ч. Проверено картонным профилем 1:1.</p>
+  <p><img src="assets/panel-ru.jpg" alt="Панель Букифона 380×210 мм: 42 клавиши Lapka-42, 16 энкодеров, экран 5 дюймов, 10 mini-jack, два фейдера" loading="lazy"></p>
+  <table>
+    <tr><th>Параметр</th><th>Значение</th></tr>
+    <tr><td>Корпус</td><td>v0.5-B: 380 × 210 × 61.5 мм, клин <strong>8°</strong> (перед 32 / зад 61.5), PETG, без поддержек; панель режется 193 + 190 мм с шипом</td></tr>
+    <tr><td>Клавиатура</td><td>2 × 21 = 42 клавиши Lapka-42, Choc 18 × 17 мм, половины ±18°</td></tr>
+    <tr><td>Энкодеры</td><td>16 × Ø14 мм, два блока 4 × 2</td></tr>
+    <tr><td>Экран</td><td>5.0″ 800×480, вырез 108 × 64.8 мм, без рамки</td></tr>
+    <tr><td>Разъёмы</td><td>10 × mini-jack 3.5 мм сверху, USB-C, MIDI TRS, CV/Gate</td></tr>
+    <tr><td>Аудио</td><td>PCM5102A ЦАП + PCM1808 АЦП (вход для сэмплирования)</td></tr>
+    <tr><td>Питание</td><td>аккумулятор 1S2P 18650 / LiPo, заряд по USB-C</td></tr>
+    <tr><td>Питание</td><td>PWR-2: 1S2P + BMS + MAX17048; +12 В 330 мА, −12 В 95 мА для шины модулей, +5 В 1.6 А; питание от BQ24074 OUT/VSYS</td></tr>
+    <tr><td>MCU</td><td>ESP32-S3 (народная версия, Wi-Fi/BT нативно) или ESP32-P4 + ESP32-C6 (Wi-Fi 6/BLE 5.3)</td></tr><tr><td>USB</td><td>композит на одном USB-C: HID-клавиатура + MIDI + UAC2 + CDC</td></tr>
+  </table>
+  <p><img src="assets/case-iso.jpg" alt="3D-модель корпуса Букифона: 16 ручек, экран, фейдеры, две половины клавиатуры" loading="lazy"></p>
+  <p><img src="assets/case-wedge8.jpg" alt="Корпус v0.5-B: клин 8 градусов, 16 ручек, две половины Lapka-42" loading="lazy"></p>
+  <p><img src="assets/profile8.jpg" alt="Боковой профиль корпуса: перед 32 мм, зад 61.5 мм, скос 8 градусов, фаска R4" loading="lazy"></p>
+</section>
+
+<section id="status">
+  <h2>Статус (v0.57.0)</h2>
+  <ul>
+    <li>✅ <strong>Сайт и демо</strong>: <a href="https://bukifon.ru/">bukifon.ru</a> (RU/EN), <a href="demo/?lang=en">/demo/</a> — работает с телефона, MIDI/микрофон в браузере;</li>
+    <li>✅ <strong>прошивка</strong>: <strong>407/407 тестов</strong>, 7 вкладок, 12 треков (4+8 MIDI), GEN, project v2, <strong>factory self-test 21</strong>, Module SDK v0.2, UI RU/EN с кириллицей;</li>
+    <li>✅ <strong>P4</strong>: ESP-IDF v5.5 собирает <code>bukifon_p4.bin</code> <strong>369 552 Б</strong> (factory 1 МиБ, 65 % свободно), partitions/NVS, bring-up app;</li>
+    <li>✅ <strong>платы rev.3</strong> (PRE-FREEZE): CORE-2 ERC 0/0, PANEL-2 0/6w, PWR-2 0/0; микрофон — datasheet-сверка (4 расхождения исправлены);</li>
+    <li>✅ <strong>PCB rev.1</strong>: 4 каркаса KiCad (CORE-2 200×108 6L, PANEL-2 2×180×190 4L, PWR-2 90×70 2oz), нетлист/футпринты, <strong>DRC 0/0</strong>, fab dry-run <strong>PASS</strong>; трассировка — после PWR 13/13 и MCU freeze;</li>
+    <li>✅ <strong>корпуса</strong>: A 301 г, B 275.5, <strong>B-light 228.9 г / 11.0 ч</strong>, C 313.2; 11 задних вырезов (MIDI TRS, DC, EXP, mic, LINE, PHONES, AUDIO IN, CV5/6), SD, USB-C; paperkit 1:1;</li>
+    <li>✅ <strong>BOM/COGS</strong> rev.3: <strong>$241/$215/$196</strong> (1/10/25), P4 Standard $299, Full Bundle $399; к заказу ≈<strong>$800</strong> (P1+PWR+LCD+печать);</li>
+    <li>⏳ <strong>Осталось</strong>: заказ стендов/печать/репо; затем PWR 13/13 → P1 → MCU freeze → трассировка → PCB rev.1 → 3–5 прототипов → RC DoD + UX-тест 5 людей.</li>
+  </ul>
+  <p><img src="assets/compare.jpg" alt="Сравнение концепта и раскладки v0.4" loading="lazy"></p>
+</section>
+
+<section id="demo">
+  <h2>Попробуйте интерфейс в браузере</h2>
+  <a href="demo/" class="hero-link"><img src="assets/web-demo.jpg" alt="Веб-демо Букифона: секвенсор, 16 энкодеров, 42 клавиши" class="hero-img" loading="lazy"></a>
+  <p><strong>Интерактивное демо — панель как у реального синтезатора:</strong> 10 джеков сверху, 16 энкодеров (4×2 слева А–З, 4×2 справа И–П) вокруг экрана 800×480, два кластера клавиш 3×7 под ∓18°, 2 фейдера между ними; 4 партии × 16 шагов, GEN-страница, FM-звук и Web MIDI. Это модель UI/UX, а не прошивка.</p>
+  <p><a class="cta" href="demo/">Открыть демо →</a> <a class="cta" href="demo/?test=1">Пройти UX-тест (8 задач) →</a></p>
+  <p style="color:#6f969b;font-size:12px">Философия и «зеркальная карта» ручка↔ячейка — <a href="https://github.com/martiyanov/bukifon/blob/main/docs/68-interface-philosophy.md">docs/68</a>; читаемость на 5″ 800×480 — <a href="https://github.com/martiyanov/bukifon/blob/main/docs/69-screen-legibility.md">docs/69</a>. Внешнее ревью: <strong>8,5/10</strong>; топология панели совпадает (<a href="https://github.com/martiyanov/bukifon/blob/main/docs/67-panel-demo-layout.md">docs/67</a>).</p>
+  <p style="color:#6f969b;font-size:12px">В демо: страницы MAIN/FM/ENV/FX/GEN, макросы выбранных партий, фейдеры TRACK/SCENE/DJ + Shift, REC-ресемплинг, пресеты/COMPARE, 4 темы, share паттерна.</p>
+</section>
+
+<section id="limitations">
+  <h2>Честные ограничения</h2>
+  <p>Что инструмент <strong>не</strong> делает в v1.0-rc — до покупки, а не после:
+     S3-lite — SPI-экран (10–20 fps partial) и стерео USB вместо 8×8; лупер и вокодер — v1.1;
+     микрофон — для идей/битбокса/вокодера, не студийный вокал; батарея — опция, не в первой партии;
+     p-lock CC — только внешние MIDI-треки (1 CC на шаг); Module API v0 — экспериментальный.
+     Полный список — <a href="https://github.com/martiyanov/bukifon/blob/main/docs/76-known-limitations.md">docs/76</a>.</p>
+</section>
+
+<section id="faq">
+  <h2>FAQ</h2>
+  <div class="grid three">
+    <div class="card"><h3>Сколько стоит?</h3><p>Цель: P4 Standard <strong>$299</strong> (Full $399), S3-lite $199. Пока не продаётся — ждём PWR 13/13, P1 и PCB rev.1 (docs/75).</p></div>
+    <div class="card"><h3>Можно собрать самому?</h3><p>Да: KiCad + C++ + STL + paperkit 1:1. Корпус B-light 228.9 г / 11.0 ч; мастерские — docs/72.</p></div>
+    <div class="card"><h3>Микрофон?</h3><p>Запись голоса → пэд, битбокс → шаги; вокодер v1.1. Аппаратный mute + LED.</p></div>
+    <div class="card"><h3>P4 или S3?</h3><p>P4 — RGB565/USB HS 8×8; S3-lite — SPI-экран и стерео USB. Решение после P1 (docs/56).</p></div>
+    <div class="card"><h3>Чем лучше Digitakt/Move?</h3><p>42 клавиши, 16 энкодеров, CV/GATE, микрофон, открытые схемы/прошивка/STL за $299 (docs/79).</p></div>
+    <div class="card"><h3>Как помочь?</h3><p>Пройти UX-тест (demo/?test=1), собрать по paperkit, предложить модуль, помочь с BOM/поставками.</p></div>
+  </div>
+  <p><a class="cta" href="https://github.com/martiyanov/bukifon/blob/main/docs/81-faq.md">Полный FAQ (RU)</a> <a class="cta" href="https://github.com/martiyanov/bukifon/tree/main/docs/press">Пресс-кит</a></p>
+</section>
+
+<section id="build">
+  <h2>Где собрать в России</h2>
+  <p>Платы и корпус можно заказать в локальных мастерских — гид с адресами, RFQ-шаблоном и
+     ориентирами цен: <a href="https://github.com/martiyanov/bukifon/blob/main/docs/72-assembly-workshops.md">docs/72</a>.</p>
+  <div class="grid three">
+    <div class="card"><h3>Москва</h3><p>Резонит (Зеленоград, прототипы 2–3 дня), А-Контракт, Интер-Плата (5–500 плат), НПП «Асти» (полный цикл), Пилот МосПолитеха, <strong>VG-Line</strong> (сборка музыкального оборудования), Фаблаб Сколтеха; печать — Modelica3D/ПИМТЕХ.</p></div>
+    <div class="card"><h3>Санкт-Петербург</h3><p>Резонит СПб (2–3 дня), AXIOMA, Эрикон (2 SMT-линии), Фаблаб Политех, центр ЛЭТИ.</p></div>
+    <div class="card"><h3>Нижний Новгород</h3><p>Телерем (SMD/BGA, сборка приборов, настройка), НПО «Промышленные решения» (платы + монтаж). Фаблаба нет — единичные прототипы через вузы или Москву/СПб.</p></div>
+  </div>
+</section>
+
+<section id="design">
+  <h2>Дизайн: концепты панели и темы экрана</h2>
+  <p>Панель одна и та же — меняются материалы, цвет и тема экрана. Ниже — концепты внешнего вида
+     и 4 зафиксированные темы экрана 800×480 (палитра — <a href="https://github.com/martiyanov/bukifon/blob/main/docs/62-screen-palette.md">docs/62</a>).</p>
+  <div class="grid three">
+    <div class="card"><img src="assets/design-panel-1.jpg" alt="Концепт панели: светлая, красные акценты" loading="lazy"><h3>Concept A · light</h3><p>Светлая панель, красные акценты, тёмные ручки.</p></div>
+    <div class="card"><img src="assets/design-panel-2.jpg" alt="Концепт панели: бежевая с янтарным экраном" loading="lazy"><h3>Concept B · beige</h3><p>Бежевая панель, янтарный экран, тёплый характер.</p></div>
+    <div class="card"><img src="assets/design-panel-3.jpg" alt="Концепт панели: тёмная с зелёным экраном" loading="lazy"><h3>Concept C · dark</h3><p>Тёмная панель, фосфорный зелёный экран.</p></div>
+  </div>
+  <h3 style="margin-top:22px">Темы экрана 800×480 (одинаковые в демо и на железе)</h3>
+  <div class="grid four">
+    <div class="card"><img src="assets/ui-theme-night.jpg" alt="Тема Night" loading="lazy"><h3>Night</h3></div>
+    <div class="card"><img src="assets/ui-theme-amber.jpg" alt="Тема Amber" loading="lazy"><h3>Amber</h3></div>
+    <div class="card"><img src="assets/ui-theme-green.jpg" alt="Тема Phosphor" loading="lazy"><h3>Phosphor</h3></div>
+    <div class="card"><img src="assets/ui-theme-cream.jpg" alt="Тема Cream" loading="lazy"><h3>Cream</h3></div>
+  </div>
+  <p><a class="cta" href="demo/">Попробовать темы в демо →</a></p>
+</section>
+
+<section id="downloads">
+  <h2>Скачать</h2>
+  <div class="grid three">
+    <div class="card"><h3>Корпус B-light</h3><p>STL/3MF/STEP, 228.9 г / 11.0 ч. Также A, B, C, B_mic/C_mic.</p><a class="cta" href="https://github.com/martiyanov/bukifon/tree/main/mechanical/stl_v05_B_light">STL/3MF →</a></div>
+    <div class="card"><h3>Панель 1:1</h3><p>A3 1:1 или 4×A4 с перекрытием (83 выреза, Lapka-42).</p><a class="cta" href="https://github.com/martiyanov/bukifon/blob/main/renders/templates/bukifon_v04_panel_1to1.pdf">PDF →</a></div>
+    <div class="card"><h3>BOM и прошивка</h3><p>BOM-p4.csv, схема/платы, исходники прошивки и SDK.</p><a class="cta" href="https://github.com/martiyanov/bukifon/blob/main/BOM-p4.csv">BOM →</a> <a class="cta" href="https://github.com/martiyanov/bukifon/tree/main/firmware">Прошивка →</a></div>
+  </div>
+  <p>Быстрый старт — <a href="https://github.com/martiyanov/bukifon/blob/main/docs/77-quick-start.md">docs/77</a>; отчёт — <a href="https://github.com/martiyanov/bukifon/blob/main/docs/90-final-report.md">docs/90</a>; ограничения — <a href="https://github.com/martiyanov/bukifon/blob/main/docs/76-known-limitations.md">docs/76</a>.</p>
+</section>
+<section id="cases">
+  <h2>Варианты корпуса</h2>
+  <img src="assets/case-profiles.jpg" alt="Профили корпусов 0°, 8°, 12°" class="hero-img" loading="lazy">
+  <div class="grid two"><img src="assets/side-profile-panel.jpg" alt="Боковой профиль: PANEL-2 параллельна панели" loading="lazy"><img src="assets/rear-ports.jpg" alt="Задняя стенка: MIDI TRS, DC, аудио, CV" loading="lazy"></div>
+  <p><strong>PANEL-2 параллельна верхней панели</strong> (0.00°, зазор 12 мм): оси энкодеров/клавиш перпендикулярны панели, на любом наклоне ручки одинаковы. Одна панель v0.4 (380×210, 42 клавиши Lapka-42 по upstream-геометрии, 16 энкодеров) в четырёх корпусах:
+     <strong>A</strong> — плоский 301 г (студия/стол), <strong>B</strong> — клин 8° 275.5 г,
+     <strong>B-light</strong> — 228.9 г / 11.0 ч (народная версия), <strong>C</strong> — 12° 313.2 г
+     с закрытым отсеком 1S2P, складной подставкой и кабельным каналом. Fitcheck — 0 конфликтов.</p>
+  <p><a href="https://github.com/martiyanov/bukifon/blob/main/docs/50-downloads.md">скачать STL/PDF/BOM</a> · <a href="https://github.com/martiyanov/bukifon/blob/main/docs/45-case-variants.md">docs/45-case-variants</a> · <a href="https://github.com/martiyanov/bukifon/blob/main/renders/templates/bukifon_assembly_map_1to1.pdf">сборочная карта</a></p>
+</section>
+
+<section id="modes-showcase">
+  <h2>Четыре режима — один инструмент</h2>
+  <div class="grid">
+    <div class="card"><img src="assets/ui-synth.jpg" alt="Экран Synth: FM-параметры" loading="lazy"><h3>Synth</h3><p>FM/wavetable: cutoff, resonance, ADSR — 16 энкодеров под рукой.</p></div>
+    <div class="card"><img src="assets/ui-sampler.jpg" alt="Экран Sampler: гранулы" loading="lazy"><h3>Sampler</h3><p>Гранулы, start/end, 8 дорожек; сэмплы с SD.</p></div>
+    <div class="card"><img src="assets/ui-daw.jpg" alt="Экран DAW: CC-банки" loading="lazy"><h3>DAW</h3><p>16 энкодеров как CC-контроллеры, банки, транспорт.</p></div>
+    <div class="card"><img src="assets/ui-usb_kbd.jpg" alt="Экран USB-клавиатуры" loading="lazy"><h3>USB-клавиатура</h3><p>HID-раскладка со слоями; 42 клавиши как печатная клавиатура.</p></div>
+  </div>
+</section>
+
+<section id="kit">
+  <h2>Комплекты: <strong>P4 Standard $299</strong> · Full Bundle $399</h2>
+  <p>«Народность» — это не урезание органов управления, а честный product BOM и закупка. В kit входят CORE-S3, PANEL-2, упрощённый PWR-2, дисплей 5″, корпус и крепёж, 42 клавиши Choc с hot-swap, 16 энкодеров, 2 фейдера, 10 джеков, CV/GATE, печатные ручки и базовые колпачки. Опции: картриджи, microSD, БП, аккумуляторный pack, премиальные колпачки.</p>
+  <p>Корпус печатается за 11.0 ч / 228.9 г. Экран в S3-версии — SPI (10–20 fps partial); RGB565/DSI — в P4-версии. Партия 10–25, direct-sale, статус limited DIY/beta. P4-стандарт ($299) — после P1-бенчмарка; full ($399) — bundle с картриджами. Подробный разбор — <a href="https://github.com/martiyanov/bukifon/blob/main/docs/27-costdown.md">docs/27-costdown</a>.</p>
+  <p><a href="https://github.com/martiyanov/bukifon/blob/main/docs/26-p1-bench-kit.md">P1-стенд</a> ·
+     <a href="https://github.com/martiyanov/bukifon/blob/main/docs/28-paper-kit.md">бумажный макет 1:1</a> ·
+     <a href="https://github.com/martiyanov/bukifon/raw/main/renders/templates/bukifon_paperkit_1to1.pdf">paperkit PDF</a></p>
+</section>
+
+<section id="bench">
+  <h2>Бенчмарк (P1)</h2>
+  <p>Workload заморожен и измеряется переносимым харнессом: 8 голосов 4-оп FM + 8 granular-дорожек, PSRAM-поток, UI 800×480, USB UAC2 8×8. Критерий — <strong>max block ≤ 650 µs</strong> при дедлайне 1.333 мс и 24-часовой soak.</p>
+  <p>Host-прогон: worst audio <strong>218 µs</strong> (16.4 % дедлайна), все 7 сценариев PASS, 0 аллокаций в audio-path. Дальше — те же сценарии на ESP32-P4 и STM32H743 (devkit): только они дают вердикт по MCU.</p>
+  <p><a href="https://github.com/martiyanov/bukifon/blob/main/docs/05-benchmark-workload.md">Workload freeze</a> ·
+     <a href="https://github.com/martiyanov/bukifon/blob/main/docs/05a-benchmark-howto.md">How to run</a> ·
+     <a href="https://github.com/martiyanov/bukifon/tree/main/firmware/bench">firmware/bench</a></p>
+</section>
+
+<section id="modules">
+  <h2>Модули и SDK</h2>
+  <p>Букифон — платформа: свои модули может писать каждый. Три вида расширений:</p>
+  <div class="grid">
+    <div class="card"><h3>Audio-rate (C++)</h3><p>Генераторы, эффекты, фильтры внутри аудио-колбэка. Module API v0: 10 функций, лимиты стека/состояния/времени, WCET-бюджет и автоматический bypass при перегрузке.</p></div>
+    <div class="card"><h3>Control-rate (Lua)</h3><p>Модуляторы, макросы, секвенсорные логики — безопасно, с лимитом инструкций и памяти.</p></div>
+    <div class="card"><h3>Аналоговый картридж</h3><p>VCO AS3340, фильтры LM13700/AS3320, PT2399 — на шине 26-pin, печатаемый корпус.</p></div>
+  </div>
+  <p><a href="https://github.com/martiyanov/bukifon/blob/main/docs/24-module-sdk.md">SDK: Module API v0</a> ·
+     <a href="https://github.com/martiyanov/bukifon/tree/main/modules">каталог модулей</a> ·
+     <a href="https://github.com/martiyanov/bukifon/blob/main/tools/validate_module.py">валидатор</a> ·
+     примеры: <code>gain_fx</code> (C++), <code>lfo_module</code> (Lua)</p>
+</section>
+
+<section id="docs">
+  <h2>Документы и файлы</h2>
+  <ul>
+        <li>✅ <strong>P4 bring-up app</strong>: I2C 8/8, RGB565-паттерны, engine bench, MEMS — сборка 330 КБ, 0 warnings (IDF 5.5);</li>
+<li>✅ <strong>микрофон реализован</strong>: PANEL-2 rev.3 (ICS-43434, порт/сетка, mute+LED), CORE-2 rev.3 (I2S1, 3.5 мм jack + MAX9814), прошивка — запись голоса, битбокс, UI MIC, <strong>311/311 тестов</strong>;</li>
+    <li>✅ <strong>голос как вход</strong>: микрофон (I2S MEMS + 3.5 мм), mute+LED, запись голоса→пэд, битбокс→шаги; вокодер — v1.1 (docs/71);</li>
+    <li>✅ <strong>внешний секвенсор</strong>: 8 MIDI-треков (CH/PC/vel/len, p-lock CC), clock in/out, GEN на внешних — прошивка и демо (docs/70);</li>
+    <li><a href="https://github.com/martiyanov/bukifon/blob/main/spec/90-requirements-registry.md">Реестр требований</a> — единственный источник истины;</li>
+    <li><a href="https://github.com/martiyanov/bukifon/blob/main/docs/12-roadmap.md">Дорожная карта P0–P8</a> с числовыми критериями;</li>
+    <li><a href="https://github.com/martiyanov/bukifon/blob/main/docs/11-esp32-feasibility.md">Можно ли на ESP32</a> — расчёт и сравнение платформ;</li>
+    <li><a href="https://github.com/martiyanov/bukifon/blob/main/docs/04-consultation-gpt.md">Консультация GPT</a> и <a href="https://github.com/martiyanov/bukifon/blob/main/docs/03-second-opinion-mcu.md">независимое ревью</a>;</li>
+    <li><a href="https://github.com/martiyanov/bukifon/blob/main/spec/panel-spec-v0.4.json">Машиночитаемая спека панели (JSON)</a>;</li>
+    <li><a href="https://github.com/martiyanov/bukifon/blob/main/renders/templates/bukifon_v04_panel_1to1.pdf">Шаблон панели 1:1 (PDF, A3 или 4×A4)</a>;</li>
+    <li><a href="https://github.com/martiyanov/bukifon/blob/main/mechanical/stl_v04/">STL/3MF корпуса</a>.</li>
+  </ul>
+</section>
+</main>
+
+<footer><div class="wrap">
+  <p>Букифон / Bukifon — открытый проект. Аппаратура и механика: CERN-OHL-S-2.0; прошивка: GPL-3.0-or-later; документация: CC BY-SA 4.0. Атрибуция клавиатуры Lapka-42 — braindefender/lapka-42.</p>
+  <p class="small">Сайт: <a href="https://bukifon.ru/">martiyanov.github.io/bukifon</a> · <a href="en/" hreflang="en">English version</a></p>
+</div></footer>
+</body>
+</html>

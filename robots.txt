@@ -1,0 +1,30 @@
+# Букифон / Bukifon — https://bukifon.ru/
+User-agent: *
+Allow: /
+
+# Поисковые и AI-краулеры (проект открытый, индексируйте на здоровье)
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+Sitemap: https://bukifon.ru/sitemap.xml
