@@ -1,4 +1,11 @@
-# PANEL-2 rev.1 — PCB scaffolds left/right (PRE-FREEZE)
+# PANEL-2 rev.1
+
+## Раскладка клавиш (исправлено 06.11.2025)
+
+Клавиши размещены **по spec/panel-spec-v0.4.json** (точная геометрия Lapka-42,
+upstream `braindefender/lapka-42`): левая плата — `KEY_L01…L21`, правая — `KEY_R01…R21`,
+координаты/углы из `controls.keyboard_left/right`. Ранее refs делились по номеру без L/R —
+клавиши накладывались; исправлено, DRC 0/0. Превью — `docs/assets/panel-lapka-*.png`. — PCB scaffolds left/right (PRE-FREEZE)
 
 > **Не заказывать PCB.** Каркасы двух плат 180×190 из `mechanical/board-fit/`: контур с
 > вырезами джеков, крепёж, keepout-зоны, стек 4 слоя. Нет посадочных мест/связей/меди.
@@ -63,3 +70,10 @@
   `rule_severities` ignore.
 - **GND-полигоны (план):** GND-заливка на F.Cu/B.Cu; аналоговое поле J14 — AGND-полигон,
   звезда; LED-цепочка — отдельный возврат к J13; экран/клавиши — без меди под FPC.
+
+## Двусторонняя попытка (2026-11-06)
+
+`rev1/two-sided/` — копии с реальными футпринтами на top+bottom и GND-зонами
+(`build_two_sided.py`). DRC **FAIL** (упаковка courtyard/зазоры, zones_intersect) — в основную
+версию **не промоутнуто**; main остаётся DRC 0/0 (328 упрощённых падов). Нужен floorplanner
+после MCU freeze. Детали — docs/82 §13.

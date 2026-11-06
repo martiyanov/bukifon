@@ -1,5 +1,5 @@
 ** Drc report for PANEL-2-left-rev1.kicad_pcb **
-** Created on 2026-11-06T14:33:00 **
+** Created on 2026-11-06T14:43:06 **
 ** Report includes: Errors, Warnings, Exclusions **
 
 ** Found 0 DRC violations **
@@ -167,52 +167,52 @@
     @(126.0000 mm, 97.5000 mm): Конт. пл. 2 [ENC15_A] от R77 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(7.9100 mm, 62.9400 mm): Конт. пл. 1 [ROW4] от KEY_R08 на F.Cu
-    @(67.1900 mm, 73.3100 mm): Конт. пл. 1 [ROW4] от KEY_R03 на F.Cu
+    @(7.9155 mm, 62.7307 mm): Конт. пл. 1 [ROW4] от KEY_L16 на F.Cu
+    @(67.2925 mm, 72.4102 mm): Конт. пл. 1 [ROW4] от KEY_L05 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
     @(35.0000 mm, 11.5000 mm): Конт. пл. 4 [ROW4] от U4 на F.Cu
-    @(7.9100 mm, 62.9400 mm): Конт. пл. 1 [ROW4] от KEY_R08 на F.Cu
+    @(7.9155 mm, 62.7307 mm): Конт. пл. 1 [ROW4] от KEY_L16 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(71.0100 mm, 89.8800 mm): Конт. пл. 1 [ROW4] от KEY_R01 на F.Cu
-    @(67.1900 mm, 73.3100 mm): Конт. пл. 1 [ROW4] от KEY_R03 на F.Cu
+    @(67.2925 mm, 72.4102 mm): Конт. пл. 1 [ROW4] от KEY_L05 на F.Cu
+    @(90.5658 mm, 78.0939 mm): Конт. пл. 1 [ROW4] от KEY_L02 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(102.2400 mm, 57.6000 mm): Конт. пл. 1 [ROW4] от KEY_R04 на F.Cu
-    @(67.1900 mm, 73.3100 mm): Конт. пл. 1 [ROW4] от KEY_R03 на F.Cu
+    @(90.5658 mm, 78.0939 mm): Конт. пл. 1 [ROW4] от KEY_L02 на F.Cu
+    @(107.6858 mm, 72.5339 mm): Конт. пл. 1 [ROW4] от KEY_L03 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(102.2400 mm, 57.6000 mm): Конт. пл. 1 [ROW4] от KEY_R04 на F.Cu
-    @(99.8000 mm, 16.6500 mm): Конт. пл. 1 [ROW4] от KEY_R10 на F.Cu
+    @(100.2682 mm, 14.7721 mm): Конт. пл. 1 [ROW4] от KEY_L20 на F.Cu
+    @(102.4358 mm, 56.3639 mm): Конт. пл. 1 [ROW4] от KEY_L07 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(107.4900 mm, 73.7700 mm): Конт. пл. 1 [ROW4] от KEY_R02 на F.Cu
-    @(102.2400 mm, 57.6000 mm): Конт. пл. 1 [ROW4] от KEY_R04 на F.Cu
+    @(107.6858 mm, 72.5339 mm): Конт. пл. 1 [ROW4] от KEY_L03 на F.Cu
+    @(102.4358 mm, 56.3639 mm): Конт. пл. 1 [ROW4] от KEY_L07 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(26.7800 mm, 78.9700 mm): Конт. пл. 1 [ROW1] от KEY_L04 на F.Cu
-    @(48.9900 mm, 88.8700 mm): Конт. пл. 1 [ROW1] от KEY_L02 на F.Cu
+    @(26.7855 mm, 78.7607 mm): Конт. пл. 1 [ROW1] от KEY_L08 на F.Cu
+    @(49.0289 mm, 88.3133 mm): Конт. пл. 1 [ROW1] от KEY_L04 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
     @(32.0000 mm, 11.5000 mm): Конт. пл. 1 [ROW1] от U4 на F.Cu
-    @(7.0200 mm, 45.9600 mm): Конт. пл. 1 [ROW1] от KEY_L10 на F.Cu
+    @(7.0255 mm, 45.7507 mm): Конт. пл. 1 [ROW1] от KEY_L19 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(44.2600 mm, 55.2100 mm): Конт. пл. 1 [ROW1] от KEY_L08 на F.Cu
-    @(26.7800 mm, 78.9700 mm): Конт. пл. 1 [ROW1] от KEY_L04 на F.Cu
+    @(44.2989 mm, 54.6533 mm): Конт. пл. 1 [ROW1] от KEY_L15 на F.Cu
+    @(26.7855 mm, 78.7607 mm): Конт. пл. 1 [ROW1] от KEY_L08 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(44.2600 mm, 55.2100 mm): Конт. пл. 1 [ROW1] от KEY_L08 на F.Cu
-    @(7.0200 mm, 45.9600 mm): Конт. пл. 1 [ROW1] от KEY_L10 на F.Cu
+    @(44.2989 mm, 54.6533 mm): Конт. пл. 1 [ROW1] от KEY_L15 на F.Cu
+    @(7.0255 mm, 45.7507 mm): Конт. пл. 1 [ROW1] от KEY_L19 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(44.2600 mm, 55.2100 mm): Конт. пл. 1 [ROW1] от KEY_L08 на F.Cu
-    @(85.1200 mm, 63.1600 mm): Конт. пл. 1 [ROW1] от KEY_L03 на F.Cu
+    @(49.0289 mm, 88.3133 mm): Конт. пл. 1 [ROW1] от KEY_L04 на F.Cu
+    @(71.1125 mm, 88.9802 mm): Конт. пл. 1 [ROW1] от KEY_L01 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(90.3700 mm, 79.3300 mm): Конт. пл. 1 [ROW1] от KEY_L01 на F.Cu
-    @(85.1200 mm, 63.1600 mm): Конт. пл. 1 [ROW1] от KEY_L03 на F.Cu
+    @(71.1125 mm, 88.9802 mm): Конт. пл. 1 [ROW1] от KEY_L01 на F.Cu
+    @(85.3158 mm, 61.9239 mm): Конт. пл. 1 [ROW1] от KEY_L06 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
     @(125.0000 mm, 27.5000 mm): Конт. пл. 1 [COL2] от D14 на F.Cu
@@ -243,7 +243,7 @@
     @(153.0000 mm, 48.5000 mm): Конт. пл. 1 [COL6] от D7 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(104.9800 mm, 41.4300 mm): Конт. пл. 2 [K_L07_N] от KEY_L07 на F.Cu
+    @(104.7842 mm, 42.6661 mm): Конт. пл. 2 [K_L07_N] от KEY_L13 на F.Cu
     @(154.0000 mm, 48.5000 mm): Конт. пл. 2 [K_L07_N] от D7 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
@@ -839,20 +839,20 @@
     @(23.0000 mm, 13.5000 mm): Конт. пл. 18 [GNDA] от J14 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(119.0000 mm, 97.5000 mm): Конт. пл. 2 [GNDA] от C43 на F.Cu
     @(112.0000 mm, 104.5000 mm): Конт. пл. 2 [GNDA] от C53 на F.Cu
+    @(119.0000 mm, 97.5000 mm): Конт. пл. 2 [GNDA] от C43 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
     @(119.0000 mm, 97.5000 mm): Конт. пл. 2 [GNDA] от C43 на F.Cu
     @(140.0000 mm, 90.5000 mm): Конт. пл. 2 [GNDA] от C49 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(119.4000 mm, 178.0000 mm): Конт. пл. S [GNDA] от J01 на F.Cu
-    @(132.5000 mm, 178.0000 mm): Конт. пл. S [GNDA] от J02 на F.Cu
+    @(119.4000 mm, 189.5000 mm): Конт. пл. S [GNDA] от J01 на F.Cu
+    @(132.5000 mm, 189.5000 mm): Конт. пл. S [GNDA] от J02 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(132.5000 mm, 178.0000 mm): Конт. пл. S [GNDA] от J02 на F.Cu
-    @(145.6000 mm, 178.0000 mm): Конт. пл. S [GNDA] от J03 на F.Cu
+    @(132.5000 mm, 189.5000 mm): Конт. пл. S [GNDA] от J02 на F.Cu
+    @(145.6000 mm, 189.5000 mm): Конт. пл. S [GNDA] от J03 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
     @(133.0000 mm, 41.0000 mm): Конт. пл. 2 [GNDA] от D53 на F.Cu
@@ -863,36 +863,36 @@
     @(133.0000 mm, 69.5000 mm): Конт. пл. 2 [GNDA] от D51 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
+    @(140.0000 mm, 90.5000 mm): Конт. пл. 2 [GNDA] от C49 на F.Cu
     @(133.0000 mm, 69.5000 mm): Конт. пл. 2 [GNDA] от D51 на F.Cu
-    @(140.0000 mm, 90.5000 mm): Конт. пл. 2 [GNDA] от C49 на F.Cu
-[unconnected_items]: Missing connection between items
-    Local override; error
-    @(140.0000 mm, 90.5000 mm): Конт. пл. 2 [GNDA] от C49 на F.Cu
-    @(161.0000 mm, 90.5000 mm): Конт. пл. 2 [GNDA] от C50 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
     @(140.0000 mm, 90.5000 mm): Конт. пл. 2 [GNDA] от C49 на F.Cu
     @(147.0000 mm, 111.5000 mm): Конт. пл. 2 [GNDA] от D48 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(145.6000 mm, 178.0000 mm): Конт. пл. S [GNDA] от J03 на F.Cu
-    @(158.7000 mm, 178.0000 mm): Конт. пл. S [GNDA] от J04 на F.Cu
+    @(145.6000 mm, 189.5000 mm): Конт. пл. S [GNDA] от J03 на F.Cu
+    @(158.7000 mm, 189.5000 mm): Конт. пл. S [GNDA] от J04 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(145.6000 mm, 178.0000 mm): Конт. пл. S [GNDA] от J03 на F.Cu
     @(147.0000 mm, 111.5000 mm): Конт. пл. 2 [GNDA] от D48 на F.Cu
+    @(145.6000 mm, 189.5000 mm): Конт. пл. S [GNDA] от J03 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(158.7000 mm, 178.0000 mm): Конт. пл. S [GNDA] от J04 на F.Cu
-    @(167.5000 mm, 178.0000 mm): Конт. пл. S [GNDA] от J05 на F.Cu
+    @(158.7000 mm, 189.5000 mm): Конт. пл. S [GNDA] от J04 на F.Cu
+    @(171.8000 mm, 189.5000 mm): Конт. пл. S [GNDA] от J05 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
     @(161.0000 mm, 41.5000 mm): Конт. пл. 2 [GNDA] от C45 на F.Cu
     @(147.0000 mm, 34.5000 mm): Конт. пл. 2 [GNDA] от D44 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(164.6000 mm, 50.5000 mm): Конт. пл. 3 [GNDA] от F1 на F.Cu
     @(161.0000 mm, 55.5000 mm): Конт. пл. 2 [GNDA] от D46 на F.Cu
+    @(164.6000 mm, 50.5000 mm): Конт. пл. 3 [GNDA] от F1 на F.Cu
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(161.0000 mm, 90.5000 mm): Конт. пл. 2 [GNDA] от C50 на F.Cu
+    @(140.0000 mm, 90.5000 mm): Конт. пл. 2 [GNDA] от C49 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
     @(164.6000 mm, 50.5000 mm): Конт. пл. 3 [GNDA] от F1 на F.Cu
@@ -915,7 +915,7 @@
     @(42.0000 mm, 13.5000 mm): Конт. пл. 2 [TIP_CVOUT2] от R95 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(133.5000 mm, 178.0000 mm): Конт. пл. T [TIP_CVOUT2] от J02 на F.Cu
+    @(133.5000 mm, 189.5000 mm): Конт. пл. T [TIP_CVOUT2] от J02 на F.Cu
     @(118.0000 mm, 97.5000 mm): Конт. пл. 1 [TIP_CVOUT2] от C43 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
@@ -996,7 +996,7 @@
 [unconnected_items]: Missing connection between items
     Local override; error
     @(63.0000 mm, 20.5000 mm): Конт. пл. 2 [K_R02_N] от D23 на F.Cu
-    @(115.4900 mm, 73.7700 mm): Конт. пл. 2 [K_R02_N] от KEY_R02 на F.Cu
+    @(115.2942 mm, 75.0061 mm): Конт. пл. 2 [K_R02_N] от KEY_L03 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
     @(27.0000 mm, 111.5000 mm): Конт. пл. 1 [COL7] от D18 на F.Cu
@@ -1011,24 +1011,24 @@
     @(146.0000 mm, 48.5000 mm): Конт. пл. 1 [COL7] от D21 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(8.8000 mm, 79.9100 mm): Конт. пл. 1 [ROW2] от KEY_L05 на F.Cu
-    @(25.0000 mm, 45.0200 mm): Конт. пл. 1 [ROW2] от KEY_L09 на F.Cu
-[unconnected_items]: Missing connection between items
-    Local override; error
-    @(25.0000 mm, 45.0200 mm): Конт. пл. 1 [ROW2] от KEY_L09 на F.Cu
-    @(63.3700 mm, 56.7500 mm): Конт. пл. 1 [ROW2] от KEY_L06 на F.Cu
+    @(25.0055 mm, 44.8107 mm): Конт. пл. 1 [ROW2] от KEY_L17 на F.Cu
+    @(46.6689 mm, 71.4833 mm): Конт. пл. 1 [ROW2] от KEY_L09 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
     @(33.0000 mm, 11.5000 mm): Конт. пл. 2 [ROW2] от U4 на F.Cu
-    @(25.0000 mm, 45.0200 mm): Конт. пл. 1 [ROW2] от KEY_L09 на F.Cu
+    @(25.0055 mm, 44.8107 mm): Конт. пл. 1 [ROW2] от KEY_L17 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(63.3700 mm, 56.7500 mm): Конт. пл. 1 [ROW2] от KEY_L06 на F.Cu
-    @(96.9800 mm, 41.4300 mm): Конт. пл. 1 [ROW2] от KEY_L07 на F.Cu
+    @(46.6689 mm, 71.4833 mm): Конт. пл. 1 [ROW2] от KEY_L09 на F.Cu
+    @(80.0558 mm, 45.7539 mm): Конт. пл. 1 [ROW2] от KEY_L12 на F.Cu
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(80.0558 mm, 45.7539 mm): Конт. пл. 1 [ROW2] от KEY_L12 на F.Cu
+    @(97.1758 mm, 40.1939 mm): Конт. пл. 1 [ROW2] от KEY_L13 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
     @(14.0000 mm, 27.5000 mm): Конт. пл. 2 [K_L05_N] от D5 на F.Cu
-    @(16.8000 mm, 79.9100 mm): Конт. пл. 2 [K_L05_N] от KEY_L05 на F.Cu
+    @(54.5911 mm, 72.5967 mm): Конт. пл. 2 [K_L05_N] от KEY_L09 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
     @(139.5000 mm, 97.0000 mm): Конт. пл. 2 [LED_DATA] от U6 на F.Cu
@@ -1076,7 +1076,7 @@
 [unconnected_items]: Missing connection between items
     Local override; error
     @(146.0000 mm, 111.5000 mm): Конт. пл. 1 [TIP_CVIN1] от D48 на F.Cu
-    @(168.5000 mm, 178.0000 mm): Конт. пл. T [TIP_CVIN1] от J05 на F.Cu
+    @(172.8000 mm, 189.5000 mm): Конт. пл. T [TIP_CVIN1] от J05 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
     @(34.0000 mm, 14.5000 mm): Конт. пл. 21 [COL1] от U4 на F.Cu
@@ -1087,7 +1087,7 @@
     @(125.0000 mm, 34.5000 mm): Конт. пл. 1 [COL1] от D16 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(15.0200 mm, 45.9600 mm): Конт. пл. 2 [K_L10_N] от KEY_L10 на F.Cu
+    @(15.0145 mm, 46.1693 mm): Конт. пл. 2 [K_L10_N] от KEY_L19 на F.Cu
     @(56.0000 mm, 20.5000 mm): Конт. пл. 2 [K_L10_N] от D10 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
@@ -1095,11 +1095,11 @@
     @(132.0000 mm, 104.5000 mm): Конт. пл. 1 [ENC14_B] от C28 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(33.0000 mm, 45.0200 mm): Конт. пл. 2 [K_L09_N] от KEY_L09 на F.Cu
+    @(32.9945 mm, 45.2293 mm): Конт. пл. 2 [K_L09_N] от KEY_L17 на F.Cu
     @(56.0000 mm, 34.5000 mm): Конт. пл. 2 [K_L09_N] от D9 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(87.8600 mm, 46.9900 mm): Конт. пл. 2 [K_R06_N] от KEY_R06 на F.Cu
+    @(71.2675 mm, 57.6498 mm): Конт. пл. 2 [K_R06_N] от KEY_L11 на F.Cu
     @(161.0000 mm, 62.5000 mm): Конт. пл. 2 [K_R06_N] от D27 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
@@ -1115,7 +1115,7 @@
     @(152.0000 mm, 12.0000 mm): Конт. пл. 1 [SDA] от J13 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(146.6000 mm, 178.0000 mm): Конт. пл. T [TIP_CVOUT3] от J03 на F.Cu
+    @(146.6000 mm, 189.5000 mm): Конт. пл. T [TIP_CVOUT3] от J03 на F.Cu
     @(160.0000 mm, 55.5000 mm): Конт. пл. 1 [TIP_CVOUT3] от D46 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
@@ -1124,7 +1124,7 @@
 [unconnected_items]: Missing connection between items
     Local override; error
     @(140.0000 mm, 76.5000 mm): Конт. пл. 2 [TIP_CVOUT4] от R97 на F.Cu
-    @(159.7000 mm, 178.0000 mm): Конт. пл. T [TIP_CVOUT4] от J04 на F.Cu
+    @(159.7000 mm, 189.5000 mm): Конт. пл. T [TIP_CVOUT4] от J04 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
     @(160.0000 mm, 41.5000 mm): Конт. пл. 1 [TIP_CVOUT4] от C45 на F.Cu
@@ -1211,7 +1211,7 @@
     @(140.0000 mm, 34.5000 mm): Конт. пл. 2 [ENC14_A] от R75 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(56.9900 mm, 88.8700 mm): Конт. пл. 2 [K_L02_N] от KEY_L02 на F.Cu
+    @(56.9511 mm, 89.4267 mm): Конт. пл. 2 [K_L02_N] от KEY_L04 на F.Cu
     @(133.0000 mm, 55.5000 mm): Конт. пл. 2 [K_L02_N] от D2 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
@@ -1251,23 +1251,23 @@
     @(147.0000 mm, 62.5000 mm): Конт. пл. 2 [ENC4_A] от R55 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(25.8900 mm, 62.0000 mm): Конт. пл. 1 [ROW5] от KEY_R07 на F.Cu
-    @(46.6300 mm, 72.0400 mm): Конт. пл. 1 [ROW5] от KEY_R05 на F.Cu
+    @(8.8055 mm, 79.7007 mm): Конт. пл. 1 [ROW5] от KEY_L10 на F.Cu
+    @(25.8955 mm, 61.7907 mm): Конт. пл. 1 [ROW5] от KEY_L14 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(46.6300 mm, 72.0400 mm): Конт. пл. 1 [ROW5] от KEY_R05 на F.Cu
-    @(79.8600 mm, 46.9900 mm): Конт. пл. 1 [ROW5] от KEY_R06 на F.Cu
+    @(25.8955 mm, 61.7907 mm): Конт. пл. 1 [ROW5] от KEY_L14 на F.Cu
+    @(63.4725 mm, 55.8502 mm): Конт. пл. 1 [ROW5] от KEY_L11 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(79.8600 mm, 46.9900 mm): Конт. пл. 1 [ROW5] от KEY_R06 на F.Cu
-    @(81.9300 mm, 24.2400 mm): Конт. пл. 1 [ROW5] от KEY_R09 на F.Cu
+    @(63.4725 mm, 55.8502 mm): Конт. пл. 1 [ROW5] от KEY_L11 на F.Cu
+    @(82.1258 mm, 23.0039 mm): Конт. пл. 1 [ROW5] от KEY_L18 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(81.9300 mm, 24.2400 mm): Конт. пл. 1 [ROW5] от KEY_R09 на F.Cu
+    @(82.1258 mm, 23.0039 mm): Конт. пл. 1 [ROW5] от KEY_L18 на F.Cu
     @(36.0000 mm, 11.5000 mm): Конт. пл. 5 [ROW5] от U4 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(89.9300 mm, 24.2400 mm): Конт. пл. 2 [K_R09_N] от KEY_R09 на F.Cu
+    @(89.7342 mm, 25.4761 mm): Конт. пл. 2 [K_R09_N] от KEY_L18 на F.Cu
     @(119.0000 mm, 34.5000 mm): Конт. пл. 2 [K_R09_N] от D30 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
@@ -1375,7 +1375,7 @@
     @(137.5000 mm, 15.0000 mm): Конт. пл. 30 [BL_CATHODE] от J11 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(120.4000 mm, 178.0000 mm): Конт. пл. T [TIP_CVOUT1] от J01 на F.Cu
+    @(120.4000 mm, 189.5000 mm): Конт. пл. T [TIP_CVOUT1] от J01 на F.Cu
     @(146.0000 mm, 34.5000 mm): Конт. пл. 1 [TIP_CVOUT1] от D44 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
@@ -1388,10 +1388,10 @@
 [unconnected_items]: Missing connection between items
     Local override; error
     @(37.0000 mm, 11.5000 mm): Конт. пл. 6 [ROW6] от U4 на F.Cu
-    @(116.0800 mm, 7.7900 mm): Конт. пл. 1 [ROW6] от KEY_R11 на F.Cu
+    @(116.9280 mm, 3.6174 mm): Конт. пл. 1 [ROW6] от KEY_L21 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(124.0800 mm, 7.7900 mm): Конт. пл. 2 [K_R11_N] от KEY_R11 на F.Cu
+    @(123.2320 mm, 8.5426 mm): Конт. пл. 2 [K_R11_N] от KEY_L21 на F.Cu
     @(133.0000 mm, 27.5000 mm): Конт. пл. 2 [K_R11_N] от D32 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
@@ -1412,7 +1412,7 @@
 [unconnected_items]: Missing connection between items
     Local override; error
     @(28.0000 mm, 13.5000 mm): Конт. пл. 2 [K_R04_N] от D25 на F.Cu
-    @(110.2400 mm, 57.6000 mm): Конт. пл. 2 [K_R04_N] от KEY_R04 на F.Cu
+    @(110.0442 mm, 58.8361 mm): Конт. пл. 2 [K_R04_N] от KEY_L07 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
     @(21.0000 mm, 104.5000 mm): Конт. пл. 2 [ENC10_B_RAW] от R20 на F.Cu
@@ -1439,7 +1439,7 @@
     @(153.0000 mm, 34.5000 mm): Конт. пл. 1 [COL3] от D36 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(34.7800 mm, 78.9700 mm): Конт. пл. 2 [K_L04_N] от KEY_L04 на F.Cu
+    @(34.7745 mm, 79.1793 mm): Конт. пл. 2 [K_L04_N] от KEY_L08 на F.Cu
     @(63.0000 mm, 27.5000 mm): Конт. пл. 2 [K_L04_N] от D4 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
@@ -1455,7 +1455,7 @@
     @(161.0000 mm, 48.5000 mm): Конт. пл. 2 [LED_MICON] от LED_MICON на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error
-    @(15.9100 mm, 62.9400 mm): Конт. пл. 2 [K_R08_N] от KEY_R08 на F.Cu
+    @(15.9045 mm, 63.1493 mm): Конт. пл. 2 [K_R08_N] от KEY_L16 на F.Cu
     @(147.0000 mm, 76.5000 mm): Конт. пл. 2 [K_R08_N] от D29 на F.Cu
 [unconnected_items]: Missing connection between items
     Local override; error

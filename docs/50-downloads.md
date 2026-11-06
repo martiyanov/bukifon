@@ -27,14 +27,15 @@
 | **C** | [`mechanical/stl_v05_C/`](../mechanical/stl_v05_C/) | ≈314 г | ≈20.8 ч | клин 12° + **закрытый отсек 1S2P** + складная стойка |
 | **B + mic** | [`mechanical/stl_v05_B_mic/`](../mechanical/stl_v05_B_mic/) | ≈278 г | ≈18.4 ч | B + порт MEMS/LED/звуковод/клипса (D-94) |
 | **C + mic** | [`mechanical/stl_v05_C_mic/`](../mechanical/stl_v05_C_mic/) | ≈316 г | ≈20.9 ч | C + порт MEMS/LED/звуковод/клипса (D-94) |
-| **A (flat)** | [`mechanical/stl_v05_A/`](../mechanical/stl_v05_A/) | ≈302 г | ≈20.0 ч | настольный/студийный, без наклона; fitcheck 17/0, панель = канон |
+| **A (flat)** | [`mechanical/stl_v05_A/`](../mechanical/stl_v05_A/) | ≈301.1 г | ≈19.9 ч | настольный/студийный, без наклона; вырезы 11 разъёмов+SD+USB-C; fitcheck 19/0 |
+| **A + mic** | [`mechanical/stl_v05_A_mic/`](../mechanical/stl_v05_A_mic/) | ≈302.5 г | ≈20.0 ч | A + порт MEMS/LED/звуковод; fitcheck 31/0 |
 
 В каждой папке: `body_L/R`, `panel_L/R`, `foot`, `keycap_v17`, `*_assembly.3mf`;
 у C дополнительно `battery_lid`, `stand`. Превью — `mechanical/preview_v05_*/`.
 **Первый прогон:** [`docs/35-print-first.md`](35-print-first.md) (печать 1 половинки
 и 1 панели, замер массы/времени).
 
-> `mechanical/stl_v05_A/` — актуальный плоский вариант A (302 г/20 ч, flat 0°);
+> `mechanical/stl_v05_A/` — плоский вариант A (301.1 г/19.9 ч, flat 0°, все вырезы);
 > `mechanical/stl_v04/` в рабочей папке — историческая заглушка (v0.4 в архиве).
 > пока не существует — A не пересобирался под v0.5.
 
@@ -161,7 +162,7 @@ cat MANIFEST.md                              # полный список + SHA25
 
 **Downloads.** Version 0.12.2, status **v1.0-rc / PRE-FREEZE**.
 - **STL/3MF:** `mechanical/stl_v05_B_light/` (231 g/11.2 h, уже с микрофоном),
-  `stl_v05_B/` (277 g), `stl_v05_A/` (302 g, flat), `stl_v05_C/` (314 g);
+  `stl_v05_B/` (276.2 g), `stl_v05_A/` (301.1 g, flat), `stl_v05_A_mic/` (302.5 g), `stl_v05_C/` (313.2 g);
   **с микрофоном:** `stl_v05_B_mic/` (278 g/18.4 h), `stl_v05_C_mic/` (316 g/20.9 h).
 - **1:1 PDFs:** panel v0.4, 8° wedge profile, paperkit, assembly map, Lapka-42 layouts
   (`renders/templates/`).

@@ -5,7 +5,7 @@
 	(fp_text reference "REF**" (at 0 -10 0) (layer "F.SilkS") (effects (font (size 1 1))))
 	(fp_text value "Kailh Choc v1 hot-swap" (at 0 10 0) (layer "F.Fab") (effects (font (size 1 1))))
 	(fp_rect (start -8 -8) (end 8 8) (stroke (width 0.1) (type default)) (fill none) (layer "F.Fab"))
-	(fp_rect (start -9 -9) (end 9 9) (stroke (width 0.05) (type default)) (fill none) (layer "F.CrtYd"))
+	(fp_rect (start -7.8 -7.8) (end 7.8 7.8) (stroke (width 0.05) (type default)) (fill none) (layer "F.CrtYd"))
 	(pad "1" smd circle (at -4.0 0) (size 2.0 2.0) (layers "F.Cu" "F.Paste" "F.Mask"))
 	(pad "2" smd circle (at 4.0 0) (size 2.0 2.0) (layers "F.Cu" "F.Paste" "F.Mask"))
 	(pad "" np_thru_hole circle (at 0 0) (size 3.4 3.4) (drill 3.4) (layers "*.Cu" "*.Mask"))

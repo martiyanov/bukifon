@@ -1,105 +1,105 @@
 {
- "KEY_R02": {
-  "x": 111.49,
-  "y": 73.77,
-  "spec": "custom:CHOC_V1"
- },
- "KEY_L05": {
-  "x": 12.8,
-  "y": 79.91,
-  "spec": "custom:CHOC_V1"
- },
- "KEY_L07": {
-  "x": 100.98,
-  "y": 41.43000000000001,
-  "spec": "custom:CHOC_V1"
- },
- "KEY_L06": {
-  "x": 67.37,
-  "y": 56.75,
-  "spec": "custom:CHOC_V1"
- },
- "KEY_L10": {
-  "x": 11.02,
-  "y": 45.96000000000001,
-  "spec": "custom:CHOC_V1"
- },
- "KEY_R08": {
-  "x": 11.91,
-  "y": 62.94,
-  "spec": "custom:CHOC_V1"
- },
- "KEY_R05": {
+ "KEY_L09": {
   "x": 50.63,
   "y": 72.04,
   "spec": "custom:CHOC_V1"
  },
- "KEY_L01": {
-  "x": 94.37,
-  "y": 79.33,
-  "spec": "custom:CHOC_V1"
- },
- "KEY_R01": {
-  "x": 75.01,
-  "y": 89.88,
-  "spec": "custom:CHOC_V1"
- },
- "KEY_R03": {
-  "x": 71.19,
-  "y": 73.31,
-  "spec": "custom:CHOC_V1"
- },
- "KEY_R07": {
-  "x": 29.89,
-  "y": 62.0,
-  "spec": "custom:CHOC_V1"
- },
- "KEY_R10": {
-  "x": 103.8,
-  "y": 16.650000000000006,
-  "spec": "custom:CHOC_V1"
- },
- "KEY_R06": {
-  "x": 83.86,
-  "y": 46.99000000000001,
-  "spec": "custom:CHOC_V1"
- },
- "KEY_R04": {
+ "KEY_L07": {
   "x": 106.24,
   "y": 57.599999999999994,
   "spec": "custom:CHOC_V1"
  },
- "KEY_L03": {
-  "x": 89.12,
-  "y": 63.16,
+ "KEY_L11": {
+  "x": 67.37,
+  "y": 56.75,
   "spec": "custom:CHOC_V1"
  },
- "KEY_L09": {
-  "x": 29.0,
-  "y": 45.02000000000001,
+ "KEY_L13": {
+  "x": 100.98,
+  "y": 41.43000000000001,
   "spec": "custom:CHOC_V1"
  },
- "KEY_R09": {
-  "x": 85.93,
-  "y": 24.24000000000001,
+ "KEY_L01": {
+  "x": 75.01,
+  "y": 89.88,
+  "spec": "custom:CHOC_V1"
+ },
+ "KEY_L10": {
+  "x": 12.8,
+  "y": 79.91,
   "spec": "custom:CHOC_V1"
  },
  "KEY_L08": {
-  "x": 48.26,
-  "y": 55.21000000000001,
-  "spec": "custom:CHOC_V1"
- },
- "KEY_L02": {
-  "x": 52.99,
-  "y": 88.87,
-  "spec": "custom:CHOC_V1"
- },
- "KEY_L04": {
   "x": 30.78,
   "y": 78.97,
   "spec": "custom:CHOC_V1"
  },
- "KEY_R11": {
+ "KEY_L12": {
+  "x": 83.86,
+  "y": 46.99000000000001,
+  "spec": "custom:CHOC_V1"
+ },
+ "KEY_L02": {
+  "x": 94.37,
+  "y": 79.33,
+  "spec": "custom:CHOC_V1"
+ },
+ "KEY_L17": {
+  "x": 29.0,
+  "y": 45.02000000000001,
+  "spec": "custom:CHOC_V1"
+ },
+ "KEY_L19": {
+  "x": 11.02,
+  "y": 45.96000000000001,
+  "spec": "custom:CHOC_V1"
+ },
+ "KEY_L03": {
+  "x": 111.49,
+  "y": 73.77,
+  "spec": "custom:CHOC_V1"
+ },
+ "KEY_L20": {
+  "x": 103.8,
+  "y": 16.650000000000006,
+  "spec": "custom:CHOC_V1"
+ },
+ "KEY_L16": {
+  "x": 11.91,
+  "y": 62.94,
+  "spec": "custom:CHOC_V1"
+ },
+ "KEY_L06": {
+  "x": 89.12,
+  "y": 63.16,
+  "spec": "custom:CHOC_V1"
+ },
+ "KEY_L15": {
+  "x": 48.26,
+  "y": 55.21000000000001,
+  "spec": "custom:CHOC_V1"
+ },
+ "KEY_L14": {
+  "x": 29.89,
+  "y": 62.0,
+  "spec": "custom:CHOC_V1"
+ },
+ "KEY_L04": {
+  "x": 52.99,
+  "y": 88.87,
+  "spec": "custom:CHOC_V1"
+ },
+ "KEY_L18": {
+  "x": 85.93,
+  "y": 24.24000000000001,
+  "spec": "custom:CHOC_V1"
+ },
+ "KEY_L05": {
+  "x": 71.19,
+  "y": 73.31,
+  "spec": "custom:CHOC_V1"
+ },
+ "KEY_L21": {
   "x": 120.08000000000001,
   "y": 7.7900000000000205,
   "spec": "custom:CHOC_V1"

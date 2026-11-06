@@ -17,6 +17,7 @@ import trimesh
 import params_v04 as P04
 import case as C
 import fitcheck_v04 as F4
+import conn_cuts_v05 as CC
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
@@ -82,6 +83,33 @@ def run(name, meta, instances, parts):
                      "OK" if (max(bb) <= 220 and m["watertight"]
                               and m["watertight_reload"]) else "КОНФЛИКТ"))
     rows += F4.check_centers()
+    # --- вырезы разъёмов (docs/82, board-fit): 11 задних + SD + USB-C -----
+    bad = []
+    for h in CC.REAR:
+        probe = C.cyl_y(h["d"] / 2 - 0.2, -0.5, 3.0, h["x"], h["z"], 28)
+        if _inter(probe, body) > 1.0:
+            bad.append(h["id"])
+    sd = C.box(-0.5, 3.0, CC.SD["y0"] + 0.3, CC.SD["y1"] - 0.3,
+               CC.SD["z0"] + 0.3, CC.SD["z1"] - 0.3)
+    if _inter(sd, body) > 1.0:
+        bad.append("sd")
+    usb = C.box(346.0, 356.0, -0.5, 4.0, 51.5, 60.5)
+    if _inter(usb, body) > 1.0:
+        bad.append("usb")
+    rows.append(("[C]", "Вырезы 11 разъёмов + SD + USB-C (задняя/левая стенки)",
+                 "все открыты", f"проблем: {len(bad)} {bad[:3]}",
+                 "OK" if not bad else "КОНФЛИКТ"))
+    lig = []
+    holes = [(h["x"], h["d"]) for h in CC.REAR]
+    for i in range(len(holes)):
+        for j in range(i + 1, len(holes)):
+            lig.append(abs(holes[i][0] - holes[j][0]) - (holes[i][1] + holes[j][1]) / 2)
+    for (x, d_) in holes:
+        for rx in CC.RIBS_REAR:
+            lig.append(abs(x - rx) - d_ / 2 - 1.0)
+    rows.append(("[C]", "Перемычки между отверстиями/рёбрами", "≥3 мм",
+                 f"мин {min(lig):.1f} мм",
+                 "OK" if min(lig) >= 3.0 else "КОНФЛИКТ"))
 
     conflicts = [r for r in rows if r[4] != "OK"]
     _write(name, rows, conflicts)

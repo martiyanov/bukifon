@@ -690,9 +690,9 @@
 	(footprint "CHOC_V1"
 		(layer "F.Cu")
 		(uuid "0a7782d7-4bab-47d5-a251-8ba441ae955b")
-		(at 131.74 55.21)
-		(property "Reference" "KEY_L18"
-			(at 0 -10 0)
+		(at 150.11 62 3)
+		(property "Reference" "KEY_R14"
+			(at 0 -10 3)
 			(layer "F.SilkS")
 			(uuid "84d52242-d9b5-42aa-8ca7-c591b43c810c")
 			(effects
@@ -701,8 +701,8 @@
 				)
 			)
 		)
-		(property "Value" "CHOC"
-			(at 0 10 0)
+		(property "Value" "Kailh Choc v1 hot-swap"
+			(at 0 10 3)
 			(layer "F.Fab")
 			(uuid "70b42744-8659-417b-85f5-7a783827d8e3")
 			(effects
@@ -712,7 +712,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0 0 0)
+			(at 0 0 3)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "27478818-b484-43cc-9159-b75756e76050")
@@ -723,7 +723,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0 0 0)
+			(at 0 0 3)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "5d48cd4e-e1d2-4532-b43a-e8034c80e5b2")
@@ -735,9 +735,10 @@
 		)
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
-		(fp_rect
-			(start -9 -9)
-			(end 9 9)
+		(fp_poly
+			(pts
+				(xy -9 -9) (xy 9 -9) (xy 9 9) (xy -9 9)
+			)
 			(stroke
 				(width 0.05)
 				(type default)
@@ -746,9 +747,10 @@
 			(layer "F.CrtYd")
 			(uuid "c4ff9f7f-69e1-4ad6-aea6-2d5fc631b449")
 		)
-		(fp_rect
-			(start -8 -8)
-			(end 8 8)
+		(fp_poly
+			(pts
+				(xy -8 -8) (xy 8 -8) (xy 8 8) (xy -8 8)
+			)
 			(stroke
 				(width 0.1)
 				(type default)
@@ -758,28 +760,28 @@
 			(uuid "98d121d4-5df9-4972-a355-bccd87bc4b36")
 		)
 		(pad "" np_thru_hole circle
-			(at -5.5 -3.7)
+			(at -5.499998 -3.7 3)
 			(size 1.7 1.7)
 			(drill 1.7)
 			(layers "*.Cu" "*.Mask")
 			(uuid "4873ee88-e27c-4cf9-a110-b027fcec95ac")
 		)
 		(pad "" np_thru_hole circle
-			(at 0 0)
+			(at 0 0 3)
 			(size 3.4 3.4)
 			(drill 3.4)
 			(layers "*.Cu" "*.Mask")
 			(uuid "2cf03fb6-cc41-48f9-aa82-fd3a4822bfc5")
 		)
 		(pad "1" smd circle
-			(at -4 0)
+			(at -4 0 3)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "ROW1")
 			(uuid "145115c2-3b18-4dc8-8bc7-47d993c901ed")
 		)
 		(pad "2" smd circle
-			(at 4 0)
+			(at 4 0 3)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "K_L18_N")
@@ -988,9 +990,9 @@
 	(footprint "CHOC_V1"
 		(layer "F.Cu")
 		(uuid "0edc6feb-b321-4ec8-8d08-23036784cfae")
-		(at 76.2 16.65)
-		(property "Reference" "KEY_R21"
-			(at 0 -10 0)
+		(at 76.199999 16.65 28)
+		(property "Reference" "KEY_R20"
+			(at 0 -10 28)
 			(layer "F.SilkS")
 			(uuid "07c49a93-b25d-45e5-a889-627aa9fc7645")
 			(effects
@@ -999,8 +1001,8 @@
 				)
 			)
 		)
-		(property "Value" "CHOC"
-			(at 0 10 0)
+		(property "Value" "Kailh Choc v1 hot-swap"
+			(at 0 10 28)
 			(layer "F.Fab")
 			(uuid "be38a612-0fe7-45db-a02e-400fbf31b294")
 			(effects
@@ -1010,7 +1012,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0 0 0)
+			(at 0 0 28)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "c096e512-746d-4721-9ff0-d48a2b300bd9")
@@ -1021,7 +1023,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0 0 0)
+			(at 0 0 28)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "a8a6712b-6bd2-47bb-af44-85b0b35cf423")
@@ -1033,9 +1035,10 @@
 		)
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
-		(fp_rect
-			(start -9 -9)
-			(end 9 9)
+		(fp_poly
+			(pts
+				(xy -9 -9) (xy 9 -9) (xy 9 9) (xy -9 9)
+			)
 			(stroke
 				(width 0.05)
 				(type default)
@@ -1044,9 +1047,10 @@
 			(layer "F.CrtYd")
 			(uuid "15c6bbd3-d314-4fdb-8950-f2993db7fac2")
 		)
-		(fp_rect
-			(start -8 -8)
-			(end 8 8)
+		(fp_poly
+			(pts
+				(xy -8 -8) (xy 8 -8) (xy 8 8) (xy -8 8)
+			)
 			(stroke
 				(width 0.1)
 				(type default)
@@ -1056,28 +1060,28 @@
 			(uuid "3c841251-0b1d-4563-8b53-8ca854bdaa14")
 		)
 		(pad "" np_thru_hole circle
-			(at -5.5 -3.7)
+			(at -5.500001 -3.7 28)
 			(size 1.7 1.7)
 			(drill 1.7)
 			(layers "*.Cu" "*.Mask")
 			(uuid "a6c441d1-f2b2-44af-b0d1-74e20fbda342")
 		)
 		(pad "" np_thru_hole circle
-			(at 0 0)
+			(at 0 0 28)
 			(size 3.4 3.4)
 			(drill 3.4)
 			(layers "*.Cu" "*.Mask")
 			(uuid "0c96d8fc-136f-49c3-9e91-5a805b49ef73")
 		)
 		(pad "1" smd circle
-			(at -4 0)
+			(at -4 0 28)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "ROW6")
 			(uuid "edd2eb5b-6bcb-4d01-b93b-29f938e2f97e")
 		)
 		(pad "2" smd circle
-			(at 4 0)
+			(at 4 0 28)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "K_R21_N")
@@ -1088,9 +1092,9 @@
 	(footprint "CHOC_V1"
 		(layer "F.Cu")
 		(uuid "118b28b9-5460-4982-9ee3-ebc89330fc69")
-		(at 129.37 72.04)
-		(property "Reference" "KEY_L15"
-			(at 0 -10 0)
+		(at 149.22 78.97 3)
+		(property "Reference" "KEY_R08"
+			(at 0 -10 3)
 			(layer "F.SilkS")
 			(uuid "aff642b1-1bd5-47a3-a7de-8cee72462d4e")
 			(effects
@@ -1099,8 +1103,8 @@
 				)
 			)
 		)
-		(property "Value" "CHOC"
-			(at 0 10 0)
+		(property "Value" "Kailh Choc v1 hot-swap"
+			(at 0 10 3)
 			(layer "F.Fab")
 			(uuid "1bbcc7fd-9ffd-4446-87f1-5e2e624b2da2")
 			(effects
@@ -1110,7 +1114,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0 0 0)
+			(at 0 0 3)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "989934f2-d823-46b3-866d-93cc97434fac")
@@ -1121,7 +1125,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0 0 0)
+			(at 0 0 3)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "e3dfde68-c580-479f-b4ca-e66fa7186b83")
@@ -1133,9 +1137,10 @@
 		)
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
-		(fp_rect
-			(start -9 -9)
-			(end 9 9)
+		(fp_poly
+			(pts
+				(xy -9 -9) (xy 9 -9) (xy 9 9) (xy -9 9)
+			)
 			(stroke
 				(width 0.05)
 				(type default)
@@ -1144,9 +1149,10 @@
 			(layer "F.CrtYd")
 			(uuid "a2bcd85a-2d49-423b-9b5a-7000c42def26")
 		)
-		(fp_rect
-			(start -8 -8)
-			(end 8 8)
+		(fp_poly
+			(pts
+				(xy -8 -8) (xy 8 -8) (xy 8 8) (xy -8 8)
+			)
 			(stroke
 				(width 0.1)
 				(type default)
@@ -1156,28 +1162,28 @@
 			(uuid "5699ebca-7be7-4405-bce5-7e5606c796b3")
 		)
 		(pad "" np_thru_hole circle
-			(at -5.5 -3.7)
+			(at -5.499998 -3.7 3)
 			(size 1.7 1.7)
 			(drill 1.7)
 			(layers "*.Cu" "*.Mask")
 			(uuid "3db3fc08-fb72-4a17-8a88-4f729382b296")
 		)
 		(pad "" np_thru_hole circle
-			(at 0 0)
+			(at 0 0 3)
 			(size 3.4 3.4)
 			(drill 3.4)
 			(layers "*.Cu" "*.Mask")
 			(uuid "d33091aa-19cf-4050-9ace-9071a1e5028b")
 		)
 		(pad "1" smd circle
-			(at -4 0)
+			(at -4 0 3)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "ROW3")
 			(uuid "1dfa3257-b45e-44ac-9e0e-ec73f6eb0bba")
 		)
 		(pad "2" smd circle
-			(at 4 0)
+			(at 4 0 3)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "K_L15_N")
@@ -1254,7 +1260,7 @@
 	(footprint "Jack_3.5mm_CUI_SJ1-3523N_Horizontal"
 		(layer "F.Cu")
 		(uuid "16588816-5e1b-428d-b6fd-9c4639cb9f5c")
-		(at 57.8 178)
+		(at 57.8 189.5)
 		(property "Reference" "J10"
 			(at 0 0 0)
 			(layer "F.SilkS")
@@ -1320,9 +1326,9 @@
 	(footprint "CHOC_V1"
 		(layer "F.Cu")
 		(uuid "17fb40c4-3c79-4586-a4b2-e120608f73d9")
-		(at 168.98 45.96)
-		(property "Reference" "KEY_R20"
-			(at 0 -10 0)
+		(at 94.07 24.24 18)
+		(property "Reference" "KEY_R18"
+			(at 0 -10 18)
 			(layer "F.SilkS")
 			(uuid "90434446-3bfa-40da-9c56-37c46e8fb187")
 			(effects
@@ -1331,8 +1337,8 @@
 				)
 			)
 		)
-		(property "Value" "CHOC"
-			(at 0 10 0)
+		(property "Value" "Kailh Choc v1 hot-swap"
+			(at 0 10 18)
 			(layer "F.Fab")
 			(uuid "c1cdc759-6802-419f-be70-4c8ffb4e7c04")
 			(effects
@@ -1342,7 +1348,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0 0 0)
+			(at 0 0 18)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "08b22872-536e-42ac-8386-14434556a2e7")
@@ -1353,7 +1359,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0 0 0)
+			(at 0 0 18)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "368061ee-fb35-4766-997c-2f95cf48760a")
@@ -1365,9 +1371,10 @@
 		)
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
-		(fp_rect
-			(start -9 -9)
-			(end 9 9)
+		(fp_poly
+			(pts
+				(xy -9 -9) (xy 9 -9) (xy 9 9) (xy -9 9)
+			)
 			(stroke
 				(width 0.05)
 				(type default)
@@ -1376,9 +1383,10 @@
 			(layer "F.CrtYd")
 			(uuid "17246cc5-0373-40a9-854b-8dde34f83e6b")
 		)
-		(fp_rect
-			(start -8 -8)
-			(end 8 8)
+		(fp_poly
+			(pts
+				(xy -8 -8) (xy 8 -8) (xy 8 8) (xy -8 8)
+			)
 			(stroke
 				(width 0.1)
 				(type default)
@@ -1388,28 +1396,28 @@
 			(uuid "4f15aadf-7160-4bef-9ed0-4d68d0070973")
 		)
 		(pad "" np_thru_hole circle
-			(at -5.5 -3.7)
+			(at -5.5 -3.7 18)
 			(size 1.7 1.7)
 			(drill 1.7)
 			(layers "*.Cu" "*.Mask")
 			(uuid "cba504d6-aa3b-4603-ba94-e0e30ca183d6")
 		)
 		(pad "" np_thru_hole circle
-			(at 0 0)
+			(at 0 0 18)
 			(size 3.4 3.4)
 			(drill 3.4)
 			(layers "*.Cu" "*.Mask")
 			(uuid "fbd482df-2604-4974-bc1b-0e8b5e9b7b65")
 		)
 		(pad "1" smd circle
-			(at -4 0)
+			(at -4 0 18)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "ROW5")
 			(uuid "6def4a7c-b7ee-443e-b0ed-8cdf3614c5a3")
 		)
 		(pad "2" smd circle
-			(at 4 0)
+			(at 4 0 18)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "K_R20_N")
@@ -1618,9 +1626,9 @@
 	(footprint "CHOC_V1"
 		(layer "F.Cu")
 		(uuid "1d032e53-d192-47f3-af11-2df8197cc24c")
-		(at 94.07 24.24)
-		(property "Reference" "KEY_L20"
-			(at 0 -10 0)
+		(at 168.98 45.96 3)
+		(property "Reference" "KEY_R19"
+			(at 0 -10 3)
 			(layer "F.SilkS")
 			(uuid "cf2be280-d17d-4b03-b7ff-884cd042d5e2")
 			(effects
@@ -1629,8 +1637,8 @@
 				)
 			)
 		)
-		(property "Value" "CHOC"
-			(at 0 10 0)
+		(property "Value" "Kailh Choc v1 hot-swap"
+			(at 0 10 3)
 			(layer "F.Fab")
 			(uuid "6d61f0c8-73a5-44ca-bd92-ffae3f35a151")
 			(effects
@@ -1640,7 +1648,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0 0 0)
+			(at 0 0 3)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "42842c69-ad5e-434e-8130-4eb4859323c5")
@@ -1651,7 +1659,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0 0 0)
+			(at 0 0 3)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "7c714611-5534-473b-90ec-a1dd0b422307")
@@ -1663,9 +1671,10 @@
 		)
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
-		(fp_rect
-			(start -9 -9)
-			(end 9 9)
+		(fp_poly
+			(pts
+				(xy -9 -9) (xy 9 -9) (xy 9 9) (xy -9 9)
+			)
 			(stroke
 				(width 0.05)
 				(type default)
@@ -1674,9 +1683,10 @@
 			(layer "F.CrtYd")
 			(uuid "aeaebb0c-c323-406d-8269-352f73a093f8")
 		)
-		(fp_rect
-			(start -8 -8)
-			(end 8 8)
+		(fp_poly
+			(pts
+				(xy -8 -8) (xy 8 -8) (xy 8 8) (xy -8 8)
+			)
 			(stroke
 				(width 0.1)
 				(type default)
@@ -1686,28 +1696,28 @@
 			(uuid "93f91429-bb4a-4edd-af42-2f8c234a0022")
 		)
 		(pad "" np_thru_hole circle
-			(at -5.5 -3.7)
+			(at -5.499998 -3.7 3)
 			(size 1.7 1.7)
 			(drill 1.7)
 			(layers "*.Cu" "*.Mask")
 			(uuid "aa29f08b-2934-49f7-8772-acc2dcafa8ee")
 		)
 		(pad "" np_thru_hole circle
-			(at 0 0)
+			(at 0 0 3)
 			(size 3.4 3.4)
 			(drill 3.4)
 			(layers "*.Cu" "*.Mask")
 			(uuid "628da59b-073e-4875-9a6b-55f45956dd29")
 		)
 		(pad "1" smd circle
-			(at -4 0)
+			(at -4 0 3)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "ROW2")
 			(uuid "4cd562a4-1b03-4e65-a039-80f483719bac")
 		)
 		(pad "2" smd circle
-			(at 4 0)
+			(at 4 0 3)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "K_L20_N")
@@ -1937,9 +1947,9 @@
 	(footprint "CHOC_V1"
 		(layer "F.Cu")
 		(uuid "272d2484-7137-4e89-9dd1-e6d2184a83e6")
-		(at 96.14 46.99)
-		(property "Reference" "KEY_R17"
-			(at 0 -10 0)
+		(at 96.139999 46.99 18)
+		(property "Reference" "KEY_R12"
+			(at 0 -10 18)
 			(layer "F.SilkS")
 			(uuid "7f59a159-6885-462c-affa-639b326ecedd")
 			(effects
@@ -1948,8 +1958,8 @@
 				)
 			)
 		)
-		(property "Value" "CHOC"
-			(at 0 10 0)
+		(property "Value" "Kailh Choc v1 hot-swap"
+			(at 0 10 18)
 			(layer "F.Fab")
 			(uuid "e8d96aec-ed07-4c66-a30f-7d91f0e462ff")
 			(effects
@@ -1959,7 +1969,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0 0 0)
+			(at 0 0 18)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "3e37ddde-577f-48fa-8e10-f21b49856283")
@@ -1970,7 +1980,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0 0 0)
+			(at 0 0 18)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "0a2e63bd-e4be-449d-9ea0-389eef0e8582")
@@ -1982,9 +1992,10 @@
 		)
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
-		(fp_rect
-			(start -9 -9)
-			(end 9 9)
+		(fp_poly
+			(pts
+				(xy -9 -9) (xy 9 -9) (xy 9 9) (xy -9 9)
+			)
 			(stroke
 				(width 0.05)
 				(type default)
@@ -1993,9 +2004,10 @@
 			(layer "F.CrtYd")
 			(uuid "0df6b0fc-1774-4a65-8ad3-3288ea402c6d")
 		)
-		(fp_rect
-			(start -8 -8)
-			(end 8 8)
+		(fp_poly
+			(pts
+				(xy -8 -8) (xy 8 -8) (xy 8 8) (xy -8 8)
+			)
 			(stroke
 				(width 0.1)
 				(type default)
@@ -2005,28 +2017,28 @@
 			(uuid "e80bb511-cb73-4109-b807-8dfffc47aeee")
 		)
 		(pad "" np_thru_hole circle
-			(at -5.5 -3.7)
+			(at -5.5 -3.7 18)
 			(size 1.7 1.7)
 			(drill 1.7)
 			(layers "*.Cu" "*.Mask")
 			(uuid "ac2d5fde-34c3-4a7f-b5e2-c044051731be")
 		)
 		(pad "" np_thru_hole circle
-			(at 0 0)
+			(at 0 0 18)
 			(size 3.4 3.4)
 			(drill 3.4)
 			(layers "*.Cu" "*.Mask")
 			(uuid "92ce68a7-5726-4a5f-8a74-972f3719f294")
 		)
 		(pad "1" smd circle
-			(at -4 0)
+			(at -4 0 18)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "ROW6")
 			(uuid "33bab904-6061-48d0-8d32-8dbd75cb8901")
 		)
 		(pad "2" smd circle
-			(at 4 0)
+			(at 4 0 18)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "K_R17_N")
@@ -3157,9 +3169,9 @@
 	(footprint "CHOC_V1"
 		(layer "F.Cu")
 		(uuid "35938629-1ec7-4efe-9cb9-8601d84b001f")
-		(at 167.2 79.91)
-		(property "Reference" "KEY_R16"
-			(at 0 -10 0)
+		(at 167.2 79.91 3)
+		(property "Reference" "KEY_R10"
+			(at 0 -10 3)
 			(layer "F.SilkS")
 			(uuid "09c1e434-e59b-4d75-9274-3b0e59af1c8a")
 			(effects
@@ -3168,8 +3180,8 @@
 				)
 			)
 		)
-		(property "Value" "CHOC"
-			(at 0 10 0)
+		(property "Value" "Kailh Choc v1 hot-swap"
+			(at 0 10 3)
 			(layer "F.Fab")
 			(uuid "cc56f35b-6a52-40ea-8a1b-7a4bc41fc518")
 			(effects
@@ -3179,7 +3191,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0 0 0)
+			(at 0 0 3)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "578288dd-e1fa-4307-9e28-1f1269dc549c")
@@ -3190,7 +3202,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0 0 0)
+			(at 0 0 3)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "140eb384-2eeb-478f-a324-124436eea6d0")
@@ -3202,9 +3214,10 @@
 		)
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
-		(fp_rect
-			(start -9 -9)
-			(end 9 9)
+		(fp_poly
+			(pts
+				(xy -9 -9) (xy 9 -9) (xy 9 9) (xy -9 9)
+			)
 			(stroke
 				(width 0.05)
 				(type default)
@@ -3213,9 +3226,10 @@
 			(layer "F.CrtYd")
 			(uuid "11bceda6-c3ec-4736-8f83-99a73081e17c")
 		)
-		(fp_rect
-			(start -8 -8)
-			(end 8 8)
+		(fp_poly
+			(pts
+				(xy -8 -8) (xy 8 -8) (xy 8 8) (xy -8 8)
+			)
 			(stroke
 				(width 0.1)
 				(type default)
@@ -3225,28 +3239,28 @@
 			(uuid "36bc1dbb-be99-4504-9f73-f42e4fc5ddc1")
 		)
 		(pad "" np_thru_hole circle
-			(at -5.5 -3.7)
+			(at -5.499998 -3.7 3)
 			(size 1.7 1.7)
 			(drill 1.7)
 			(layers "*.Cu" "*.Mask")
 			(uuid "c483db2e-a316-4bdf-b9b4-7db88025dc28")
 		)
 		(pad "" np_thru_hole circle
-			(at 0 0)
+			(at 0 0 3)
 			(size 3.4 3.4)
 			(drill 3.4)
 			(layers "*.Cu" "*.Mask")
 			(uuid "f08f33db-1f54-44d0-9e2b-b7c73ff8494e")
 		)
 		(pad "1" smd circle
-			(at -4 0)
+			(at -4 0 3)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "ROW5")
 			(uuid "cced1d2b-b412-43a6-b16a-fb01c67ca7ee")
 		)
 		(pad "2" smd circle
-			(at 4 0)
+			(at 4 0 3)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "K_R16_N")
@@ -3257,7 +3271,7 @@
 	(footprint "Jack_3.5mm_CUI_SJ1-3523N_Horizontal"
 		(layer "F.Cu")
 		(uuid "35a4e6c0-923f-4184-b327-f499fe78fa73")
-		(at 31.6 178)
+		(at 31.599999 189.5)
 		(property "Reference" "J08"
 			(at 0 0 0)
 			(layer "F.SilkS")
@@ -3785,9 +3799,9 @@
 	(footprint "CHOC_V1"
 		(layer "F.Cu")
 		(uuid "3b98d674-165f-4dde-ad3c-54b9c74ce393")
-		(at 85.63 79.33)
-		(property "Reference" "KEY_L12"
-			(at 0 -10 0)
+		(at 85.63 79.33 18)
+		(property "Reference" "KEY_R02"
+			(at 0 -10 18)
 			(layer "F.SilkS")
 			(uuid "c2da1618-87cb-4eec-9347-ada6fd7253df")
 			(effects
@@ -3796,8 +3810,8 @@
 				)
 			)
 		)
-		(property "Value" "CHOC"
-			(at 0 10 0)
+		(property "Value" "Kailh Choc v1 hot-swap"
+			(at 0 10 18)
 			(layer "F.Fab")
 			(uuid "8c74c9a0-8ac9-4e41-a9a8-a53a2baf0244")
 			(effects
@@ -3807,7 +3821,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0 0 0)
+			(at 0 0 18)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "8006bd9f-d5d2-4fcd-9d65-1b67a82e6e95")
@@ -3818,7 +3832,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0 0 0)
+			(at 0 0 18)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "883c261d-d61c-4194-a0f9-e6750baafcb3")
@@ -3830,9 +3844,10 @@
 		)
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
-		(fp_rect
-			(start -9 -9)
-			(end 9 9)
+		(fp_poly
+			(pts
+				(xy -9 -9) (xy 9 -9) (xy 9 9) (xy -9 9)
+			)
 			(stroke
 				(width 0.05)
 				(type default)
@@ -3841,9 +3856,10 @@
 			(layer "F.CrtYd")
 			(uuid "0bed5a29-f03f-4f56-a4d4-1a3855f9e3c3")
 		)
-		(fp_rect
-			(start -8 -8)
-			(end 8 8)
+		(fp_poly
+			(pts
+				(xy -8 -8) (xy 8 -8) (xy 8 8) (xy -8 8)
+			)
 			(stroke
 				(width 0.1)
 				(type default)
@@ -3853,28 +3869,28 @@
 			(uuid "83099eec-14e5-466e-abe9-6ede7008a1c5")
 		)
 		(pad "" np_thru_hole circle
-			(at -5.5 -3.7)
+			(at -5.5 -3.7 18)
 			(size 1.7 1.7)
 			(drill 1.7)
 			(layers "*.Cu" "*.Mask")
 			(uuid "3f880bfb-9393-4478-bc29-023dacccaa96")
 		)
 		(pad "" np_thru_hole circle
-			(at 0 0)
+			(at 0 0 18)
 			(size 3.4 3.4)
 			(drill 3.4)
 			(layers "*.Cu" "*.Mask")
 			(uuid "7b4df86b-5e1e-48fb-9ded-faac22c89f35")
 		)
 		(pad "1" smd circle
-			(at -4 0)
+			(at -4 0 18)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "ROW3")
 			(uuid "401441bf-9234-4021-95e1-bfdee053dabc")
 		)
 		(pad "2" smd circle
-			(at 4 0)
+			(at 4 0 18)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "K_L12_N")
@@ -3951,9 +3967,9 @@
 	(footprint "CHOC_V1"
 		(layer "F.Cu")
 		(uuid "3d57d70b-261d-4d71-9a00-771d658d1be7")
-		(at 168.09 62.94)
-		(property "Reference" "KEY_L19"
-			(at 0 -10 0)
+		(at 168.089999 62.94 3)
+		(property "Reference" "KEY_R16"
+			(at 0 -10 3)
 			(layer "F.SilkS")
 			(uuid "a7efa6c0-79fd-4e04-8966-0ec37906758a")
 			(effects
@@ -3962,8 +3978,8 @@
 				)
 			)
 		)
-		(property "Value" "CHOC"
-			(at 0 10 0)
+		(property "Value" "Kailh Choc v1 hot-swap"
+			(at 0 10 3)
 			(layer "F.Fab")
 			(uuid "348a5580-3be8-4949-ace8-73b9c707b261")
 			(effects
@@ -3973,7 +3989,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0 0 0)
+			(at 0 0 3)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "fdf9b0b8-6db3-4383-9b10-9f6fb324303c")
@@ -3984,7 +4000,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0 0 0)
+			(at 0 0 3)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "f5305622-0525-4796-9c6d-7caf562ac607")
@@ -3996,9 +4012,10 @@
 		)
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
-		(fp_rect
-			(start -9 -9)
-			(end 9 9)
+		(fp_poly
+			(pts
+				(xy -9 -9) (xy 9 -9) (xy 9 9) (xy -9 9)
+			)
 			(stroke
 				(width 0.05)
 				(type default)
@@ -4007,9 +4024,10 @@
 			(layer "F.CrtYd")
 			(uuid "e249fa0f-d6e9-4d09-b5d4-4810c54e4b45")
 		)
-		(fp_rect
-			(start -8 -8)
-			(end 8 8)
+		(fp_poly
+			(pts
+				(xy -8 -8) (xy 8 -8) (xy 8 8) (xy -8 8)
+			)
 			(stroke
 				(width 0.1)
 				(type default)
@@ -4019,28 +4037,28 @@
 			(uuid "a4169959-fb29-4ebb-899c-f14020b59859")
 		)
 		(pad "" np_thru_hole circle
-			(at -5.5 -3.7)
+			(at -5.499998 -3.7 3)
 			(size 1.7 1.7)
 			(drill 1.7)
 			(layers "*.Cu" "*.Mask")
 			(uuid "4279409d-2f5a-4740-9988-5678062da689")
 		)
 		(pad "" np_thru_hole circle
-			(at 0 0)
+			(at 0 0 3)
 			(size 3.4 3.4)
 			(drill 3.4)
 			(layers "*.Cu" "*.Mask")
 			(uuid "4f20b5fd-7244-4017-b933-41cad35e2fa2")
 		)
 		(pad "1" smd circle
-			(at -4 0)
+			(at -4 0 3)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "ROW3")
 			(uuid "66de6ee9-455b-49f7-83cd-96a4abc5f26e")
 		)
 		(pad "2" smd circle
-			(at 4 0)
+			(at 4 0 3)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "K_L19_N")
@@ -4572,9 +4590,9 @@
 	(footprint "CHOC_V1"
 		(layer "F.Cu")
 		(uuid "4bf8701b-aa99-4e51-9e0e-82b4b7e9d134")
-		(at 73.76 57.599999)
-		(property "Reference" "KEY_L14"
-			(at 0 -10 0)
+		(at 90.88 63.16 18)
+		(property "Reference" "KEY_R06"
+			(at 0 -10 18)
 			(layer "F.SilkS")
 			(uuid "2a5e2edc-3ea4-45fc-b1ea-ce579e0fab4a")
 			(effects
@@ -4583,8 +4601,8 @@
 				)
 			)
 		)
-		(property "Value" "CHOC"
-			(at 0 10 0)
+		(property "Value" "Kailh Choc v1 hot-swap"
+			(at 0 10 18)
 			(layer "F.Fab")
 			(uuid "99d2456f-672a-45e5-8f3d-c1d13fd9c27e")
 			(effects
@@ -4594,7 +4612,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0 0 0)
+			(at 0 0 18)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "8551f53e-2ec9-462f-a627-920afa65decc")
@@ -4605,7 +4623,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0 0 0)
+			(at 0 0 18)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "30692724-8f5e-4a70-bb56-e3ef75740ac4")
@@ -4617,9 +4635,10 @@
 		)
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
-		(fp_rect
-			(start -9 -9)
-			(end 9 9)
+		(fp_poly
+			(pts
+				(xy -9 -9) (xy 9 -9) (xy 9 9) (xy -9 9)
+			)
 			(stroke
 				(width 0.05)
 				(type default)
@@ -4628,9 +4647,10 @@
 			(layer "F.CrtYd")
 			(uuid "2a22ad90-4918-44cb-995a-9266c0f91a9f")
 		)
-		(fp_rect
-			(start -8 -8)
-			(end 8 8)
+		(fp_poly
+			(pts
+				(xy -8 -8) (xy 8 -8) (xy 8 8) (xy -8 8)
+			)
 			(stroke
 				(width 0.1)
 				(type default)
@@ -4640,28 +4660,28 @@
 			(uuid "e9ea131f-48ea-4481-be4c-0a1bb7400439")
 		)
 		(pad "" np_thru_hole circle
-			(at -5.5 -3.7)
+			(at -5.5 -3.7 18)
 			(size 1.7 1.7)
 			(drill 1.7)
 			(layers "*.Cu" "*.Mask")
 			(uuid "8fd60266-67b6-41e6-b235-9569eb30b74a")
 		)
 		(pad "" np_thru_hole circle
-			(at 0 0)
+			(at 0 0 18)
 			(size 3.4 3.4)
 			(drill 3.4)
 			(layers "*.Cu" "*.Mask")
 			(uuid "26fd1f22-f441-48a1-b7b9-9f2246323be5")
 		)
 		(pad "1" smd circle
-			(at -4 0)
+			(at -4 0 18)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "ROW2")
 			(uuid "5a4b5ec4-1e45-43fb-b84a-9085c590b142")
 		)
 		(pad "2" smd circle
-			(at 4 0)
+			(at 4 0 18)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "K_L14_N")
@@ -5506,9 +5526,9 @@
 	(footprint "CHOC_V1"
 		(layer "F.Cu")
 		(uuid "5bd40f38-5b36-45f6-8a8b-b3c4c4f84644")
-		(at 151 45.02)
-		(property "Reference" "KEY_R19"
-			(at 0 -10 0)
+		(at 151 45.02 3)
+		(property "Reference" "KEY_R17"
+			(at 0 -10 3)
 			(layer "F.SilkS")
 			(uuid "4e19d3b1-09fd-4fb2-a7cc-6244cd32d827")
 			(effects
@@ -5517,8 +5537,8 @@
 				)
 			)
 		)
-		(property "Value" "CHOC"
-			(at 0 10 0)
+		(property "Value" "Kailh Choc v1 hot-swap"
+			(at 0 10 3)
 			(layer "F.Fab")
 			(uuid "276658e7-8884-4e79-b9cc-c570398df15f")
 			(effects
@@ -5528,7 +5548,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0 0 0)
+			(at 0 0 3)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "893e181d-7bcc-438b-8b4e-a4306842196e")
@@ -5539,7 +5559,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0 0 0)
+			(at 0 0 3)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "a29d2ee0-fad8-4d73-a3c9-edc54fb9edf0")
@@ -5551,9 +5571,10 @@
 		)
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
-		(fp_rect
-			(start -9 -9)
-			(end 9 9)
+		(fp_poly
+			(pts
+				(xy -9 -9) (xy 9 -9) (xy 9 9) (xy -9 9)
+			)
 			(stroke
 				(width 0.05)
 				(type default)
@@ -5562,9 +5583,10 @@
 			(layer "F.CrtYd")
 			(uuid "52086853-ae5f-4bc8-8118-6a71627134bc")
 		)
-		(fp_rect
-			(start -8 -8)
-			(end 8 8)
+		(fp_poly
+			(pts
+				(xy -8 -8) (xy 8 -8) (xy 8 8) (xy -8 8)
+			)
 			(stroke
 				(width 0.1)
 				(type default)
@@ -5574,28 +5596,28 @@
 			(uuid "bc6d42a0-25b3-40d1-aba0-f4065d5fe6a0")
 		)
 		(pad "" np_thru_hole circle
-			(at -5.5 -3.7)
+			(at -5.499998 -3.7 3)
 			(size 1.7 1.7)
 			(drill 1.7)
 			(layers "*.Cu" "*.Mask")
 			(uuid "9c8ba26c-850d-4c82-860f-144ec2f439ec")
 		)
 		(pad "" np_thru_hole circle
-			(at 0 0)
+			(at 0 0 3)
 			(size 3.4 3.4)
 			(drill 3.4)
 			(layers "*.Cu" "*.Mask")
 			(uuid "3ef02ad6-29bd-4216-be7a-78c404681638")
 		)
 		(pad "1" smd circle
-			(at -4 0)
+			(at -4 0 3)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "ROW6")
 			(uuid "d54d1c97-b58f-48ba-b034-1ca1cc3723d1")
 		)
 		(pad "2" smd circle
-			(at 4 0)
+			(at 4 0 3)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "K_R19_N")
@@ -6068,9 +6090,9 @@
 	(footprint "CHOC_V1"
 		(layer "F.Cu")
 		(uuid "65a86d62-e2b8-4f54-989e-720f2e74d89a")
-		(at 112.63 56.75)
-		(property "Reference" "KEY_L16"
-			(at 0 -10 0)
+		(at 112.63 56.75 13)
+		(property "Reference" "KEY_R11"
+			(at 0 -10 13)
 			(layer "F.SilkS")
 			(uuid "fd550b53-45c0-41bd-a3ae-ad90ac6f14c8")
 			(effects
@@ -6079,8 +6101,8 @@
 				)
 			)
 		)
-		(property "Value" "CHOC"
-			(at 0 10 0)
+		(property "Value" "Kailh Choc v1 hot-swap"
+			(at 0 10 13)
 			(layer "F.Fab")
 			(uuid "093be24b-d9b4-4a86-ae42-6ac59e43543c")
 			(effects
@@ -6090,7 +6112,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0 0 0)
+			(at 0 0 13)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "91c3bd55-d519-4264-89af-b5805bf290d5")
@@ -6101,7 +6123,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0 0 0)
+			(at 0 0 13)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "10353851-5612-486e-bc57-c9e557ae33bf")
@@ -6113,9 +6135,10 @@
 		)
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
-		(fp_rect
-			(start -9 -9)
-			(end 9 9)
+		(fp_poly
+			(pts
+				(xy -9 -9) (xy 9 -9) (xy 9 9) (xy -9 9)
+			)
 			(stroke
 				(width 0.05)
 				(type default)
@@ -6124,9 +6147,10 @@
 			(layer "F.CrtYd")
 			(uuid "4153ea9d-6b92-497b-abb3-5444a41f1ff3")
 		)
-		(fp_rect
-			(start -8 -8)
-			(end 8 8)
+		(fp_poly
+			(pts
+				(xy -8 -8) (xy 8 -8) (xy 8 8) (xy -8 8)
+			)
 			(stroke
 				(width 0.1)
 				(type default)
@@ -6136,28 +6160,28 @@
 			(uuid "32feeb03-80c4-4203-ae7a-4f6d90ecaabc")
 		)
 		(pad "" np_thru_hole circle
-			(at -5.5 -3.7)
+			(at -5.5 -3.7 13)
 			(size 1.7 1.7)
 			(drill 1.7)
 			(layers "*.Cu" "*.Mask")
 			(uuid "bb736697-d0ed-4939-b573-111a90e6aa74")
 		)
 		(pad "" np_thru_hole circle
-			(at 0 0)
+			(at 0 0 13)
 			(size 3.4 3.4)
 			(drill 3.4)
 			(layers "*.Cu" "*.Mask")
 			(uuid "8c50f34f-85fb-494e-bd17-a1715df137df")
 		)
 		(pad "1" smd circle
-			(at -4 0)
+			(at -4 0 13)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "ROW2")
 			(uuid "520c5bf2-3e2c-4562-9f93-921cc7f7bd44")
 		)
 		(pad "2" smd circle
-			(at 4 0)
+			(at 4 0 13)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "K_L16_N")
@@ -6416,7 +6440,7 @@
 	(footprint "L_Bourns_SRN6045TA"
 		(layer "F.Cu")
 		(uuid "66cf662d-26a2-41fd-9cd8-7aaa3ce1d14b")
-		(at 14 50)
+		(at 70 100)
 		(property "Reference" "FB1"
 			(at 0 0 0)
 			(layer "F.SilkS")
@@ -6614,9 +6638,9 @@
 	(footprint "CHOC_V1"
 		(layer "F.Cu")
 		(uuid "6e13d783-7bc9-4fdb-b94e-90fc1213772d")
-		(at 104.99 89.88)
-		(property "Reference" "KEY_L11"
-			(at 0 -10 0)
+		(at 104.99 89.88 13)
+		(property "Reference" "KEY_R01"
+			(at 0 -10 13)
 			(layer "F.SilkS")
 			(uuid "087072f8-c9a3-46e2-88b2-dc1dd700f54f")
 			(effects
@@ -6625,8 +6649,8 @@
 				)
 			)
 		)
-		(property "Value" "CHOC"
-			(at 0 10 0)
+		(property "Value" "Kailh Choc v1 hot-swap"
+			(at 0 10 13)
 			(layer "F.Fab")
 			(uuid "6c1688d3-c699-4d53-8e41-834c4bfc9c70")
 			(effects
@@ -6636,7 +6660,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0 0 0)
+			(at 0 0 13)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "7ab89822-bc26-438d-84e6-714950df18d0")
@@ -6647,7 +6671,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0 0 0)
+			(at 0 0 13)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "2ef1d9f1-fc09-4afe-add3-79881b7b1826")
@@ -6659,9 +6683,10 @@
 		)
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
-		(fp_rect
-			(start -9 -9)
-			(end 9 9)
+		(fp_poly
+			(pts
+				(xy -9 -9) (xy 9 -9) (xy 9 9) (xy -9 9)
+			)
 			(stroke
 				(width 0.05)
 				(type default)
@@ -6670,9 +6695,10 @@
 			(layer "F.CrtYd")
 			(uuid "76dff6e7-6583-4373-a984-27fb049924cf")
 		)
-		(fp_rect
-			(start -8 -8)
-			(end 8 8)
+		(fp_poly
+			(pts
+				(xy -8 -8) (xy 8 -8) (xy 8 8) (xy -8 8)
+			)
 			(stroke
 				(width 0.1)
 				(type default)
@@ -6682,28 +6708,28 @@
 			(uuid "49771998-77d9-4c53-b085-b2466c2cd59c")
 		)
 		(pad "" np_thru_hole circle
-			(at -5.5 -3.7)
+			(at -5.5 -3.7 13)
 			(size 1.7 1.7)
 			(drill 1.7)
 			(layers "*.Cu" "*.Mask")
 			(uuid "adc84a5f-0da1-43a2-86bd-164ce08d693b")
 		)
 		(pad "" np_thru_hole circle
-			(at 0 0)
+			(at 0 0 13)
 			(size 3.4 3.4)
 			(drill 3.4)
 			(layers "*.Cu" "*.Mask")
 			(uuid "04fe6589-ca49-48db-909b-c9197dc60958")
 		)
 		(pad "1" smd circle
-			(at -4 0)
+			(at -4 0 13)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "ROW3")
 			(uuid "418f209a-a411-41ee-ab0d-a64df7a1c717")
 		)
 		(pad "2" smd circle
-			(at 4 0)
+			(at 4 0 13)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "K_L11_N")
@@ -8726,9 +8752,9 @@
 	(footprint "CHOC_V1"
 		(layer "F.Cu")
 		(uuid "939b20b4-0908-491b-8fa3-d640e3eb7edd")
-		(at 127.009999 88.87)
-		(property "Reference" "KEY_L13"
-			(at 0 -10 0)
+		(at 127.009999 88.87 8)
+		(property "Reference" "KEY_R04"
+			(at 0 -10 8)
 			(layer "F.SilkS")
 			(uuid "6d1b7db7-083a-454a-8717-16b772a4d8a6")
 			(effects
@@ -8737,8 +8763,8 @@
 				)
 			)
 		)
-		(property "Value" "CHOC"
-			(at 0 10 0)
+		(property "Value" "Kailh Choc v1 hot-swap"
+			(at 0 10 8)
 			(layer "F.Fab")
 			(uuid "e16a340a-795d-4a66-a20c-f77bebb22ddf")
 			(effects
@@ -8748,7 +8774,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0 0 0)
+			(at 0 0 8)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "6f82e6ab-24d8-48fe-849e-a4859f35f473")
@@ -8759,7 +8785,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0 0 0)
+			(at 0 0 8)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "253b88e9-2b36-4f4f-96eb-e827f48ea908")
@@ -8771,9 +8797,10 @@
 		)
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
-		(fp_rect
-			(start -9 -9)
-			(end 9 9)
+		(fp_poly
+			(pts
+				(xy -9 -9) (xy 9 -9) (xy 9 9) (xy -9 9)
+			)
 			(stroke
 				(width 0.05)
 				(type default)
@@ -8782,9 +8809,10 @@
 			(layer "F.CrtYd")
 			(uuid "77ebac49-1da1-4362-a934-3390a5b2a9bd")
 		)
-		(fp_rect
-			(start -8 -8)
-			(end 8 8)
+		(fp_poly
+			(pts
+				(xy -8 -8) (xy 8 -8) (xy 8 8) (xy -8 8)
+			)
 			(stroke
 				(width 0.1)
 				(type default)
@@ -8794,28 +8822,28 @@
 			(uuid "105aea8a-dab1-40bb-8982-7c094ac76045")
 		)
 		(pad "" np_thru_hole circle
-			(at -5.5 -3.7)
+			(at -5.5 -3.7 8)
 			(size 1.7 1.7)
 			(drill 1.7)
 			(layers "*.Cu" "*.Mask")
 			(uuid "a20b22d7-4b6e-466b-81b9-ae44039c9e27")
 		)
 		(pad "" np_thru_hole circle
-			(at 0 0)
+			(at 0 0 8)
 			(size 3.4 3.4)
 			(drill 3.4)
 			(layers "*.Cu" "*.Mask")
 			(uuid "c6a95d32-6759-4669-a433-4c8a08a50bc1")
 		)
 		(pad "1" smd circle
-			(at -4 0)
+			(at -4 0 8)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "ROW3")
 			(uuid "8ce31dcf-f2a9-4acd-848a-d07adc334c7d")
 		)
 		(pad "2" smd circle
-			(at 4 0)
+			(at 4 0 8)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "K_L13_N")
@@ -9500,7 +9528,7 @@
 	(footprint "Potentiometer_Bourns_PTA6043_Single_Slide"
 		(layer "F.Cu")
 		(uuid "aaa34faa-9616-4b96-8b24-8633e1398c62")
-		(at 132.5 13.5)
+		(at 14 50)
 		(property "Reference" "F2"
 			(at 0 0 0)
 			(layer "F.SilkS")
@@ -9639,7 +9667,7 @@
 	(footprint "Jack_3.5mm_CUI_SJ1-3523N_Horizontal"
 		(layer "F.Cu")
 		(uuid "abcca336-4626-49d0-898f-7a5503e25da0")
-		(at 44.7 178)
+		(at 44.699999 189.5)
 		(property "Reference" "J09"
 			(at 0 0 0)
 			(layer "F.SilkS")
@@ -9705,9 +9733,9 @@
 	(footprint "CHOC_V1"
 		(layer "F.Cu")
 		(uuid "b0cacae6-0ce3-4cb5-8d00-326d2954efbe")
-		(at 149.22 78.97)
-		(property "Reference" "KEY_R15"
-			(at 0 -10 0)
+		(at 129.37 72.04 8)
+		(property "Reference" "KEY_R09"
+			(at 0 -10 8)
 			(layer "F.SilkS")
 			(uuid "37b4d53e-4c16-4430-a392-67658f4b6fb4")
 			(effects
@@ -9716,8 +9744,8 @@
 				)
 			)
 		)
-		(property "Value" "CHOC"
-			(at 0 10 0)
+		(property "Value" "Kailh Choc v1 hot-swap"
+			(at 0 10 8)
 			(layer "F.Fab")
 			(uuid "046aa926-592c-4234-a486-6c7b1f8027bb")
 			(effects
@@ -9727,7 +9755,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0 0 0)
+			(at 0 0 8)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "2581922b-10c4-4d3f-ae92-8653eb2da792")
@@ -9738,7 +9766,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0 0 0)
+			(at 0 0 8)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "b52b1409-26b0-455f-822d-766e29a14b0b")
@@ -9750,9 +9778,10 @@
 		)
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
-		(fp_rect
-			(start -9 -9)
-			(end 9 9)
+		(fp_poly
+			(pts
+				(xy -9 -9) (xy 9 -9) (xy 9 9) (xy -9 9)
+			)
 			(stroke
 				(width 0.05)
 				(type default)
@@ -9761,9 +9790,10 @@
 			(layer "F.CrtYd")
 			(uuid "cc202ed9-59da-4bd5-8aea-99b003296520")
 		)
-		(fp_rect
-			(start -8 -8)
-			(end 8 8)
+		(fp_poly
+			(pts
+				(xy -8 -8) (xy 8 -8) (xy 8 8) (xy -8 8)
+			)
 			(stroke
 				(width 0.1)
 				(type default)
@@ -9773,28 +9803,28 @@
 			(uuid "932eba8e-2091-4edb-9e0c-0aa740ad2a73")
 		)
 		(pad "" np_thru_hole circle
-			(at -5.5 -3.7)
+			(at -5.5 -3.7 8)
 			(size 1.7 1.7)
 			(drill 1.7)
 			(layers "*.Cu" "*.Mask")
 			(uuid "f593bad5-e5c6-4321-b444-c9700d862a9f")
 		)
 		(pad "" np_thru_hole circle
-			(at 0 0)
+			(at 0 0 8)
 			(size 3.4 3.4)
 			(drill 3.4)
 			(layers "*.Cu" "*.Mask")
 			(uuid "c756c108-36a8-4d59-9e05-fd3566d32b87")
 		)
 		(pad "1" smd circle
-			(at -4 0)
+			(at -4 0 8)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "ROW6")
 			(uuid "90e1e576-a95f-4f90-b539-8abe7663cfb2")
 		)
 		(pad "2" smd circle
-			(at 4 0)
+			(at 4 0 8)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "K_R15_N")
@@ -9871,9 +9901,9 @@
 	(footprint "CHOC_V1"
 		(layer "F.Cu")
 		(uuid "b23ead51-6c1d-4888-a6c3-91c85622a6fc")
-		(at 59.92 7.79)
-		(property "Reference" "KEY_L21"
-			(at 0 -10 0)
+		(at 59.919999 6.08 38)
+		(property "Reference" "KEY_R21"
+			(at 0 -10.000001 38)
 			(layer "F.SilkS")
 			(uuid "62f7391c-19e5-4274-b859-c0a96d6f74c3")
 			(effects
@@ -9882,8 +9912,8 @@
 				)
 			)
 		)
-		(property "Value" "CHOC"
-			(at 0 10 0)
+		(property "Value" "Kailh Choc v1 hot-swap"
+			(at 0 10.000001 38)
 			(layer "F.Fab")
 			(uuid "01fb26cc-a59a-47b7-820d-ae7cdb2f2e4b")
 			(effects
@@ -9893,7 +9923,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0 0 0)
+			(at 0 0 38)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "d309578d-456e-4d8c-b310-d40ab1edaefd")
@@ -9904,7 +9934,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0 0 0)
+			(at 0 0 38)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "d8adcffa-04d8-4904-8f47-f18aa7644f1a")
@@ -9916,9 +9946,10 @@
 		)
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
-		(fp_rect
-			(start -9 -9)
-			(end 9 9)
+		(fp_poly
+			(pts
+				(xy -9 -9) (xy 9 -9) (xy 9 9) (xy -9 9)
+			)
 			(stroke
 				(width 0.05)
 				(type default)
@@ -9927,9 +9958,10 @@
 			(layer "F.CrtYd")
 			(uuid "b7123c80-0281-411c-8405-6e0d6bd3a2eb")
 		)
-		(fp_rect
-			(start -8 -8)
-			(end 8 8)
+		(fp_poly
+			(pts
+				(xy -8 -8) (xy 8 -8) (xy 8 8) (xy -8 8)
+			)
 			(stroke
 				(width 0.1)
 				(type default)
@@ -9939,28 +9971,28 @@
 			(uuid "508b7b1f-47f4-434e-bc8e-73afe9d0b25f")
 		)
 		(pad "" np_thru_hole circle
-			(at -5.5 -3.7)
+			(at -5.5 -3.700001 38)
 			(size 1.7 1.7)
 			(drill 1.7)
 			(layers "*.Cu" "*.Mask")
 			(uuid "682e0b1c-0865-477b-8ec5-c54a8f7ddabb")
 		)
 		(pad "" np_thru_hole circle
-			(at 0 0)
+			(at 0 0 38)
 			(size 3.4 3.4)
 			(drill 3.4)
 			(layers "*.Cu" "*.Mask")
 			(uuid "8579d3fe-9938-47b3-a573-19134a4401f3")
 		)
 		(pad "1" smd circle
-			(at -4 0)
+			(at -4 0 38)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "ROW3")
 			(uuid "910077b9-e4b0-4122-9061-eeb9f90120bc")
 		)
 		(pad "2" smd circle
-			(at 4 0)
+			(at 4 0 38)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "K_L21_N")
@@ -10360,7 +10392,7 @@
 	(footprint "Jack_3.5mm_CUI_SJ1-3523N_Horizontal"
 		(layer "F.Cu")
 		(uuid "be16d07f-1cf3-4aa6-bf8e-48164046cdfe")
-		(at 18.5 178)
+		(at 18.5 189.5)
 		(property "Reference" "J07"
 			(at 0 0 0)
 			(layer "F.SilkS")
@@ -10874,9 +10906,9 @@
 	(footprint "CHOC_V1"
 		(layer "F.Cu")
 		(uuid "c940147a-7db3-414d-afba-f6e5ab80b6b8")
-		(at 79.02 41.43)
-		(property "Reference" "KEY_L17"
-			(at 0 -10 0)
+		(at 79.019999 41.43 18)
+		(property "Reference" "KEY_R13"
+			(at 0 -10 18)
 			(layer "F.SilkS")
 			(uuid "2f09470e-88b6-43d4-afdd-e15253c93b70")
 			(effects
@@ -10885,8 +10917,8 @@
 				)
 			)
 		)
-		(property "Value" "CHOC"
-			(at 0 10 0)
+		(property "Value" "Kailh Choc v1 hot-swap"
+			(at 0 10 18)
 			(layer "F.Fab")
 			(uuid "8a274b02-ddc2-4eb7-a2e4-0180ddff7fdc")
 			(effects
@@ -10896,7 +10928,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0 0 0)
+			(at 0 0 18)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "26dd6eb4-ed8f-46d3-84d3-87b68f7e78d4")
@@ -10907,7 +10939,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0 0 0)
+			(at 0 0 18)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "25d21221-e8ff-4b3a-9680-2c4012790e14")
@@ -10919,9 +10951,10 @@
 		)
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
-		(fp_rect
-			(start -9 -9)
-			(end 9 9)
+		(fp_poly
+			(pts
+				(xy -9 -9) (xy 9 -9) (xy 9 9) (xy -9 9)
+			)
 			(stroke
 				(width 0.05)
 				(type default)
@@ -10930,9 +10963,10 @@
 			(layer "F.CrtYd")
 			(uuid "2bca2fee-22fe-4d9b-9db9-0efb9dc224df")
 		)
-		(fp_rect
-			(start -8 -8)
-			(end 8 8)
+		(fp_poly
+			(pts
+				(xy -8 -8) (xy 8 -8) (xy 8 8) (xy -8 8)
+			)
 			(stroke
 				(width 0.1)
 				(type default)
@@ -10942,28 +10976,28 @@
 			(uuid "251cf281-e9b1-4ddd-8a69-b71cfdcc2cba")
 		)
 		(pad "" np_thru_hole circle
-			(at -5.5 -3.7)
+			(at -5.5 -3.7 18)
 			(size 1.7 1.7)
 			(drill 1.7)
 			(layers "*.Cu" "*.Mask")
 			(uuid "82dae3ad-05a1-462b-bfda-4617e5234db7")
 		)
 		(pad "" np_thru_hole circle
-			(at 0 0)
+			(at 0 0 18)
 			(size 3.4 3.4)
 			(drill 3.4)
 			(layers "*.Cu" "*.Mask")
 			(uuid "a38916be-21d3-40a5-ad89-641458848b6b")
 		)
 		(pad "1" smd circle
-			(at -4 0)
+			(at -4 0 18)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "ROW3")
 			(uuid "0f115dde-c42b-4685-9a3a-7ae34f3c8124")
 		)
 		(pad "2" smd circle
-			(at 4 0)
+			(at 4 0 18)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "K_L17_N")
@@ -11106,7 +11140,7 @@
 	(footprint "Jack_3.5mm_CUI_SJ1-3523N_Horizontal"
 		(layer "F.Cu")
 		(uuid "d12b5acb-a53c-401e-b6d1-9e5c8250a985")
-		(at 12 178)
+		(at 5.4 189.5)
 		(property "Reference" "J06"
 			(at 0 0 0)
 			(layer "F.SilkS")
@@ -11238,9 +11272,9 @@
 	(footprint "CHOC_V1"
 		(layer "F.Cu")
 		(uuid "d31dc69e-5188-4f29-9ce2-3e6aaaae88f6")
-		(at 68.51 73.77)
-		(property "Reference" "KEY_R12"
-			(at 0 -10 0)
+		(at 68.509999 73.77 18)
+		(property "Reference" "KEY_R03"
+			(at 0 -10 18)
 			(layer "F.SilkS")
 			(uuid "8451a34a-ff01-4338-94aa-a36a381b87d9")
 			(effects
@@ -11249,8 +11283,8 @@
 				)
 			)
 		)
-		(property "Value" "CHOC"
-			(at 0 10 0)
+		(property "Value" "Kailh Choc v1 hot-swap"
+			(at 0 10 18)
 			(layer "F.Fab")
 			(uuid "e9fa9f59-c61f-4b99-94a5-290826aee418")
 			(effects
@@ -11260,7 +11294,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0 0 0)
+			(at 0 0 18)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "2c34fa36-5592-418f-bc4c-f6d7d421771b")
@@ -11271,7 +11305,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0 0 0)
+			(at 0 0 18)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "56a21300-71e9-401f-a962-96e43e6db94a")
@@ -11283,9 +11317,10 @@
 		)
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
-		(fp_rect
-			(start -9 -9)
-			(end 9 9)
+		(fp_poly
+			(pts
+				(xy -9 -9) (xy 9 -9) (xy 9 9) (xy -9 9)
+			)
 			(stroke
 				(width 0.05)
 				(type default)
@@ -11294,9 +11329,10 @@
 			(layer "F.CrtYd")
 			(uuid "17a115b6-902e-4f8e-99a0-5d3401220a86")
 		)
-		(fp_rect
-			(start -8 -8)
-			(end 8 8)
+		(fp_poly
+			(pts
+				(xy -8 -8) (xy 8 -8) (xy 8 8) (xy -8 8)
+			)
 			(stroke
 				(width 0.1)
 				(type default)
@@ -11306,28 +11342,28 @@
 			(uuid "b461f809-2fc7-43cc-912a-f4deef577f9e")
 		)
 		(pad "" np_thru_hole circle
-			(at -5.5 -3.7)
+			(at -5.5 -3.7 18)
 			(size 1.7 1.7)
 			(drill 1.7)
 			(layers "*.Cu" "*.Mask")
 			(uuid "d3617af8-c426-49da-b426-0568f0573c4b")
 		)
 		(pad "" np_thru_hole circle
-			(at 0 0)
+			(at 0 0 18)
 			(size 3.4 3.4)
 			(drill 3.4)
 			(layers "*.Cu" "*.Mask")
 			(uuid "f21dc0d3-5f0e-4951-bce3-f169b9bbfc14")
 		)
 		(pad "1" smd circle
-			(at -4 0)
+			(at -4 0 18)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "ROW6")
 			(uuid "6ee2093a-fe3d-4db3-82fa-3c05cd7f3f00")
 		)
 		(pad "2" smd circle
-			(at 4 0)
+			(at 4 0 18)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "K_R12_N")
@@ -11338,9 +11374,9 @@
 	(footprint "CHOC_V1"
 		(layer "F.Cu")
 		(uuid "d5800296-3ff6-4901-9ffd-1bcd94564bcb")
-		(at 150.11 62)
-		(property "Reference" "KEY_R18"
-			(at 0 -10 0)
+		(at 131.74 55.21 8)
+		(property "Reference" "KEY_R15"
+			(at 0 -10 8)
 			(layer "F.SilkS")
 			(uuid "f2e5a961-3d2d-42e4-9f86-41cc63ff4d20")
 			(effects
@@ -11349,8 +11385,8 @@
 				)
 			)
 		)
-		(property "Value" "CHOC"
-			(at 0 10 0)
+		(property "Value" "Kailh Choc v1 hot-swap"
+			(at 0 10 8)
 			(layer "F.Fab")
 			(uuid "d9f6965d-0912-40ce-b1b7-2c950859c5c1")
 			(effects
@@ -11360,7 +11396,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0 0 0)
+			(at 0 0 8)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "aaaf5e50-868b-492c-9ef2-565c4f1ce283")
@@ -11371,7 +11407,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0 0 0)
+			(at 0 0 8)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "38a68828-8ce8-466a-9d0f-f52445500786")
@@ -11383,9 +11419,10 @@
 		)
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
-		(fp_rect
-			(start -9 -9)
-			(end 9 9)
+		(fp_poly
+			(pts
+				(xy -9 -9) (xy 9 -9) (xy 9 9) (xy -9 9)
+			)
 			(stroke
 				(width 0.05)
 				(type default)
@@ -11394,9 +11431,10 @@
 			(layer "F.CrtYd")
 			(uuid "1aa6cd52-0bd8-4ac3-85d9-de15c03fd314")
 		)
-		(fp_rect
-			(start -8 -8)
-			(end 8 8)
+		(fp_poly
+			(pts
+				(xy -8 -8) (xy 8 -8) (xy 8 8) (xy -8 8)
+			)
 			(stroke
 				(width 0.1)
 				(type default)
@@ -11406,28 +11444,28 @@
 			(uuid "d70197d1-0bfd-49fd-ab73-09939c734817")
 		)
 		(pad "" np_thru_hole circle
-			(at -5.5 -3.7)
+			(at -5.5 -3.7 8)
 			(size 1.7 1.7)
 			(drill 1.7)
 			(layers "*.Cu" "*.Mask")
 			(uuid "1009d947-08e3-4103-9466-669aff54645d")
 		)
 		(pad "" np_thru_hole circle
-			(at 0 0)
+			(at 0 0 8)
 			(size 3.4 3.4)
 			(drill 3.4)
 			(layers "*.Cu" "*.Mask")
 			(uuid "840e106e-9f73-4051-927e-94db2d928555")
 		)
 		(pad "1" smd circle
-			(at -4 0)
+			(at -4 0 8)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "ROW4")
 			(uuid "7e1200e8-8ff6-46cf-b335-b84059f41d5e")
 		)
 		(pad "2" smd circle
-			(at 4 0)
+			(at 4 0 8)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "K_R18_N")
@@ -12140,9 +12178,9 @@
 	(footprint "CHOC_V1"
 		(layer "F.Cu")
 		(uuid "ee959a7f-f270-4443-9bc1-26d2b7927c31")
-		(at 90.88 63.16)
-		(property "Reference" "KEY_R14"
-			(at 0 -10 0)
+		(at 73.759999 57.599999 18)
+		(property "Reference" "KEY_R07"
+			(at 0 -10 18)
 			(layer "F.SilkS")
 			(uuid "d9fe33c4-48a2-4003-bd02-ef784d832871")
 			(effects
@@ -12151,8 +12189,8 @@
 				)
 			)
 		)
-		(property "Value" "CHOC"
-			(at 0 10 0)
+		(property "Value" "Kailh Choc v1 hot-swap"
+			(at 0 10 18)
 			(layer "F.Fab")
 			(uuid "8a1ea75a-db91-4d63-876a-6fdcaf1fc97e")
 			(effects
@@ -12162,7 +12200,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0 0 0)
+			(at 0 0 18)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "dcbb64e6-6891-4ac2-9a0f-070ca8d0637f")
@@ -12173,7 +12211,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0 0 0)
+			(at 0 0 18)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "133d4c2a-8059-43d8-b147-2c0bc13721f0")
@@ -12185,9 +12223,10 @@
 		)
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
-		(fp_rect
-			(start -9 -9)
-			(end 9 9)
+		(fp_poly
+			(pts
+				(xy -9 -9) (xy 9 -9) (xy 9 9) (xy -9 9)
+			)
 			(stroke
 				(width 0.05)
 				(type default)
@@ -12196,9 +12235,10 @@
 			(layer "F.CrtYd")
 			(uuid "aaab3add-37bf-43b2-aa44-bebc27abc7d2")
 		)
-		(fp_rect
-			(start -8 -8)
-			(end 8 8)
+		(fp_poly
+			(pts
+				(xy -8 -8) (xy 8 -8) (xy 8 8) (xy -8 8)
+			)
 			(stroke
 				(width 0.1)
 				(type default)
@@ -12208,28 +12248,28 @@
 			(uuid "28cfee7c-ef5c-45e3-b870-52312eae9834")
 		)
 		(pad "" np_thru_hole circle
-			(at -5.5 -3.7)
+			(at -5.5 -3.7 18)
 			(size 1.7 1.7)
 			(drill 1.7)
 			(layers "*.Cu" "*.Mask")
 			(uuid "3cfcc38e-0ede-456a-a46a-d5c12cfa5d10")
 		)
 		(pad "" np_thru_hole circle
-			(at 0 0)
+			(at 0 0 18)
 			(size 3.4 3.4)
 			(drill 3.4)
 			(layers "*.Cu" "*.Mask")
 			(uuid "0b103569-bd26-4dc1-b1d0-27c85edb2cab")
 		)
 		(pad "1" smd circle
-			(at -4 0)
+			(at -4 0 18)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "ROW5")
 			(uuid "849d5d46-f8bc-411b-b9a9-68866395a55d")
 		)
 		(pad "2" smd circle
-			(at 4 0)
+			(at 4 0 18)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "K_R14_N")
@@ -12789,9 +12829,9 @@
 	(footprint "CHOC_V1"
 		(layer "F.Cu")
 		(uuid "fb99c357-ce43-4a88-b6b2-7b51581eaa2c")
-		(at 108.81 73.31)
-		(property "Reference" "KEY_R13"
-			(at 0 -10 0)
+		(at 108.81 73.31 13)
+		(property "Reference" "KEY_R05"
+			(at 0 -10 13)
 			(layer "F.SilkS")
 			(uuid "f567aee7-136d-4e88-8b04-be29beb6b946")
 			(effects
@@ -12800,8 +12840,8 @@
 				)
 			)
 		)
-		(property "Value" "CHOC"
-			(at 0 10 0)
+		(property "Value" "Kailh Choc v1 hot-swap"
+			(at 0 10 13)
 			(layer "F.Fab")
 			(uuid "b886c940-ac81-4fa7-896b-e17055bbcf5e")
 			(effects
@@ -12811,7 +12851,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0 0 0)
+			(at 0 0 13)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "7bd2c3ee-2828-407c-91ac-22df9a2c12f1")
@@ -12822,7 +12862,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0 0 0)
+			(at 0 0 13)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "a08286fd-f026-475f-995d-babb557841c6")
@@ -12834,9 +12874,10 @@
 		)
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
-		(fp_rect
-			(start -9 -9)
-			(end 9 9)
+		(fp_poly
+			(pts
+				(xy -9 -9) (xy 9 -9) (xy 9 9) (xy -9 9)
+			)
 			(stroke
 				(width 0.05)
 				(type default)
@@ -12845,9 +12886,10 @@
 			(layer "F.CrtYd")
 			(uuid "32c3983e-cf1b-4b4e-b241-efcc843c77e7")
 		)
-		(fp_rect
-			(start -8 -8)
-			(end 8 8)
+		(fp_poly
+			(pts
+				(xy -8 -8) (xy 8 -8) (xy 8 8) (xy -8 8)
+			)
 			(stroke
 				(width 0.1)
 				(type default)
@@ -12857,28 +12899,28 @@
 			(uuid "78712f10-7628-48ef-afbb-1ca6e0a97756")
 		)
 		(pad "" np_thru_hole circle
-			(at -5.5 -3.7)
+			(at -5.5 -3.7 13)
 			(size 1.7 1.7)
 			(drill 1.7)
 			(layers "*.Cu" "*.Mask")
 			(uuid "bb8a7ac9-c0d4-4a0e-9f2f-8dcc2fad4240")
 		)
 		(pad "" np_thru_hole circle
-			(at 0 0)
+			(at 0 0 13)
 			(size 3.4 3.4)
 			(drill 3.4)
 			(layers "*.Cu" "*.Mask")
 			(uuid "df1d58c7-2eed-4f24-a668-a9623a5090c8")
 		)
 		(pad "1" smd circle
-			(at -4 0)
+			(at -4 0 13)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "ROW6")
 			(uuid "9852cae5-eb43-4cb4-92e0-b088807805c8")
 		)
 		(pad "2" smd circle
-			(at 4 0)
+			(at 4 0 13)
 			(size 2 2)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "K_R13_N")

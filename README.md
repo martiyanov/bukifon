@@ -1,6 +1,6 @@
 # Букифон (Bukifon) — открытая платформа: сэмплер + синтезатор + модули
 
-**Версия: 0.50.0** · сайт: **https://bukifon.ru/** (канон, HTTPS), `bukifon.com` → 301, зеркало: https://martiyanov.github.io/bukifon/ (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
+**Версия: 0.51.0** · сайт: **https://bukifon.ru/** (канон, HTTPS), `bukifon.com` → 301, зеркало: https://martiyanov.github.io/bukifon/ (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
 
 **Букифон** — настольный музыкальный инструмент-платформа, который собирается из
 доступных компонентов, печатается на 3D-принтере, расширяется модулями и полностью
@@ -32,7 +32,7 @@ BLE HID, передача проектов). То есть Букифон — е
 аналоговый картридж на шине 26-pin или сменная панельная дека (18 пэдов / 42 клавиши).
 Подробнее — [spec/00-vision.md §12](spec/00-vision.md).
 
-## Текущее состояние (v0.50.0)
+## Текущее состояние (v0.51.0)
 
 | Блок | Состояние |
 |---|---|
@@ -73,6 +73,7 @@ BLE HID, передача проектов). То есть Букифон — е
 | **PCB rev.1: реальные футпринты** | **0 placeholder**; кастомные `.kicad_mod` (P4-адаптер, C6, MP1584, Choc) + стандартные KiCad (TRS/DC/кнопки/QFN); DRC-классы Default/Power/USB_HS(90 Ω)/Audio/RF; **DRC 0/0**, RULES PASS; план GND-полигонов |
 | **PCB rev.1: нетлист + футпринты** | CORE-2 **373 refs/1224 пада** (16 placeholder), PANEL-2 left/right 181/174 (по 21 Choc), PWR-2 128 (0 placeholder); **DRC 0/0**, verify PASS; unconnected — неразведённые цепи |
 | **PCB rev.1 scaffolds** | KiCad-каркасы: CORE-2 200×108 6L, PANEL-2 2×180×190 4L, PWR-2 90×70 4L/2oz; Edge.Cuts/NPTH/keepout, **DRC 0/0**, verify ±0.05 мм (`hardware/*/rev1/`) |
+| **Раскладка Lapka-42** | клавиши PANEL-2 исправлены: каждая плата — свои 21 (L01–L21 / R01–R21) по spec (остаточное 0.006 мм от Lapka-42), DRC 0/0; превью `docs/assets/panel-lapka-*.png` |
 | **Вырезы разъёмов** | **11 задних**: MIDI IN/OUT **TRS-A Ø8.2** (X30/44), DC Ø9 X91, EXP Ø8.2 X120.5, mic Ø8.2 X140, **LINE OUT** (стерео TRS) X160, PHONES X172, AUDIO IN L/R X184/196, **CV5/6** X208/220; SD 12×2, USB-C; перемычки ≥3.8 мм; B-light **230.9 г/11.2 ч**; fitcheck 16/0 |
 | **Board-fit (PCB rev.1)** | контуры для KiCad: CORE-2 200×108, PANEL-2 две платы 180×180 (360×190), PWR-2 90×70; DXF/assembly/spec, 22 проверки 0 конфликтов (`mechanical/board-fit/`) |
 | **Корпуса** (с микрофоном) | B_mic ≈278 г/18.4 ч, C_mic ≈316 г/20.9 ч (порт/LED/MEMS на панелях; fitcheck 44/0 и 49/0) |
