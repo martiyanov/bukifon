@@ -73,10 +73,10 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
 </head>
 <body>
 <header><div class="wrap">
-  <nav><a href="#about">About</a><a href="#modes">Modes</a><a href="#hardware">Hardware</a><a href="#status">Status</a><a href="#demo">Demo</a><a href="#design">Design</a><a href="#build">Build</a><a href="#kit">Kit</a><a href="#cases">Cases</a><a href="#bench">Benchmark</a><a href="#modules">Modules</a><a href="#docs">Docs</a><a href="../" hreflang="ru">Русский</a></nav>
+  <nav><a href="#about">About</a><a href="#modes">Modes</a><a href="#hardware">Hardware</a><a href="#status">Status</a><a href="#demo">Demo</a><a href="#design">Design</a><a href="#build">Build</a><a href="#limitations">Limitations</a><a href="#kit">Kit</a><a href="#cases">Cases</a><a href="#bench">Benchmark</a><a href="#modules">Modules</a><a href="#docs">Docs</a><a href="../" hreflang="ru">Русский</a></nav>
   <h1>Bukifon <span style="color:var(--mut);font-weight:400">/ Букифон</span></h1>
   <p class="sub">An open-source desktop <strong>synthesizer + sampler + module platform</strong>. 3D-printed case, open KiCad schematics, open C++ firmware.<br><strong>A people's instrument:</strong> kits from <strong>≤ $200</strong> (S3) to <strong>≤ $400</strong> (full P4 + cartridges).</p>
-  <span class="badge">v0.26.1</span><span class="badge">CERN-OHL-S-2.0</span><span class="badge">GPL-3.0-or-later</span><span class="badge">8° wedge · 380×210×61.5</span><span class="badge">Wi-Fi + BT</span><span class="badge">USB HID + MIDI + UAC2</span>
+  <span class="badge">v0.27.0</span><span class="badge">CERN-OHL-S-2.0</span><span class="badge">GPL-3.0-or-later</span><span class="badge">8° wedge · 380×210×61.5</span><span class="badge">Wi-Fi + BT</span><span class="badge">USB HID + MIDI + UAC2</span>
   <p style="margin-top:20px">
     <a class="cta" href="https://github.com/martiyanov/bukifon">GitHub</a>
     <a class="cta alt" href="https://github.com/martiyanov/bukifon/blob/main/docs/12-roadmap.md">Roadmap</a>
@@ -136,7 +136,7 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
 </section>
 
 <section id="status">
-  <h2>Status (v0.26.1)</h2>
+  <h2>Status (v0.27.0)</h2>
     <li>✅ <strong>P4 builds with ESP-IDF v5.5</strong> (idf.py build → bukifon_p4.bin 250 KB, 83 % app partition free);</li>
     <li>✅ firmware: <strong>248/248 tests</strong>, GEN engine (PROB/EUCLID/MUTATE/SCALE/ARP/EVOLVE/SEED), 5 UI pages, 8 presets, 4 screen themes;</li>
     <li>✅ web demo <a href="demo/">/demo/</a>: 16 encoders, ±18° clusters, TRACK/SCENE/DJ faders, REC resampling, presets, 4 themes — UX rubric 9/10;</li>
@@ -154,6 +154,15 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
   <p><strong>Interactive demo:</strong> 5 pages incl. a GEN page (prob/euclid/mutate/scale/arp/evolve/seed), 4 parts × 16 steps, 16 encoders, 42 Lapka-42 keys, 2 faders,
      10 jacks, FM sound and Web MIDI. It is a UI/UX model, not the firmware — but you can feel the workflow now.</p>
   <p><a class="cta" href="demo/">Open demo →</a></p>
+</section>
+
+<section id="limitations">
+  <h2>Honest limitations</h2>
+  <p>What the instrument <strong>does not</strong> do in v1.0-rc — before purchase, not after:
+     S3-lite uses an SPI display (10–20 fps partial) and stereo USB instead of 8×8; looper and
+     vocoder are v1.1; the microphone is for ideas/beatbox/vocoder, not studio vocals; battery is
+     an option, not in the first batch; CC p-lock only on external MIDI tracks (1 CC per step);
+     Module API v0 is experimental. Full list — <a href="https://github.com/martiyanov/bukifon/blob/main/docs/76-known-limitations.md">docs/76</a>.</p>
 </section>
 
 <section id="build">

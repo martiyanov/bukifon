@@ -2,6 +2,19 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.27.0] — 2025-11-06 — «Микрофон в демо и границы версии»
+
+### Добавлено
+- **Демо: запись с микрофона** — MIC → `REC MIC` (до 30 с) → PAD «VOICE nn», WebAudio,
+  без обратной связи; smoke-тест `tools/test_demo_mic.js` (headless Chrome + fake-устройство)
+  → **MIC-DEMO: OK** (2.2 с сэмпл, 0 ошибок).
+- **docs/76 «Известные ограничения»**: SPI-экран S3-lite, USB stereo vs 8×8, лупер/вокодер
+  в backlog, 1 CC p-lock, SDIO 1-bit, батарея не в первой партии, B-light/A/C особенности,
+  Module API v0, цены ±30 % — всё честно и до покупки.
+
+### Изменено
+- docs/58 — MIC REC; README — docs/76.
+
 ## [0.26.1] — 2025-11-06 — «Вариант A в текущем генераторе»
 
 ### Добавлено

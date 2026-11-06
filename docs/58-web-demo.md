@@ -20,6 +20,7 @@ python3 -m http.server 8000 -d docs
 | **16 энкодеров вокруг экрана**: А–З — параметры страницы, И–П — макросы; **зеркальная карта** — у каждой ручки своя ячейка на экране | страницы MAIN/FM/ENV/FX/GEN |
 | **Фейдеры-режимы** | TRACK / SCENE (Octatrack A↔B морфинг) / DJ (equal-power); **Shift+фейдер = громкость** |
 | **REC / ресемплинг** | кнопка REC или R: запись выхода → PAD, играть/loop; 1–4 = пэды |
+| **MIC RÉC** | MIC (вход) → `REC MIC` → PAD «VOICE nn» (fake-устройство в тесте) |
 | **Контекст-строка** | PART · SELECTED · PAGE · FADERS · THEME · REC · UNSAVED — всегда на экране |
 | **HOME / UNDO / COMPARE** | один жест в MAIN, откат, A/B сравнение паттерна |
 | **Shift = overlay слоёв** | подсказка жестов L1/L2/L3 и фейдеров |

@@ -73,10 +73,10 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
 </head>
 <body>
 <header><div class="wrap">
-  <nav><a href="#about">О проекте</a><a href="#modes">Режимы</a><a href="#hardware">Железо</a><a href="#status">Статус</a><a href="#demo">Демо</a><a href="#design">Дизайн</a><a href="#build">Сборка</a><a href="#kit">Комплект</a><a href="#cases">Корпуса</a><a href="#bench">Бенчмарк</a><a href="#modules">Модули</a><a href="#docs">Документы</a><a href="en/" hreflang="en">English</a></nav>
+  <nav><a href="#about">О проекте</a><a href="#modes">Режимы</a><a href="#hardware">Железо</a><a href="#status">Статус</a><a href="#demo">Демо</a><a href="#design">Дизайн</a><a href="#build">Сборка</a><a href="#limitations">Ограничения</a><a href="#kit">Комплект</a><a href="#cases">Корпуса</a><a href="#bench">Бенчмарк</a><a href="#modules">Модули</a><a href="#docs">Документы</a><a href="en/" hreflang="en">English</a></nav>
   <h1>Букифон <span style="color:var(--mut);font-weight:400">/ Bukifon</span></h1>
   <p class="sub">Открытый настольный <strong>синтезатор + сэмплер + платформа модулей</strong>. 3D-печатный корпус, открытые схемы KiCad, открытая прошивка C++.<br><strong>Народный инструмент:</strong> комплект от <strong>≤ $200</strong> (S3) до <strong>≤ $400</strong> (полный с P4 и картриджами).</p>
-  <span class="badge">v0.26.1</span><span class="badge">CERN-OHL-S-2.0</span><span class="badge">GPL-3.0-or-later</span><span class="badge">клин 8° · 380×210×61.5</span><span class="badge">Wi-Fi + BT</span><span class="badge">USB HID + MIDI + UAC2</span>
+  <span class="badge">v0.27.0</span><span class="badge">CERN-OHL-S-2.0</span><span class="badge">GPL-3.0-or-later</span><span class="badge">клин 8° · 380×210×61.5</span><span class="badge">Wi-Fi + BT</span><span class="badge">USB HID + MIDI + UAC2</span>
   <p style="margin-top:20px">
     <a class="cta" href="https://github.com/martiyanov/bukifon">GitHub</a>
     <a class="cta alt" href="https://github.com/martiyanov/bukifon/blob/main/docs/12-roadmap.md">Дорожная карта</a>
@@ -136,7 +136,7 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
 </section>
 
 <section id="status">
-  <h2>Статус (v0.26.1)</h2>
+  <h2>Статус (v0.27.0)</h2>
     <li>✅ <strong>P4 собирается по ESP-IDF v5.5</strong> (idf.py build → bukifon_p4.bin 250 КБ, 83 % app-раздела свободно);</li>
     <li>✅ прошивка: <strong>248/248 тестов</strong>, GEN-движок (PROB/EUCLID/MUTATE/SCALE/ARP/EVOLVE/SEED), UI 5 страниц, 8 пресетов, 4 темы экрана;</li>
     <li>✅ веб-демо <a href="demo/">/demo/</a>: 16 энкодеров, кластеры ±18°, фейдеры TRACK/SCENE/DJ, REC-ресемплинг, пресеты, 4 темы — UX-рубрика 9/10;</li>
@@ -155,6 +155,15 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
   <p><a class="cta" href="demo/">Открыть демо →</a></p>
   <p style="color:#6f969b;font-size:12px">Философия и «зеркальная карта» ручка↔ячейка — <a href="https://github.com/martiyanov/bukifon/blob/main/docs/68-interface-philosophy.md">docs/68</a>; читаемость на 5″ 800×480 — <a href="https://github.com/martiyanov/bukifon/blob/main/docs/69-screen-legibility.md">docs/69</a>. Внешнее ревью: <strong>8,5/10</strong>; топология панели совпадает (<a href="https://github.com/martiyanov/bukifon/blob/main/docs/67-panel-demo-layout.md">docs/67</a>).</p>
   <p style="color:#6f969b;font-size:12px">В демо: страницы MAIN/FM/ENV/FX/GEN, макросы выбранных партий, фейдеры TRACK/SCENE/DJ + Shift, REC-ресемплинг, пресеты/COMPARE, 4 темы, share паттерна.</p>
+</section>
+
+<section id="limitations">
+  <h2>Честные ограничения</h2>
+  <p>Что инструмент <strong>не</strong> делает в v1.0-rc — до покупки, а не после:
+     S3-lite — SPI-экран (10–20 fps partial) и стерео USB вместо 8×8; лупер и вокодер — v1.1;
+     микрофон — для идей/битбокса/вокодера, не студийный вокал; батарея — опция, не в первой партии;
+     p-lock CC — только внешние MIDI-треки (1 CC на шаг); Module API v0 — экспериментальный.
+     Полный список — <a href="https://github.com/martiyanov/bukifon/blob/main/docs/76-known-limitations.md">docs/76</a>.</p>
 </section>
 
 <section id="build">

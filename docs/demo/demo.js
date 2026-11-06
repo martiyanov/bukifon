@@ -186,7 +186,7 @@ function drawTestOverlay(){
   ctx.fillStyle=T.line; ctx.fillRect(40,240,W-80,6); ctx.fillStyle=T.green; ctx.fillRect(40,240,(W-80)*(res.idx/UTASKS.length),6);
 }
 /* ---------- микрофон: уровень, запись, битбокс ---------- */
-let micStream=null, micAnalyser=null, micData=null, beatTimer=null, beatHits=[];
+let micStream=null, micAnalyser=null, micData=null, beatTimer=null, beatHits=[], micRecNode=null, micChunks=[], micRecording=false, micSrcNode=null, micGainNode=null;
 async function micToggle(){
   if(state.mic.on){ micStop(); flashMsg("MIC OFF"); return; }
   try{
@@ -196,11 +196,26 @@ async function micToggle(){
     const g=AC.createGain(); g.gain.value=state.mic.gain;
     micAnalyser=AC.createAnalyser(); micAnalyser.fftSize=1024; micData=new Uint8Array(micAnalyser.fftSize);
     src.connect(g); g.connect(micAnalyser); // НЕ в destination — без обратной связи
+    micSrcNode=src; micGainNode=g;
+    micRecNode=AC.createScriptProcessor(4096,1,1);
+    micRecNode.onaudioprocess=(ev)=>{ if(!micRecording) return; const d=ev.inputBuffer.getChannelData(0); micChunks.push(new Float32Array(d)); if(micChunks.length> (30*48000/4096)) stopMicRec(); };
+    g.connect(micRecNode); const silent=AC.createGain(); silent.gain.value=0; micRecNode.connect(silent); silent.connect(AC.destination);
     state.mic.on=true; $("btnMic").classList.add("on");
     flashMsg("MIC ON (монитор выключен)"); renderContextBar();
-  }catch(e){ flashMsg("MIC: нет доступа/устройства"); }
+  }catch(e){ state.mic.err=String(e && e.message || e); flashMsg("MIC: "+state.mic.err); }
 }
-function micStop(){ if(micStream){ micStream.getTracks().forEach(t=>t.stop()); micStream=null; } micAnalyser=null; state.mic.on=false; state.mic.level=0; $("btnMic").classList.remove("on"); renderContextBar(); }
+function micStop(){ if(micRecording) stopMicRec(); if(micStream){ micStream.getTracks().forEach(t=>t.stop()); micStream=null; } micAnalyser=null; micRecNode=null; state.mic.on=false; state.mic.level=0; $("btnMic").classList.remove("on"); renderContextBar(); }
+function startMicRec(){ if(!state.mic.on){ flashMsg("включите MIC"); return; } if(micRecording) return; micChunks=[]; micRecording=true; $("btnRecMic").classList.add("on"); flashMsg("REC MIC ● (до 30 с)"); }
+function stopMicRec(){
+  if(!micRecording) return; micRecording=false; $("btnRecMic").classList.remove("on");
+  let len=0; for(const c of micChunks) len+=c.length;
+  if(len<2048 || !AC){ flashMsg("MIC REC: слишком коротко"); micChunks=[]; return; }
+  const buf=AC.createBuffer(1,len,AC.sampleRate); const ch=buf.getChannelData(0); let off=0;
+  for(const c of micChunks){ ch.set(c,off); off+=c.length; }
+  state.pads.push({name:`VOICE ${String(state.pads.length+1).padStart(2,"0")}`, buffer:buf, loop:false});
+  micChunks=[]; flashMsg(`MIC → PAD ${state.pads.length} (${(len/AC.sampleRate).toFixed(1)} с)`); if(TEST) TEST.record=true; save();
+}
+function toggleMicRec(){ micRecording?stopMicRec():startMicRec(); }
 function micLevel(){ if(!micAnalyser) return 0; micAnalyser.getByteTimeDomainData(micData); let s=0; for(let i=0;i<micData.length;i++){const v=(micData[i]-128)/128; s+=v*v;} return Math.sqrt(s/micData.length); }
 async function beatboxToSteps(){
   if(!state.mic.on){ await micToggle(); if(!state.mic.on) return; }
@@ -861,6 +876,7 @@ function bindUI(){
   const micBtn=$("btnMic"); if(micBtn) micBtn.addEventListener("click",micToggle);
   const bbBtn=$("btnBeatbox"); if(bbBtn) bbBtn.addEventListener("click",beatboxToSteps);
   const mg=$("micGain"); if(mg) mg.addEventListener("input",(e)=>{ state.mic.gain=+e.target.value/100; });
+  const rm=$("btnRecMic"); if(rm) rm.addEventListener("click",toggleMicRec);
   const home=$("btnHome"); if(home) home.addEventListener("click",goHome);
   const undoBtn=$("btnUndo"); if(undoBtn) undoBtn.addEventListener("click",undo);
   if(new URLSearchParams(location.search).get("test")==="1"){ startTest(); setInterval(checkTest,100); const tb=document.getElementById("btnTest"); if(tb){tb.textContent="COPY JSON"; tb.onclick=copyTestResults; tb.style.display="inline-block";} }

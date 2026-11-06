@@ -67,3 +67,5 @@ body.capture canvas{border-radius:0;width:800px;height:480px;display:block}
 
 #btnMic.on{background:#5a1f1f;border-color:#ff5c5c;color:#ffd9d9}
 #btnBeatbox.on{background:#1f5a7a;border-color:#4fd1e0}
+
+#btnRecMic.on{background:#5a1f1f;border-color:#ff5c5c;color:#ffd9d9}
