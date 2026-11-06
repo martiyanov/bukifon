@@ -38,33 +38,39 @@ def pad_extent(fp):
     if not xs: return 3.0,3.0
     return max(2.0,max(xs)-min(xs)+0.8), max(2.0,max(ys)-min(ys)+0.8)
 def place(comps,W,H,holes,forb,sizes):
-    placed={};occ=[]
-    def clash(x,y,w,h):
-        for ox,oy,ow,oh in occ:
-            if abs(x-ox)<(w+ow)/2+0.6 and abs(y-oy)<(h+oh)/2+0.6: return True
-        for hx,hy in holes:
-            nx=min(max(hx,x-w/2),x+w/2); ny=min(max(hy,y-h/2),y+h/2)
-            if math.hypot(hx-nx,hy-ny)<2.0: return True
-        for (_n,fx0,fy0,fx1,fy1) in forb:
-            if x+w/2>fx0 and x-w/2<fx1 and y+h/2>fy0 and y-h/2<fy1: return True
-        return False
+    """MaxRects bin packing into board rectangle; obstacles = keepouts + holes."""
+    free=[(0.0,0.0,W,H)]
+    def subtract(free, ox0,oy0,ox1,oy1):
+        out=[]
+        for (x0,y0,x1,y1) in free:
+            if ox1<=x0 or ox0>=x1 or oy1<=y0 or oy0>=y1: out.append((x0,y0,x1,y1)); continue
+            if oy0>y0: out.append((x0,y0,x1,oy0))
+            if oy1<y1: out.append((x0,oy1,x1,y1))
+            if ox0>x0: out.append((x0,max(y0,oy0),ox0,min(y1,oy1)))
+            if ox1<x1: out.append((ox1,max(y0,oy0),x1,min(y1,oy1)))
+        return [r for r in out if r[2]-r[0]>0.4 and r[3]-r[1]>0.4]
+    for (_n,fx0,fy0,fx1,fy1) in forb:
+        free=subtract(free,fx0-0.8,fy0-0.8,fx1+0.8,fy1+0.8)
+    for (hx,hy) in holes:
+        free=subtract(free,hx-4.0,hy-4.0,hx+4.0,hy+4.0)
+    placed={}
     refs=sorted(comps, key=lambda r: -(sizes[r][0]*sizes[r][1]))
-    x0=6.0;y0=6.0;gap=0.8;x=x0;y=y0;row_h=0
     for ref in refs:
-        w,h=sizes[ref]; tries=0
-        while True:
-            if x-w/2<2: x=w/2+2
-            if y-h/2<2: y=h/2+2
-            if x+w/2>W-2: x=x0; y+=row_h+gap; row_h=0; tries+=1
-            if y+h/2>H-2:
-                # fallback: second compact pass at small gap (scaffold; may overlap)
-                gap=max(0.15,gap*0.5); x=w/2+2; y=h/2+2; row_h=0; tries+=1
-                if tries>200: break
-            if not clash(x,y,w,h): break
-            x+=w+gap; tries+=1
-            if tries>8000: break
-        placed[ref]=(x,y,w,h);occ.append((x,y,w,h));row_h=max(row_h,h);x+=w+gap
+        w,h=sizes[ref]; w+=0.6; h+=0.6
+        best=None
+        for (x0,y0,x1,y1) in free:
+            fw=x1-x0; fh=y1-y0
+            if w<=fw and h<=fh:
+                score=min(fw-w, fh-h)
+                if best is None or score<best[0]: best=(score,x0,y0,x1,y1)
+        if best is None:
+            placed[ref]=(W/2,H/2,sizes[ref][0],sizes[ref][1]); continue
+        _,x0,y0,x1,y1=best
+        px=x0+w/2; py=y0+h/2
+        placed[ref]=(px,py,sizes[ref][0],sizes[ref][1])
+        free=subtract(free,x0,y0,px+w/2,py+h/2)
     return placed
+
 def split_rect(W,H,forb):
     rects=[(0.5,0.5,W-0.5,H-0.5)]
     for (_n,fx0,fy0,fx1,fy1) in forb:
@@ -85,10 +91,11 @@ def add_zone(board,net,rects,layer):
         o=z.Outline(); o.NewOutline()
         for (x,y) in [(x0,y0),(x1,y0),(x1,y1),(x0,y1)]: o.Append(U(x),U(y))
         board.Add(z)
-def add_stitching(board,net,W,H,margin=1.2,pitch=8.0):
+def add_stitching(board,net,W,H,margin=1.2,pitch=8.0,skip=None):
     x=margin
     while x<W-margin:
         for y in (margin,H-margin):
+            if skip and skip(x,y): continue
             v=pcbnew.PCB_VIA(board); v.SetPosition(pcbnew.VECTOR2I(U(x),U(y)))
             v.SetDrill(U(0.3)); v.SetWidth(U(0.6)); v.SetNet(net); v.SetViaType(pcbnew.VIATYPE_THROUGH)
             v.SetLayerPair(pcbnew.F_Cu,pcbnew.B_Cu); board.Add(v)
@@ -96,6 +103,7 @@ def add_stitching(board,net,W,H,margin=1.2,pitch=8.0):
     y=margin
     while y<H-margin:
         for x in (margin,W-margin):
+            if skip and skip(x,y): continue
             v=pcbnew.PCB_VIA(board); v.SetPosition(pcbnew.VECTOR2I(U(x),U(y)))
             v.SetDrill(U(0.3)); v.SetWidth(U(0.6)); v.SetNet(net); v.SetViaType(pcbnew.VIATYPE_THROUGH)
             v.SetLayerPair(pcbnew.F_Cu,pcbnew.B_Cu); board.Add(v)
@@ -139,8 +147,11 @@ def main():
         holes=[(h['local'][0],H-h['local'][1]) for h in bdef.get('mounting',{}).get('holes',[])]
         forb=[]
         for k in bdef.get('keepouts',[]):
-            if k['id'] in ('C6-antenna','screen') and k.get('type')=='rect':
-                x0,y0,x1,y1=k['rect_local']; forb.append((k['id'],max(0,x0),H-min(H,y1),min(W,x1),H-max(0,y0)))
+            if k.get('type')=='rect':
+                x0,y0,x1,y1=k['rect_local']
+                forb.append((k['id'],max(0,x0),H-min(H,y1),min(W,x1),H-max(0,y0)))
+            else:
+                cx,cy,r=k['circle_local']; forb.append((k['id'],max(0,cx-r),H-min(H,cy+r),min(W,cx+r),H-max(0,cy-r)))
         placed=place(comps,W,H,holes,forb,sizes)
         pin_net={}
         for name,nodes in nets.items():
@@ -162,7 +173,12 @@ def main():
             add_zone(board,agnd,[(162,10,198,34)],pcbnew.B_Cu)
         if bid=='PWR-2' and pgnd:
             add_zone(board,pgnd,[(2,2,44,44)],pcbnew.F_Cu); add_zone(board,pgnd,[(2,2,44,44)],pcbnew.B_Cu)
-        if gnd: add_stitching(board,gnd,W,H)
+        if gnd:
+            def inside_keepout(x,y):
+                for (_n,fx0,fy0,fx1,fy1) in forb:
+                    if fx0<=x<=fx1 and fy0<=y<=fy1: return True
+                return False
+            add_stitching(board,gnd,W,H,skip=inside_keepout)
         filler=pcbnew.ZONE_FILLER(board); filler.Fill(board.Zones())
         pcbnew.SaveBoard(path,board)
         print('%-14s comps=%d placed=%d zones=%d' % (bid,len(comps),len(placed),len(board.Zones())))

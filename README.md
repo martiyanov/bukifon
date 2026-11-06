@@ -1,6 +1,6 @@
 # Букифон (Bukifon) — открытая платформа: сэмплер + синтезатор + модули
 
-**Версия: 0.48.1** · сайт: **https://bukifon.ru/** (канон, HTTPS), `bukifon.com` → 301, зеркало: https://martiyanov.github.io/bukifon/ (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
+**Версия: 0.49.0** · сайт: **https://bukifon.ru/** (канон, HTTPS), `bukifon.com` → 301, зеркало: https://martiyanov.github.io/bukifon/ (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
 
 **Букифон** — настольный музыкальный инструмент-платформа, который собирается из
 доступных компонентов, печатается на 3D-принтере, расширяется модулями и полностью
@@ -32,7 +32,7 @@ BLE HID, передача проектов). То есть Букифон — е
 аналоговый картридж на шине 26-pin или сменная панельная дека (18 пэдов / 42 клавиши).
 Подробнее — [spec/00-vision.md §12](spec/00-vision.md).
 
-## Текущее состояние (v0.48.1)
+## Текущее состояние (v0.49.0)
 
 | Блок | Состояние |
 |---|---|
@@ -69,10 +69,11 @@ BLE HID, передача проектов). То есть Букифон — е
 | **PWR-стенд** | 13 измерений до PCB (`docs/44`); BOM: база $123.92 + EVM $153 = **$276.92** (вариант A, D-79); breadboard запрещён |
 | **Fab dry-run** | 4 пакета `fab/*/rev1-scaffold`: 16 Gerber-слоёв, PTH+NPTH (129/45/45/4 отверстий), CPL⊆BOM, Edge.Cuts, **checker PASS**; `tools/export_fab_dryrun.sh` — проверка пайплайна до заказа |
 | **P4 NVS/partitions** | `partitions.csv` (nvs 24K, factory 1 MiB, storage 1 MiB, coredump 64K), real NVS backend, self-test `project.meta`/`lang`; **bin 369 552 Б, 65 % factory свободно** |
+| **PCB rev.1: статус** | 0 placeholder, но **328 упрощённых падов** и GND без заливки: полные реальные пассивы/зоны **не проходят DRC** на 200×108 при 373 компонентах — оставлен DRC-clean каркас (0/0); скрипты упаковки/зон сохранены до трассировки после MCU freeze (docs/82 §12, D-105) |
 | **PCB rev.1: реальные футпринты** | **0 placeholder**; кастомные `.kicad_mod` (P4-адаптер, C6, MP1584, Choc) + стандартные KiCad (TRS/DC/кнопки/QFN); DRC-классы Default/Power/USB_HS(90 Ω)/Audio/RF; **DRC 0/0**, RULES PASS; план GND-полигонов |
 | **PCB rev.1: нетлист + футпринты** | CORE-2 **373 refs/1224 пада** (16 placeholder), PANEL-2 left/right 181/174 (по 21 Choc), PWR-2 128 (0 placeholder); **DRC 0/0**, verify PASS; unconnected — неразведённые цепи |
 | **PCB rev.1 scaffolds** | KiCad-каркасы: CORE-2 200×108 6L, PANEL-2 2×180×190 4L, PWR-2 90×70 4L/2oz; Edge.Cuts/NPTH/keepout, **DRC 0/0**, verify ±0.05 мм (`hardware/*/rev1/`) |
-| **Вырезы разъёмов** | MIDI Ø14 X76, DC Ø9 X91, EXPRESSION Ø8.2 X120.5, mic Ø8.2 X140, SD 12×2 слева, USB-C; перемычки ≥3.5 мм; B-light **231.1 г/11.2 ч**; fitcheck 16/0 |
+| **Вырезы разъёмов** | **11 задних**: MIDI IN/OUT **TRS-A Ø8.2** (X30/44), DC Ø9 X91, EXP Ø8.2 X120.5, mic Ø8.2 X140, **LINE OUT** (стерео TRS) X160, PHONES X172, AUDIO IN L/R X184/196, **CV5/6** X208/220; SD 12×2, USB-C; перемычки ≥3.8 мм; B-light **230.9 г/11.2 ч**; fitcheck 16/0 |
 | **Board-fit (PCB rev.1)** | контуры для KiCad: CORE-2 200×108, PANEL-2 две платы 180×180 (360×190), PWR-2 90×70; DXF/assembly/spec, 22 проверки 0 конфликтов (`mechanical/board-fit/`) |
 | **Корпуса** (с микрофоном) | B_mic ≈278 г/18.4 ч, C_mic ≈316 г/20.9 ч (порт/LED/MEMS на панелях; fitcheck 44/0 и 49/0) |
 | **Корпуса** | A flat 302 г · B 8° 277 г · **B-light 230 г / 11.1 ч** · C 12° 314 г (батарейный отсек, подставка) — `docs/45` |

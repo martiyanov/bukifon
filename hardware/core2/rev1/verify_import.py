@@ -44,6 +44,12 @@ for bid, specid, rel, net in JOBS:
     rows.append((bid,expected,len(refs),len(fps),len(ph),len(pads),viol,unc,ant))
 print('%-14s %-7s %-7s %-8s %-11s %-6s %-5s %-7s %-6s' % ('board','refs','onPCB','fprints','placeholders','pads','DRC','unconn','antenna'))
 for r in rows: print('%-14s %-7d %-7d %-8d %-11d %-6d %-5d %-7d %-6d' % r)
+# simplified-pad counter (0.5 x 0.8 mm) — target 0 after full footprint replacement
+simp=0
+for bid,specid,rel,net in JOBS:
+    t=open(os.path.join(ROOT,rel),encoding='utf-8').read()
+    simp += len(re.findall(r'\(pad "[^"]*" smd rect \(at [^)]*\) \(size 0\.5 0\.8\)', t))
+print('SIMPLIFIED PADS (0.5x0.8): %d (target 0 after full footprint replacement)' % simp)
 print('\nPLACEHOLDERS (need real footprints before routing):')
 for bid,specid,rel,net in JOBS:
     txt=open(os.path.join(ROOT,rel),encoding='utf-8').read()

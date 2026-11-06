@@ -175,6 +175,7 @@ firmware/README). Этот файл фиксирует актуальные тр
 | D-102 | 06.11 | Первый импорт нетлиста в каркасы: CORE-2 373 refs/16 placeholder, PANEL-2 L181+R174/21+21, PWR-2 128/0; DRC 0 errors, unconnected зафиксированы; трассировка — после MCU freeze | docs/82 §10 + hardware/*/rev1 |
 | D-103 | 06.11 | Реальные футпринты (0 placeholder): custom A1/C6/MP1584/CHOC + KiCad стандартные; DRC-классы/impedance (USB_HS 90 Ω, Power/Audio/RF), правила; DRC 0/0; GND-полигоны — план до трассировки | docs/82 §11 + hardware/*/rev1 |
 | D-104 | 06.11 | Fab dry-run из каркасов rev.1: gerbers/drill/CPL/BOM/PDF в `fab/<board>/rev1-scaffold`, `tools/export_fab_dryrun.sh`, checker PASS (4 пакета); не для заказа PCB | docs/83 §8 + fab/ |
+| D-105 | 06.11 | Реальные пассивы и GND-полигоны rev.1 — **частично**: 0 placeholder, стандартные пады упрощённые (328), GND/AGND/PGND не залиты (DRC не проходит из-за плотности); скрипты `build_full_pcb.py`/`add_gnd_zones.py` сохранены; нужен MCU freeze + трассировка | docs/82 §12 + hardware/*/rev1 |
 | D-96 | 06.11 | Сборка: прототипы — Резонит/Интер-Плата, пилот — А-Контракт/НПП Асти/Телерем, корпуса — Modelica3D/ПИМТЕХ/фаблаб, профильная сборка — VG-Line (Москва) | docs/72 |
 | D-95 | 06.11 | Принцип «идея → звук»: метрики time-to-sound ≤10 с, time-to-idea ≤30 с, blind-тест 5 людей — в docs/68 | docs/68 |
 | D-90 | 06.11 | Паритет-цель v1.0-rc: 8 треков/канал/PC/vel/length, clock, transport, 1 CC p-lock, GEN, save/load | docs/70 |
