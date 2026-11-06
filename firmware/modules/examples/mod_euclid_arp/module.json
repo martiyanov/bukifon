@@ -1,0 +1,54 @@
+{
+  "schema": "bukifon.module.v2",
+  "id": "bukifon.mod_euclid_arp",
+  "name": "Euclid Arp",
+  "version": "0.2.0",
+  "api": "0.2.0",
+  "author": "Bukifon",
+  "abi": "any",
+  "permissions": [
+    "audio",
+    "params",
+    "seq"
+  ],
+  "params": [
+    {
+      "id": 0,
+      "name": "EUCLID",
+      "type": "int",
+      "min": 0.0,
+      "max": 16.0,
+      "default": 5.0,
+      "unit": "steps"
+    },
+    {
+      "id": 1,
+      "name": "SEED",
+      "type": "int",
+      "min": 1.0,
+      "max": 4294967295.0,
+      "default": 1.0
+    },
+    {
+      "id": 2,
+      "name": "MODE",
+      "type": "float",
+      "min": 0.0,
+      "max": 2.0,
+      "default": 0.0
+    },
+    {
+      "id": 3,
+      "name": "RATE",
+      "type": "float",
+      "min": 0.0,
+      "max": 2.0,
+      "default": 1.0
+    }
+  ],
+  "dsp": "model.hpp",
+  "size": 1645,
+  "sha256": "4a829c73c58580de666b6861398b40cd5a71255cd5dcaca659c035312ead2583",
+  "license": "GPL-3.0-or-later",
+  "description": "Deterministic Euclidean arpeggiator (generative/control)"
+}

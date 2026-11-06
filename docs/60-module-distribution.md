@@ -53,3 +53,17 @@ bukifon.gain_fx-0.1.0.zip
 
 `.github/workflows/modules.yml` валидирует и компилирует примеры при каждом PR.
 Добавить новый модуль = папка в `modules/<vendor>/<name>/` + `module.json`.
+
+---
+
+## SDK v0.2 (раунд 20)
+
+Каталог/упаковка перешли на `bukifon.module.v2`:
+
+- манифест: `schema/id/name/version/api/author/abi/permissions/params/dsp/size/sha256/license/description`;
+- `firmware/tools/package_module.py --check` валидирует манифест и SHA-256 DSP;
+  обычный запуск собирает zip с `module.package.json` (SHA-256 каждого файла);
+- loader (`firmware/src/modules/module_loader.*`) проверяет API major/minor, ABI,
+  размер и SHA-256 **до** установки/исполнения; несовместимое отклоняется;
+- примеры: `firmware/modules/examples/mod_tape_delay`, `mod_euclid_arp`;
+- реальная загрузка/подпись/песочница на железе — TODO(hw), см. docs/24 §SDK v0.2.

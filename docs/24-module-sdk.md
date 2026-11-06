@@ -149,3 +149,69 @@ make -C firmware/host test && python3 tools/validate_module.py modules/my-handle
 - модули по умолчанию **GPL-3.0-or-later** (совместимо с прошивкой);
 - примеры допускаются MIT/Apache-2.0;
 - аналоговые картриджи — CERN-OHL-S-2.0, если повторяют открытую схему.
+
+---
+
+## SDK v0.2 — манифест, loader, примеры (раунд 20)
+
+**Статус:** host-реализовано и покрыто тестами (351/351); реальные
+динамические библиотеки/песочница на P4 — TODO(hw). ABI-таблица остаётся
+`bukifon_module.h` v0.1 (major 0), SDK v0.2 добавляет **манифест/упаковку/loader**.
+
+### Манифест `bukifon.module.v2`
+
+```json
+{
+  "schema": "bukifon.module.v2",
+  "id": "bukifon.mod_tape_delay",
+  "name": "Tape Delay",
+  "version": "0.2.0",
+  "api": "0.2.0",
+  "author": "Bukifon",
+  "abi": "any",
+  "permissions": ["audio", "params"],
+  "params": [{"id":0,"name":"TIME","type":"float","min":20,"max":1000,"default":250,"unit":"ms"}],
+  "dsp": "model.hpp",
+  "size": 1929,
+  "sha256": "772397c32b6e8e7b346a17b5bf4823a45ec6ad583a635b38e58340773c8db220",
+  "license": "GPL-3.0-or-later",
+  "description": "Tape-style feedback delay"
+}
+```
+
+Правила: `id` `[a-z0-9._-]{3,63}`; `version`/`api` — SemVer; `abi` ∈
+`host|p4|s3|any`; `permissions` — непустое подмножество `audio/params/seq/io`;
+`params` 1–16, уникальные id, `min < max`, `default ∈ [min,max]`; `dsp` — entry
+файл; `size` 1 B…64 MiB; `sha256` — 64 hex (SHA-256 payload).
+
+### Loader (host)
+
+`firmware/src/modules/module_manifest.*` — парсер + валидатор с понятными
+ошибками; `module_loader.*` — `ModuleLoader::load(manifestJson,payload,...)` /
+`loadFiles(...)`:
+- API-совместимость: **major совпадает** (`0`), minor модуля ≤ host minor
+  (`0.2`); несовместимый — отказ;
+- ABI target, размер и SHA-256 payload (`moduleSha256`, стандартный вектор
+  `abc` проверен);
+- **до исполнения**: при любой ошибке модуль НЕ устанавливается, ничего не
+  исполняется (`executedAnything() == false`), внятный `lastError()`;
+- список установленных: id/version/sha256/size/permissions, `find()/at()/count()`,
+  счётчики attempts/rejected (макс. 16 модулей).
+
+### Примеры
+
+- `firmware/modules/examples/mod_tape_delay/` — эффект (tape delay); манифест +
+  `model.hpp` + README/LICENSE; impulse → эхо через delay, детерминизм.
+- `firmware/modules/examples/mod_euclid_arp/` — генеративный/control (Euclidean
+  16-step arp + seed→velocity); детерминированные шаги/ноты, 5/16.
+- Упаковка: `firmware/tools/package_module.py <path> --check` (проверка
+  манифеста/size/sha), без `--check` — zip (`manifest.json + dsp + README +
+  LICENSE + module.package.json` с SHA-256 файлов).
+
+### Ограничения / TODO(hw)
+
+- Динамическая загрузка ABI-библиотек на P4, изоляция памяти, watchdog и
+  проверка подписи (Ed25519) — не реализованы; сейчас loader — статическая
+  валидация/установка в модель, аудио-модули собираются в прошивку.
+- ABI major остаётся 0 (экспериментальный); публичный SDK v1 — после P1.
+- Песочница audio-rate кода (MCU MPU/отдельный RP2350-картридж) — backlog.

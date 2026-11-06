@@ -44,7 +44,7 @@ firmware/
   engine_unity.cpp / sim_unity.cpp  PlatformIO unity translation units
   Bukifon/      RP2040 Arduino sketch: Bukifon.ino + platformio.ini
   host/         native build (Makefile + CMakeLists.txt), WAV renderer
-  tests/        unit tests (331), FFT analysis, run_tests.sh, run_sim_demo.sh, REPORT.md
+  tests/        unit tests (351), FFT analysis, run_tests.sh, run_sim_demo.sh, REPORT.md
   tools/        wavetable/font generators, ppm_to_png.py, build_pico.sh
   artifacts/    generated 800x480 UI screenshots + demo logs (git-ignored)
 ```
@@ -52,7 +52,7 @@ firmware/
 ## v0.5 host prototype — what to run
 
 ```bash
-make -C firmware/host test          # 331 unit tests
+make -C firmware/host test          # 351 unit tests
 firmware/tests/run_tests.sh         # build + tests + WAV render + FFT report
 firmware/tests/run_sim_demo.sh      # 16-bar demo, event-log determinism, 4 PNG
 ```
@@ -95,7 +95,7 @@ firmware/tests/run_tests.sh         # full pipeline: build, tests, WAV render, F
 
 Latest measured results (see `tests/REPORT.md` and `tests/out/test_log.txt`):
 
-- **331 unit tests, 0 failures** (Apple clang 21, C++17, `-O2`)
+- **351 unit tests, 0 failures** (Apple clang 21, C++17, `-O2`)
 - line coverage **83.5 %** (4347/5204 lines, gcov, generated tables excluded)
 - host demo: 16 bars, 1024 note-ons, 32 p-locks, deterministic event log, 4 PNG screens
 - A4 = **440.0000 Hz** (error `-0.0000 %`, limit ±0.1 %)
@@ -144,6 +144,17 @@ export PLATFORMIO_CORE_DIR=/tmp/piocore
 RAM 87.7 % — запас ~32 KiB; при добавлении эффектов/модулей оптимизировать
 буферы (delay-линия, пресет-кэш, 8-дорожечный секвенсор) или перенести часть в
 PSRAM (RP2350).
+
+## Round 20 — Module SDK v0.2
+
+- **Manifest v2** (`firmware/src/modules/module_manifest.*`): id/name/version/
+  api/author/abi/permissions/params/dsp/size/sha256/license/description with
+  strict validation and readable errors; **loader** checks API major/minor, ABI,
+  size and SHA-256 before any execution (invalid → rejected, never installed).
+- **Examples**: `firmware/modules/examples/mod_tape_delay` (effect) and
+  `mod_euclid_arp` (generative) with manifests/README/LICENSE; package tool
+  `firmware/tools/package_module.py --check` (zip + per-file SHA-256).
+- Docs: `docs/24-module-sdk.md` §SDK v0.2, `docs/60`.
 
 ## Round 19 — factory self-test 21
 

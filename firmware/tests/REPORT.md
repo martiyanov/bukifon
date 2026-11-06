@@ -981,3 +981,33 @@ Pillow) installed in `/tmp/msvenv`; no system packages assumed.
   backend expectations updated from 14 to 21). `run_tests.sh` → PASS.
 - **Docs**: `docs/42` §8 table 21 tests with TODO(hw); `docs/38` synced
   (21 incl. mic, P4 SKIP, docs/42 §8).
+
+---
+
+# Round 20 — Module SDK v0.2 (2026-11-06)
+
+- **Manifest v2** `src/modules/module_manifest.*`: schema `bukifon.module.v2`
+  (id/name/version/api/author/abi/permissions/params/dsp/size/sha256/license/
+  description), strict JSON parser + validators with readable errors; SHA-256
+  implementation (standard `abc` vector checked), size bounds, param uniqueness/
+  ranges/default, permissions subset, API SemVer compatibility (same major,
+  host minor >= module minor), ABI host/p4/s3/any.
+- **Loader** `src/modules/module_loader.*`: validates manifest/API/ABI/size/
+  SHA-256 **before** any execution; rejected modules never enter the installed
+  list; list exposed with id/version/sha256/size/permissions, find/count and
+  attempts/rejected counters; max 16 entries.
+- **Examples**:
+  - `modules/examples/mod_tape_delay` (audio effect, model.hpp) — impulse echo,
+    deterministic, manifest sha/size matching;
+  - `modules/examples/mod_euclid_arp` (generative/control) — 5/16 Euclidean
+    steps, seed→velocity, deterministic steps and UP arp notes.
+- **Packaging** `tools/package_module.py` v0.2: `--check` validates manifest/
+  size/sha256; package zip includes manifest/DSP/README/LICENSE and
+  `module.package.json` with per-file SHA-256.
+- **Tests**: **351/351 PASS** (331 pre-existing + 20 module SDK tests: manifest
+  fields/schema/id/api/abi/permissions/params/sha, loader accept/reject/list,
+  examples render/seq determinism, package integrity). `run_tests.sh` → PASS.
+- **Docs**: `docs/24` SDK v0.2 section (manifest/loader/examples/TODO(hw));
+  `docs/60` distribution note. README updated (351, examples).
+- **TODO(hw)**: dynamic ABI loading/MPU sandbox/signature on P4, watchdog,
+  public SDK v1 after P1; audio modules still statically linked on device.

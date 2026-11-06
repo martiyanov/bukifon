@@ -2,6 +2,19 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.30.1] — 2025-11-06 — «Module SDK v0.2»
+
+### Добавлено
+- **SDK модулей v0.2**: манифест `bukifon.module.v2` (schema/id/name/version/api/author/abi/
+  permissions/params/dsp/size/sha256/license), валидатор (SemVer, API major=0/minor≤host,
+  ABI host/p4/s3, permissions, params 1–16, sha256) и **loader**: manifest→API→ABI→size→SHA
+  проверяются **до исполнения**, при ошибке ничего не грузится/не выполняется; список,
+  лимит 16, счётчики.
+- **Два примера**: `mod_tape_delay` (эффект, детерминизм) и `mod_euclid_arp` (Euclid 5/16 +
+  ARP 60/64/67) с manifest/README/LICENSE; упаковка zip + `--check`.
+- **351/351 тестов** (+20), docs/24 SDK v0.2, docs/60 v2-каталог; шаблон PWR-измерений
+  в docs/51; root `tools/package_module.py` синхронизирован с v0.2.
+
 ## [0.30.0] — 2025-11-06 — «Поддержка и бенч»
 
 ### Добавлено

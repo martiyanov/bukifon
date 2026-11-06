@@ -9,7 +9,7 @@
 CXX      ?= /usr/bin/g++
 PYTHON   ?= /opt/homebrew/bin/python3
 CXXFLAGS ?= -std=c++17 -O2 -Wall -Wextra
-CPPFLAGS := -I../src -I../include -I../app -I../bench/lib -I. -MMD -MP
+CPPFLAGS := -I../src -I../include -I../app -I../bench/lib -I.. -I. -MMD -MP
 LDFLAGS  ?=
 
 SRC_DIR   := ../src
