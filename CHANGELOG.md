@@ -2,6 +2,13 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.42.1] — 2025-11-06 — «Авто-TLS для доменов»
+
+### Добавлено
+- `deploy/vds/bukifon-tls-wait.sh` + cron на VDS: ждёт A-записи `bukifon.ru/.com` (и удаления
+  старых IP), затем выпускает TLS на 4 имени и снимает cron; лог `/var/log/bukifon-tls.log`.
+- docs/88 — авто-TLS, проверка; временный HTTPS `bukifon…sslip.io` уже работает.
+
 ## [0.42.0] — 2025-11-06 — «Сайт на VDS»
 
 ### Добавлено

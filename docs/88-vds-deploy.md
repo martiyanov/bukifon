@@ -41,6 +41,7 @@ bash tools/deploy_vds.sh --tls bukifon.ru www.bukifon.ru bukifon.com www.bukifon
 
 ## 4. TLS
 
+- **авто-TLS watcher** `deploy/vds/bukifon-tls-wait.sh` (cron каждые 10 мин на VDS): ждёт, пока все 4 имени укажут на VDS (и не останется старых IP), затем `certbot --nginx` и удаляет cron; лог `/var/log/bukifon-tls.log`;
 - certbot --nginx, авто-renew (systemd timer); HSTS можно включить после стабилизации DNS;
 - временный сертификат — `bukifon.37-46-18-40.sslip.io` (sslip.io), чтобы сайт был доступен до DNS.
 
