@@ -41,7 +41,11 @@ bash tools/deploy_vds.sh --tls bukifon.ru www.bukifon.ru bukifon.com www.bukifon
 
 ## 4. TLS
 
-- **авто-TLS watcher** `deploy/vds/bukifon-tls-wait.sh` (cron каждые 10 мин на VDS): ждёт, пока все 4 имени укажут на VDS (и не останется старых IP), затем `certbot --nginx` и удаляет cron; лог `/var/log/bukifon-tls.log`;
+- **авто-TLS watcher** `deploy/vds/bukifon-tls-wait.sh` (cron каждые 5 мин на VDS): проверяет
+  A/AAAA через DoH (dns.google), ждёт «чистый» DNS (A = 37.46.18.40, без старых AAAA), затем
+  выпускает `.com` (и расширяет на www), позже `.ru`; логи `/var/log/bukifon-tls.log`;
+- nginx: отдельные vhost'ы `bukifon.…sslip.io` (TLS сейчас), `bukifon.com`/`www` (TLS после DNS),
+  `bukifon.ru`/`www` (TLS после делегации NS); общие локации — `deploy/nginx/bukifon-site.inc`;
 - certbot --nginx, авто-renew (systemd timer); HSTS можно включить после стабилизации DNS;
 - временный сертификат — `bukifon.37-46-18-40.sslip.io` (sslip.io), чтобы сайт был доступен до DNS.
 

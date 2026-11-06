@@ -2,6 +2,15 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.43.1] — 2025-11-06 — «Vhost'ы по доменам и watcher DNS»
+
+### Изменено
+- nginx: отдельные vhost'ы для `bukifon.com/.ru` и временного `…sslip.io`, общий
+  `deploy/nginx/bukifon-site.inc`; сайт доступен по HTTP на новых доменах, HTTPS — после DNS.
+- `deploy/vds/bukifon-tls-wait.sh`: проверка A/AAAA через DoH, выпуск/расширение TLS для
+  `.com` и `.ru` по готовности, автоматическое снятие cron; лог `/var/log/bukifon-tls.log`.
+- docs/88 — обновлённая схема; ежедневные бэкапы (tar.gz, retention 7).
+
 ## [0.43.0] — 2025-11-06 — «Хранение и бэкапы»
 
 ### Добавлено
