@@ -97,7 +97,8 @@ CORE_Z0, CORE_Z1 = 12.0, 13.6        # CORE-2 горизонтально, как
 CORE_W, CORE_D = P17.CORE_W, P17.CORE_D
 CORE_COMP_TOP = 24.0
 
-PANEL2_OFFSET = 8.0                  # PANEL-2 на 8 мм ниже панели по нормали
+PANEL2_OFFSET = 12.0   # PANEL-2 ∥ панели: верх платы 12 мм ниже низа панели
+PANEL2_BOARD_T = 1.6    # толщина PANEL-2                  # PANEL-2 на 8 мм ниже панели по нормали
 PANEL2_T = 1.6
 PWR2_W, PWR2_D, PWR2_T = 90.0, 70.0, 1.6
 PWR2_X0, PWR2_X1 = 145.0, 235.0

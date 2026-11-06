@@ -111,13 +111,22 @@ def build_body(v):
     for (x, yf) in P04.PANEL_SCREWS:
         xw, yw = _panel_to_world(v, (x, yf))
         feats.append(C.cyl_z(4.5, P.FLOOR_T - 0.6, Hmax, xw, yw, 32))
-    # стойки PANEL-2 (6 × M3) — на 8 мм ниже панели по нормали
+    # стойки PANEL-2 (6 × M3) — ОСЬ ∥ нормали панели, верх ∥ панели
+    # (плата лежит параллельно наклонной панели, а не на горизонтальной полке)
+    n = np.array([0.0, v["sin"], v["cos"]])
+    post_top_flat = 60.0 - P.PANEL2_OFFSET - P.PANEL2_BOARD_T
     for (x, yf) in P.PANEL1_POSTS:
         xw, yw = _panel_to_world(v, (x, yf))
-        # плоскость PANEL-2: исходная точка (x,yw0) сдвинута на -8 по нормали
-        yw0 = yw + P.PANEL2_OFFSET * v["sin"]
-        z2 = _rim_z(v, yw0) - P.PANEL2_OFFSET * v["cos"]
-        feats.append(C.cyl_z(3.5, P.FLOOR_T - 0.6, z2, xw, yw, 28))
+        # точка на нижней плоскости платы (в world), по нормали панели
+        yt = yw + (post_top_flat - 60.0) * v["sin"]
+        zt = _rim_z(v, yw) + (post_top_flat - 60.0) * v["cos"]
+        top = np.array([xw, yt, zt])
+        L = zt + 25.0
+        centre = top - n * (L / 2.0)
+        cyl = trimesh.creation.cylinder(radius=3.5, height=L, sections=28)
+        cyl.apply_transform(trimesh.transformations.rotation_matrix(-np.arctan(v["k"]), [1, 0, 0]))
+        cyl.apply_translation(centre)
+        feats.append(cyl)
     # стойки CORE-2 (4 × M3) — горизонтально, Z 12
     for (x, y) in P.CORE_POSTS:
         feats.append(C.cyl_z(3.5, P.FLOOR_T - 0.6, P.CORE_Z0, x, y, 28))
@@ -154,6 +163,7 @@ def build_body(v):
         solid = C.DIFF(solid, [C.box(x0 + 6.0, x1 - 6.0, y0 + 6.0, y1 - 6.0,
                                      -1.0, 24.0)])
     solid = C.U([solid] + feats)
+    solid = C.INTER(solid, outer)   # клип по внешнему контуру (низ наклонных стоек)
 
     # ---- срез верхней плоскости (наклон) ---------------------------------
     solid = C.DIFF(solid, [_plane_cutter(v, above=True)])
@@ -175,9 +185,10 @@ def build_body(v):
     # PANEL-2: втулки M3 сверху стоек
     for (x, yf) in P.PANEL1_POSTS:
         xw, yw = _panel_to_world(v, (x, yf))
-        yw0 = yw + P.PANEL2_OFFSET * v["sin"]
-        z2 = _rim_z(v, yw0) - P.PANEL2_OFFSET * v["cos"]
-        cuts.append(C.cyl_z(P.M3_INSERT_D / 2, z2 - 6.0, z2 + 0.1, xw, yw, 24))
+        yt = yw + (post_top_flat - 60.0) * v["sin"]
+        zt = _rim_z(v, yw) + (post_top_flat - 60.0) * v["cos"]
+        cuts.append(_post_hole_along_normal(v, P.M3_INSERT_D / 2,
+                                            (xw, yt, zt), 6.2))
     # CORE-2 / PWR-2: резьбовые отверстия
     for (x, y) in P.CORE_POSTS:
         cuts.append(C.cyl_z(P.M3_CLEAR_D / 2, P.CORE_Z0 - 6.0, P.CORE_Z0 + 0.1, x, y, 24))

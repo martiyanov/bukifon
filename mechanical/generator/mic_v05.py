@@ -31,7 +31,7 @@ FOAM = dict(d=3.4, depth=0.7)          # цековка под сетку/пор
 MEMS = dict(d=5.0, depth=1.2)          # углубление под MEMS/звуковод (снизу)
 LED = dict(x=116.0, y=10.5, d=1.6, recess_d=2.8, recess_depth=0.5)
 PANEL_TOP, PANEL_BOT = 63.0, 60.0      # локальные z панели
-PANEL2_OFFSET = 8.0                    # PANEL-2 на 8 мм ниже панели
+PANEL2_OFFSET = 12.0                   # PANEL-2 ∥ панели: верх 12 мм ниже панели
 
 # ---- держатели -------------------------------------------------------------
 GOOSE_D = 3.5                          # гусиная шея 3.5 мм
@@ -40,7 +40,7 @@ SOCKET_HOLE = 3.6                      # отверстие под 3.5 мм
 CLAMP_GAP = 3.6                        # зев под панель 3 мм (запас 0.6)
 CLIP_SIZE = (18.0, 12.0, 12.0)        # клипса (X, Y, Z)
 HOLDER_SIZE = (20.0, 14.0, 10.0)       # короткий держатель
-GUIDE_H = PANEL2_OFFSET - 0.5          # 7.5 мм до PANEL-2 (зазор 0.5)
+GUIDE_H = PANEL2_OFFSET - 0.5          # 11.5 мм до PANEL-2 (зазор 0.5)
 
 
 def _cyl(r, z0, z1, cx=0.0, cy=0.0, sections=32):
@@ -78,11 +78,11 @@ def mic_guide():
     """Звуковод: флянец Ø8×1 под панелью + раструб до PANEL-2, канал 2→4.5."""
     z_top = PANEL_BOT
     z_bot = PANEL_BOT - GUIDE_H
-    flange = _cyl(4.0, z_top - 1.0, z_top, PORT["x"], PORT["y"])
-    outer = C.cone_frustum(3.5, 3.0, z_bot, z_top - 0.9,
+    flange = _cyl(4.0, z_top - 1.0, z_top - 0.1, PORT["x"], PORT["y"])
+    outer = C.cone_frustum(3.5, 3.0, z_bot, z_top - 1.0,
                            PORT["x"], PORT["y"], 40)
     body = trimesh.boolean.union([flange, outer], engine="manifold")
-    inner = C.cone_frustum(2.2, 1.0, z_bot - 0.2, z_top - 0.8,
+    inner = C.cone_frustum(2.2, 1.0, z_bot - 0.2, z_top - 0.9,
                            PORT["x"], PORT["y"], 40)
     return trimesh.boolean.difference([body, inner], engine="manifold")
 

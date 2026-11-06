@@ -1,6 +1,6 @@
 # Букифон (Bukifon) — открытая платформа: сэмплер + синтезатор + модули
 
-**Версия: 0.51.0** · сайт: **https://bukifon.ru/** (канон, HTTPS), `bukifon.com` → 301, зеркало: https://martiyanov.github.io/bukifon/ (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
+**Версия: 0.52.0** · сайт: **https://bukifon.ru/** (канон, HTTPS), `bukifon.com` → 301, зеркало: https://martiyanov.github.io/bukifon/ (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
 
 **Букифон** — настольный музыкальный инструмент-платформа, который собирается из
 доступных компонентов, печатается на 3D-принтере, расширяется модулями и полностью
@@ -32,7 +32,7 @@ BLE HID, передача проектов). То есть Букифон — е
 аналоговый картридж на шине 26-pin или сменная панельная дека (18 пэдов / 42 клавиши).
 Подробнее — [spec/00-vision.md §12](spec/00-vision.md).
 
-## Текущее состояние (v0.51.0)
+## Текущее состояние (v0.52.0)
 
 | Блок | Состояние |
 |---|---|
@@ -76,6 +76,7 @@ BLE HID, передача проектов). То есть Букифон — е
 | **Раскладка Lapka-42** | клавиши PANEL-2 исправлены: каждая плата — свои 21 (L01–L21 / R01–R21) по spec (остаточное 0.006 мм от Lapka-42), DRC 0/0; превью `docs/assets/panel-lapka-*.png` |
 | **Вырезы разъёмов** | **11 задних**: MIDI IN/OUT **TRS-A Ø8.2** (X30/44), DC Ø9 X91, EXP Ø8.2 X120.5, mic Ø8.2 X140, **LINE OUT** (стерео TRS) X160, PHONES X172, AUDIO IN L/R X184/196, **CV5/6** X208/220; SD 12×2, USB-C; перемычки ≥3.8 мм; B-light **230.9 г/11.2 ч**; fitcheck 16/0 |
 | **Board-fit (PCB rev.1)** | контуры для KiCad: CORE-2 200×108, PANEL-2 две платы 180×180 (360×190), PWR-2 90×70; DXF/assembly/spec, 22 проверки 0 конфликтов (`mechanical/board-fit/`) |
+| **PANEL-2 ∥ панели** | стойки/плата наклонены вместе с панелью: угол **0.00°**, зазор **12 мм**, оси энкодеров/клавиш ⊥ панели; fitcheck B-light **47/0**; B-light **228.9 г/11.0 ч**; `panel_parallel.jpg` |
 | **Корпуса** (с микрофоном) | B_mic ≈278 г/18.4 ч, C_mic ≈316 г/20.9 ч (порт/LED/MEMS на панелях; fitcheck 44/0 и 49/0) |
 | **Корпуса** | A flat 302 г · B 8° 277 г · **B-light 230 г / 11.1 ч** · C 12° 314 г (батарейный отсек, подставка) — `docs/45` |
 | **Factory test** | 14 тестов, CLI `factory --json`, loopback-плаг, EOL 2–2.5 мин (`docs/46`); **183/183 тестов** |
@@ -162,6 +163,7 @@ BLE HID, передача проектов). То есть Букифон — е
 | [docs/84-costdown.md](docs/84-costdown.md) | cost-down: где деньги, варианты снижения, маржа $299/$319/$349 |
 | [docs/85-second-source.md](docs/85-second-source.md) | вторые источники, supply-риски, чек-лист до заказа |
 | [docs/86-backlog-webapp-plugin.md](docs/86-backlog-webapp-plugin.md) | бэклог: сайт на VDS, PWA-приложение, DAW-плагин |
+| [docs/91-software-modules.md](docs/91-software-modules.md) | софтовые модули/машины: `.bkm`, USB/SD/Wi-Fi, sandbox, каталог |
 | [docs/87-v1.0-rc-notes-draft.md](docs/87-v1.0-rc-notes-draft.md) | черновик release notes v1.0-rc (критерии, проверки) |
 | [docs/88-vds-deploy.md](docs/88-vds-deploy.md) | деплой сайта на VDS (bukifon.ru/.com): DNS, TLS, скрипт |
 | [docs/en/README.md](docs/en/README.md) · [quick-start](docs/en/quick-start.md) | English docs index / quick start |
@@ -180,6 +182,7 @@ BLE HID, передача проектов). То есть Букифон — е
 | [docs/84-costdown.md](docs/84-costdown.md) | cost-down: где деньги, варианты снижения, маржа $299/$319/$349 |
 | [docs/85-second-source.md](docs/85-second-source.md) | вторые источники, supply-риски, чек-лист до заказа |
 | [docs/86-backlog-webapp-plugin.md](docs/86-backlog-webapp-plugin.md) | бэклог: сайт на VDS, PWA-приложение, DAW-плагин |
+| [docs/91-software-modules.md](docs/91-software-modules.md) | софтовые модули/машины: `.bkm`, USB/SD/Wi-Fi, sandbox, каталог |
 | [docs/87-v1.0-rc-notes-draft.md](docs/87-v1.0-rc-notes-draft.md) | черновик release notes v1.0-rc (критерии, проверки) |
 | [docs/88-vds-deploy.md](docs/88-vds-deploy.md) | деплой сайта на VDS (bukifon.ru/.com): DNS, TLS, скрипт |
 | [docs/en/README.md](docs/en/README.md) · [quick-start](docs/en/quick-start.md) | English docs index / quick start |

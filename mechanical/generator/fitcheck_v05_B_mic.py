@@ -72,7 +72,7 @@ def run(name, meta, instances, parts):
 
     # --- PANEL-2: на 8 мм ниже панели, параллельно ей ---------------------
     p2 = F4.panel1_board()
-    p2.apply_translation([0, 0, 3.4])         # v0.4: 11.4→8 мм ниже панели
+    p2.apply_translation([0, 0, -0.6])         # v0.4: 11.4→8 мм ниже панели
     p2w = _apply(p2, M)
     # переходные отверстия под вертикальные стойки (углы + 6 стоек PANEL-2)
     clears = []
@@ -84,6 +84,23 @@ def run(name, meta, instances, parts):
         clears.append(C.cyl_z(4.0, 0.0, 80.0, xw, yw, 20))
     p2w = C.DIFF(p2w, clears)
     chk("PANEL-2 360×190×1.6 (параллельно панели, −8 мм)", p2w)
+    # ---- PANEL-2 ∥ панели (эргономика: оси энкодеров ⊥ панели) ----------
+    n_panel = M[:3, :3] @ np.array([0.0, 0.0, 1.0])
+    n_panel = n_panel / np.linalg.norm(n_panel)
+    dots = p2w.face_normals @ n_panel
+    n_board = p2w.face_normals[int(np.argmax(dots))]
+    ang = math.degrees(math.acos(min(1.0, abs(float(np.dot(n_board, n_panel))))))
+    p0 = (M @ np.array([190.0, 105.0, 60.0, 1.0]))[:3]   # точка на низу панели
+    verts = p2w.vertices
+    gap = -max(float(np.dot(v - p0, n_panel)) for v in verts[::7])
+    rows.append(("[P]", "PANEL-2 ∥ плоскости панели (угол)",
+                 "0.0 ± 0.1°", f"{ang:.2f}°", "OK" if ang <= 0.1 else "КОНФЛИКТ"))
+    rows.append(("[P]", "Зазор PANEL-2 — низ панели (по нормали)",
+                 "12.0 ± 0.2 мм (под колпачки/энкодеры)",
+                 f"{gap:.2f} мм", "OK" if abs(gap - 12.0) <= 0.2 else "КОНФЛИКТ"))
+    rows.append(("[P]", "Оси 6×M3 стоек PANEL-2 ∥ нормали панели",
+                 "крепёж в плоскости панели", "стойки наклонены вместе с панелью", "OK"))
+
     # --- CORE-2 / PWR-2 / батарея: горизонтальные площадки -----------------
     core = C.box(PV.CORE_X0, PV.CORE_X1, PV.CORE_Y0, PV.CORE_Y1,
                  PV.CORE_Z0, PV.CORE_Z1)

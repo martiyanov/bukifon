@@ -54,7 +54,7 @@
    ],
    "watertight": true,
    "watertight_reload": true,
-   "volume_mm3": 201006.2
+   "volume_mm3": 200530.8
   },
   "body_R": {
    "file": "body_R.stl",
@@ -75,7 +75,7 @@
    ],
    "watertight": true,
    "watertight_reload": true,
-   "volume_mm3": 224697.2
+   "volume_mm3": 224221.1
   },
   "battery_lid": {
    "file": "battery_lid.stl",

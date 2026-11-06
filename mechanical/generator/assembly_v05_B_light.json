@@ -54,7 +54,7 @@
    ],
    "watertight": true,
    "watertight_reload": true,
-   "volume_mm3": 131686.8
+   "volume_mm3": 130511.8
   },
   "body_R": {
    "file": "body_R.stl",
@@ -75,7 +75,7 @@
    ],
    "watertight": true,
    "watertight_reload": true,
-   "volume_mm3": 133522.9
+   "volume_mm3": 132340.8
   },
   "panel_L": {
    "file": "panel_L.stl",
@@ -166,21 +166,21 @@
    "bbox": [
     8.0,
     8.0,
-    7.5
+    11.4
    ],
    "min": [
     118.0,
     1.5,
-    52.5
+    48.5
    ],
    "max": [
     126.0,
     9.5,
-    60.0
+    59.9
    ],
    "watertight": true,
    "watertight_reload": true,
-   "volume_mm3": 207.4
+   "volume_mm3": 302.7
   },
   "mic_clip_rear": {
    "file": "mic_clip_rear.stl",

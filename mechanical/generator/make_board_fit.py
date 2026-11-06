@@ -283,6 +283,20 @@ def build_spec():
              world=dict(x=[346.0, 356.0], y=[-1.0, 3.5], z="rear_rim−9…rear_rim+1"),
              note="USB-C: окно в задней стенке"),
     ]
+    for b in boards:
+        if b["id"].startswith("PANEL-2"):
+            b["mount_plane"] = dict(
+                parallel_to_panel=True,
+                panel_angle_deg={"A": 0.0, "B": 8.0, "B-light": 8.0, "B-mic": 8.0,
+                                 "C": 12.0, "C-mic": 12.0},
+                normal="(0, sin α, cos α) в мировой СК",
+                offset_below_panel_underside_mm=12.0,
+                board_thickness_mm=1.6,
+                fastener_axis="нормаль панели (6×M3)",
+                standoffs="6 стоек, оси ∥ нормали панели, верх ∥ панели",
+                note="PANEL-2 ∥ панели: колпачки/энкодеры/клавиши имеют одинаковую "
+                     "высоту и оси ⊥ панели по всей площади",
+            )
     spec = dict(
         meta=dict(
             generated="mechanical/generator/make_board_fit.py",

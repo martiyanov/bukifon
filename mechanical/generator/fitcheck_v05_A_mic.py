@@ -87,7 +87,7 @@ def run(name, meta, instances, parts):
     # --- микрофон (порт/LED/звуковод) ------------------------------------
     pan_L = trimesh.load(os.path.join(STL_DIR, "panel_L.stl"))
     pan_R = trimesh.load(os.path.join(STL_DIR, "panel_R.stl"))
-    p2 = F4.panel1_board(); p2.apply_translation([0, 0, 3.4])
+    p2 = F4.panel1_board(); p2.apply_translation([0, 0, -0.6])
     _old_sd = F5L.STL_DIR; F5L.STL_DIR = STL_DIR
     try:
         F5L._mic_rows(rows, pan_L, pan_R, p2, M)

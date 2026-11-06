@@ -41,6 +41,11 @@ MVP:
 `manifest.webmanifest`, `sw.js`, шину MIDI/микрофона, экспорт; тесты Playwright (UX-тест RU/EN,
 MIDI fake, mic fake, export smoke).
 
+## B2. Софтовые модули и «машины»
+
+Отдельный бэклог: `.bkm`-модули (machine/effect/generator/utility), загрузка по USB/SD/Wi-Fi,
+менеджер модулей, подпись/sandbox — см. [docs/91](91-software-modules.md).
+
 ## C. DAW-плагин
 
 **Цель:** тот же движок как инструмент в DAW.

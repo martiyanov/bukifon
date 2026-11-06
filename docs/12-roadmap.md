@@ -109,6 +109,8 @@
 - [ ] **Сайт на VDS** bukifon.ru/.com (nginx/TLS/DNS, витрина + `app.`);
 - [ ] **PWA/веб-приложение**: Web MIDI, микрофон (запись/битбокс), 4+8 треков, project v2, WAV/stems;
 - [ ] **DAW-плагин**: VST3/AU (JUCE 8) + CLAP, общий C++ движок, пресеты;
+- [ ] **Софтовые модули/машины**: `.bkm` (manifest/подпись/ABI), загрузка SD→USB→Wi-Fi,
+      менеджер модулей, sandbox (docs/91);
 - [ ] облако/аккаунты — только после пилота.
 
 Подробно — [docs/86](86-backlog-webapp-plugin.md).

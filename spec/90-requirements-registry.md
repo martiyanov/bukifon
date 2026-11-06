@@ -61,6 +61,8 @@ firmware/README). Этот файл фиксирует актуальные тр
 | R-42 | **Веб-приложение** (не демо): PWA, Web MIDI in/out, микрофон (запись/битбокс), 4+8 треков, project v2, WAV/stems export, share, RU/EN. | 06.11 | docs/86 |
 | R-43 | **DAW-плагин**: VST3/AU (JUCE 8) + CLAP, общий C++ движок, пресеты project v2; после RC/пилота. | 06.11 | docs/86 |
 | R-44 | **Домены/инфраструктура**: bukifon.ru/.com, DNS, TLS (Let's Encrypt), деплой/бэкапы; без секретов в репо. | 06.11 | docs/86 |
+| R-45 | **Софтовые модули/машины**: `.bkm` (manifest, подпись, ABI), установка USB/SD/Wi-Fi, менеджер модулей, sandbox/лимиты; machine/effect/generator/utility. | 06.11 | docs/91 |
+| R-46 | **Загрузка по Wi-Fi/USB**: локальный web-UI на C6 (`/modules`), upload/install/manage, без аудио-стриминга. | 06.11 | docs/91 |
 
 ## 3. Устаревшие документы (требуют правки в P2)
 
@@ -176,6 +178,8 @@ firmware/README). Этот файл фиксирует актуальные тр
 | D-103 | 06.11 | Реальные футпринты (0 placeholder): custom A1/C6/MP1584/CHOC + KiCad стандартные; DRC-классы/impedance (USB_HS 90 Ω, Power/Audio/RF), правила; DRC 0/0; GND-полигоны — план до трассировки | docs/82 §11 + hardware/*/rev1 |
 | D-104 | 06.11 | Fab dry-run из каркасов rev.1: gerbers/drill/CPL/BOM/PDF в `fab/<board>/rev1-scaffold`, `tools/export_fab_dryrun.sh`, checker PASS (4 пакета); не для заказа PCB | docs/83 §8 + fab/ |
 | D-105 | 06.11 | Реальные пассивы и GND-полигоны rev.1 — **частично**: 0 placeholder, стандартные пады упрощённые (328), GND/AGND/PGND не залиты (DRC не проходит из-за плотности); скрипты `build_full_pcb.py`/`add_gnd_zones.py` сохранены; нужен MCU freeze + трассировка | docs/82 §12 + hardware/*/rev1 |
+| D-107 | 06.11 | Софтовые модули — **бэклог после v1.0-rc**; единый движок/пресеты с DAW-плагином | docs/91 |
+| D-108 | 06.11 | `.bkm` = zip+manifest+подпись Ed25519+sha256; установка SD→USB→Wi-Fi; sandbox MPU/watchdog | docs/91 |
 | D-106 | 06.11 | Двусторонняя расстановка реальных футпринтов + GND-зоны — **попытка FAIL**: DRC 1810/1160/1152/896 (clearance/shorting/courtyard/zones_intersect), area хватает; main DRC 0/0 оставлен, two-sided в `rev1/two-sided/`; нужен floorplanner после MCU freeze | docs/82 §13 |
 | D-96 | 06.11 | Сборка: прототипы — Резонит/Интер-Плата, пилот — А-Контракт/НПП Асти/Телерем, корпуса — Modelica3D/ПИМТЕХ/фаблаб, профильная сборка — VG-Line (Москва) | docs/72 |
 | D-95 | 06.11 | Принцип «идея → звук»: метрики time-to-sound ≤10 с, time-to-idea ≤30 с, blind-тест 5 людей — в docs/68 | docs/68 |
