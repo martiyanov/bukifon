@@ -172,3 +172,14 @@ Required IDF/managed components for steps 3–5:
 | Найдено и исправлено | `file(GLOB ... CONFIGURE_DEPENDS)` в `components/bukifon_engine/CMakeLists.txt` — недопустим в script-режиме IDF 5.5; заменено на обычный GLOB |
 | Что дальше | прошить на P4 devkit: `idf.py -p PORT flash monitor`; ожидаемый лог: target=esp32p4, PSRAM 32 MiB, CPU 400 MHz, I2C-скан 8/8 |
 | Повторить | `bash tools/home_offload.sh run "cd firmware/idf_p4 && idf.py build"` (после `sync`) |
+
+## 9. Повторная проверка 06.11.2025 (home `pole`)
+
+| Что | Результат |
+|---|---|
+| Host-тесты (GCC 13, Ubuntu) | **351/351 PASS** (включая микрафон/SDK v0.2); найден и исправлен `std::snprintf` без `<cstdio>` в `io/mic.cpp` |
+| `idf.py build` (ESP-IDF v5.5, esp32p4) | **SUCCESS**; `build/bukifon_p4.bin` = **255 104 Б**, total image 254 737 Б |
+| Память | HP RAM 104/8192 Б (1.27 %), LP RAM 24/32768 Б (0.07 %) |
+| Команда | `bash tools/home_offload.sh run "cd firmware/idf_p4 && . /home/sym/esp-idf/export.sh && export PATH=$HOME/.local/bin:$PATH && idf.py build"` |
+
+Вывод: изменения после v0.25 (микрофон, SDK, self-test 21) не сломали сборку P4.

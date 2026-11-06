@@ -1,6 +1,6 @@
 # Букифон (Bukifon) — открытая платформа: сэмплер + синтезатор + модули
 
-**Версия: 0.30.1** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
+**Версия: 0.31.0** · сайт (опубликован): **https://martiyanov.github.io/bukifon/** (см. [`VERSION`](VERSION), [`CHANGELOG.md`](CHANGELOG.md))
 
 **Букифон** — настольный музыкальный инструмент-платформа, который собирается из
 доступных компонентов, печатается на 3D-принтере, расширяется модулями и полностью
@@ -32,7 +32,7 @@ BLE HID, передача проектов). То есть Букифон — е
 аналоговый картридж на шине 26-pin или сменная панельная дека (18 пэдов / 42 клавиши).
 Подробнее — [spec/00-vision.md §12](spec/00-vision.md).
 
-## Текущее состояние (v0.30.1)
+## Текущее состояние (v0.31.0)
 
 | Блок | Состояние |
 |---|---|
@@ -41,6 +41,7 @@ BLE HID, передача проектов). То есть Букифон — е
 | **EXT в прошивке** | 8 MIDI-треков (CH/PC/vel/len, 1 CC p-lock), clock out/in 24 ppqn, GEN на внешних, live record, save/load EXTP+CRC32, DIN+USB без дублей; UI-вкладка EXT; **288/288 тестов** (`docs/70 §7`) |
 | **Микрофон/голос (реализовано)** | PANEL-2 rev.3: **ICS-43434 I2S MEMS** + порт Ø1.8 (122, 5.5) + LED; CORE-2 rev.3: I2S1 GPIO40/41/42 + J19 + 3.5 мм jack/MAX9814/TS5A + SW3 mute; прошивка: захват/запись ≤30 с/битбокс kick-snare-hat/UNDO/приватность/UI MIC; **351/351 тестов** |
 | **Идея → звук** | метрики интуитивности в docs/68: time-to-sound ≤10 с, time-to-idea ≤30 с, 0 критических ошибок за 5 мин, blind-тест 5 людей |
+| **Module SDK v0.2** | манифест `bukifon.module.v2` (schema/id/version/api/abi/permissions/params/sha256), валидатор + безопасный loader (API/ABI/SHA до исполнения), 2 примера (`mod_tape_delay`, `mod_euclid_arp`), упаковка `--check` |
 | **Внешний секвенсор** | **8 MIDI-треков + 4 внутренние партии**: channel/PC/vel/length, clock out/in, p-lock CC, GEN на внешних, live record; паритет с Octatrack по MIDI (`docs/70`) |
 | **Философия интерфейса** | «конституция»: 10 принципов, зеркальная карта ручка↔ячейка, грамматика жестов (`docs/68`) |
 | **Читаемость** | экран 5″ 800×480 = 188 PPI, пиксель 0.135 мм; шкала 12/18/24–28 px, проверка по угловым минутам и контрасту (`docs/69`) |
@@ -137,6 +138,7 @@ BLE HID, передача проектов). То есть Букифон — е
 | [docs/76-known-limitations.md](docs/76-known-limitations.md) | честные ограничения v1.0-rc (до покупки) |
 | [docs/77-quick-start.md](docs/77-quick-start.md) | быстрый старт: идея за 10 минут |
 | [docs/78-support-repair.md](docs/78-support-repair.md) | поддержка/ремонт: диагностика, recovery, запчасти, гарантия |
+| [docs/79-competitors-2026.md](docs/79-competitors-2026.md) | аналоги 2025–2026, позиционирование и цены |
 | [docs/72-assembly-workshops.md](docs/72-assembly-workshops.md) | где собрать: мастерские Москвы/СПб/НН, RFQ, цены |
 | [docs/73-morning-report.md](docs/73-morning-report.md) | утренний отчёт: состояние, блокеры, план, риски |
 | [docs/74-usability-test-harness.md](docs/74-usability-test-harness.md) | blind UX-тест: 8 задач, таймер, JSON (`/demo/?test=1`) |
@@ -144,6 +146,7 @@ BLE HID, передача проектов). То есть Букифон — е
 | [docs/76-known-limitations.md](docs/76-known-limitations.md) | честные ограничения v1.0-rc (до покупки) |
 | [docs/77-quick-start.md](docs/77-quick-start.md) | быстрый старт: идея за 10 минут |
 | [docs/78-support-repair.md](docs/78-support-repair.md) | поддержка/ремонт: диагностика, recovery, запчасти, гарантия |
+| [docs/79-competitors-2026.md](docs/79-competitors-2026.md) | аналоги 2025–2026, позиционирование и цены |
 | [docs/53-pwr-log.md](docs/51-pwr-log.md) | журнал 13 измерений PWR и go/no-go |
 | [docs/33-bom-s3.md](docs/33-bom-s3.md) | product BOM S3-base: COGS 1/10/25, опции, маржа |
 | [docs/34-assembly.md](docs/34-assembly.md) | пошаговая сборка S3-base (B-light) |
