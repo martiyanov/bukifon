@@ -6,12 +6,17 @@ USB HS).  It exists because **PlatformIO's official `platformio/espressif32`
 `firmware/platformio.ini` is prepared/commented for that reason).  ESP-IDF 5.5+
 supports `esp32p4` natively.
 
-The hello task proves the toolchain + board basics before engine bring-up:
+Bring-up app (docs/80 §6) proves the toolchain + board basics before engine port:
 
-- logs `esp_chip_info`, PSRAM size, CPU frequency, IDF version, free heap;
-- scans I2C0 on GPIO21/22 for the CORE-2 set
-  `0x20-0x23,0x36,0x57,0x60,0x61` (panel expanders, EEPROM/rail, DACs);
-- starts a 5 s heartbeat task (uptime/heap + repeated I2C scan).
+- UART0 115200 banner: `Bukifon P4 bring-up`, chip/rev/flash/PSRAM/IDF/heap;
+- I2C0 scan on GPIO21/22 for CORE-2 ranges 0x20–0x27 / 0x48–0x4F / 0x50–0x57
+  plus real 0x36/0x60/0x61; expected set **8/8 PASS**;
+- RGB565 display test (800×480, esp_lcd RGB) — color bars/checker/1px grid/text,
+  5 s each; init failure only logs (no panic);
+- engine bench hook — 1000×64-frame p4_profile-style workload, max ≤650 µs;
+- I2S1 MEMS mic skeleton (BCK40/WS41/DIN42, 48 kHz/24-bit, 1 s RMS/peak,
+  PASS > −60 dBFS, no data → SKIP);
+- heartbeat every 10 s (uptime/heap + repeated I2C scan).
 
 ## 1. Install ESP-IDF 5.5+
 
@@ -42,13 +47,17 @@ idf.py -p /dev/ttyUSB0 flash monitor
 Expected log (values depend on the board):
 
 ```
-I (312) bukifon: Bukifon P4 ESP-IDF scaffold (CORE-2, first SKU)
-I (312) bukifon: target=esp32p4 chip_rev=... cores=2 features=0x...
-I (312) bukifon: IDF version: v5.5...
-I (312) bukifon: CPU frequency: 400000000 Hz
-I (312) bukifon: PSRAM: 33554432 bytes (32.0 MiB), initialized=1
-I (312) bukifon: I2C0 scan (SDA=21 SCL=22): N devices [...]
-I (312) bukifon: I2C expected set OK: 0x20-0x23,0x36,0x57,0x60,0x61 (8/8)
+I (xxx) bukifon:  Bukifon P4 bring-up
+I (xxx) bukifon:  target=esp32p4 rev=... cores=... features=0x...
+I (xxx) bukifon:  IDF version: v5.5...
+I (xxx) bukifon:  CPU: 400000000 Hz
+I (xxx) bukifon:  flash: 16.0 MiB
+I (xxx) bukifon:  PSRAM: 32.0 MiB (init=1)
+I (xxx) bukifon: I2C expected 8/8 PASS (0x20-0x23, 0x36, 0x57, 0x60, 0x61)
+I (xxx) bukifon: display pattern color-bars (800x480 RGB565) — 5 s
+I (xxx) bukifon: engine bench: ... -> PASS
+I (xxx) bukifon: mic I2S1: ... -> PASS|SKIP
+I (xxx) bukifon: P4 bring-up sequence complete; heartbeat every 10 s
 ```
 
 `I2C expected set incomplete` is expected on a bare devkit without

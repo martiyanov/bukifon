@@ -333,6 +333,11 @@ def main():
     print("Букифон v0.5 — 3 варианта корпуса (A flat / B 8° / C 12° + battery)")
     print("=" * 78)
     import sys as _sys
+    if "--mic" in _sys.argv[1:] or "--mic-variants" in _sys.argv[1:]:
+        # порт микрофона (D-94) для B и C → stl_v05_B_mic / stl_v05_C_mic
+        import make_mic_variants
+        make_mic_variants.main()
+        return
     names = [a for a in _sys.argv[1:] if a in ("A", "B", "C")] or ["B"]
     for name in names:
         v = P.variant(name)

@@ -25,6 +25,8 @@
 | **B-light** (рекомендуется) | [`mechanical/stl_v05_B_light/`](../mechanical/stl_v05_B_light/) | ≈230 г | ≈11.1 ч | народная версия, клин 8°, 3 периметра, gyroid 10% |
 | **B** | [`mechanical/stl_v05_B/`](../mechanical/stl_v05_B/) | ≈277 г | ≈18.3 ч | классический PETG-профиль, запас жёсткости |
 | **C** | [`mechanical/stl_v05_C/`](../mechanical/stl_v05_C/) | ≈314 г | ≈20.8 ч | клин 12° + **закрытый отсек 1S2P** + складная стойка |
+| **B + mic** | [`mechanical/stl_v05_B_mic/`](../mechanical/stl_v05_B_mic/) | ≈278 г | ≈18.4 ч | B + порт MEMS/LED/звуковод/клипса (D-94) |
+| **C + mic** | [`mechanical/stl_v05_C_mic/`](../mechanical/stl_v05_C_mic/) | ≈316 г | ≈20.9 ч | C + порт MEMS/LED/звуковод/клипса (D-94) |
 | **A (flat)** | [`mechanical/stl_v05_A/`](../mechanical/stl_v05_A/) | ≈302 г | ≈20.0 ч | настольный/студийный, без наклона; fitcheck 17/0, панель = канон |
 
 В каждой папке: `body_L/R`, `panel_L/R`, `foot`, `keycap_v17`, `*_assembly.3mf`;
@@ -158,8 +160,9 @@ cat MANIFEST.md                              # полный список + SHA25
 ## English (short)
 
 **Downloads.** Version 0.12.2, status **v1.0-rc / PRE-FREEZE**.
-- **STL/3MF:** `mechanical/stl_v05_B_light/` (230 g/11.1 h), `stl_v05_B/` (277 g),
-  `stl_v05_A/` (302 g, flat), `stl_v05_C/` (314 g).
+- **STL/3MF:** `mechanical/stl_v05_B_light/` (231 g/11.2 h, уже с микрофоном),
+  `stl_v05_B/` (277 g), `stl_v05_A/` (302 g, flat), `stl_v05_C/` (314 g);
+  **с микрофоном:** `stl_v05_B_mic/` (278 g/18.4 h), `stl_v05_C_mic/` (316 g/20.9 h).
 - **1:1 PDFs:** panel v0.4, 8° wedge profile, paperkit, assembly map, Lapka-42 layouts
   (`renders/templates/`).
 - **BOM:** `BOM-p4.csv` (P4 Standard), `BOM-s3.csv` (S3 lite), `BOM.csv` (workshop),

@@ -2,6 +2,23 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.35.0] — 2025-11-06 — «Bring-up и микрофон в B/C»
+
+### Добавлено
+- **P4 bring-up app** (`firmware/idf_p4/main/app_main.cpp`): UART 115200 баннер/чип/PSRAM/IDF,
+  I2C-скан (0x20–0x27/0x48–0x4F/0x50–0x57 + 0x36/0x60/0x61, 8/8 PASS), RGB565 800×480
+  (color bars/checker/grid/text), engine bench 1000×64 (≤650 µs), I2S1 MEMS 1 с RMS/peak
+  (PASS >−60 dBFS или SKIP), heartbeat; ошибка дисплея/микрофона не паникует.
+  **Сборка IDF 5.5: 330 512 Б, 0 warnings, 78 % app-раздела свободно**; CPU по умолчанию 360 МГц.
+- **Корпуса B_mic и C_mic**: опциональный порт микрофона (Ø1.8, 122.0/5.5 + LED 116/10.5,
+  MEMS-углубление) для B/C, отдельные папки STL/3MF/STEP, assembly JSON, превью с mic_closeup;
+  **B+mic 278 г/18.4 ч, C+mic 316 г/20.9 ч**; fitcheck **44/0** и **49/0**.
+- docs/59 §9, docs/80 §6 (команды/ожидаемый лог), docs/45/50/71, docs/32 — обновлены.
+
+### Исправлено
+- `app_main.cpp`: `<initializer_list>` (GCC), убраны deprecated `sram_trans_align`/
+  `psram_trans_align`; `sdkconfig.defaults` — **360 МГц** (400 в IDF 5.5 для P4 недоступны).
+
 ## [0.34.0] — 2025-11-06 — «FAQ и пресс-кит»
 
 ### Добавлено
