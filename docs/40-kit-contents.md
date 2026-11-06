@@ -16,14 +16,14 @@ BOM — [`BOM-p4.csv`](../BOM-p4.csv) (primary), [`BOM-s3.csv`](../BOM-s3.csv) (
 
 | SKU | Цена | Что это | COGS (партия 10 / 25) | Статус |
 |---|---|---:|---|---|
-| **P4 Standard (Complete)** | **$299** | полный DIY-комплект: 3 платы, RGB 5″, корпус B-light, все органы управления | $194 / $176 | **first** |
-| **P4 Full Bundle** | **$399** | P4 Standard + 4 аналоговых картриджа + DECK-PAD + премиум-колпачки | $285 / $267 | опция bundle |
-| **S3 Complete** | **$249–269** | S3 lite: те же платы/корпус/органы, SPI-дисплей, CS3 | $175 / $157 | later |
+| **P4 Standard (Complete)** | **$299** | полный DIY-комплект: 3 платы, RGB 5″, корпус B-light, все органы управления, микрофон/voice | $215 / $196 | **first** |
+| **P4 Full Bundle** | **$399** | P4 Standard + 4 аналоговых картриджа + DECK-PAD + премиум-колпачки | $306 / $287 | опция bundle |
+| **S3 Complete** | **$249–269** | S3 lite: те же платы/корпус/органы, SPI-дисплей, CS3 | $199 / $181 | later |
 | S3 lite kit | — | S3 как DIY-вариант без корпуса/печати (обсуждение) | ≈$157–199 | later |
 | Опции | см. §4 | батарея, БП, microSD, картриджи, дека, колпачки | — | всегда |
 
-Цены — рекомендованные для direct-sale. $299 при COGS $194 (партия 10) даёт gross ≈35 %
-и net ≈25 % после 10 % на логистику/упаковку/платёжку (расчёт — docs/33 §1).
+Цены — рекомендованные для direct-sale. $299 при COGS $215 (партия 10) даёт gross ≈28 %
+и net ≈18 % после 10 % на логистику/упаковку/платёжку (расчёт — docs/33 §1).
 
 ---
 
@@ -33,8 +33,8 @@ BOM — [`BOM-p4.csv`](../BOM-p4.csv) (primary), [`BOM-s3.csv`](../BOM-s3.csv) (
 
 | # | Позиция | Кол-во | Примечание |
 |---|---|---:|---|
-| 1 | **CORE-2 rev.2** (P4+C6) | 1 | ESP32-P4NRW32 + 32 МБ PSRAM, ESP32-C6-MINI-1, PCM5102A + PCM1808, 2×MCP4728, MCP3208, 24LC32A, BQ24074, MT3608 (BL), USB-C, microSD-слот |
-| 2 | **PANEL-2 rev.2** | 1 | 4×MCP23017, матрица 42 клавиш, 16 EC11, джеки, фейдеры, LED |
+| 1 | **CORE-2 rev.3** (P4+C6) | 1 | ESP32-P4NRW32 + 32 МБ PSRAM, ESP32-C6-MINI-1, PCM5102A + PCM1808, 2×MCP4728, MCP3208, 24LC32A, BQ24074, MT3608 (BL), USB-C, microSD; **MAX9814 + TS5A23157 + J20 TRS + J19 IDC-6** |
+| 2 | **PANEL-2 rev.3** | 1 | 4×MCP23017, матрица 42 клавиш, 16 EC11, джеки, фейдеры, LED; **ICS-43434 MEMS + J16 IDC-6 + SW1 mute + MIC ON** |
 | 3 | **PWR-2 rev.1** | 1 | TPS61088×2 (+12/+5), LMR33630 (−12), BMS 1S, MAX17048, рельсы шины |
 | — | Прошитые МК | — | прошивка залита и проверена на self-test (см. QC §8) |
 
@@ -78,6 +78,7 @@ BOM — [`BOM-p4.csv`](../BOM-p4.csv) (primary), [`BOM-s3.csv`](../BOM-s3.csv) (
 | `keycap` | 42 | PLA |
 | ручки `knob` Ø14 | 16 | PETG |
 | колпачки фейдеров | 2 | PETG |
+| mic_guide, mic_clip_rear, mic_holder_top (mic/rev.3) | 1 компл. | PETG/PLA, ≈1.4 г |
 | **Крепёж:** 4×M3×8 потай (панель), 6×M3×6 (PANEL-2), 4×M3×6 (CORE-2), 4×M2.5×6 (дисплей), 8×M2.5×8 (фейдеры), 4×M3×16 (стяжка), термовтулки M3 | компл. | — |
 
 **Файлы для печати** не входят в коробку как пластик: STL/3MF — в релизе
@@ -91,6 +92,19 @@ BOM — [`BOM-p4.csv`](../BOM-p4.csv) (primary), [`BOM-s3.csv`](../BOM-s3.csv) (
 - QR: сайт проекта, quickstart, safety, RMA.
 
 ---
+
+### 2.6 Микрофон/voice (rev.3)
+
+| Позиция | Кол-во | Примечание |
+|---|---:|---|
+| **ICS-43434** I2S MEMS-микрофон (на PANEL-2) | 1 | 24 бит/48 кГц, 3.3 В, порт верхней кромки; MIC ON LED |
+| **MAX9814** AGC mic preamp + TS5A23157 line/mic switch (на CORE-2) | 1 + 1 | MEMS/electret → AUDIO IN тракт; MIC_SEL: line по умолчанию |
+| **J20** MIC IN 3.5 мм TRS + R106 bias | 1 | задняя стенка; electret/headset mic |
+| **J19/J16 IDC-6** + шлейф MIC | 1 компл. | PANEL-2 ↔ CORE-2, BCK/WS/DATA/3V3/GND |
+| **SW1** слайд-мьют + LED MIC ON | 1 + 1 | аппаратный mute питания микрофона |
+| **Печатные mic-детали** `mic_guide`, `mic_clip_rear`, `mic_holder_top` | 1 компл. | ≈1.4 г, входят в печать корпуса |
+| Сетка/поролон микрофона | 1 | расходник, защита порта MEMS |
+
 
 ## 3. Чего в коробке НЕТ (и почему)
 
@@ -200,6 +214,7 @@ BOM — [`BOM-p4.csv`](../BOM-p4.csv) (primary), [`BOM-s3.csv`](../BOM-s3.csv) (
 | Рельсы/ток покоя (12/5/3.3/−12) | 100 % | в допуске, без нагрева >50 °C |
 | Дисплей: full/partial fps | 100 % (smoke) | изображение без артефактов, ≥15 fps full |
 | Аудио loopback (PCM5102A→PCM1808) | 20 % | синус 1 кГц, SNR в норме |
+| Микрофон/voice: MEMS → MAX9814 → PCM1808; J20; mute; MIC ON | 100 % | запись 1 кГц/голос, mute выключает, MIC ON горит |
 | USB composite (UAC2+MIDI+HID+CDC) | 20 % | 0 drops/reconnect (docs/36 тест 3) |
 | 1 ч audio stress (max block ≤650 µs) | 10 % | 0 xruns (docs/36 тест 1) |
 | 24 ч soak | 1 шт/партия | 0 xruns/watchdog/drift (docs/36 тест 6) |
@@ -216,7 +231,7 @@ BOM — [`BOM-p4.csv`](../BOM-p4.csv) (primary), [`BOM-s3.csv`](../BOM-s3.csv) (
 |---|---|---|
 | Цена | **$249–269** | TBD |
 | Состав | как P4 Standard, но CORE-S3 (S3-N16R8, SPI 5″), без C6 | та же электроника без корпуса/печати (обсуждение) |
-| COGS (партия 10 / 25) | $175 / $157 | ≈$157–199 (1 шт) |
+| COGS (партия 10 / 25) | $199 / $181 | ≈$181 (25 шт) – $224 (1 шт) |
 | Когда | после P4 Standard, если нужен «народный» tier | после S3 Complete |
 | Дисплей | SPI 5″ 800×480 (ILI9488/ST7796S), FPC-40 | тот же |
 
