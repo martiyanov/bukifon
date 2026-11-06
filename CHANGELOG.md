@@ -2,6 +2,17 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.32.0] — 2025-11-06 — «Проверки BOM и PWR»
+
+### Добавлено
+- **`tools/check_bom_netlist.py`** — сверка BOM ↔ netlist (позиции, off-board-фильтр): CORE-2
+  **332/332 OK**, PANEL-2 **340/340 OK**, PWR-2 **116/116 OK**; встроено в `check_all` шагом 7/7.
+- **`tools/pwr_bench_check.py`** — валидатор 13 измерений PWR против лимитов (`<=`, `>=`,
+  `±%`, диапазон), режимы `--json`/`--strict`, пустые = SKIP; docs/51 — как запускать.
+- `docs/pwr-results-template.csv` исправлен (кавычки в condition, 13 корректных строк).
+- PWR-2 BOM: BT1/BT2/TH1 помечены **off-board** (батарея/термистор вне платы) — BOM↔netlist
+  теперь без «фантомных» расхождений.
+
 ## [0.31.1] — 2025-11-06 — «security: пути»
 
 ### Исправлено

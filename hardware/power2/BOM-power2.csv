@@ -1,12 +1,12 @@
 Артикул;MPN;Номинал;Кол-во;Позиции;Корпус;Примечание
 PM-PWR2-001;;PACK 3P;1;J1;TerminalBlock_4Ucon_1x03_P3.50mm_Vertical;батарейный отсек: 1=B+, 2=B-, 3=NTC (термистор на банке)
-PM-PWR2-002;;18650 3.6V 3.5Ah;1;BT1;BatteryHolder_Keystone_1042_1x18650;"банка 1/2 (параллель); холдер в батарейном отсеке, не на плате"
-PM-PWR2-003;;18650 3.6V 3.5Ah;1;BT2;BatteryHolder_Keystone_1042_1x18650;"банка 2/2 (параллель); ХОЛДЕРЫ С КЛЮЧОМ от переполюсовки"
+PM-PWR2-002;;18650 3.6V 3.5Ah;1;BT1;BatteryHolder_Keystone_1042_1x18650;"банка 1/2 (параллель); холдер в батарейном отсеке, не на плате; off-board (battery/thermistor, вне платы)"
+PM-PWR2-003;;18650 3.6V 3.5Ah;1;BT2;BatteryHolder_Keystone_1042_1x18650;"банка 2/2 (параллель); ХОЛДЕРЫ С КЛЮЧОМ от переполюсовки; off-board (battery/thermistor, вне платы)"
 PM-PWR2-004;;5 A;1;F1;Fuse_1206_3216Metric;предохранитель пакета 4-5 А (по ТЗ): защита от КЗ и от переполюсовки одной банки
 PM-PWR2-005;;AO3401A P-FET;1;Q1;SOT-23;защита от переполюсовки пакета: body diode PACK_F->VBAT (норма), reverse blocked
 PM-PWR2-006;;100k;1;R1;R_0603_1608Metric;gate-source Q1: OFF при обрыве, ON при нормальной полярности (Vgs = -Vpack)
 PM-PWR2-007;SMBJ5.0A;SMBJ5.0A;1;D1;D_SMA;TVS на пакете (ESD/импульсы при hot-plug)
-PM-PWR2-008;;NTC 10k B3950;1;TH1;— (вне платы);термистор на банке: -> TS BQ24074 (CORE-2) и -> CH7 (TEMP_MON)
+PM-PWR2-008;;NTC 10k B3950;1;TH1;— (вне платы);"термистор на банке: -> TS BQ24074 (CORE-2) и -> CH7 (TEMP_MON); off-board (battery/thermistor, вне платы)"
 PM-PWR2-009;;100R;1;R2;R_0603_1608Metric;RC-фильтр BAT BQ297xy
 PM-PWR2-010;;100n;1;C1;C_0805_2012Metric;RC-фильтр BAT BQ297xy
 PM-PWR2-011;;1k;1;R3;R_0603_1608Metric;токовый сенс BQ297xy (V-) к P-

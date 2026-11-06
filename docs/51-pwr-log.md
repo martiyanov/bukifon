@@ -23,6 +23,14 @@
 колонки `measured/unit/verdict/notes/date/tester`. Вердикт PASS только при попадании в limit;
 любой FAIL — стоп PCB.
 
+## Проверка измерений
+
+```bash
+python3 tools/pwr_bench_check.py docs/pwr-results-template.csv          # SKIP, пока пусто
+python3 tools/pwr_bench_check.py results.csv --strict --json            # exit 1 при FAIL
+```
+Лимиты: `<=30`, `>=85`, `12.0 ±5%`, `45-55`, `4.15-4.25`. Перед заказом PCB — только `gate: PASS`.
+
 ## 2. Таблица измерений (заполнять после каждого теста)
 
 | ID | Тест | Условия | Критерий (D-80) | Факт | PASS/FAIL | Дата | Примечание |
