@@ -25,15 +25,15 @@
 | **B-light** (рекомендуется) | [`mechanical/stl_v05_B_light/`](../mechanical/stl_v05_B_light/) | ≈230 г | ≈11.1 ч | народная версия, клин 8°, 3 периметра, gyroid 10% |
 | **B** | [`mechanical/stl_v05_B/`](../mechanical/stl_v05_B/) | ≈277 г | ≈18.3 ч | классический PETG-профиль, запас жёсткости |
 | **C** | [`mechanical/stl_v05_C/`](../mechanical/stl_v05_C/) | ≈314 г | ≈20.8 ч | клин 12° + **закрытый отсек 1S2P** + складная стойка |
-| **A (flat)** | [`archive/v0.4/mechanical/stl_v04/`](../archive/v0.4/mechanical/stl_v04/) | ≈302 г | ≈20.0 ч | настольный/студийный, без наклона (исторический v0.4) |
+| **A (flat)** | [`mechanical/stl_v05_A/`](../mechanical/stl_v05_A/) | ≈302 г | ≈20.0 ч | настольный/студийный, без наклона; fitcheck 17/0, панель = канон |
 
 В каждой папке: `body_L/R`, `panel_L/R`, `foot`, `keycap_v17`, `*_assembly.3mf`;
 у C дополнительно `battery_lid`, `stand`. Превью — `mechanical/preview_v05_*/`.
 **Первый прогон:** [`docs/35-print-first.md`](35-print-first.md) (печать 1 половинки
 и 1 панели, замер массы/времени).
 
-> `mechanical/stl_v04/` в рабочей папке — пустая заглушка (файлы в архиве):
-> A-flat берите из `archive/v0.4/mechanical/stl_v04/`; `mechanical/stl_v05_A/`
+> `mechanical/stl_v05_A/` — актуальный плоский вариант A (302 г/20 ч, flat 0°);
+> `mechanical/stl_v04/` в рабочей папке — историческая заглушка (v0.4 в архиве).
 > пока не существует — A не пересобирался под v0.5.
 
 ## 2. Печатные шаблоны 1:1 (PDF)
@@ -159,7 +159,7 @@ cat MANIFEST.md                              # полный список + SHA25
 
 **Downloads.** Version 0.12.2, status **v1.0-rc / PRE-FREEZE**.
 - **STL/3MF:** `mechanical/stl_v05_B_light/` (230 g/11.1 h), `stl_v05_B/` (277 g),
-  `stl_v05_C/` (314 g), `archive/v0.4/mechanical/stl_v04/` (A-flat, 302 g).
+  `stl_v05_A/` (302 g, flat), `stl_v05_C/` (314 g).
 - **1:1 PDFs:** panel v0.4, 8° wedge profile, paperkit, assembly map, Lapka-42 layouts
   (`renders/templates/`).
 - **BOM:** `BOM-p4.csv` (P4 Standard), `BOM-s3.csv` (S3 lite), `BOM.csv` (workshop),

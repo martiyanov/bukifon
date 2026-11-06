@@ -2,6 +2,18 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.26.1] — 2025-11-06 — «Вариант A в текущем генераторе»
+
+### Добавлено
+- `mechanical/stl_v05_A/`: плоский корпус A (0°, 380×210×63, **302 г / 20.0 ч**), панель = канон
+  (83 выреза), 6 STL + 7 3MF + сборка; `preview_v05_A/` (iso/side/exploded/top/front) и
+  обновлённое сравнение A/B/B-light/C; fitcheck **17/0**; генератор `case_v05.py A`,
+  `fitcheck_v05_A.py`, `render_v05_A.py`.
+
+### Изменено
+- docs/50: A-flat теперь из `mechanical/stl_v05_A/` (не из архива); обновлены ссылки и таблица.
+- mechanical/{prints.md,README.md,assembly.md}, docs/45 — актуальные варианты v0.5.
+
 ## [0.26.0] — 2025-11-06 — «Ворота релиза и авто-тест UX»
 
 ### Добавлено
