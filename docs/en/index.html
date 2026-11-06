@@ -151,16 +151,17 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
 </section>
 
 <section id="status">
-  <h2>Status (v0.49.0)</h2>
-    <li>✅ <strong>P4 builds with ESP-IDF v5.5</strong> (idf.py build → bukifon_p4.bin 250 KB, 83 % app partition free);</li>
-    <li>✅ firmware: <strong>248/248 tests</strong>, GEN engine (PROB/EUCLID/MUTATE/SCALE/ARP/EVOLVE/SEED), 5 UI pages, 8 presets, 4 screen themes;</li>
-    <li>✅ web demo <a href="demo/">/demo/</a>: 16 encoders, ±18° clusters, TRACK/SCENE/DJ faders, REC resampling, presets, 4 themes — UX rubric 9/10;</li>
-    <li>✅ P4 product BOM (rev.3 + microphone): COGS <strong>$241/$215/$196</strong> (1/10/25), P4 Standard $299, Full Bundle $399; <strong>≈$800 to order</strong> (P1 $442 + PWR $277 + LCD $73 + print);</li>
-    <li>✅ pre-freeze boards: CORE-2 rev.2 (ERC 0/0), PANEL-2 rev.2, PWR-2 rev.1, FFC-40 LCD adapter; DFM: 30 TP, 20 self-test;</li>
-    <li>✅ cases: B-light 230 g/11.1 h, B 277 g, C 12° 314 g; 4-page assembly map, 1:1 paper kit;</li>
-    <li>✅ home offload on <code>pole</code> (8 cores, RTX 3060): 248/248 tests, IDF builds P4.</li>
+  <h2>Status (v0.50.0)</h2>
+  <ul>
+    <li>✅ <strong>Site & demo</strong>: <a href="https://bukifon.ru/">bukifon.ru</a> (RU/EN), <a href="demo/?lang=en">/demo/</a> — mobile-friendly, browser MIDI/mic;</li>
+    <li>✅ <strong>firmware</strong>: <strong>407/407 tests</strong>, 7 tabs, 12 tracks (4+8 MIDI), GEN, project v2, <strong>factory self-test 21</strong>, Module SDK v0.2, RU/EN UI with Cyrillic;</li>
+    <li>✅ <strong>P4</strong>: ESP-IDF v5.5 builds <code>bukifon_p4.bin</code> <strong>369,552 B</strong> (factory 1 MiB, 65 % free), partitions/NVS, bring-up app;</li>
+    <li>✅ <strong>boards rev.3</strong> (PRE-FREEZE): CORE-2 ERC 0/0, PANEL-2 0/6w, PWR-2 0/0; microphone datasheet-checked;</li>
+    <li>✅ <strong>PCB rev.1</strong>: 4 KiCad scaffolds (CORE-2 200×108 6L, PANEL-2 2×180×190 4L, PWR-2 90×70 2oz), netlist/footprints, <strong>DRC 0/0</strong>, fab dry-run <strong>PASS</strong>; routing after PWR 13/13 + MCU freeze;</li>
+    <li>✅ <strong>cases</strong>: A 302 g, B 276.2, <strong>B-light 230.9 g / 11.2 h</strong>, C 313.2; 11 rear cutouts (MIDI TRS, DC, EXP, mic, LINE, PHONES, AUDIO IN, CV5/6), SD, USB-C; 1:1 paper kit;</li>
+    <li>✅ <strong>BOM/COGS</strong>: <strong>$241/$215/$196</strong> (1/10/25), P4 Standard $299, Full Bundle $399; ≈<strong>$800</strong> to order;</li>
+    <li>⏳ <strong>Remaining</strong>: order benches/print/repo; then PWR 13/13 → P1 → MCU freeze → routing → PCB rev.1 → 3–5 prototypes → RC DoD + 5-person UX test.</li>
   </ul>
-  <p><img src="../assets/compare.jpg" alt="Approved concept versus v0.4 layout comparison" loading="lazy"></p>
 </section>
 
 <section id="demo">
