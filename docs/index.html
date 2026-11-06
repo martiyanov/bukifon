@@ -88,7 +88,7 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
 </head>
 <body>
 <header><div class="wrap">
-  <nav><a href="#about">О проекте</a><a href="#modes">Режимы</a><a href="#hardware">Железо</a><a href="#status">Статус</a><a href="#demo">Демо</a><a href="#design">Дизайн</a><a href="#build">Сборка</a><a href="#faq">FAQ</a><a href="#limitations">Ограничения</a><a href="#kit">Комплект</a><a href="#cases">Корпуса</a><a href="#bench">Бенчмарк</a><a href="#modules">Модули</a><a href="#docs">Документы</a><a href="en/" hreflang="en">English</a></nav>
+  <nav><a href="#about">О проекте</a><a href="#modes">Режимы</a><a href="#hardware">Железо</a><a href="#status">Статус</a><a href="#demo">Демо</a><a href="#design">Дизайн</a><a href="#build">Сборка</a><a href="#faq">FAQ</a><a href="#limitations">Ограничения</a><a href="#kit">Комплект</a><a href="#downloads">Скачать</a><a href="#cases">Корпуса</a><a href="#bench">Бенчмарк</a><a href="#modules">Модули</a><a href="#docs">Документы</a><a href="en/" hreflang="en">English</a></nav>
   <h1>Букифон <span style="color:var(--mut);font-weight:400">/ Bukifon</span></h1>
   <p class="sub">Открытый настольный <strong>синтезатор + сэмплер + платформа модулей</strong>. 3D-печатный корпус, открытые схемы KiCad, открытая прошивка C++.<br><strong>Народный инструмент:</strong> комплект от <strong>≤ $200</strong> (S3) до <strong>≤ $400</strong> (полный с P4 и картриджами).</p>
   <span class="badge">v0.49.0</span><span class="badge">CERN-OHL-S-2.0</span><span class="badge">GPL-3.0-or-later</span><span class="badge">клин 8° · 380×210×61.5</span><span class="badge">Wi-Fi + BT</span><span class="badge">USB HID + MIDI + UAC2</span>
@@ -151,7 +151,7 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
 </section>
 
 <section id="status">
-  <h2>Статус (v0.52.1)</h2>
+  <h2>Статус (v0.53.0)</h2>
   <ul>
     <li>✅ <strong>Сайт и демо</strong>: <a href="https://bukifon.ru/">bukifon.ru</a> (RU/EN), <a href="demo/?lang=en">/demo/</a> — работает с телефона, MIDI/микрофон в браузере;</li>
     <li>✅ <strong>прошивка</strong>: <strong>407/407 тестов</strong>, 7 вкладок, 12 треков (4+8 MIDI), GEN, project v2, <strong>factory self-test 21</strong>, Module SDK v0.2, UI RU/EN с кириллицей;</li>
@@ -226,6 +226,15 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:14px}
   <p><a class="cta" href="demo/">Попробовать темы в демо →</a></p>
 </section>
 
+<section id="downloads">
+  <h2>Скачать</h2>
+  <div class="grid three">
+    <div class="card"><h3>Корпус B-light</h3><p>STL/3MF/STEP, 228.9 г / 11.0 ч. Также A, B, C, B_mic/C_mic.</p><a class="cta" href="https://github.com/martiyanov/bukifon/tree/main/mechanical/stl_v05_B_light">STL/3MF →</a></div>
+    <div class="card"><h3>Панель 1:1</h3><p>PDF-шаблон для печати и примерки (83 выреза, Lapka-42).</p><a class="cta" href="https://github.com/martiyanov/bukifon/blob/main/renders/templates/bukifon_v04_panel_1to1.pdf">PDF →</a></div>
+    <div class="card"><h3>BOM и прошивка</h3><p>BOM-p4.csv, схема/платы, исходники прошивки и SDK.</p><a class="cta" href="https://github.com/martiyanov/bukifon/blob/main/BOM-p4.csv">BOM →</a> <a class="cta" href="https://github.com/martiyanov/bukifon/tree/main/firmware">Прошивка →</a></div>
+  </div>
+  <p>Быстрый старт — <a href="https://github.com/martiyanov/bukifon/blob/main/docs/77-quick-start.md">docs/77</a>; отчёт — <a href="https://github.com/martiyanov/bukifon/blob/main/docs/90-final-report.md">docs/90</a>; ограничения — <a href="https://github.com/martiyanov/bukifon/blob/main/docs/76-known-limitations.md">docs/76</a>.</p>
+</section>
 <section id="cases">
   <h2>Варианты корпуса</h2>
   <img src="assets/case-profiles.jpg" alt="Профили корпусов 0°, 8°, 12°" class="hero-img" loading="lazy">

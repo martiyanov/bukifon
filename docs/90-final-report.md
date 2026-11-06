@@ -28,6 +28,21 @@ v1.0-rc и что делать дальше. Обновляется при ка�
 - `tools/check_fab_package.py fab/*` → **PASS** (dry-run, не для заказа);
 - `tools/verify_release_bundle.sh` → SHA256 0 нарушений, PII ok.
 
+
+## 2a. Финальная проверка (06.11.2025, v0.52.1)
+
+| Проверка | Результат |
+|---|---|
+| `tools/check_all.sh` | ✅ 8/8 |
+| `tools/security_scan.sh` | ✅ секреты/PII/EXIF/пути |
+| `firmware/tests/run_tests.sh` | **407/407 PASS**; GCC 13 на home — 407/407 |
+| `tools/ci_p4_remote.sh` | P4 build **369 552 Б**, factory 65 % free, 0 warnings |
+| `node tools/test_demo_ux.js both` | **RU PASS · EN PASS** (8/8, a11y/EXT/ширина) |
+| `node tools/test_demo_mic.js` / `check_demo_layout.js` | MIC-DEMO OK / LAYOUT OK |
+| DRC 4 платы (`kicad-cli pcb drc`) | **0 нарушений** на каждой |
+| `tools/check_fab_package.py` ×4 | **PASS** (dry-run, не для заказа) |
+| `tools/verify_release_bundle.sh` | SHA256 0 нарушений, PII ok |
+
 ## 3. Что блокирует v1.0-rc (только физика)
 
 | # | Блокер | Действие владельца |
