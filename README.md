@@ -67,7 +67,7 @@ BLE HID, передача проектов). То есть Букифон — е
 | **UI = философия** | 16 ячеек зеркально ручкам, шкала 12/18/24–28 px, контекст-строка, HOME; Cream AA; **263/263 тестов** (`docs/66/68/69`) |
 | **GEN/UX в прошивке** | PROB/EUCLID/MUTATE/SCALE/ARP/EVOLVE/SEED (детерминированно), 5-я вкладка GEN, 8 пресетов с CRC32, A/B, мультивыбор, mod-visible «M»; **248/248 тестов** (`docs/66`) |
 | **Прошивка v0.7** | **160/160 тестов**; S3 HAL сборка SUCCESS; spike `spike_s3` SUCCESS; **P1 P4-профиль** PASS (RGB/DSI 52 fps, HS UAC2 8×8, max block 320 µs); UI 4 режимов; Module API v0.1 |
-| **CORE-2 rev.2 (основная плата)** | ESP32-P4 + ESP32-C6, 32 МБ PSRAM, USB HS, RGB565/DSI, ERC 0/0; DFM/DFT: 30 TP, 20 self-test, recovery, 6 слоёв — PRE-FREEZE |
+| **CORE-2 rev.2 (основная плата)** | ESP32-P4 + ESP32-C6, 32 МБ PSRAM, USB HS, RGB565/DSI, ERC 0/0; DFM/DFT: 30 TP, **21 self-test** (вкл. микрофон), recovery, 6 слоёв — PRE-FREEZE |
 | **Корпус B-light** | **230 г / 11.1 ч** (−17 % массы, −39 % времени): стенки 2.0/дно 1.8, 3 периметра + локальные рёбра, панели-оболочки; 6 STL watertight, fitcheck 32/0 |
 | **CORE-2 rev.2** | схема внесена: J17/J18, входы 12V_EXT/N12_EXT/+5V_EXT/5V_LED, EN-развязки, CV IN3/4 на MCP3208, re-pin J14/J15/J16, DNP 46; **ERC 0/0**, pinmap PASS |
 | **PANEL-2 rev.2** | J13/J14 (5V_LED, LED_RET, EN_RAILS, EN_LED5), re-pin по канону, GATE_IN на MCP23017 0x23, LED_DATA 3.3 В + shifter; **ERC 0 err/6 warn**, verify 1290/0 |

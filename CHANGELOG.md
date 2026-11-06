@@ -2,6 +2,11 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.29.2] — 2025-11-06 — «README: 21 self-test»
+
+### Исправлено
+- README: CORE-2 DFM/DFT — **21 self-test** (было 20), синхронно с прошивкой (331/331) и docs/42.
+
 ## [0.29.1] — 2025-11-06 — «Self-test 21»
 
 ### Добавлено
