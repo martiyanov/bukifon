@@ -2044,16 +2044,28 @@
    "note": "акустический порт MEMS + LED (116;10.5); B/C — опционально"
   },
   {
-   "id": "midi-trs",
+   "id": "midi-in",
    "where": "rear wall (есть в STL)",
    "type": "hole",
    "world": {
-    "x": 76.0,
+    "x": 30.0,
     "y": 0.0,
-    "dia": 14.0,
-    "z": "10…24"
+    "dia": 8.2,
+    "z": "12.9…21.1"
    },
-   "note": "MIDI Ø14: X 76 (сдвинут с 60 — ребро X60); MIDI IN+OUT — 2-е отв. X=200"
+   "note": "MIDI IN TRS-A J6 — Ø8.2 (не DIN Ø14: BOM J6/J7 TRS)"
+  },
+  {
+   "id": "midi-out",
+   "where": "rear wall (есть в STL)",
+   "type": "hole",
+   "world": {
+    "x": 44.0,
+    "y": 0.0,
+    "dia": 8.2,
+    "z": "12.9…21.1"
+   },
+   "note": "MIDI OUT TRS-A J7 — Ø8.2"
   },
   {
    "id": "dc-in",
@@ -2065,7 +2077,7 @@
     "dia": 9.0,
     "z": "12.5…21.5"
    },
-   "note": "DC 12 В Ø9: X 91 (перемычка ≥3.5 до MIDI)"
+   "note": "DC 12 В J12 Ø9"
   },
   {
    "id": "expression",
@@ -2074,9 +2086,10 @@
    "world": {
     "x": 120.5,
     "y": 0.0,
-    "dia": 8.2
+    "dia": 8.2,
+    "z": "12.9…21.1"
    },
-   "note": "EXPRESSION Ø8.2: X 120.5 (ребро X110); по D-44 убран — резерв"
+   "note": "EXPRESSION J13 Ø8.2 — DNP/D-44, резерв"
   },
   {
    "id": "mic-jack",
@@ -2085,9 +2098,82 @@
    "world": {
     "x": 140.0,
     "y": 0.0,
-    "dia": 8.2
+    "dia": 8.2,
+    "z": "12.9…21.1"
    },
-   "note": "MIC/headset 3.5 Ø8.2 (docs/71) — X 140, Z 17"
+   "note": "mic/headset J20 Ø8.2 (docs/71)"
+  },
+  {
+   "id": "line-out",
+   "where": "rear wall (есть в STL)",
+   "type": "jack",
+   "world": {
+    "x": 160.0,
+    "y": 0.0,
+    "dia": 8.2,
+    "z": "12.9…21.1"
+   },
+   "note": "LINE OUT L/R (стерео TRS J8)"
+  },
+  {
+   "id": "phones",
+   "where": "rear wall (есть в STL)",
+   "type": "jack",
+   "world": {
+    "x": 172.0,
+    "y": 0.0,
+    "dia": 8.2,
+    "z": "12.9…21.1"
+   },
+   "note": "PHONES J9 Ø8.2"
+  },
+  {
+   "id": "audio-in-l",
+   "where": "rear wall (есть в STL)",
+   "type": "jack",
+   "world": {
+    "x": 184.0,
+    "y": 0.0,
+    "dia": 8.2,
+    "z": "12.9…21.1"
+   },
+   "note": "AUDIO IN L J10 Ø8.2"
+  },
+  {
+   "id": "audio-in-r",
+   "where": "rear wall (есть в STL)",
+   "type": "jack",
+   "world": {
+    "x": 196.0,
+    "y": 0.0,
+    "dia": 8.2,
+    "z": "12.9…21.1"
+   },
+   "note": "AUDIO IN R J11 Ø8.2"
+  },
+  {
+   "id": "cv5",
+   "where": "rear wall (есть в STL)",
+   "type": "jack",
+   "world": {
+    "x": 208.0,
+    "y": 0.0,
+    "dia": 8.2,
+    "z": "12.9…21.1"
+   },
+   "note": "CV OUT 5 (задний джек, D-44)"
+  },
+  {
+   "id": "cv6",
+   "where": "rear wall (есть в STL)",
+   "type": "jack",
+   "world": {
+    "x": 220.0,
+    "y": 0.0,
+    "dia": 8.2,
+    "z": "12.9…21.1"
+   },
+   "note": "CV OUT 6 (задний джек)"
   },
   {
    "id": "sd-card",
@@ -2101,7 +2187,24 @@
     ],
     "z": "8…10"
    },
-   "note": "microSD: сквозной слот 12×2 в левой стенке"
+   "note": "microSD: сквозной слот 12×2"
+  },
+  {
+   "id": "usb-c",
+   "where": "rear wall (есть в STL)",
+   "type": "window",
+   "world": {
+    "x": [
+     346.0,
+     356.0
+    ],
+    "y": [
+     -1.0,
+     3.5
+    ],
+    "z": "rear_rim−9…rear_rim+1"
+   },
+   "note": "USB-C: окно в задней стенке"
   }
  ],
  "keepout_rules": {

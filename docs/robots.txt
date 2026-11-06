@@ -1,4 +1,4 @@
-# Букифон / Bukifon — https://bukifon.com/
+# Букифон / Bukifon — https://bukifon.ru/
 User-agent: *
 Allow: /
 
@@ -27,4 +27,4 @@ Allow: /
 User-agent: YandexBot
 Allow: /
 
-Sitemap: https://bukifon.com/sitemap.xml
+Sitemap: https://bukifon.ru/sitemap.xml

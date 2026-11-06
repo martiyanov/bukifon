@@ -2,6 +2,13 @@
 
 Формат: [SemVer](https://semver.org/lang/ru/). Даты — локальные (Europe/Moscow).
 
+## [0.48.1] — 2025-11-06 — «bukifon.ru — канон»
+
+### Изменено
+- **DNS bukifon.ru начал резолвиться** → выпущен TLS (certbot, bukifon.ru + www).
+- **Канон: https://bukifon.ru/**; `www.bukifon.ru`, `bukifon.com`, `www.bukifon.com` → **301 на .ru**.
+- Сайт: canonical/OG/hreflang/sitemap/robots переключены на **bukifon.ru**; README/доки обновлены.
+
 ## [0.48.0] — 2025-11-06 — «Fab dry-run и NVS»
 
 ### Добавлено

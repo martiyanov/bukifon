@@ -1,26 +1,50 @@
-"""conn_cuts_v05.py — вырезы разъёмов в корпусе (docs/82, board-fit).
+"""conn_cuts_v05.py — вырезы разъёмов в корпусе (docs/82, board-fit, hardware/core2).
 
-Задняя стенка (ось Y): MIDI Ø14 X76, DC Ø9 X90, EXPRESSION Ø8.2 X118 (резерв,
-D-44 убран), mic jack Ø8.2 X140 — все на Z17 (10…24), перемычки ≥3 мм и вне
-рёбер X60/110/290/340. USB-C окно уже есть (X346…356, верхняя кромка).
+Задняя стенка (ось Y, Z=17): все разъёмы CORE-2 по BOM-core2/interfaces:
+  MIDI IN TRS-A J6 — Ø8.2, X30;
+  MIDI OUT TRS-A J7 — Ø8.2, X44;
+  DC 12 В J12 — Ø9, X91;
+  EXPRESSION J13 — Ø8.2, X120.5 (DNP/D-44, резерв);
+  mic/headset J20 — Ø8.2, X140;
+  LINE OUT L/R J8 (стерео TRS) — Ø8.2, X160;
+  PHONES J9 — Ø8.2, X172;
+  AUDIO IN L J10 — Ø8.2, X184;
+  AUDIO IN R J11 — Ø8.2, X196;
+  CV OUT 5 J? — Ø8.2, X208;
+  CV OUT 6 — Ø8.2, X220.
 Левая стенка (ось X): слот microSD 12×2 (Y150…162, Z8…10).
-
-Координаты сверены: X60 из board-fit пересекал ребро жёсткости X60 → X76.
-Панельные 10 джеков (CV/GATE, Y=10.5) — на панели, не на задней стенке;
-их оси в JSON, вырезы панели не меняются.
+USB-C окно (X346…356) — уже в корпусе.
+MIDI — TRS-A (BOM: J6/J7), поэтому Ø8.2, а не DIN Ø14. Панельные 10 джеков
+(CV/GATE, Y=10.5) — на панели, вырезы панели не меняются.
+Перемычки между отверстиями/рёбрами (X60/110/290/340) — ≥3 мм.
 """
-MIDI_X, MIDI_D = 76.0, 14.0
+MIDI_IN_X = 30.0
+MIDI_OUT_X = 44.0
 DC_X, DC_D = 91.0, 9.0
-EXPR_X, EXPR_D = 120.5, 8.2
-MIC_X, MIC_D = 140.0, 8.2
+EXPR_X = 120.5
+MIC_X = 140.0
+LINE_X = 160.0
+PHONES_X = 172.0
+AUDIO_IN_L_X = 184.0
+AUDIO_IN_R_X = 196.0
+CV5_X = 208.0
+CV6_X = 220.0
+JACK_D = 8.2
 PORT_Z = 17.0
 SD = dict(y0=150.0, y1=162.0, z0=8.0, z1=10.0)
 
 REAR = [
-    dict(id="midi", x=MIDI_X, z=PORT_Z, d=MIDI_D, note="MIDI (Ø14; при TRS 3.5 — Ø8.2, решить на PCB)"),
-    dict(id="dc", x=DC_X, z=PORT_Z, d=DC_D, note="DC 12 В"),
-    dict(id="expr", x=EXPR_X, z=PORT_Z, d=EXPR_D, note="EXPRESSION — резерв (D-44 убран)"),
-    dict(id="mic", x=MIC_X, z=PORT_Z, d=MIC_D, note="mic/headset 3.5 (docs/71)"),
+    dict(id="midi_in", x=MIDI_IN_X, z=PORT_Z, d=JACK_D, note="MIDI IN TRS-A J6"),
+    dict(id="midi_out", x=MIDI_OUT_X, z=PORT_Z, d=JACK_D, note="MIDI OUT TRS-A J7"),
+    dict(id="dc", x=DC_X, z=PORT_Z, d=DC_D, note="DC 12 В J12"),
+    dict(id="expr", x=EXPR_X, z=PORT_Z, d=JACK_D, note="EXPRESSION J13 — резерв (DNP/D-44)"),
+    dict(id="mic", x=MIC_X, z=PORT_Z, d=JACK_D, note="mic/headset J20 (docs/71)"),
+    dict(id="line_out", x=LINE_X, z=PORT_Z, d=JACK_D, note="LINE OUT L/R (стерео TRS J8)"),
+    dict(id="phones", x=PHONES_X, z=PORT_Z, d=JACK_D, note="PHONES J9"),
+    dict(id="audio_in_l", x=AUDIO_IN_L_X, z=PORT_Z, d=JACK_D, note="AUDIO IN L J10"),
+    dict(id="audio_in_r", x=AUDIO_IN_R_X, z=PORT_Z, d=JACK_D, note="AUDIO IN R J11"),
+    dict(id="cv5", x=CV5_X, z=PORT_Z, d=JACK_D, note="CV OUT 5 (задний джек)"),
+    dict(id="cv6", x=CV6_X, z=PORT_Z, d=JACK_D, note="CV OUT 6 (задний джек)"),
 ]
 RIBS_REAR = [60.0, 110.0, 290.0, 340.0]   # рёбра жёсткости задней стенки (X, ширина 2)
 

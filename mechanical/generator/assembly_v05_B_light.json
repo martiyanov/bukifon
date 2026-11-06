@@ -54,7 +54,7 @@
    ],
    "watertight": true,
    "watertight_reload": true,
-   "volume_mm3": 131905.6
+   "volume_mm3": 131686.8
   },
   "body_R": {
    "file": "body_R.stl",
@@ -75,7 +75,7 @@
    ],
    "watertight": true,
    "watertight_reload": true,
-   "volume_mm3": 133837.7
+   "volume_mm3": 133522.9
   },
   "panel_L": {
    "file": "panel_L.stl",
